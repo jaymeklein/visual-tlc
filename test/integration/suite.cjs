@@ -968,6 +968,34 @@ test('EXC-07 an invalid entry is ignored with a warning that names it', async ()
   await waitForRoots(['.specs', 'packages/api/test/.specs', 'test/nested/.specs', 'tests/.specs', 'tools/.specs']);
 });
 
+test('EXC-10 the same invalid entry in both settings is warned once per setting, with its name', async () => {
+  const shown = [];
+  const original = vscode.window.showWarningMessage;
+  vscode.window.showWarningMessage = (message) => {
+    shown.push(message);
+    return Promise.resolve(undefined);
+  };
+  try {
+    await setFolders(['../fora', '.specs']);
+    await setExclude(['../fora', 'node_modules']);
+    await waitFor('two warnings', () => shown.length >= 2);
+    assert.deepEqual(
+      [...shown].sort(),
+      [
+        'TLC Specs: a entrada "../fora" de tlcSpecs.exclude foi ignorada. Use um caminho relativo, sem "..", sem vírgula e sem glob.',
+        'TLC Specs: a entrada "../fora" de tlcSpecs.specsFolders foi ignorada. Use um caminho relativo, sem ".." e sem glob.',
+      ],
+    );
+    await api.refresh();
+    assert.equal(shown.length, 2, 'a warning was repeated on refresh');
+  } finally {
+    vscode.window.showWarningMessage = original;
+    await setFolders(undefined);
+    await setExclude(undefined);
+  }
+  await waitForRoots(['.specs', 'packages/api/test/.specs', 'test/nested/.specs', 'tests/.specs', 'tools/.specs']);
+});
+
 exports.run = async function run() {
   const failures = [];
   for (const c of cases) {

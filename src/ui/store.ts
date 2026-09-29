@@ -116,7 +116,7 @@ export class SpecsStore implements vscode.Disposable {
   private warn(invalid: InvalidEntry[]): void {
     const { show, warned } = pendingWarnings(invalid, this.warned);
     for (const { setting, entry } of show) {
-      void vscode.window.showWarningMessage(`TLC Specs: a entrada "${entry}" de ${setting} foi ignorada. Use um caminho relativo, sem "..", sem vírgula e sem glob.`);
+      void vscode.window.showWarningMessage(`TLC Specs: a entrada "${entry}" de ${setting} foi ignorada. ${ADVICE[setting]}`);
     }
     this.warned = warned;
   }
@@ -126,6 +126,12 @@ export class SpecsStore implements vscode.Disposable {
     for (const d of [...this.watchers, ...this.disposables]) d.dispose();
   }
 }
+
+/** What each setting accepts, told in the warning of an ignored entry. Only exclude splits its entries on a comma. */
+const ADVICE: Record<string, string> = {
+  'tlcSpecs.specsFolders': 'Use um caminho relativo, sem ".." e sem glob.',
+  'tlcSpecs.exclude': 'Use um caminho relativo, sem "..", sem vírgula e sem glob.',
+};
 
 function specsFolders(folder: vscode.WorkspaceFolder) {
   return parseSpecsFolders(vscode.workspace.getConfiguration('tlcSpecs', folder.uri).get<unknown>('specsFolders'));
