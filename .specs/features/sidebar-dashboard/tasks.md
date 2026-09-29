@@ -327,10 +327,10 @@ T8 → T9 → T10 → T11 → T12 → T13 → T14 → T15
 
 **Done when**:
 
-- [ ] O botão da notificação mostra a feature na view lateral e não abre a aba
-- [ ] Mutante C2 do Verifier morre
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [ ] Test count: nenhum teste removido
+- [x] O botão da notificação mostra a feature na view lateral e não abre a aba
+- [x] Mutante C2 do Verifier morre
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] Test count: nenhum teste removido
 
 **Tests**: integration
 **Gate**: full

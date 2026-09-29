@@ -743,6 +743,30 @@ test('SIDE-07 (host) a click on an artifact in the side panel opens the Markdown
   assert.equal(dashboardTab(), undefined, 'the panel tab was opened');
 });
 
+test('SIDE-02 the "Abrir painel" button of a notification shows the feature in the side panel', async () => {
+  await closeAll();
+  const shown = [];
+  const original = vscode.window.showInformationMessage;
+  vscode.window.showInformationMessage = (message, ...items) => {
+    shown.push({ message, items });
+    return Promise.resolve(message.includes('side-notified') ? items[0] : undefined);
+  };
+  try {
+    await write('.specs/features/side-notified/spec.md', SPEC_WITHOUT_SHALL);
+    await sideReport('the details of side-notified', (r) => r.detail === 'side-notified');
+    const toast = shown.find((t) => t.message.includes('side-notified'));
+    assert.match(toast.message, /Nova spec detectada: side-notified/);
+    assert.deepEqual(toast.items, ['Abrir painel']);
+    assert.equal(dashboardTab(), undefined, 'the panel tab was opened');
+    assert.deepEqual(
+      allTabs().map((t) => t.label),
+      [],
+    );
+  } finally {
+    vscode.window.showInformationMessage = original;
+  }
+});
+
 exports.run = async function run() {
   const failures = [];
   for (const c of cases) {
