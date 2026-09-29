@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import type { FeatureRef } from './core/protocol.ts';
+import type { FeatureRef, FromWebview } from './core/protocol.ts';
 import type { Project } from './core/types.ts';
 import { SpecsStore } from './ui/store.ts';
 import { artifactTarget, FeaturesTree, type FeatureNode } from './ui/featuresTree.ts';
@@ -21,6 +21,7 @@ export interface TlcSpecsApi {
   getProjects(): readonly Project[];
   refresh(): Promise<void>;
   dashboardHealth(): { ready: boolean; errors: readonly string[] };
+  dashboardMessage(message: FromWebview): Promise<void>;
   featuresTree: vscode.TreeDataProvider<unknown>;
   projectTree: vscode.TreeDataProvider<unknown>;
 }
@@ -74,6 +75,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<TlcSpe
     getProjects: () => store.projects.map((p) => p.project),
     refresh: () => store.refresh(),
     dashboardHealth: () => dashboard.health,
+    dashboardMessage: (message) => dashboard.onMessage(message),
     featuresTree: featuresTree as vscode.TreeDataProvider<unknown>,
     projectTree: projectTree as vscode.TreeDataProvider<unknown>,
   };

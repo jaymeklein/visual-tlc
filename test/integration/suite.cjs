@@ -377,6 +377,20 @@ test('NAV-16 Tasks and Execução lists coexist without duplicate ids', async ()
   assert.deepEqual(dupes, []);
 });
 
+test('NAV-10 (host) a previewFile message from the dashboard opens the Markdown preview', async () => {
+  await closeAll();
+  await api.dashboardMessage({ type: 'previewFile', projectId: projectId(), file: 'features/user-auth/spec.md' });
+  await expectPreviewOf('spec.md');
+});
+
+test('NAV-11/NAV-14 (host) an open message from the dashboard opens the text editor at the line', async () => {
+  await closeAll();
+  await api.dashboardMessage({ type: 'open', projectId: projectId(), file: 'features/user-auth/spec.md', line: 12 });
+  const editor = await waitFor('text editor', () => vscode.window.activeTextEditor);
+  assert.ok(editor.document.uri.path.endsWith('/user-auth/spec.md'));
+  assert.equal(editor.selection.active.line, 11);
+});
+
 exports.run = async function run() {
   const failures = [];
   for (const c of cases) {

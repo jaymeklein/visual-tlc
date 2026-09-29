@@ -139,3 +139,12 @@ test('NAV-13 clicking an expanded task row collapses its details', async () => {
   assert.equal(by(tags(html), { class: 'task-details', 'data-key': key }).length, 0, 'T5 collapsed');
   assert.equal(by(tags(html), { class: 'task-details', 'data-key': other }).length, 1, 'T1 stays expanded');
 });
+
+test('NAV-10 "abrir validation.md" and "abrir STATE.md" links open the preview', async () => {
+  const billing = tags((await detailOf('billing-invoices')).html);
+  assert.equal(by(billing, { 'data-action': 'preview-file', 'data-file': 'features/billing-invoices/validation.md' }).filter((x) => x.tag === 'button').length, 1);
+
+  const { ctx } = await detailOf('user-auth');
+  const overview = tags(renderApp({ ...ctx, view: { ...ctx.view, selected: null } }));
+  assert.equal(by(overview, { 'data-action': 'preview-file', 'data-file': 'STATE.md' }).filter((x) => x.tag === 'button').length, 1);
+});

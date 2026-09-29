@@ -40,7 +40,8 @@ export class Dashboard implements vscode.Disposable {
     this.panel = panel;
   }
 
-  private async onMessage(m: FromWebview): Promise<void> {
+  /** Handles a message from the webview (public so the integration tests can drive it). */
+  async onMessage(m: FromWebview): Promise<void> {
     switch (m.type) {
       case 'ready':
         this.health.ready = true;
