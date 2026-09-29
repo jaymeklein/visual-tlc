@@ -6,8 +6,8 @@ O painel esconde as features concluídas com uma caixa de texto, "Ocultar conclu
 
 ## Goals
 
-- [ ] Um botão de olho, no painel e na árvore Features, mostra pelo ícone se as specs ocultas estão escondidas ou à vista, e alterna entre os dois estados com um clique
-- [ ] Qualquer spec não concluída pode ser ocultada e desocultada à mão, pelo olho dela, e continua oculta ao reabrir o VS Code
+- [x] Um botão de olho, no painel e na árvore Features, mostra pelo ícone se as specs ocultas estão escondidas ou à vista, e alterna entre os dois estados com um clique
+- [x] Qualquer spec não concluída pode ser ocultada e desocultada à mão, pelo olho dela, e continua oculta ao reabrir o VS Code
 
 ## Out of Scope
 
@@ -102,31 +102,31 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Requirement ID | Story       | Phase  | Status  |
 | -------------- | ----------- | ------ | ------- |
-| HID-01 | P1: Ver e esconder as ocultas pelo olho | Execute | Implementing |
-| HID-02 | P1: Ver e esconder as ocultas pelo olho | Execute | Implementing |
-| HID-03 | P1: Ver e esconder as ocultas pelo olho | Execute | Implementing |
-| HID-04 | P1: Ver e esconder as ocultas pelo olho | Execute | Implementing |
-| HID-05 | P1: Ver e esconder as ocultas pelo olho | Execute | Implementing |
-| HID-06 | P1: Ver e esconder as ocultas pelo olho | Execute | Implementing |
-| HID-07 | P1: Ver e esconder as ocultas pelo olho | Execute | Implementing |
-| HID-08 | P1: Ver e esconder as ocultas pelo olho | Execute | Implementing |
-| HID-09 | P2: Ocultar uma spec à mão | Execute | Implementing |
-| HID-10 | P2: Ocultar uma spec à mão | Execute | Implementing |
-| HID-11 | P2: Ocultar uma spec à mão | Execute | Implementing |
-| HID-12 | P2: Ocultar uma spec à mão | Execute | Implementing |
-| HID-13 | P2: Ocultar uma spec à mão | Execute | Implementing |
-| HID-14 | P2: Ocultar uma spec à mão | Execute | Implementing |
-| HID-15 | Edge case: detalhe de uma marcada | Execute | Implementing |
-| HID-16 | Edge case: todas ocultas | Execute | Implementing |
+| HID-01 | P1: Ver e esconder as ocultas pelo olho | Execute | Verified |
+| HID-02 | P1: Ver e esconder as ocultas pelo olho | Execute | Verified |
+| HID-03 | P1: Ver e esconder as ocultas pelo olho | Execute | Verified |
+| HID-04 | P1: Ver e esconder as ocultas pelo olho | Execute | Verified |
+| HID-05 | P1: Ver e esconder as ocultas pelo olho | Execute | Verified |
+| HID-06 | P1: Ver e esconder as ocultas pelo olho | Execute | Verified |
+| HID-07 | P1: Ver e esconder as ocultas pelo olho | Execute | Verified |
+| HID-08 | P1: Ver e esconder as ocultas pelo olho | Execute | Verified |
+| HID-09 | P2: Ocultar uma spec à mão | Execute | Verified |
+| HID-10 | P2: Ocultar uma spec à mão | Execute | Verified |
+| HID-11 | P2: Ocultar uma spec à mão | Execute | Verified |
+| HID-12 | P2: Ocultar uma spec à mão | Execute | Verified |
+| HID-13 | P2: Ocultar uma spec à mão | Execute | Verified |
+| HID-14 | P2: Ocultar uma spec à mão | Execute | Verified |
+| HID-15 | Edge case: detalhe de uma marcada | Execute | Verified |
+| HID-16 | Edge case: todas ocultas | Execute | Verified |
 
 **ID format:** `HID-NN`, na ordem dos critérios acima.
 
-**Coverage:** 16 total, 16 mapped to tasks, 0 unmapped
+**Coverage:** 16 total, 16 verificados.
 
 ---
 
 ## Success Criteria
 
-- [ ] Ao abrir o VS Code, nem a árvore Features nem o painel mostram specs ocultas, e os dois mostram um olho fechado
-- [ ] Uma spec ocultada à mão continua oculta depois de recarregar a janela
-- [ ] Os testes unitários e de integração atuais continuam passando, com os do "Ocultar concluídas" e os que leem concluídas na árvore ajustados ao olho
+- [x] Ao abrir o VS Code, nem a árvore Features nem o painel mostram specs ocultas, e os dois mostram um olho fechado
+- [x] Uma spec ocultada à mão continua oculta depois de recarregar a janela. Provado com um `Memento` falso lido por uma instância nova. A ligação ao `workspaceState` real não tem teste que reabra o VS Code (Follow-up 1 da validação, opcional)
+- [x] Os testes unitários e de integração atuais continuam passando, com os do "Ocultar concluídas" e os que leem concluídas na árvore ajustados ao olho
