@@ -63,13 +63,13 @@ test('openFile jumps to the requested line', async () => {
 });
 
 test('opens the dashboard webview', async () => {
-  await vscode.commands.executeCommand('tlcSpecs.showFeature', { projectId: projectId(), feature: 'user-auth' });
+  await vscode.commands.executeCommand('tlcSpecs.openDashboard', { projectId: projectId(), feature: 'user-auth' });
   const tab = await waitFor('dashboard tab', () =>
     vscode.window.tabGroups.all.flatMap((g) => g.tabs).find((t) => t.input instanceof vscode.TabInputWebview && t.label === 'TLC Specs'),
   );
   assert.ok(tab);
   await waitFor('webview script ready (CSP allowed it)', () => api.dashboardHealth().ready);
-  await vscode.commands.executeCommand('tlcSpecs.showFeature', { projectId: projectId(), feature: 'notifications' });
+  await vscode.commands.executeCommand('tlcSpecs.openDashboard', { projectId: projectId(), feature: 'notifications' });
   await vscode.commands.executeCommand('tlcSpecs.openDashboard');
   await new Promise((r) => setTimeout(r, 800));
   assert.deepEqual(api.dashboardHealth().errors, []);
@@ -637,6 +637,44 @@ test('SIDE-11 without a specs folder the side panel says that no spec was found'
   }
   const back = await sideReport('the projects to come back', (r) => same(r.projects, projectIds()));
   assert.equal(back.emptyMessage, null);
+});
+
+const dashboardTab = () => allTabs().find((t) => t.input instanceof vscode.TabInputWebview && t.label === 'TLC Specs');
+
+test('SIDE-02 "Abrir feature no painel" shows the feature in the side panel and leaves the editor tabs alone', async () => {
+  await closeAll();
+  await vscode.commands.executeCommand('tlcSpecs.openFile', projectId(), 'features/user-auth/tasks.md', 1);
+  const editor = (await waitFor('text editor', () => vscode.window.activeTextEditor)).document.uri.toString();
+  const tabs = allTabs().map((t) => t.label);
+  assert.deepEqual(tabs, ['tasks.md']);
+
+  await vscode.commands.executeCommand('tlcSpecs.showFeature', { projectId: projectId(), feature: 'notifications' });
+  await sideReport('the details of notifications', (r) => r.detail === 'notifications');
+  assert.deepEqual(
+    allTabs().map((t) => t.label),
+    tabs,
+  );
+  assert.equal(vscode.window.activeTextEditor.document.uri.toString(), editor);
+  assert.equal(vscode.window.tabGroups.all.length, 1);
+
+  await vscode.commands.executeCommand('tlcSpecs.showFeature', { projectId: projectId(), feature: 'user-auth' });
+  await sideReport('the details of user-auth', (r) => r.detail === 'user-auth');
+  assert.deepEqual(
+    allTabs().map((t) => t.label),
+    tabs,
+  );
+});
+
+test('SIDE-08 "Abrir painel em aba" opens the panel in an editor tab named TLC Specs', async () => {
+  const declared = vscode.extensions.getExtension('visual-tlc.visual-tlc').packageJSON.contributes.commands.find((c) => c.command === 'tlcSpecs.openDashboard');
+  assert.equal(declared.title, 'Abrir painel em aba');
+
+  await closeAll();
+  await waitFor('the tab to close', () => !dashboardTab() && api.dashboardReport() === undefined);
+  await vscode.commands.executeCommand('tlcSpecs.openDashboard');
+  await waitFor('the TLC Specs tab', dashboardTab);
+  const report = await tabReport('the tab to render the projects', (r) => r.projects.length > 0);
+  assert.deepEqual(report.projects, projectIds());
 });
 
 exports.run = async function run() {

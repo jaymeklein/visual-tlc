@@ -176,6 +176,12 @@ export class Dashboard implements vscode.Disposable, vscode.WebviewViewProvider 
     this.panel = panel;
   }
 
+  /** Shows the side bar view, leaving the editor alone; with a target it jumps straight to that feature. */
+  showSide(target?: FeatureRef): void {
+    void vscode.commands.executeCommand(`${PANEL_VIEW}.focus`);
+    this.side.select(target);
+  }
+
   resolveWebviewView(view: vscode.WebviewView): void {
     view.webview.options = this.side.options;
     this.side.attach(view.webview);

@@ -16,6 +16,11 @@ function toRef(arg: FeatureNode | FeatureRef): FeatureRef {
   return 'kind' in arg ? { projectId: arg.loaded.project.id, feature: arg.feature.name } : arg;
 }
 
+/** The feature a panel command was called for, if any (view title buttons pass none). */
+function target(arg: FeatureNode | FeatureRef | undefined): FeatureRef | undefined {
+  return arg && 'feature' in arg ? toRef(arg) : undefined;
+}
+
 /** Read-only API returned from activate() (used by the integration tests). */
 export interface TlcSpecsApi {
   getProjects(): readonly Project[];
@@ -38,7 +43,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<TlcSpe
   const featuresView = vscode.window.createTreeView('tlcSpecs.features', { treeDataProvider: featuresTree, showCollapseAll: true });
   const projectView = vscode.window.createTreeView('tlcSpecs.project', { treeDataProvider: projectTree });
   const statusBar = new StatusBar(store);
-  new PhaseNotifier(store, (ref) => dashboard.show(ref));
+  new PhaseNotifier(store, (ref) => dashboard.showSide(ref));
 
   context.subscriptions.push(
     store,
@@ -48,8 +53,8 @@ export async function activate(context: vscode.ExtensionContext): Promise<TlcSpe
     statusBar,
     new SpecDiagnostics(store),
     vscode.commands.registerCommand('tlcSpecs.refresh', () => store.refresh()),
-    vscode.commands.registerCommand('tlcSpecs.openDashboard', () => dashboard.show()),
-    vscode.commands.registerCommand('tlcSpecs.showFeature', (arg?: FeatureNode | FeatureRef) => dashboard.show(arg ? toRef(arg) : undefined)),
+    vscode.commands.registerCommand('tlcSpecs.openDashboard', (arg?: FeatureNode | FeatureRef) => dashboard.show(target(arg))),
+    vscode.commands.registerCommand('tlcSpecs.showFeature', (arg?: FeatureNode | FeatureRef) => dashboard.showSide(target(arg))),
     vscode.commands.registerCommand('tlcSpecs.previewFeatureMarkdown', (arg: FeatureNode | FeatureRef) => previewFeatureMarkdown(store, toRef(arg))),
     vscode.commands.registerCommand('tlcSpecs.revealFeatureFolder', (arg: FeatureNode | FeatureRef) => revealFeatureFolder(store, toRef(arg))),
     vscode.commands.registerCommand('tlcSpecs.openFile', async (projectId: string, file: string, line?: number) => {

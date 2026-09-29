@@ -74,9 +74,9 @@
       },
       {
         "command": "tlcSpecs.openDashboard",
-        "title": "Abrir painel",
+        "title": "Abrir painel em aba",
         "category": "TLC Specs",
-        "icon": "$(dashboard)"
+        "icon": "$(link-external)"
       },
       {
         "command": "tlcSpecs.showFeature",
@@ -117,7 +117,7 @@
       "view/title": [
         {
           "command": "tlcSpecs.openDashboard",
-          "when": "view == tlcSpecs.features",
+          "when": "view == tlcSpecs.features || view == tlcSpecs.panel",
           "group": "navigation@1"
         },
         {

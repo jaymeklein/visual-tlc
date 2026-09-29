@@ -162,11 +162,11 @@ T7 → T8
 
 **Done when**:
 
-- [ ] Com um arquivo aberto, `tlcSpecs.showFeature` mostra os detalhes da feature na view lateral; as abas e o editor ativo não mudam
-- [ ] `tlcSpecs.openDashboard` abre a aba "TLC Specs"
-- [ ] O teste existente "opens the dashboard webview" passa a abrir a aba por `tlcSpecs.openDashboard`, com as mesmas asserções
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [ ] Test count: nenhum teste removido
+- [x] Com um arquivo aberto, `tlcSpecs.showFeature` mostra os detalhes da feature na view lateral; as abas e o editor ativo não mudam
+- [x] `tlcSpecs.openDashboard` abre a aba "TLC Specs"
+- [x] O teste existente "opens the dashboard webview" passa a abrir a aba por `tlcSpecs.openDashboard`, com as mesmas asserções
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] Test count: nenhum teste removido
 
 **Tests**: integration
 **Gate**: full
