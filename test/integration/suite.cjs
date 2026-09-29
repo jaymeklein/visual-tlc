@@ -413,6 +413,8 @@ const featuresOf = (root) => {
 test('SF-01 contributes tlcSpecs.specsFolders with [".specs"] as the default', () => {
   const setting = vscode.workspace.getConfiguration('tlcSpecs', folder()).inspect('specsFolders');
   assert.deepEqual(setting.defaultValue, ['.specs']);
+  const declared = vscode.extensions.getExtension('visual-tlc.visual-tlc').packageJSON.contributes.configuration.properties['tlcSpecs.specsFolders'];
+  assert.equal(declared.scope, 'resource');
   assert.deepEqual(vscode.workspace.getConfiguration('tlcSpecs', folder()).get('specsFolders'), ['.specs']);
 });
 

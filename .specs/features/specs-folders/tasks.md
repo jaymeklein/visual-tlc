@@ -301,11 +301,11 @@ T8 → T9 → T10 → T11
 
 **Done when**:
 
-- [ ] Pasta `a` com `["docs/specs"]` mostra só `a/docs/specs`; pasta `b` sem configuração mostra só `b/.specs`
-- [ ] O teste do SF-01 confere o escopo `resource` da configuração
-- [ ] Mutantes H7 e H12 do Verifier morrem
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [ ] Test count: nenhum teste removido
+- [x] Pasta `a` com `["docs/specs"]` mostra só `a/docs/specs`; pasta `b` sem configuração mostra só `b/.specs`
+- [x] O teste do SF-01 confere o escopo `resource` da configuração
+- [x] Mutantes H7 e H12 do Verifier morrem
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] Test count: nenhum teste removido
 
 **Tests**: integration
 **Gate**: full
