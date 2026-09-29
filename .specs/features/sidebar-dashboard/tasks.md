@@ -300,10 +300,10 @@ T8 → T9 → T10 → T11 → T12 → T13 → T14 → T15
 
 **Done when**:
 
-- [ ] Cartão dentro de uma fase escondida não entra no relatório
-- [ ] Mutante S4 do Verifier morre (layout estreito que esconde todas as fases)
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [ ] Test count: nenhum teste removido
+- [x] Cartão dentro de uma fase escondida não entra no relatório
+- [x] Mutante S4 do Verifier morre (layout estreito que esconde todas as fases)
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] Test count: nenhum teste removido
 
 **Tests**: integration
 **Gate**: full

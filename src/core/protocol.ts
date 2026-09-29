@@ -5,11 +5,11 @@ export interface FeatureRef {
   feature: string;
 }
 
-/** What a webview has on screen after a render, read back from its DOM. */
+/** What a webview has on screen after a render. Read back from its DOM, except `projects`. */
 export interface Rendered {
-  /** Ids of the projects of the state it rendered. */
+  /** Ids of the projects of the state it rendered (from the state, not from the DOM). */
   projects: string[];
-  /** Names on the feature cards of the board. */
+  /** Names on the feature cards that are displayed. */
   cards: string[];
   /** Feature of the detail view, null on the board. */
   detail: string | null;

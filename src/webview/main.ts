@@ -53,13 +53,15 @@ function render(): void {
 function report(): void {
   const boards = [...app.querySelectorAll<HTMLElement>('.board')];
   const root = document.documentElement;
+  // offsetParent is null for an element that is not displayed (itself or an ancestor).
+  const shown = (selector: string) => [...app.querySelectorAll<HTMLElement>(selector)].filter((el) => el.offsetParent !== null);
   vscode.postMessage({
     type: 'rendered',
     projects: projects.map((p) => p.id),
-    cards: [...app.querySelectorAll('.card-name')].map((el) => el.textContent ?? ''),
+    cards: shown('.card-name').map((el) => el.textContent ?? ''),
     detail: app.querySelector('.detail-title .mono')?.textContent ?? null,
     columns: boards.length ? getComputedStyle(boards[0]).gridTemplateColumns.split(' ').length : 0,
-    emptyStages: [...app.querySelectorAll<HTMLElement>('.column.is-empty')].filter((el) => getComputedStyle(el).display !== 'none').length,
+    emptyStages: shown('.column.is-empty').length,
     emptyMessage: app.querySelector('.empty-state h1')?.textContent ?? null,
     width: window.innerWidth,
     overflow: root.scrollWidth > root.clientWidth || boards.some((b) => b.scrollWidth > b.clientWidth),
