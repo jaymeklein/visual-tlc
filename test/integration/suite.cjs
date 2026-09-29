@@ -639,6 +639,24 @@ test('SIDE-11 without a specs folder the side panel says that no spec was found'
   assert.equal(back.emptyMessage, null);
 });
 
+test('SIDE-03/SIDE-04 under 700px the side panel stacks the stages, hides the empty ones and never scrolls sideways', async () => {
+  // Runs before any feature is selected in the side panel, so it is still on the board.
+  await showSidePanel();
+  const board = await sideReport('the board in the side panel', (r) => r.detail === null && r.cards.length > 0);
+  assert.ok(board.width < 700, `the side panel is ${board.width}px wide`);
+  assert.equal(board.columns, 1);
+  assert.equal(board.emptyStages, 0);
+  assert.equal(board.overflow, false);
+  assert.deepEqual([...board.cards].sort(), featureNames(api.getProjects()));
+
+  for (const name of ['user-auth', 'billing-invoices', 'notifications']) {
+    await vscode.commands.executeCommand('tlcSpecs.showFeature', { projectId: projectId(), feature: name });
+    const detail = await sideReport(`the details of ${name}`, (r) => r.detail === name);
+    assert.ok(detail.width < 700, `the side panel is ${detail.width}px wide`);
+    assert.equal(detail.overflow, false, `${name} scrolls sideways at ${detail.width}px`);
+  }
+});
+
 const dashboardTab = () => allTabs().find((t) => t.input instanceof vscode.TabInputWebview && t.label === 'TLC Specs');
 
 test('SIDE-02 "Abrir feature no painel" shows the feature in the side panel and leaves the editor tabs alone', async () => {

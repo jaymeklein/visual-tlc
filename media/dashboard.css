@@ -299,3 +299,27 @@ input[type='search']:focus { outline: 1px solid var(--focus); outline-offset: -1
 .empty-state p { color: var(--muted); margin: 12px 0 20px; }
 
 body.vscode-high-contrast .card, body.vscode-high-contrast .panel, body.vscode-high-contrast .tile, body.vscode-high-contrast .column { border-color: var(--vscode-contrastBorder); }
+
+/* narrow: the side bar view, or any surface under 700px. One column, nothing scrolls sideways. */
+body.side { --bg: var(--vscode-sideBar-background, var(--vscode-editor-background)); --surface: var(--vscode-editorWidget-background); }
+@media (max-width: 699px) {
+  body { padding: 12px 12px 24px; }
+  h1 { font-size: 16px; }
+  .toolbar { width: 100%; }
+  input[type='search'] { flex: 1; width: auto; min-width: 0; }
+  .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .board { grid-template-columns: minmax(0, 1fr); overflow-x: visible; }
+  .column { min-height: 0; }
+  .column.is-empty { display: none; }
+  .meta-grid, .pair, .cols { grid-template-columns: minmax(0, 1fr); }
+  .crumbs, .crumb-actions, .next { flex-wrap: wrap; gap: 8px; }
+  .stepper { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .step { padding: 0 2px; min-width: 0; }
+  .step-label { font-size: 11px; max-width: 100%; overflow-wrap: anywhere; }
+  .detail-title { min-width: 0; }
+  .detail-progress { width: 100%; }
+  .rows li { flex-wrap: wrap; }
+  .rows li.task-details { padding-left: 12px; }
+  .chips { flex-wrap: wrap; }
+  .empty-state { margin: 24px auto; }
+}

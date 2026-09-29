@@ -22,10 +22,13 @@ class Surface implements vscode.Disposable {
 
   private readonly extensionUri: vscode.Uri;
   private readonly store: SpecsStore;
+  /** Class of the page body: "side" takes the side bar colors. */
+  private readonly bodyClass: string;
 
-  constructor(extensionUri: vscode.Uri, store: SpecsStore) {
+  constructor(extensionUri: vscode.Uri, store: SpecsStore, bodyClass: string) {
     this.extensionUri = extensionUri;
     this.store = store;
+    this.bodyClass = bodyClass;
   }
 
   get options(): vscode.WebviewOptions {
@@ -118,7 +121,7 @@ class Surface implements vscode.Disposable {
   <link href="${style}" rel="stylesheet">
   <title>TLC Specs</title>
 </head>
-<body>
+<body class="${this.bodyClass}">
   <main id="app" aria-live="polite"><p class="empty">Carregando specs…</p></main>
   <script nonce="${nonce}" src="${script}"></script>
 </body>
@@ -141,8 +144,8 @@ export class Dashboard implements vscode.Disposable, vscode.WebviewViewProvider 
 
   constructor(extensionUri: vscode.Uri, store: SpecsStore) {
     this.extensionUri = extensionUri;
-    this.tab = new Surface(extensionUri, store);
-    this.side = new Surface(extensionUri, store);
+    this.tab = new Surface(extensionUri, store, 'tab');
+    this.side = new Surface(extensionUri, store, 'side');
     this.disposables.push(
       this.tab,
       this.side,

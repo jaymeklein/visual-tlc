@@ -190,9 +190,9 @@ T7 → T8
 
 **Done when**:
 
-- [ ] Na view lateral (menos de 700px) o relatório mostra 1 coluna, 0 etapas vazias visíveis e nenhuma rolagem horizontal, no quadro e nos detalhes da feature
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [ ] Test count: nenhum teste removido
+- [x] Na view lateral (menos de 700px) o relatório mostra 1 coluna, 0 etapas vazias visíveis e nenhuma rolagem horizontal, no quadro e nos detalhes da feature
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] Test count: nenhum teste removido
 
 **Tests**: integration
 **Gate**: full
