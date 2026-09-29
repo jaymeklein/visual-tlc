@@ -73,6 +73,18 @@
         "icon": "$(refresh)"
       },
       {
+        "command": "tlcSpecs.showHidden",
+        "title": "Mostrar specs ocultas",
+        "category": "TLC Specs",
+        "icon": "$(eye-closed)"
+      },
+      {
+        "command": "tlcSpecs.hideHidden",
+        "title": "Esconder specs ocultas",
+        "category": "TLC Specs",
+        "icon": "$(eye)"
+      },
+      {
         "command": "tlcSpecs.openDashboard",
         "title": "Abrir painel em aba",
         "category": "TLC Specs",
@@ -115,6 +127,16 @@
     ],
     "menus": {
       "view/title": [
+        {
+          "command": "tlcSpecs.showHidden",
+          "when": "view == tlcSpecs.features && !tlcSpecs.showHidden",
+          "group": "navigation@0"
+        },
+        {
+          "command": "tlcSpecs.hideHidden",
+          "when": "view == tlcSpecs.features && tlcSpecs.showHidden",
+          "group": "navigation@0"
+        },
         {
           "command": "tlcSpecs.openDashboard",
           "when": "view == tlcSpecs.features || view == tlcSpecs.panel",
@@ -169,6 +191,14 @@
         }
       ],
       "commandPalette": [
+        {
+          "command": "tlcSpecs.showHidden",
+          "when": "tlcSpecs.hasSpecs && !tlcSpecs.showHidden"
+        },
+        {
+          "command": "tlcSpecs.hideHidden",
+          "when": "tlcSpecs.hasSpecs && tlcSpecs.showHidden"
+        },
         {
           "command": "tlcSpecs.showFeature",
           "when": "false"

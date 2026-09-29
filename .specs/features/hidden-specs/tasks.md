@@ -201,14 +201,14 @@ T6 → T7
 
 **Done when**:
 
-- [ ] A árvore abre sem as concluídas. O título tem `showHidden` com `$(eye-closed)` enquanto `!tlcSpecs.showHidden`, e o context key começa `false` (HID-05)
-- [ ] `showHidden` lista todas e grava o context key `true`. O título mostra `hideHidden` com `$(eye)` (HID-06)
-- [ ] `hideHidden` volta à lista sem as ocultas e grava `false` (HID-07)
-- [ ] A mensagem é "T feature(s) · D concluída(s) · H oculta(s)" com o olho fechado, e sem "oculta(s)" com ele aberto (HID-08)
-- [ ] Projeto único com tudo oculto: lista vazia e a mensagem com o número de ocultas (HID-16)
-- [ ] Os testes que leem `billing-invoices` na árvore abrem o olho antes e o fecham depois
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [ ] Test count: 67 unit, 60 + 1 + 2 integration tests pass (56 antes + 4 novos)
+- [x] A árvore abre sem as concluídas. O título tem `showHidden` com `$(eye-closed)` enquanto `!tlcSpecs.showHidden`, que vale enquanto a chave não foi ligada (HID-05)
+- [x] `showHidden` lista todas e grava o context key `true`. O título mostra `hideHidden` com `$(eye)` (HID-06)
+- [x] `hideHidden` volta à lista sem as ocultas e grava `false` (HID-07)
+- [x] A mensagem é "T feature(s) · D concluída(s) · H oculta(s)" com o olho fechado, e sem "oculta(s)" com ele aberto (HID-08)
+- [x] Projeto único com tudo oculto: lista vazia e a mensagem com o número de ocultas (HID-16)
+- [x] Os testes que leem `billing-invoices` na árvore abrem o olho antes e o fecham depois
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] Test count: 67 unit, 60 + 1 + 2 integration tests pass (56 antes + 4 novos)
 
 **Tests**: integration
 **Gate**: full

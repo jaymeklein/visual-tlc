@@ -33,6 +33,8 @@ export interface TlcSpecsApi {
   sidePanelReport(): Rendered | undefined;
   sidePanelMessage(message: FromWebview): Promise<void>;
   statusBarText(): string | undefined;
+  /** Message of the Features view, as VS Code holds it. */
+  featuresViewMessage(): string | undefined;
   featuresTree: vscode.TreeDataProvider<unknown>;
   projectTree: vscode.TreeDataProvider<unknown>;
 }
@@ -41,7 +43,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<TlcSpe
   const store = new SpecsStore();
   const hidden = new HiddenSpecs(context.workspaceState);
   const dashboard = new Dashboard(context.extensionUri, store, hidden);
-  const featuresTree = new FeaturesTree(store);
+  const featuresTree = new FeaturesTree(store, hidden);
   const projectTree = new ProjectTree(store);
   const featuresView = vscode.window.createTreeView('tlcSpecs.features', { treeDataProvider: featuresTree, showCollapseAll: true });
   const projectView = vscode.window.createTreeView('tlcSpecs.project', { treeDataProvider: projectTree });
@@ -56,6 +58,8 @@ export async function activate(context: vscode.ExtensionContext): Promise<TlcSpe
     statusBar,
     new SpecDiagnostics(store),
     vscode.commands.registerCommand('tlcSpecs.refresh', () => store.refresh()),
+    vscode.commands.registerCommand('tlcSpecs.showHidden', () => featuresTree.setShowHidden(true)),
+    vscode.commands.registerCommand('tlcSpecs.hideHidden', () => featuresTree.setShowHidden(false)),
     vscode.commands.registerCommand('tlcSpecs.openDashboard', (arg?: FeatureNode | FeatureRef) => dashboard.show(target(arg))),
     vscode.commands.registerCommand('tlcSpecs.showFeature', (arg?: FeatureNode | FeatureRef) => dashboard.showSide(target(arg))),
     vscode.commands.registerCommand('tlcSpecs.previewFeatureMarkdown', (arg: FeatureNode | FeatureRef) => previewFeatureMarkdown(store, toRef(arg))),
@@ -78,8 +82,13 @@ export async function activate(context: vscode.ExtensionContext): Promise<TlcSpe
       void vscode.commands.executeCommand('setContext', 'tlcSpecs.hasSpecs', store.projects.length > 0);
       const needAttention = features.filter((f) => f.health === 'failed' || f.issues.some((i) => i.severity === 'error')).length;
       featuresView.badge = needAttention ? { value: needAttention, tooltip: `${needAttention} feature(s) precisam de atenção` } : undefined;
+    }),
+    // The tree changes with the specs, the marks and its eye: the message counts what it leaves out.
+    featuresTree.onDidChangeTreeData(() => {
+      const features = store.projects.flatMap((p) => p.project.features);
       const done = features.filter((f) => f.health === 'complete').length;
-      featuresView.message = features.length ? `${features.length} feature(s) · ${done} concluída(s)` : undefined;
+      const out = featuresTree.outOfTree();
+      featuresView.message = features.length ? `${features.length} feature(s) · ${done} concluída(s)${out ? ` · ${out} oculta(s)` : ''}` : undefined;
     }),
   );
 
@@ -94,6 +103,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<TlcSpe
     sidePanelReport: () => dashboard.side.rendered,
     sidePanelMessage: (message) => dashboard.side.onMessage(message),
     statusBarText: () => statusBar.text,
+    featuresViewMessage: () => featuresView.message,
     featuresTree: featuresTree as vscode.TreeDataProvider<unknown>,
     projectTree: projectTree as vscode.TreeDataProvider<unknown>,
   };

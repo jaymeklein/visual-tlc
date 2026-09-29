@@ -4,6 +4,7 @@ import { plain } from '../core/markdown.ts';
 import { HEALTH_LABEL, progressBar, REQ_STATUS_LABEL, STAGE_LABEL, STAGE_STATE_LABEL, TASK_STATUS_LABEL } from '../core/labels.ts';
 import type { LoadedProject, SpecsStore } from './store.ts';
 import { issueIcon, openFileCommand, previewFileCommand } from './common.ts';
+import { isHidden, type HiddenSpecs } from '../core/hidden.ts';
 
 type Node =
   | { kind: 'root'; loaded: LoadedProject }
@@ -69,10 +70,31 @@ export class FeaturesTree implements vscode.TreeDataProvider<Node> {
   readonly onDidChangeTreeData = this.emitter.event;
 
   private readonly store: SpecsStore;
+  private readonly hidden: HiddenSpecs;
+  /** Eye of the view title: open lists the hidden specs too. Closed at every start. */
+  private show = false;
 
-  constructor(store: SpecsStore) {
+  constructor(store: SpecsStore, hidden: HiddenSpecs) {
     this.store = store;
+    this.hidden = hidden;
     store.onDidChange(() => this.emitter.fire(undefined));
+    hidden.onDidChange(() => this.emitter.fire(undefined));
+  }
+
+  /** Opens or closes the eye of the view title; the context key picks which of its two buttons shows. */
+  setShowHidden(show: boolean): void {
+    this.show = show;
+    void vscode.commands.executeCommand('setContext', 'tlcSpecs.showHidden', show);
+    this.emitter.fire(undefined);
+  }
+
+  /** Specs left out of the tree: the hidden ones while the eye is closed, none while it is open. */
+  outOfTree(): number {
+    return this.show ? 0 : this.store.projects.reduce((n, loaded) => n + loaded.project.features.filter((f) => this.isHidden(loaded, f)).length, 0);
+  }
+
+  private isHidden(loaded: LoadedProject, f: Feature): boolean {
+    return isHidden(f, this.hidden.isMarked({ projectId: loaded.project.id, feature: f.name }));
   }
 
   getChildren(node?: Node): Node[] {
@@ -242,7 +264,7 @@ export class FeaturesTree implements vscode.TreeDataProvider<Node> {
   }
 
   private featureNodes(loaded: LoadedProject): Node[] {
-    return loaded.project.features.map((feature) => ({ kind: 'feature', loaded, feature }));
+    return loaded.project.features.filter((f) => this.show || !this.isHidden(loaded, f)).map((feature) => ({ kind: 'feature', loaded, feature }));
   }
 
   private featureItem(node: FeatureNode): vscode.TreeItem {
