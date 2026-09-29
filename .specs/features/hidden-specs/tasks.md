@@ -9,7 +9,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 ---
 
 **Design**: `.specs/features/hidden-specs/design.md`
-**Status**: Done
+**Status**: In Progress
 
 ---
 
@@ -60,6 +60,12 @@ T4 → T5 → T6
 
 ```
 T6 → T7
+```
+
+### Phase 5: Correções do Verifier (iteração 1)
+
+```
+T7 → T8 → T9 → T10
 ```
 
 ---
@@ -274,15 +280,96 @@ T6 → T7
 
 ---
 
+### T8: Fix 1 - concluída marcada sem olho
+
+**What**: Os testes do HID-09/10 marcam também a concluída e afirmam que ela continua sem olho, no card e na linha
+**Where**: `test/unit/webview.test.ts`, `test/integration/suite.cjs`
+**Depends on**: T7
+**Reuses**: `board`, `cardEyes`, `rowOf`, `setHidden`
+**Requirement**: HID-09, HID-10
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] Unit: com csv-export e billing-invoices marcadas, `cardEyes` de billing-invoices é `[]` (mata M11)
+- [ ] Integração: billing-invoices marcada tem `contextValue` `feature.done`, e o `finally` a desmarca (mata H3)
+- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [ ] Test count: 67 unit, 63 + 1 + 2 integration tests pass (asserções novas em testes existentes)
+
+**Tests**: integration
+**Gate**: full
+
+**Commit**: `test(dashboard): keep the eye off a completed spec that is marked`
+
+---
+
+### T9: Fix 2 - esmaecido e "· oculta" só na marcada
+
+**What**: Os testes do HID-14 afirmam que a concluída não fica esmaecida nem ganha "· oculta" com o olho aberto
+**Where**: `test/unit/webview.test.ts`, `test/integration/suite.cjs`
+**Depends on**: T8
+**Reuses**: `cardsOf`, `rowOf`
+**Requirement**: HID-14
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] Unit: com csv-export marcada e o olho aberto, billing-invoices tem `cls` `card h-complete` (mata M12)
+- [ ] Integração: com o olho aberto, a descrição de billing-invoices não tem "oculta" (mata H4)
+- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [ ] Test count: 67 unit, 63 + 1 + 2 integration tests pass (asserções novas em testes existentes)
+
+**Tests**: integration
+**Gate**: full
+
+**Commit**: `test(dashboard): fade and tag only the specs marked by hand`
+
+---
+
+### T10: Fix 3 - o texto do zero
+
+**What**: Um teste do HID-01 desenha o painel sem nenhuma oculta e afirma "0 ocultas"
+**Where**: `test/unit/webview.test.ts`
+**Depends on**: T9
+**Reuses**: `eyeToggle`, `sampleProject`
+**Requirement**: HID-01
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] Sample só com as não concluídas e sem marcas: o texto do olho é "0 ocultas" (mata M8)
+- [ ] Gate check passes: `npm run typecheck && npm test`
+- [ ] Test count: 67 unit tests pass (asserção nova em teste existente)
+
+**Tests**: unit
+**Gate**: quick
+
+**Commit**: `test(dashboard): count zero hidden specs in the plural`
+
+---
+
 ## Phase Execution Map
 
 ```
-Phase 1 → Phase 2 → Phase 3 → Phase 4
+Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5
 
 Phase 1:  T1
 Phase 2:  T2 ------→ T3 ------→ T4
 Phase 3:  T5 ------→ T6
 Phase 4:  T7
+Phase 5:  T8 ------→ T9 ------→ T10
 ```
 
 ---
@@ -310,6 +397,9 @@ Phase 4:  T7
 | T5 | T4 | T4 → T5 | ✅ Match |
 | T6 | T5 | T5 → T6 | ✅ Match |
 | T7 | T6 | T6 → T7 | ✅ Match |
+| T8 | T7 | T7 → T8 | ✅ Match |
+| T9 | T8 | T8 → T9 | ✅ Match |
+| T10 | T9 | T9 → T10 | ✅ Match |
 
 ## Test Co-location Validation
 
@@ -322,3 +412,6 @@ Phase 4:  T7
 | T5: Olho do título | Extension host | integration | integration | ✅ OK |
 | T6: Olho da linha | Extension host | integration | integration | ✅ OK |
 | T7: Docs | Docs | none | none | ✅ OK |
+| T8: Fix 1 | Webview + Extension host (testes) | unit + integration | integration | ✅ OK |
+| T9: Fix 2 | Webview + Extension host (testes) | unit + integration | integration | ✅ OK |
+| T10: Fix 3 | Webview (testes) | unit | unit | ✅ OK |

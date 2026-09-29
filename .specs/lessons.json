@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 20,
+  "next_id": 23,
   "lessons": [
     {
       "id": "L-001",
@@ -359,6 +359,60 @@
       ],
       "created": "2026-09-29T19:24:45Z",
       "last_seen": "2026-09-29T19:24:45Z"
+    },
+    {
+      "id": "L-020",
+      "key": "surviving_mutant::test an item that meets both conditions of a rule not only items that meet one of them",
+      "text": "Test an item that meets both conditions of a rule, not only items that meet one of them",
+      "signal": "surviving_mutant",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "hidden-specs"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "M11 src/webview/render.ts:249; H3 src/ui/featuresTree.ts:276 (validation.md, Fix 1) (tests)"
+      ],
+      "created": "2026-09-29T21:00:46Z",
+      "last_seen": "2026-09-29T21:00:46Z"
+    },
+    {
+      "id": "L-021",
+      "key": "surviving_mutant::assert that a marker meant for one subset is absent from the other subsets on the same view",
+      "text": "Assert that a marker meant for one subset is absent from the other subsets on the same view",
+      "signal": "surviving_mutant",
+      "scope": "ui",
+      "status": "candidate",
+      "features": [
+        "hidden-specs"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "M12 src/webview/render.ts:265; H4 src/ui/featuresTree.ts:278 (validation.md, Fix 2) (ui)"
+      ],
+      "created": "2026-09-29T21:00:46Z",
+      "last_seen": "2026-09-29T21:00:46Z"
+    },
+    {
+      "id": "L-022",
+      "key": "surviving_mutant::test the zero value of every count whose wording the spec defines",
+      "text": "Test the zero value of every count whose wording the spec defines",
+      "signal": "surviving_mutant",
+      "scope": "webview",
+      "status": "candidate",
+      "features": [
+        "hidden-specs"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "M8 src/webview/render.ts:158 (validation.md, Fix 3) (webview)"
+      ],
+      "created": "2026-09-29T21:00:46Z",
+      "last_seen": "2026-09-29T21:00:46Z"
     }
   ]
 }
