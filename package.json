@@ -226,9 +226,18 @@
           "markdownDescription": "Pastas onde a extensão procura as specs. Cada entrada é um caminho relativo (`.specs`, `docs/specs`), procurado em qualquer profundidade do projeto. Entradas absolutas, com `..` ou com glob são ignoradas. Uma pasta de nome diferente de `.specs` só aparece quando tem artefatos da skill."
         },
         "tlcSpecs.exclude": {
-          "type": "string",
-          "default": "**/node_modules/**",
-          "description": "Glob de pastas ignoradas ao procurar as pastas de specs."
+          "type": [
+            "array",
+            "string"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "node_modules"
+          ],
+          "scope": "resource",
+          "markdownDescription": "Pastas que ficam fora da listagem de specs. Cada entrada é um caminho relativo (`node_modules`, `test`, `packages/legacy`), ignorado em qualquer profundidade do projeto. Entradas absolutas, com `..` ou com glob são ignoradas. Um texto no lugar da lista é usado como glob, como nas versões anteriores."
         }
       }
     }

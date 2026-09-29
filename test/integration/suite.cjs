@@ -879,6 +879,95 @@ test('SIDE-02 with the side bar closed, "Abrir feature no painel" brings the pan
   assert.equal(vscode.window.tabGroups.all.length, 1);
 });
 
+// --- exclude-folders -----------------------------------------------------------------------------------------
+
+const EMPTY_STATE = ['# STATE', '', '## Decisions', '', '## Handoff', ''].join(String.fromCharCode(10));
+const setExclude = (value) => vscode.workspace.getConfiguration('tlcSpecs', folder()).update('exclude', value, vscode.ConfigurationTarget.Workspace);
+const tlcDiagnostics = () => vscode.languages.getDiagnostics().filter(([, list]) => list.some((x) => x.source === 'TLC Specs'));
+
+test('EXC-01 contributes tlcSpecs.exclude as a list of folders with ["node_modules"] as the default', () => {
+  const declared = vscode.extensions.getExtension('visual-tlc.visual-tlc').packageJSON.contributes.configuration.properties['tlcSpecs.exclude'];
+  assert.deepEqual(declared.default, ['node_modules']);
+  assert.deepEqual(declared.type, ['array', 'string']);
+  assert.deepEqual(declared.items, { type: 'string' });
+  assert.equal(declared.scope, 'resource');
+  assert.deepEqual(vscode.workspace.getConfiguration('tlcSpecs', folder()).get('exclude'), ['node_modules']);
+});
+
+test('EXC-02/EXC-03/EXC-08 a listed folder leaves the listing at any depth, without a window reload', async () => {
+  await closeAll();
+  await setFolders(undefined);
+  await write('test/nested/.specs/features/in-test/spec.md', SPEC_WITHOUT_SHALL);
+  await write('packages/api/test/.specs/STATE.md', EMPTY_STATE);
+  await write('tests/.specs/features/in-tests/spec.md', SPEC_WITHOUT_SHALL);
+  await write('node_modules/pkg/.specs/STATE.md', EMPTY_STATE);
+  await waitForRoots(['.specs', 'packages/api/test/.specs', 'test/nested/.specs', 'tests/.specs', 'tools/.specs']);
+  await waitFor('the diagnostics of test/nested', () => tlcDiagnostics().some(([uri]) => uri.path.includes('/test/nested/.specs/')));
+
+  await setExclude(['node_modules', 'test']);
+  await waitForRoots(['.specs', 'tests/.specs', 'tools/.specs']);
+  assert.deepEqual(featuresOf('tests/.specs'), ['in-tests']);
+  assert.deepEqual(
+    api.featuresTree.getChildren().map((n) => n.loaded.project.id),
+    projectIds(),
+  );
+  assert.deepEqual(
+    api.projectTree.getChildren().map((n) => n.loaded.project.id),
+    projectIds(),
+  );
+  await waitFor('the diagnostics of the excluded folders to go away', () => !tlcDiagnostics().some(([uri]) => uri.path.includes('/test/')));
+  assert.ok(tlcDiagnostics().some(([uri]) => uri.path.includes('/tests/.specs/')), 'tests/.specs lost its diagnostics');
+
+  await setExclude(undefined);
+  await waitForRoots(['.specs', 'packages/api/test/.specs', 'test/nested/.specs', 'tests/.specs', 'tools/.specs']);
+});
+
+test('EXC-09 a folder listed in specsFolders stays out when it is inside an excluded folder', async () => {
+  await write('test/docs/specs/STATE.md', EMPTY_STATE);
+  await setFolders(['docs/specs']);
+  await waitForRoots(['docs/specs', 'packages/api/docs/specs', 'test/docs/specs']);
+  await setExclude(['node_modules', 'test']);
+  await waitForRoots(['docs/specs', 'packages/api/docs/specs']);
+  await setFolders(undefined);
+  await waitForRoots(['.specs', 'tests/.specs', 'tools/.specs']);
+});
+
+test('EXC-04 a text value is used as the exclusion glob', async () => {
+  await setExclude('{**/node_modules/**,**/tools/**}');
+  await waitForRoots(['.specs', 'packages/api/test/.specs', 'test/nested/.specs', 'tests/.specs']);
+  await setExclude('**/test/**');
+  await waitForRoots(['.specs', 'node_modules/pkg/.specs', 'tests/.specs', 'tools/.specs']);
+});
+
+test('EXC-06 an empty list excludes nothing, not even node_modules', async () => {
+  await setExclude([]);
+  await waitForRoots(['.specs', 'node_modules/pkg/.specs', 'packages/api/test/.specs', 'test/nested/.specs', 'tests/.specs', 'tools/.specs']);
+});
+
+test('EXC-07 an invalid entry is ignored with a warning that names it', async () => {
+  const shown = [];
+  const original = vscode.window.showWarningMessage;
+  vscode.window.showWarningMessage = (message) => {
+    shown.push(message);
+    return Promise.resolve(undefined);
+  };
+  try {
+    await setExclude(['../fora', '**/tools/**', 'test']);
+    await waitForRoots(['.specs', 'node_modules/pkg/.specs', 'tests/.specs', 'tools/.specs']);
+    await waitFor('two warnings', () => shown.length >= 2);
+    assert.deepEqual(
+      [...shown].sort(),
+      ['TLC Specs: a entrada "**/tools/**" de tlcSpecs.exclude foi ignorada. Use um caminho relativo, sem ".." e sem glob.', 'TLC Specs: a entrada "../fora" de tlcSpecs.exclude foi ignorada. Use um caminho relativo, sem ".." e sem glob.'],
+    );
+    await api.refresh();
+    assert.equal(shown.length, 2, 'the warning was repeated on refresh');
+  } finally {
+    vscode.window.showWarningMessage = original;
+    await setExclude(undefined);
+  }
+  await waitForRoots(['.specs', 'packages/api/test/.specs', 'test/nested/.specs', 'tests/.specs', 'tools/.specs']);
+});
+
 exports.run = async function run() {
   const failures = [];
   for (const c of cases) {
