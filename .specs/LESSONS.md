@@ -8,7 +8,11 @@
 
 Corroborated across multiple features. Safe to apply as guidance.
 
-_none_
+### L-002 - Assert a UI acceptance criterion at its user-visible outcome, not at an intermediate message
+- signal: `ac_gap` · recurrence: 2 feature(s) · scope: `webview` · harmful: 0
+- features: readonly-navigation, specs-folders
+- evidence: NAV-10 (webview) (+1 more)
+- last seen: 2026-09-29T13:40:46Z
 
 ## Candidates (under observation - do NOT load as guidance yet)
 
@@ -18,12 +22,6 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `webview` · harmful: 0
 - features: readonly-navigation
 - evidence: src/ui/dashboard.ts:65 (webview)
-- last seen: 2026-09-29T12:11:05Z
-
-### L-002 - Assert a UI acceptance criterion at its user-visible outcome, not at an intermediate message
-- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `webview` · harmful: 0
-- features: readonly-navigation
-- evidence: NAV-10 (webview)
 - last seen: 2026-09-29T12:11:05Z
 
 ### L-003 - Test a resource-scoped setting in a multi-root workspace where each folder holds a different value
@@ -49,6 +47,12 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - features: specs-folders
 - evidence: SF-04 spec.md:55 (spec)
 - last seen: 2026-09-29T13:09:10Z
+
+### L-007 - Drive a test hook from the real side effect, not from a value recorded beside it
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `test-hooks` · harmful: 0
+- features: specs-folders
+- evidence: N2 src/ui/dashboard.ts:87 (test-hooks) (+1 more)
+- last seen: 2026-09-29T13:40:47Z
 
 ## Quarantined (failed when applied - ignore)
 

@@ -9,7 +9,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 ---
 
 **Design**: inline (escopo Medium, sem `design.md`)
-**Status**: Done
+**Status**: In Progress
 
 Design inline: `src/core/folders.ts` concentra a lógica pura (normalizar entradas, achar raízes, rotular). `src/ui/store.ts` lê a configuração por pasta do workspace, busca arquivos, recria os watchers e mostra os avisos.
 
@@ -61,6 +61,12 @@ T7 → T8
 
 ```
 T8 → T9 → T10 → T11
+```
+
+### Phase 5: Correções do Verifier (iteração 2)
+
+```
+T11 → T12 → T13
 ```
 
 ---
@@ -370,15 +376,71 @@ T8 → T9 → T10 → T11
 
 ---
 
+### T12: Provar o painel pelo que ele renderizou
+
+**What**: a webview confirma os projetos que renderizou e a leitura de teste do painel passa a vir dessa confirmação
+**Where**: `src/webview/main.ts` (modify)
+**Depends on**: T11
+**Reuses**: protocolo de mensagens em `src/core/protocol.ts`
+**Requirement**: SF-03
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] Depois da troca de configuração, os projetos confirmados pela webview são os de `getProjects()`
+- [ ] Sem painel aberto, a leitura de teste devolve `undefined`
+- [ ] Mutantes N2, N6 e N8 do Verifier morrem; P2 e N1 continuam mortos
+- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [ ] Test count: nenhum teste removido
+
+**Tests**: integration
+**Gate**: full
+
+**Commit**: `test(dashboard): confirm the projects the panel rendered`
+
+---
+
+### T13: Provar a barra de status sem projetos
+
+**What**: o teste do SF-03 cobre a configuração que não acha nenhuma pasta
+**Where**: `test/integration/suite.cjs` (modify)
+**Depends on**: T12
+**Reuses**: teste `SF-03` existente
+**Requirement**: SF-03
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] Com uma entrada que não acha nada, não há projetos, a barra de status some e o painel renderiza zero projetos
+- [ ] Mutante N4 do Verifier morre
+- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [ ] Test count: nenhum teste removido
+
+**Tests**: integration
+**Gate**: full
+
+**Commit**: `test(statusbar): cover a configuration that finds no specs folder`
+
+---
+
 ## Phase Execution Map
 
 ```
-Phase 1 → Phase 2 → Phase 3 → Phase 4
+Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5
 
 Phase 1:  T1 ------→ T2 ------→ T3
 Phase 2:  T4 ------→ T5 ------→ T6 ------→ T7
 Phase 3:  T8
 Phase 4:  T9 ------→ T10 ------→ T11
+Phase 5:  T12 ------→ T13
 ```
 
 ---
@@ -398,6 +460,8 @@ Phase 4:  T9 ------→ T10 ------→ T11
 | T9: Provar a configuração por pasta do workspace | 1 suíte + fixture | ✅ Granular |
 | T10: Provar painel e barra de status no SF-03 | 2 leituras de teste na API | ✅ Coeso |
 | T11: Provar alteração e remoção de arquivo no SF-04 | 1 teste | ✅ Granular |
+| T12: Provar o painel pelo que ele renderizou | 1 mensagem da webview | ✅ Granular |
+| T13: Provar a barra de status sem projetos | 1 teste | ✅ Granular |
 
 ## Diagram-Definition Cross-Check
 
@@ -414,6 +478,8 @@ Phase 4:  T9 ------→ T10 ------→ T11
 | T9 | T8 | T8 | ✅ Match |
 | T10 | T9 | T9 | ✅ Match |
 | T11 | T10 | T10 | ✅ Match |
+| T12 | T11 | T11 | ✅ Match |
+| T13 | T12 | T12 | ✅ Match |
 
 ## Test Co-location Validation
 
@@ -430,3 +496,5 @@ Phase 4:  T9 ------→ T10 ------→ T11
 | T9 | Extension host | integration | integration | ✅ OK |
 | T10 | Extension host | integration | integration | ✅ OK |
 | T11 | Extension host | integration | integration | ✅ OK |
+| T12 | Extension host | integration | integration | ✅ OK |
+| T13 | Extension host | integration | integration | ✅ OK |

@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 7,
+  "next_id": 8,
   "lessons": [
     {
       "id": "L-001",
@@ -29,17 +29,19 @@
       "text": "Assert a UI acceptance criterion at its user-visible outcome, not at an intermediate message",
       "signal": "ac_gap",
       "scope": "webview",
-      "status": "candidate",
+      "status": "confirmed",
       "features": [
-        "readonly-navigation"
+        "readonly-navigation",
+        "specs-folders"
       ],
-      "recurrence": 1,
+      "recurrence": 2,
       "harmful": 0,
       "evidence": [
-        "NAV-10 (webview)"
+        "NAV-10 (webview)",
+        "SF-03 N2 src/ui/dashboard.ts:87 (webview)"
       ],
       "created": "2026-09-29T12:11:05Z",
-      "last_seen": "2026-09-29T12:11:05Z"
+      "last_seen": "2026-09-29T13:40:46Z"
     },
     {
       "id": "L-003",
@@ -113,6 +115,25 @@
       ],
       "created": "2026-09-29T13:09:10Z",
       "last_seen": "2026-09-29T13:09:10Z"
+    },
+    {
+      "id": "L-007",
+      "key": "surviving_mutant::drive a test hook from the real side effect not from a value recorded beside it",
+      "text": "Drive a test hook from the real side effect, not from a value recorded beside it",
+      "signal": "surviving_mutant",
+      "scope": "test-hooks",
+      "status": "candidate",
+      "features": [
+        "specs-folders"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "N2 src/ui/dashboard.ts:87 (test-hooks)",
+        "N8 src/ui/dashboard.ts:87 (test-hooks)"
+      ],
+      "created": "2026-09-29T13:40:46Z",
+      "last_seen": "2026-09-29T13:40:47Z"
     }
   ]
 }
