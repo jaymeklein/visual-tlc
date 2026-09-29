@@ -9,7 +9,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 ---
 
 **Design**: inline (sem `design.md`)
-**Status**: Done
+**Status**: In Progress
 
 Design inline:
 
@@ -59,6 +59,12 @@ T2 → T3 → T4 → T5 → T6 → T7
 
 ```
 T7 → T8
+```
+
+### Phase 4: Correções do Verifier (iteração 1)
+
+```
+T8 → T9 → T10 → T11 → T12 → T13 → T14 → T15
 ```
 
 ---
@@ -279,14 +285,208 @@ T7 → T8
 
 ---
 
+### T9: Relatar só os cartões visíveis
+
+**What**: o relatório da webview conta só os cartões que estão na tela
+**Where**: `src/webview/main.ts` (modify)
+**Depends on**: T8
+**Reuses**: testes da seção sidebar-dashboard
+**Requirement**: SIDE-03, SIDE-04
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] Cartão dentro de uma fase escondida não entra no relatório
+- [ ] Mutante S4 do Verifier morre (layout estreito que esconde todas as fases)
+- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [ ] Test count: nenhum teste removido
+
+**Tests**: integration
+**Gate**: full
+
+**Commit**: `fix(dashboard): report only the cards on screen`
+
+---
+
+### T10: Provar o botão da notificação
+
+**What**: teste do botão "Abrir painel" da notificação de spec nova
+**Where**: `test/integration/suite.cjs` (modify)
+**Depends on**: T9
+**Reuses**: testes da seção sidebar-dashboard
+**Requirement**: SIDE-02
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] O botão da notificação mostra a feature na view lateral e não abre a aba
+- [ ] Mutante C2 do Verifier morre
+- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [ ] Test count: nenhum teste removido
+
+**Tests**: integration
+**Gate**: full
+
+**Commit**: `test(dashboard): cover the notification button`
+
+---
+
+### T11: Fixar o limite de 700px
+
+**What**: teste unitário lê o CSS e confere o bloco `@media (max-width: 699px)`; o SIDE-09 mede a aba com a barra lateral aberta
+**Where**: `test/unit/webview.test.ts` (modify)
+**Depends on**: T10
+**Reuses**: testes da seção sidebar-dashboard
+**Requirement**: SIDE-03, SIDE-09
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] O bloco de 699px contém a regra de uma coluna e a que esconde as fases vazias
+- [ ] A aba com a barra lateral aberta (700px ou mais) mostra 6 colunas
+- [ ] Mutantes S5 e S6 do Verifier morrem
+- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [ ] Test count: nenhum teste removido
+
+**Tests**: integration
+**Gate**: full
+
+**Commit**: `test(dashboard): pin the narrow layout threshold`
+
+---
+
+### T12: Provar a feature aberta na aba e a rolagem medida
+
+**What**: testes conferem o detalhe renderizado quando a aba abre com uma feature e a rolagem horizontal do quadro largo
+**Where**: `test/integration/suite.cjs` (modify)
+**Depends on**: T11
+**Reuses**: testes da seção sidebar-dashboard
+**Requirement**: SIDE-08, SIDE-09
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] `tlcSpecs.openDashboard` com uma feature mostra os detalhes dela, em aba nova e em aba já aberta
+- [ ] O quadro de 6 colunas numa aba com menos de 1298px relata rolagem horizontal
+- [ ] Mutantes C3 e W2 do Verifier morrem
+- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [ ] Test count: nenhum teste removido
+
+**Tests**: integration
+**Gate**: full
+
+**Commit**: `test(dashboard): cover the tab target and the overflow reading`
+
+---
+
+### T13: Provar as entradas do manifesto
+
+**What**: testes conferem o botão "abrir em aba" no título da view Painel e o título de `tlcSpecs.showFeature`
+**Where**: `test/integration/suite.cjs` (modify)
+**Depends on**: T12
+**Reuses**: testes da seção sidebar-dashboard
+**Requirement**: SIDE-02, SIDE-08
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] `view/title` de `tlcSpecs.openDashboard` vale para `tlcSpecs.panel`
+- [ ] `tlcSpecs.showFeature` se chama "Abrir feature no painel"
+- [ ] Mutantes P3 e P4 do Verifier morrem
+- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [ ] Test count: nenhum teste removido
+
+**Tests**: integration
+**Gate**: full
+
+**Commit**: `test(dashboard): cover the manifest entries of the panel`
+
+---
+
+### T14: Provar o clique com a barra lateral fechada
+
+**What**: teste aciona `tlcSpecs.showFeature` com a barra lateral fechada; o comentário da guarda `live` diz o que foi verificado
+**Where**: `src/ui/dashboard.ts` (modify)
+**Depends on**: T13
+**Reuses**: testes da seção sidebar-dashboard
+**Requirement**: SIDE-02
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] Com a barra lateral fechada, o clique reabre a view nos detalhes da feature, sem mexer nas abas
+- [ ] O comentário de `live` registra que o VS Code 1.120 entrega a mensagem sem a guarda e que as versões anteriores não foram verificadas
+- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [ ] Test count: nenhum teste removido
+
+**Tests**: integration
+**Gate**: full
+
+**Commit**: `test(dashboard): cover a feature opened with the side bar closed`
+
+---
+
+### T15: Nomear os eventos do SIDE-05
+
+**What**: a spec nomeia criar, alterar e remover; o relatório traz a fase de cada cartão; o teste cobre os três eventos
+**Where**: `src/webview/main.ts` (modify)
+**Depends on**: T14
+**Reuses**: testes da seção sidebar-dashboard
+**Requirement**: SIDE-05
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] Artefato criado: o cartão aparece com a fase do modelo
+- [ ] Artefato alterado: a fase do cartão muda
+- [ ] Artefato removido: o cartão some
+- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [ ] Test count: nenhum teste removido
+
+**Tests**: integration
+**Gate**: full
+
+**Commit**: `test(dashboard): cover artifact change and removal in the side panel`
+
+---
+
 ## Phase Execution Map
 
 ```
-Phase 1 → Phase 2 → Phase 3
+Phase 1 → Phase 2 → Phase 3 → Phase 4
 
 Phase 1:  T1 ------→ T2
 Phase 2:  T3 ------→ T4 ------→ T5 ------→ T6 ------→ T7
 Phase 3:  T8
+Phase 4:  T9 ------→ T10 ------→ T11 ------→ T12 ------→ T13 ------→ T14 ------→ T15
 ```
 
 ---
@@ -303,6 +503,13 @@ Phase 3:  T8
 | T6: Voltar da view oculta e atualizar as duas superfícies | 1 evento de visibilidade | ✅ Granular |
 | T7: Cliques dentro da view lateral | 1 leitura de teste | ✅ Granular |
 | T8: Documentar o painel lateral | 1 arquivo | ✅ Granular |
+| T9: Relatar só os cartões visíveis | 1 teste ou leitura | ✅ Granular |
+| T10: Provar o botão da notificação | 1 teste ou leitura | ✅ Granular |
+| T11: Fixar o limite de 700px | 1 teste ou leitura | ✅ Granular |
+| T12: Provar a feature aberta na aba e a rolagem medida | 1 teste ou leitura | ✅ Granular |
+| T13: Provar as entradas do manifesto | 1 teste ou leitura | ✅ Granular |
+| T14: Provar o clique com a barra lateral fechada | 1 teste ou leitura | ✅ Granular |
+| T15: Nomear os eventos do SIDE-05 | 1 teste ou leitura | ✅ Granular |
 
 ## Diagram-Definition Cross-Check
 
@@ -316,6 +523,13 @@ Phase 3:  T8
 | T6 | T5 | T5 | ✅ Match |
 | T7 | T6 | T6 | ✅ Match |
 | T8 | T7 | T7 | ✅ Match |
+| T9 | T8 | T8 | ✅ Match |
+| T10 | T9 | T9 | ✅ Match |
+| T11 | T10 | T10 | ✅ Match |
+| T12 | T11 | T11 | ✅ Match |
+| T13 | T12 | T12 | ✅ Match |
+| T14 | T13 | T13 | ✅ Match |
+| T15 | T14 | T14 | ✅ Match |
 
 ## Test Co-location Validation
 
@@ -329,3 +543,10 @@ Phase 3:  T8
 | T6 | Host | integration | integration | ✅ OK |
 | T7 | Host | integration | integration | ✅ OK |
 | T8 | Docs | none | none | ✅ OK |
+| T9 | Webview script, host e manifesto | integration | integration | ✅ OK |
+| T10 | Webview script, host e manifesto | integration | integration | ✅ OK |
+| T11 | Webview script, host e manifesto | integration | integration | ✅ OK |
+| T12 | Webview script, host e manifesto | integration | integration | ✅ OK |
+| T13 | Webview script, host e manifesto | integration | integration | ✅ OK |
+| T14 | Webview script, host e manifesto | integration | integration | ✅ OK |
+| T15 | Webview script, host e manifesto | integration | integration | ✅ OK |

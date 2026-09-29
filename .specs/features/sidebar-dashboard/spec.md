@@ -57,7 +57,7 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 2. WHEN o usuário aciona "Abrir feature no painel" THEN a extensão SHALL mostrar a view Painel nos detalhes dessa feature, sem abrir nem fechar abas do editor
 3. WHILE a view Painel tem menos de 700px de largura a extensão SHALL mostrar as etapas do quadro em uma coluna, sem rolagem horizontal
 4. WHILE a view Painel tem menos de 700px de largura a extensão SHALL ocultar as etapas do quadro que não têm features
-5. WHEN um artefato muda em uma pasta de specs THEN a extensão SHALL atualizar a view Painel
+5. WHEN um artefato é criado, alterado ou removido em uma pasta de specs THEN a extensão SHALL mostrar na view Painel as features atuais, cada uma na sua fase atual
 6. WHEN a view Painel volta a ficar visível depois de oculta THEN a extensão SHALL mostrar os projetos atuais e a feature que estava selecionada
 7. WHEN o usuário clica em um artefato na view Painel THEN a extensão SHALL abrir o preview do markdown desse artefato
 

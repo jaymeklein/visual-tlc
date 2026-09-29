@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 8,
+  "next_id": 15,
   "lessons": [
     {
       "id": "L-001",
@@ -104,17 +104,19 @@
       "text": "Name the file events (create, change, delete) that a watcher acceptance criterion covers",
       "signal": "spec_precision_gap",
       "scope": "spec",
-      "status": "candidate",
+      "status": "confirmed",
       "features": [
-        "specs-folders"
+        "specs-folders",
+        "sidebar-dashboard"
       ],
-      "recurrence": 1,
+      "recurrence": 2,
       "harmful": 0,
       "evidence": [
-        "SF-04 spec.md:55 (spec)"
+        "SF-04 spec.md:55 (spec)",
+        "SIDE-05 spec.md:60 (spec)"
       ],
       "created": "2026-09-29T13:09:10Z",
-      "last_seen": "2026-09-29T13:09:10Z"
+      "last_seen": "2026-09-29T15:08:17Z"
     },
     {
       "id": "L-007",
@@ -135,6 +137,132 @@
       ],
       "created": "2026-09-29T13:40:46Z",
       "last_seen": "2026-09-29T14:04:07Z"
+    },
+    {
+      "id": "L-008",
+      "key": "surviving_mutant::count only displayed elements when a test hook reports what a webview shows",
+      "text": "Count only displayed elements when a test hook reports what a webview shows",
+      "signal": "surviving_mutant",
+      "scope": "webview",
+      "status": "candidate",
+      "features": [
+        "sidebar-dashboard"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "S4 media/dashboard.css:313 (webview)"
+      ],
+      "created": "2026-09-29T15:08:17Z",
+      "last_seen": "2026-09-29T15:08:17Z"
+    },
+    {
+      "id": "L-009",
+      "key": "surviving_mutant::drive every trigger the spec lists for an action including callbacks that bypass the command",
+      "text": "Drive every trigger the spec lists for an action, including callbacks that bypass the command",
+      "signal": "surviving_mutant",
+      "scope": "extension-host",
+      "status": "candidate",
+      "features": [
+        "sidebar-dashboard"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "C2 src/extension.ts:47 (extension-host)"
+      ],
+      "created": "2026-09-29T15:08:17Z",
+      "last_seen": "2026-09-29T15:08:17Z"
+    },
+    {
+      "id": "L-010",
+      "key": "surviving_mutant::pin a layout threshold with a test on the stylesheet when a webview cannot be measured near the value",
+      "text": "Pin a layout threshold with a test on the stylesheet when a webview cannot be measured near the value",
+      "signal": "surviving_mutant",
+      "scope": "webview",
+      "status": "candidate",
+      "features": [
+        "sidebar-dashboard"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "S5 media/dashboard.css:305 (webview)"
+      ],
+      "created": "2026-09-29T15:08:17Z",
+      "last_seen": "2026-09-29T15:08:17Z"
+    },
+    {
+      "id": "L-011",
+      "key": "surviving_mutant::assert the effect of every argument a test passes to a command",
+      "text": "Assert the effect of every argument a test passes to a command",
+      "signal": "surviving_mutant",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "sidebar-dashboard"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "C3 src/extension.ts:57 (tests)"
+      ],
+      "created": "2026-09-29T15:08:17Z",
+      "last_seen": "2026-09-29T15:08:17Z"
+    },
+    {
+      "id": "L-012",
+      "key": "surviving_mutant::assert every manifest contribution a feature adds or changes",
+      "text": "Assert every manifest contribution a feature adds or changes",
+      "signal": "surviving_mutant",
+      "scope": "manifest",
+      "status": "candidate",
+      "features": [
+        "sidebar-dashboard"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "P4 package.json:120 (manifest)"
+      ],
+      "created": "2026-09-29T15:08:17Z",
+      "last_seen": "2026-09-29T15:08:17Z"
+    },
+    {
+      "id": "L-013",
+      "key": "surviving_mutant::keep a defensive guard only with a test that fails without it",
+      "text": "Keep a defensive guard only with a test that fails without it",
+      "signal": "surviving_mutant",
+      "scope": "extension-host",
+      "status": "candidate",
+      "features": [
+        "sidebar-dashboard"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "H4 src/ui/dashboard.ts:111 (extension-host)"
+      ],
+      "created": "2026-09-29T15:08:17Z",
+      "last_seen": "2026-09-29T15:08:17Z"
+    },
+    {
+      "id": "L-014",
+      "key": "surviving_mutant::give every flag a test hook reports one test that expects true and one that expects false",
+      "text": "Give every flag a test hook reports one test that expects true and one that expects false",
+      "signal": "surviving_mutant",
+      "scope": "test-hooks",
+      "status": "candidate",
+      "features": [
+        "sidebar-dashboard"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "W2 src/webview/main.ts:65 (test-hooks)"
+      ],
+      "created": "2026-09-29T15:08:17Z",
+      "last_seen": "2026-09-29T15:08:17Z"
     }
   ]
 }
