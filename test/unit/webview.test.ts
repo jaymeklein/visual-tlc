@@ -296,6 +296,11 @@ test('HID-01/HID-11 the count of hidden specs adds the marked ones, a completed 
   assert.equal(eyeToggle((await board(false, mark('csv-export'))).html).text, '2 ocultas');
   assert.equal(eyeToggle((await board(false, mark('csv-export', 'billing-invoices'))).html).text, '2 ocultas');
   assert.equal(eyeToggle((await board(false, mark('csv-export', 'user-auth'))).html).text, '3 ocultas');
+  // Nothing completed and nothing marked: zero is written in the plural.
+  const project = await sampleProject();
+  const open = { ...project, features: project.features.filter((f) => f.health !== 'complete') };
+  const none = renderApp({ projects: [open], now: Date.now(), loaded: true, hidden: [], view: DEFAULT_VIEW });
+  assert.equal(eyeToggle(none).text, '0 ocultas');
 });
 
 test('PNL-05 a completed feature opened in the panel shows its details with the eye closed', async () => {

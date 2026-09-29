@@ -9,7 +9,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 ---
 
 **Design**: `.specs/features/hidden-specs/design.md`
-**Status**: In Progress
+**Status**: Done
 
 ---
 
@@ -349,9 +349,9 @@ T7 → T8 → T9 → T10
 
 **Done when**:
 
-- [ ] Sample só com as não concluídas e sem marcas: o texto do olho é "0 ocultas" (mata M8)
-- [ ] Gate check passes: `npm run typecheck && npm test`
-- [ ] Test count: 67 unit tests pass (asserção nova em teste existente)
+- [x] Sample só com as não concluídas e sem marcas: o texto do olho é "0 ocultas" (mata M8)
+- [x] Gate check passes: `npm run typecheck && npm test`
+- [x] Test count: 67 unit tests pass (asserção nova em teste existente)
 
 **Tests**: unit
 **Gate**: quick
