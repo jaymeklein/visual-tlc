@@ -242,3 +242,8 @@ test('PNL-05 a completed feature opened in the panel shows its details with "Ocu
   const html = renderApp({ projects: [project], now: Date.now(), loaded: true, view: { ...DEFAULT_VIEW, selected: { projectId: 'sample', feature: done.name } } });
   assert.ok(html.includes(`<div class="detail-title">\n      <h1><span class="mono">${done.name}</span>`), `the details of ${done.name} are not shown`);
 });
+
+test('PNL-04 unchecking "Ocultar concluídas" brings the completed features back, checking it hides them again', () => {
+  assert.deepEqual(actionFor({ action: 'toggle-done', checked: 'false' }), { view: { hideDone: false } });
+  assert.deepEqual(actionFor({ action: 'toggle-done', checked: 'true' }), { view: { hideDone: true } });
+});

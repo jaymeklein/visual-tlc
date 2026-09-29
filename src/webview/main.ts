@@ -72,8 +72,8 @@ function report(): void {
 
 // ---------- events ----------
 
-function activate(el: HTMLElement): void {
-  const result = actionFor(el.dataset, view.expandedTasks);
+function activate(el: HTMLElement, data: Record<string, string | undefined> = el.dataset): void {
+  const result = actionFor(data, view.expandedTasks);
   if (result.message) vscode.postMessage(result.message);
   if (result.view) setView(result.view);
   if (result.scrollTop) window.scrollTo(0, 0);
@@ -105,7 +105,7 @@ document.addEventListener('input', (e) => {
 
 document.addEventListener('change', (e) => {
   const el = e.target as HTMLInputElement;
-  if (el.dataset.action === 'toggle-done') setView({ hideDone: el.checked });
+  if (el.dataset.action === 'toggle-done') activate(el, { ...el.dataset, checked: String(el.checked) });
 });
 
 window.addEventListener('error', (e) => vscode.postMessage({ type: 'error', message: String(e.error?.stack ?? e.message) }));

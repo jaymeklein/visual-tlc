@@ -579,7 +579,7 @@ export interface ActionResult {
   scrollTop?: boolean;
 }
 
-/** Maps a clicked element's data-* attributes to a view change and/or a message for the extension. */
+/** Maps a clicked element's data-* attributes (plus `checked` for the checkbox) to a view change and/or a message for the extension. */
 export function actionFor(d: Record<string, string | undefined>, expandedTasks: readonly string[] = []): ActionResult {
   const ref = (): FeatureRef => ({ projectId: d.pid!, feature: d.feature! });
   switch (d.action) {
@@ -595,6 +595,8 @@ export function actionFor(d: Record<string, string | undefined>, expandedTasks: 
       return { message: { type: 'revealFolder', target: ref() } };
     case 'preview-file':
       return { message: { type: 'previewFile', projectId: d.pid!, file: d.file! } };
+    case 'toggle-done':
+      return { view: { hideDone: d.checked === 'true' } };
     case 'toggle-task': {
       const key = d.key!;
       return { view: { expandedTasks: expandedTasks.includes(key) ? expandedTasks.filter((k) => k !== key) : [...expandedTasks, key] } };
