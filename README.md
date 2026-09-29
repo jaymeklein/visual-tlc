@@ -1,0 +1,85 @@
+# Visual TLC — Spec-Driven Tracker
+
+Extensão do VS Code que acompanha visualmente o desenvolvimento feito com a skill **`/tlc-spec-driven`**.
+Ela lê os artefatos que a skill grava em `.specs/` e mostra, para cada feature, em que fase está, quanto falta e o que está incompleto.
+
+> **Somente leitura.** A extensão nunca escreve em `.specs/` e não depende da skill instalada — apenas interpreta os arquivos gerados por ela.
+
+## O que aparece
+
+**Barra lateral › TLC Specs**
+
+- **Features** — uma entrada por pasta em `.specs/features/`, com a fase atual e o progresso. Cada linha tem botões para **visualizar o markdown** da spec (`spec.md` no preview do VS Code — ou o primeiro markdown da pasta, se não houver spec), **abrir a pasta** da feature no Explorer e abrir a feature no painel (também no menu de contexto). Ao expandir:
+  - o pipeline **Spec → Design → Tasks → Execução → Verificação**, com cada etapa concluída, ativa, pulada, pendente ou com falha (clique para abrir o arquivo da etapa);
+  - as tasks agrupadas por *Phase* (status vindo dos checkboxes de *Done when*, do campo `**Status**` ou de ✅ no título);
+  - requisitos da *Requirement Traceability*, arquivos da feature e **avisos**.
+- **Projeto** — o *Handoff* do `STATE.md` (feature em foco, próximo passo, bloqueios, branch), as decisões `AD-NNN` (ativas e substituídas) e as lições do `lessons.json` (confirmadas, candidatas e em quarentena).
+
+**Painel** (`TLC Specs: Abrir painel`, ou o ícone no topo da lista)
+
+- Resumo do projeto, feature em foco e um **quadro por fase** com todas as specs; cada card tem os mesmos botões de visualizar o markdown e abrir a pasta.
+- Detalhe da feature: stepper do pipeline, próximo passo, tasks por fase, histórias com os padrões EARS, requisitos, veredito do Verifier (critérios, mutantes, UAT, fix plans), design/contexto, arquivos e avisos. Tudo leva direto à linha correspondente no markdown.
+
+**Também**
+
+- **Painel Problemas** — os avisos viram diagnósticos no arquivo e na linha exatos.
+- **Barra de status** — feature em foco (a do Handoff, ou a mais recente não concluída) e sua fase.
+- **Notificações** — quando surge uma spec nova, uma feature muda de fase, é concluída ou falha na verificação.
+- Atualização automática sempre que algo em `.specs/` muda. Suporta vários `.specs` no workspace (monorepo e multi-root).
+
+## Como a fase é calculada
+
+A skill cria os arquivos de forma preguiçosa (arquivo ausente = fase pulada ou ainda não alcançada). A extensão usa isso:
+
+| Situação | Fase exibida |
+| --- | --- |
+| só `spec.md` (e talvez `context.md`) | Spec |
+| `design.md` sem `tasks.md` | Design |
+| `tasks.md` sem nenhuma task iniciada | Tasks (rascunho / aprovadas) |
+| alguma task iniciada, ou requisitos em *Implementing* | Execução *n/m* |
+| todas as tasks concluídas, sem `validation.md` | Aguardando verificação |
+| `validation.md` com FAIL / sem veredito | Verificação falhou / incompleta |
+| `validation.md` com PASS e evidência `file:line` | Concluída |
+
+Features de escopo Medium (sem `design.md` e `tasks.md`) aparecem com essas etapas como *puladas*.
+
+## Avisos de spec incompleta
+
+As checagens reproduzem os validadores da própria skill (`validate_spec.py`, `validate_tasks.py`, `validate_state.py`), com a mesma severidade, mais alguns cruzamentos entre arquivos:
+
+- **spec.md** — seções obrigatórias ausentes, critério de aceitação sem `SHALL` ou sem padrão EARS, premissas sem *default*/*rationale*, perguntas em aberto, linhas de template, IDs malformados, histórias sem critérios.
+- **tasks.md** — seções obrigatórias, task sem `Tests`/`Gate`, dependência apontando para fase posterior, diagrama divergente do `Depends on`, `Where` com vários arquivos, task concluída com dependência pendente, task bloqueada.
+- **validation.md** — sem veredito, placeholder `[PASS | FAIL]`, FAIL, PASS sem evidência `file:line`, GAPs, mutantes sobreviventes.
+- **Entre arquivos** — execução concluída sem `validation.md` (o Verifier não rodou), requisitos sem task, task citando requisito inexistente, rastreabilidade não atualizada para *Verified*, arquivo vazio, feature parada há N dias, bloqueio no Handoff.
+
+## Configurações
+
+| Chave | Padrão | Descrição |
+| --- | --- | --- |
+| `tlcSpecs.diagnostics.enabled` | `true` | Publica os avisos no painel Problemas. |
+| `tlcSpecs.notifications.enabled` | `true` | Notifica mudanças de fase, conclusão e falhas. |
+| `tlcSpecs.staleAfterDays` | `14` | Dias sem alteração para marcar uma feature como parada (0 desativa). |
+| `tlcSpecs.exclude` | `**/node_modules/**` | Pastas ignoradas ao procurar `.specs`. |
+
+## Desenvolvimento
+
+```bash
+npm install
+npm run build            # dist/extension.cjs + dist/webview.js
+npm test                 # testes unitários dos parsers (node --test)
+npm run test:integration # abre um VS Code isolado com uma cópia de test/fixtures/sample
+npm run package          # gera o .vsix
+```
+
+`F5` abre um Extension Development Host já com o projeto de exemplo (`test/fixtures/sample`), que cobre todos os estados: em execução, concluída, verificação com FAIL, aguardando o Verifier, escopo Medium, spec incompleta, design em rascunho e pasta quebrada.
+
+Instalar o pacote: `code --install-extension visual-tlc-0.1.0.vsix`.
+
+### Estrutura
+
+```
+src/core/     parsers e análise (sem dependência do VS Code, testáveis com node --test)
+src/ui/       árvores, painel, status bar, diagnósticos, notificações, store com file watcher
+src/webview/  script do painel (bundle para o navegador)
+media/        CSS do painel e ícones
+```

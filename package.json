@@ -1,0 +1,207 @@
+{
+  "name": "visual-tlc",
+  "displayName": "Visual TLC — Spec-Driven Tracker",
+  "description": "Acompanhe visualmente as specs geradas pela skill tlc-spec-driven: fases, tasks, rastreabilidade, verificação e avisos de specs incompletas.",
+  "version": "0.1.0",
+  "publisher": "visual-tlc",
+  "license": "UNLICENSED",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Visualization",
+    "Other"
+  ],
+  "keywords": [
+    "spec-driven",
+    "tlc",
+    "specs",
+    "tasks",
+    "claude"
+  ],
+  "main": "./dist/extension.cjs",
+  "activationEvents": [
+    "workspaceContains:**/.specs/**"
+  ],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "tlcSpecs",
+          "title": "TLC Specs",
+          "icon": "media/tlc.svg"
+        }
+      ]
+    },
+    "views": {
+      "tlcSpecs": [
+        {
+          "id": "tlcSpecs.features",
+          "name": "Features"
+        },
+        {
+          "id": "tlcSpecs.project",
+          "name": "Projeto"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "tlcSpecs.features",
+        "contents": "Nenhuma pasta .specs encontrada neste workspace.\nAs features aparecem aqui assim que a skill /tlc-spec-driven gerar .specs/features/<feature>/spec.md.\n[Atualizar](command:tlcSpecs.refresh)",
+        "when": "!tlcSpecs.hasSpecs"
+      },
+      {
+        "view": "tlcSpecs.project",
+        "contents": "Sem STATE.md ou lições registradas ainda.",
+        "when": "!tlcSpecs.hasSpecs"
+      }
+    ],
+    "commands": [
+      {
+        "command": "tlcSpecs.refresh",
+        "title": "Atualizar",
+        "category": "TLC Specs",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "tlcSpecs.openDashboard",
+        "title": "Abrir painel",
+        "category": "TLC Specs",
+        "icon": "$(dashboard)"
+      },
+      {
+        "command": "tlcSpecs.showFeature",
+        "title": "Abrir feature no painel",
+        "category": "TLC Specs",
+        "icon": "$(dashboard)"
+      },
+      {
+        "command": "tlcSpecs.previewFeatureMarkdown",
+        "title": "Visualizar markdown da spec",
+        "category": "TLC Specs",
+        "icon": "$(open-preview)"
+      },
+      {
+        "command": "tlcSpecs.revealFeatureFolder",
+        "title": "Abrir pasta da feature",
+        "category": "TLC Specs",
+        "icon": "$(folder-opened)"
+      },
+      {
+        "command": "tlcSpecs.openFile",
+        "title": "Abrir arquivo",
+        "category": "TLC Specs"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "tlcSpecs.openDashboard",
+          "when": "view == tlcSpecs.features",
+          "group": "navigation@1"
+        },
+        {
+          "command": "tlcSpecs.refresh",
+          "when": "view == tlcSpecs.features || view == tlcSpecs.project",
+          "group": "navigation@2"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "tlcSpecs.previewFeatureMarkdown",
+          "when": "view == tlcSpecs.features && viewItem == feature",
+          "group": "inline@1"
+        },
+        {
+          "command": "tlcSpecs.revealFeatureFolder",
+          "when": "view == tlcSpecs.features && viewItem == feature",
+          "group": "inline@2"
+        },
+        {
+          "command": "tlcSpecs.showFeature",
+          "when": "view == tlcSpecs.features && viewItem == feature",
+          "group": "inline@3"
+        },
+        {
+          "command": "tlcSpecs.previewFeatureMarkdown",
+          "when": "view == tlcSpecs.features && viewItem == feature",
+          "group": "navigation@1"
+        },
+        {
+          "command": "tlcSpecs.revealFeatureFolder",
+          "when": "view == tlcSpecs.features && viewItem == feature",
+          "group": "navigation@2"
+        },
+        {
+          "command": "tlcSpecs.showFeature",
+          "when": "view == tlcSpecs.features && viewItem == feature",
+          "group": "navigation@3"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "tlcSpecs.showFeature",
+          "when": "false"
+        },
+        {
+          "command": "tlcSpecs.previewFeatureMarkdown",
+          "when": "false"
+        },
+        {
+          "command": "tlcSpecs.revealFeatureFolder",
+          "when": "false"
+        },
+        {
+          "command": "tlcSpecs.openFile",
+          "when": "false"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "TLC Specs",
+      "properties": {
+        "tlcSpecs.diagnostics.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Publica os avisos das specs (spec/tasks/validation incompletos) no painel Problemas."
+        },
+        "tlcSpecs.notifications.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Notifica quando uma feature muda de fase, é criada ou falha na verificação."
+        },
+        "tlcSpecs.staleAfterDays": {
+          "type": "number",
+          "default": 14,
+          "minimum": 0,
+          "description": "Marca como parada uma feature não concluída sem alterações há N dias (0 desativa)."
+        },
+        "tlcSpecs.exclude": {
+          "type": "string",
+          "default": "**/node_modules/**",
+          "description": "Glob de pastas ignoradas ao procurar diretórios .specs."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "typecheck": "tsc -p .",
+    "test": "node --test \"test/unit/**/*.test.ts\"",
+    "test:integration": "npm run build && node test/integration/run.mjs",
+    "package": "npm run typecheck && npm test && vsce package --no-dependencies --allow-missing-repository --skip-license",
+    "vscode:prepublish": "node esbuild.mjs --production"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "@types/vscode": "1.90.0",
+    "@vscode/test-electron": "3.1.0",
+    "@vscode/vsce": "^4.0.0",
+    "esbuild": "^0.28.2",
+    "typescript": "^7.0.2"
+  }
+}

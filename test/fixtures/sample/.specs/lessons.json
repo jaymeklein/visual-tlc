@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "promote_threshold": 2,
+  "window_days": 45,
+  "quarantine_threshold": 2,
+  "next_id": 4,
+  "lessons": [
+    {
+      "id": "L-001",
+      "key": "surviving_mutant::assert the exact persisted status value not just that a status field exists",
+      "text": "Assert the exact persisted status value, not just that a status field exists",
+      "signal": "surviving_mutant",
+      "scope": "repo-layer",
+      "status": "confirmed",
+      "features": ["billing-invoices", "notifications"],
+      "recurrence": 2,
+      "harmful": 0,
+      "evidence": ["src/billing/invoice.repo.ts:41", "src/notify/queue.ts:17"],
+      "created": "2026-08-20T10:00:00Z",
+      "last_seen": "2026-09-15T12:00:00Z"
+    },
+    {
+      "id": "L-002",
+      "key": "spec_precision_gap::define the exact http status for every error criterion",
+      "text": "Define the exact HTTP status for every error criterion",
+      "signal": "spec_precision_gap",
+      "scope": "routes",
+      "status": "candidate",
+      "features": ["notifications"],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": ["NOTIF-03"],
+      "created": "2026-09-15T12:00:00Z",
+      "last_seen": "2026-09-15T12:00:00Z"
+    },
+    {
+      "id": "L-003",
+      "key": "gate_fail::run migrations before e2e gate",
+      "text": "Run migrations before the e2e gate",
+      "signal": "gate_fail",
+      "scope": "",
+      "status": "quarantined",
+      "features": ["billing-invoices", "search-filters"],
+      "recurrence": 2,
+      "harmful": 2,
+      "evidence": ["package.json:12"],
+      "created": "2026-08-01T10:00:00Z",
+      "last_seen": "2026-09-01T10:00:00Z"
+    }
+  ]
+}
