@@ -9,7 +9,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 ---
 
 **Design**: inline (sem `design.md`)
-**Status**: In Progress
+**Status**: Done
 
 Design inline:
 
@@ -269,8 +269,8 @@ T7 → T8
 
 **Done when**:
 
-- [ ] README descreve onde o painel abre e como abrir a visão em aba
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] README descreve onde o painel abre e como abrir a visão em aba
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
 
 **Tests**: none
 **Gate**: build

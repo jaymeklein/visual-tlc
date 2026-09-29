@@ -17,8 +17,11 @@ Ela lê os artefatos que a skill grava em `.specs/` (ou nas pastas que você con
   Clicar numa etapa, arquivo, requisito, fase ou item do Projeto abre o markdown no **preview** (somente leitura). O ícone de lápis na linha abre o arquivo **no editor**, já na linha do item. Avisos abrem direto no editor, na linha do problema.
 - **Projeto** — o *Handoff* do `STATE.md` (feature em foco, próximo passo, bloqueios, branch), as decisões `AD-NNN` (ativas e substituídas) e as lições do `lessons.json` (confirmadas, candidatas e em quarentena).
 
-**Painel** (`TLC Specs: Abrir painel`, ou o ícone no topo da lista)
+**Painel** (seção "Painel" da barra lateral TLC Specs)
 
+- Fica na barra lateral, fora da área do editor: o código aberto continua na mesma aba, sem dividir a tela. Abrir uma feature no painel (botão da feature, barra de status ou notificação) mostra os detalhes dela ali.
+- Abaixo de 700px de largura o quadro fica em uma coluna e esconde as fases sem features. A seção pode ser arrastada para a barra lateral direita.
+- `TLC Specs: Abrir painel em aba` (ou o ícone no topo de Features e do Painel) abre a visão larga numa aba do editor, com as seis fases lado a lado.
 - Resumo do projeto, feature em foco e um **quadro por fase** com todas as specs; cada card tem os mesmos botões de visualizar o markdown e abrir a pasta.
 - Detalhe da feature: stepper do pipeline, próximo passo, tasks por fase, histórias com os padrões EARS, requisitos, veredito do Verifier (critérios, mutantes, UAT, fix plans), design/contexto, arquivos e avisos. As mesmas regras da árvore: cliques abrem o markdown no preview, cada task expande os detalhes no lugar, a seção Arquivos tem o lápis para abrir no editor e avisos abrem o editor na linha.
 
