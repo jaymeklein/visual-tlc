@@ -20,6 +20,12 @@ Corroborated across multiple features. Safe to apply as guidance.
 - evidence: SF-04 spec.md:55 (spec) (+1 more)
 - last seen: 2026-09-29T15:08:17Z
 
+### L-009 - Drive every trigger the spec lists for an action, including callbacks that bypass the command
+- signal: `surviving_mutant` · recurrence: 2 feature(s) · scope: `extension-host` · harmful: 0
+- features: sidebar-dashboard, panel-in-progress
+- evidence: C2 src/extension.ts:47 (extension-host) (+1 more)
+- last seen: 2026-09-29T19:24:45Z
+
 ## Candidates (under observation - do NOT load as guidance yet)
 
 Seen once or not yet corroborated. Tracked, not trusted.
@@ -58,12 +64,6 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `webview` · harmful: 0
 - features: sidebar-dashboard
 - evidence: S4 media/dashboard.css:313 (webview)
-- last seen: 2026-09-29T15:08:17Z
-
-### L-009 - Drive every trigger the spec lists for an action, including callbacks that bypass the command
-- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `extension-host` · harmful: 0
-- features: sidebar-dashboard
-- evidence: C2 src/extension.ts:47 (extension-host)
 - last seen: 2026-09-29T15:08:17Z
 
 ### L-010 - Pin a layout threshold with a test on the stylesheet when a webview cannot be measured near the value
@@ -119,6 +119,12 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - features: exclude-folders
 - evidence: H7 src/ui/store.ts:102 (settings)
 - last seen: 2026-09-29T18:19:13Z
+
+### L-019 - Map each webview control to its view change in a pure function under unit test, not inline in the DOM listener
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `webview` · harmful: 0
+- features: panel-in-progress
+- evidence: PNL-04 src/webview/main.ts:106-109 (webview)
+- last seen: 2026-09-29T19:24:45Z
 
 ## Quarantined (failed when applied - ignore)
 

@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 19,
+  "next_id": 20,
   "lessons": [
     {
       "id": "L-001",
@@ -162,17 +162,19 @@
       "text": "Drive every trigger the spec lists for an action, including callbacks that bypass the command",
       "signal": "surviving_mutant",
       "scope": "extension-host",
-      "status": "candidate",
+      "status": "confirmed",
       "features": [
-        "sidebar-dashboard"
+        "sidebar-dashboard",
+        "panel-in-progress"
       ],
-      "recurrence": 1,
+      "recurrence": 2,
       "harmful": 0,
       "evidence": [
-        "C2 src/extension.ts:47 (extension-host)"
+        "C2 src/extension.ts:47 (extension-host)",
+        "U10 src/webview/main.ts:108 (webview)"
       ],
       "created": "2026-09-29T15:08:17Z",
-      "last_seen": "2026-09-29T15:08:17Z"
+      "last_seen": "2026-09-29T19:24:45Z"
     },
     {
       "id": "L-010",
@@ -336,6 +338,24 @@
       ],
       "created": "2026-09-29T18:19:13Z",
       "last_seen": "2026-09-29T18:19:13Z"
+    },
+    {
+      "id": "L-019",
+      "key": "ac_gap::map each webview control to its view change in a pure function under unit test not inline in the dom listener",
+      "text": "Map each webview control to its view change in a pure function under unit test, not inline in the DOM listener",
+      "signal": "ac_gap",
+      "scope": "webview",
+      "status": "candidate",
+      "features": [
+        "panel-in-progress"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "PNL-04 src/webview/main.ts:106-109 (webview)"
+      ],
+      "created": "2026-09-29T19:24:45Z",
+      "last_seen": "2026-09-29T19:24:45Z"
     }
   ]
 }
