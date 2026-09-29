@@ -106,10 +106,10 @@ T7 → T8
 
 **Done when**:
 
-- [ ] O relatório traz projetos, cartões, feature em detalhe, colunas do quadro, etapas vazias visíveis, largura e rolagem horizontal
-- [ ] Com o painel em aba a 700px ou mais, o relatório mostra 6 colunas e as etapas vazias visíveis
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [ ] Test count: 36 de integração existentes + novos passam
+- [x] O relatório traz projetos, cartões, feature em detalhe, colunas do quadro, etapas vazias visíveis, largura e rolagem horizontal
+- [x] Com o painel em aba a 700px ou mais, o relatório mostra 6 colunas e as etapas vazias visíveis
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] Test count: 36 de integração existentes + novos passam
 
 **Tests**: integration
 **Gate**: full

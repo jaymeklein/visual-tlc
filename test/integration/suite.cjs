@@ -561,6 +561,27 @@ test('specs-folders: restores the default configuration', async () => {
   await waitForRoots(['.specs', 'tools/.specs']);
 });
 
+// --- sidebar-dashboard ---------------------------------------------------------------------------------------
+
+/** Stages of the board without features, counted from the model: a feature sits in "done" when complete, else in its phase. */
+const emptyStagesOf = (projects) => projects.reduce((n, p) => n + 6 - new Set(p.features.map((f) => (f.health === 'complete' ? 'done' : f.phase))).size, 0);
+const featureNames = (projects) => projects.flatMap((p) => p.features.map((f) => f.name)).sort();
+
+test('SIDE-09 the panel in a tab shows the six stages side by side at 700px or more', async () => {
+  await closeAll();
+  await vscode.commands.executeCommand('workbench.action.closeSidebar');
+  await vscode.commands.executeCommand('tlcSpecs.openDashboard');
+  const report = await waitFor('the tab to render the board', () => {
+    const r = api.dashboardReport();
+    return r && r.columns ? r : undefined;
+  });
+  assert.ok(report.width >= 700, `the tab is only ${report.width}px wide`);
+  assert.equal(report.columns, 6);
+  assert.equal(report.emptyStages, emptyStagesOf(api.getProjects()));
+  assert.deepEqual([...report.cards].sort(), featureNames(api.getProjects()));
+  assert.equal(report.detail, null);
+});
+
 exports.run = async function run() {
   const failures = [];
   for (const c of cases) {

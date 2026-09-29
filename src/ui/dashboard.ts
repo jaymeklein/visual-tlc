@@ -1,6 +1,6 @@
 import { randomBytes } from 'node:crypto';
 import * as vscode from 'vscode';
-import type { FeatureRef, FromWebview, ToWebview } from '../core/protocol.ts';
+import type { FeatureRef, FromWebview, Rendered, ToWebview } from '../core/protocol.ts';
 import type { SpecsStore } from './store.ts';
 import { openUri, previewUri } from './common.ts';
 import { previewFeatureMarkdown, revealFeatureFolder } from './featureActions.ts';
@@ -11,8 +11,8 @@ export class Dashboard implements vscode.Disposable {
   private readonly disposables: vscode.Disposable[] = [];
   /** Webview health, surfaced for the integration tests. */
   readonly health = { ready: false, errors: [] as string[] };
-  /** Project ids the open panel last rendered, undefined without a panel (for the integration tests). */
-  rendered: string[] | undefined;
+  /** What the open panel last rendered, undefined without a panel (for the integration tests). */
+  rendered: Rendered | undefined;
 
   private readonly extensionUri: vscode.Uri;
   private readonly store: SpecsStore;
@@ -61,7 +61,7 @@ export class Dashboard implements vscode.Disposable {
         await this.store.refresh();
         break;
       case 'rendered':
-        if (this.panel) this.rendered = m.projects;
+        if (this.panel) this.rendered = m;
         break;
       case 'error':
         this.health.errors.push(m.message);

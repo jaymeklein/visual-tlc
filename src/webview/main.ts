@@ -28,7 +28,6 @@ window.addEventListener('message', (event: MessageEvent<ToWebview>) => {
     now = msg.now;
     loaded = true;
     render();
-    vscode.postMessage({ type: 'rendered', projects: projects.map((p) => p.id) });
   } else if (msg.type === 'select') {
     setView({ selected: msg.target });
     window.scrollTo(0, 0);
@@ -47,6 +46,24 @@ function render(): void {
     input?.focus();
     input?.setSelectionRange(focusSearch[0], focusSearch[1]);
   }
+  report();
+}
+
+/** Tells the host what is on screen (the integration tests assert on it). */
+function report(): void {
+  const boards = [...app.querySelectorAll<HTMLElement>('.board')];
+  const root = document.documentElement;
+  vscode.postMessage({
+    type: 'rendered',
+    projects: projects.map((p) => p.id),
+    cards: [...app.querySelectorAll('.card-name')].map((el) => el.textContent ?? ''),
+    detail: app.querySelector('.detail-title .mono')?.textContent ?? null,
+    columns: boards.length ? getComputedStyle(boards[0]).gridTemplateColumns.split(' ').length : 0,
+    emptyStages: [...app.querySelectorAll<HTMLElement>('.column.is-empty')].filter((el) => getComputedStyle(el).display !== 'none').length,
+    empty: app.querySelector('.empty-state') !== null,
+    width: window.innerWidth,
+    overflow: root.scrollWidth > root.clientWidth || boards.some((b) => b.scrollWidth > b.clientWidth),
+  });
 }
 
 // ---------- events ----------
