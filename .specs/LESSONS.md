@@ -114,6 +114,12 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: K7 src/core/folders.ts:67 (core)
 - last seen: 2026-09-29T18:03:28Z
 
+### L-018 - Assert the exact warning text for every setting that shares a warning routine
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `settings` · harmful: 0
+- features: exclude-folders
+- evidence: H7 src/ui/store.ts:102 (settings)
+- last seen: 2026-09-29T18:19:13Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.
