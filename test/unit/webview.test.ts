@@ -3,7 +3,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { actionFor, renderApp, taskDetailsHtml, taskKey, type RenderCtx } from '../../src/webview/render.ts';
+import { actionFor, DEFAULT_VIEW, renderApp, taskDetailsHtml, taskKey, type RenderCtx } from '../../src/webview/render.ts';
 import { loadProject } from '../../src/core/project.ts';
 import { nodeReader, SAMPLE_SPECS } from './nodeReader.ts';
 
@@ -223,4 +223,22 @@ test('PNL-03/PNL-04 the stylesheet lays five stages side by side for the board w
   assert.ok(six >= 0 && five > six, 'the five-stage rule must follow the base board rule');
   // Same specificity as .board: the narrow rule, later in the file, still stacks the stages.
   assert.ok(narrow > five, 'the narrow board rule must come after the five-stage rule');
+});
+
+test('PNL-01 the panel opens with "Ocultar concluídas" checked and the completed features off the board', async () => {
+  const project = await loadProject(nodeReader(SAMPLE_SPECS), 'sample', 'sample', { now: Date.now(), staleAfterDays: 14 });
+  const html = renderApp({ projects: [project], now: Date.now(), loaded: true, view: DEFAULT_VIEW });
+  const toggle = tags(html).filter((t) => t.tag === 'input' && t.attrs['data-action'] === 'toggle-done');
+  assert.equal(toggle.length, 1);
+  assert.ok('checked' in toggle[0].attrs, 'the option starts unchecked');
+  const open = project.features.filter((f) => f.health !== 'complete').map((f) => f.name).sort();
+  assert.deepEqual([...html.matchAll(/<span class="card-name">([^<]+)<\/span>/g)].map((m) => m[1]).sort(), open);
+  assert.ok(!html.includes('aria-label="Concluídas"'), 'the Concluídas column is on the board');
+});
+
+test('PNL-05 a completed feature opened in the panel shows its details with "Ocultar concluídas" checked', async () => {
+  const project = await loadProject(nodeReader(SAMPLE_SPECS), 'sample', 'sample', { now: Date.now(), staleAfterDays: 14 });
+  const done = project.features.find((f) => f.health === 'complete')!;
+  const html = renderApp({ projects: [project], now: Date.now(), loaded: true, view: { ...DEFAULT_VIEW, selected: { projectId: 'sample', feature: done.name } } });
+  assert.ok(html.includes(`<div class="detail-title">\n      <h1><span class="mono">${done.name}</span>`), `the details of ${done.name} are not shown`);
 });

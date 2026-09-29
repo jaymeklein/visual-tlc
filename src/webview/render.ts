@@ -20,7 +20,10 @@ export interface RenderCtx {
   view: ViewState;
 }
 
-let ctx: RenderCtx = { projects: [], now: 0, loaded: false, view: { selected: null, query: '', hideDone: false, expandedTasks: [] } };
+/** View state of a panel that just opened: on the board, with the completed features hidden. */
+export const DEFAULT_VIEW: ViewState = { selected: null, query: '', hideDone: true, expandedTasks: [] };
+
+let ctx: RenderCtx = { projects: [], now: 0, loaded: false, view: DEFAULT_VIEW };
 
 export const taskKey = (projectId: string, feature: string, taskId: string) => `${projectId}|${feature}|${taskId}`;
 

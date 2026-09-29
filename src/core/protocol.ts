@@ -23,6 +23,8 @@ export interface Rendered {
   emptyMessage: string | null;
   /** Width of the webview in px. */
   width: number;
+  /** Inner width of the first board in px, 0 without a board. */
+  boardWidth: number;
   /** True when the page or a board scrolls horizontally. */
   overflow: boolean;
 }

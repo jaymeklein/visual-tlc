@@ -566,10 +566,12 @@ test('specs-folders: restores the default configuration', async () => {
 // --- sidebar-dashboard ---------------------------------------------------------------------------------------
 
 /** Stages of the board without features, counted from the model: a feature sits in "done" when complete, else in its phase. */
-const emptyStagesOf = (projects) => projects.reduce((n, p) => n + 6 - new Set(p.features.map((f) => (f.health === 'complete' ? 'done' : f.phase))).size, 0);
-const featureNames = (projects) => projects.flatMap((p) => p.features.map((f) => f.name)).sort();
+// A panel opens with "Ocultar concluídas" checked (PNL-01): the board holds the open features in five stages, without Concluídas.
+const emptyStagesOf = (projects) => projects.reduce((n, p) => n + 5 - new Set(p.features.filter((f) => f.health !== 'complete').map((f) => f.phase)).size, 0);
+const boardNames = (projects) => projects.flatMap((p) => p.features.filter((f) => f.health !== 'complete').map((f) => f.name)).sort();
+const hasCompleted = (projects) => projects.some((p) => p.features.some((f) => f.health === 'complete'));
 
-test('SIDE-09 the panel in a tab shows the six stages side by side at 700px or more', async () => {
+test('SIDE-09/PNL-02/PNL-03 the panel in a tab shows the five open stages side by side at 700px or more, without the completed', async () => {
   await closeAll();
   await vscode.commands.executeCommand('workbench.action.closeSidebar');
   await vscode.commands.executeCommand('tlcSpecs.openDashboard');
@@ -578,11 +580,13 @@ test('SIDE-09 the panel in a tab shows the six stages side by side at 700px or m
     return r && r.columns ? r : undefined;
   });
   assert.ok(report.width >= 700, `the tab is only ${report.width}px wide`);
-  assert.equal(report.columns, 6);
-  // Six stages of at least 200px, their gaps and the page padding need 1298px: a narrower tab scrolls the board sideways.
-  assert.equal(report.overflow, report.width < 1298, `overflow at ${report.width}px`);
+  assert.ok(hasCompleted(api.getProjects()), 'the fixture has no completed feature to hide');
+  assert.equal(report.columns, 5);
+  // Five stages of at least 200px and their four 10px gaps need a 1040px board: a narrower board scrolls sideways.
+  // The board, not the page: the page also gives room to its padding and, when it scrolls down, to its scroll bar.
+  assert.equal(report.overflow, report.boardWidth < 1040, `overflow with a ${report.boardWidth}px board in a ${report.width}px tab`);
   assert.equal(report.emptyStages, emptyStagesOf(api.getProjects()));
-  assert.deepEqual([...report.cards].sort(), featureNames(api.getProjects()));
+  assert.deepEqual([...report.cards].sort(), boardNames(api.getProjects()));
   assert.equal(report.detail, null);
 
   // The same tab beside the open side bar: narrower, and still 700px or more.
@@ -593,8 +597,8 @@ test('SIDE-09 the panel in a tab shows the six stages side by side at 700px or m
     return r && r.width < report.width ? r : undefined;
   });
   assert.ok(beside.width >= 700, `the tab is only ${beside.width}px wide beside the side bar`);
-  assert.equal(beside.columns, 6);
-  assert.equal(beside.overflow, beside.width < 1298, `overflow at ${beside.width}px`);
+  assert.equal(beside.columns, 5);
+  assert.equal(beside.overflow, beside.boardWidth < 1040, `overflow with a ${beside.boardWidth}px board in a ${beside.width}px tab`);
   assert.equal(beside.emptyStages, emptyStagesOf(api.getProjects()));
 });
 
@@ -623,7 +627,7 @@ test('SIDE-01 the side bar has a Painel view with the projects of the panel in a
   await showSidePanel();
   const side = await sideReport('the side panel to render the projects', (r) => r.projects.length > 0);
   assert.deepEqual(side.projects, projectIds());
-  assert.deepEqual([...side.cards].sort(), featureNames(api.getProjects()));
+  assert.deepEqual([...side.cards].sort(), boardNames(api.getProjects()));
   const tab = await tabReport('the tab to render the projects', (r) => r.projects.length > 0);
   assert.deepEqual(side.projects, tab.projects);
   assert.deepEqual(side.cards, tab.cards);
@@ -633,7 +637,8 @@ test('SIDE-05 an artifact created, changed or removed in a specs folder shows in
   const phaseOnCard = (r, name) => (r.cards.includes(name) ? r.phases[r.cards.indexOf(name)] : undefined);
   /** Every card with its phase, to compare with every feature of the model. */
   const onCards = (r) => r.cards.map((name, i) => `${name}: ${r.phases[i]}`).sort();
-  const inModel = () => api.getProjects().flatMap((p) => p.features.map((f) => `${f.name}: ${f.phaseLabel}`)).sort();
+  // The completed features are off the board by default (PNL-02).
+  const inModel = () => api.getProjects().flatMap((p) => p.features.filter((f) => f.health !== 'complete').map((f) => `${f.name}: ${f.phaseLabel}`)).sort();
   const tasks = await readFile(path.join(specsDir(), 'features', 'search-filters', 'tasks.md'), 'utf8');
   assert.ok(tasks.includes('- [x] '), 'the fixture has no finished task');
   await showSidePanel();
@@ -642,7 +647,7 @@ test('SIDE-05 an artifact created, changed or removed in a specs folder shows in
   // created
   await write('.specs/features/side-new/spec.md', SPEC_WITHOUT_SHALL);
   const created = await sideReport('the card of side-new', (r) => r.cards.includes('side-new'));
-  assert.deepEqual([...created.cards].sort(), featureNames(api.getProjects()));
+  assert.deepEqual([...created.cards].sort(), boardNames(api.getProjects()));
   assert.equal(phaseOnCard(created, 'side-new'), feature('side-new').phaseLabel);
   assert.deepEqual(onCards(created), inModel());
   await write('.specs/features/side-new/tasks.md', tasks.replaceAll('- [x] ', '- [ ] '));
@@ -660,7 +665,7 @@ test('SIDE-05 an artifact created, changed or removed in a specs folder shows in
   // removed
   await rm(path.join(specsDir(), 'features', 'side-new'), { recursive: true });
   const removed = await sideReport('the card of side-new to go away', (r) => !r.cards.includes('side-new'));
-  assert.deepEqual([...removed.cards].sort(), featureNames(api.getProjects()));
+  assert.deepEqual([...removed.cards].sort(), boardNames(api.getProjects()));
   assert.deepEqual(onCards(removed), inModel());
 });
 
@@ -690,7 +695,7 @@ test('SIDE-03/SIDE-04 under 700px the side panel stacks the stages, hides the em
   assert.equal(board.columns, 1);
   assert.equal(board.emptyStages, 0);
   assert.equal(board.overflow, false);
-  assert.deepEqual([...board.cards].sort(), featureNames(api.getProjects()));
+  assert.deepEqual([...board.cards].sort(), boardNames(api.getProjects()));
 
   const details = async () => {
     for (const name of ['user-auth', 'billing-invoices', 'notifications']) {
@@ -723,7 +728,7 @@ test('SIDE-03/SIDE-04 under 700px the side panel stacks the stages, hides the em
       assert.equal(narrow.columns, 1, `columns at ${narrow.width}px`);
       assert.equal(narrow.emptyStages, 0, `empty stages at ${narrow.width}px`);
       assert.equal(narrow.overflow, false, `the board scrolls sideways at ${narrow.width}px`);
-      assert.deepEqual([...narrow.cards].sort(), featureNames(api.getProjects()));
+      assert.deepEqual([...narrow.cards].sort(), boardNames(api.getProjects()));
     }
     assert.ok(narrow.width <= 250, `the narrowest side panel measured was ${narrow.width}px`);
     await details();
@@ -821,8 +826,8 @@ test('SIDE-10 the panel in a tab and the side panel are updated together', async
     const ids = projectIds();
     const tab = await tabReport('the tab to render docs/specs', (r) => same(r.projects, ids));
     const side = await sideReport('the side panel to render docs/specs', (r) => same(r.projects, ids));
-    assert.deepEqual([...tab.cards].sort(), featureNames(api.getProjects()));
-    assert.deepEqual([...side.cards].sort(), featureNames(api.getProjects()));
+    assert.deepEqual([...tab.cards].sort(), boardNames(api.getProjects()));
+    assert.deepEqual([...side.cards].sort(), boardNames(api.getProjects()));
   } finally {
     await setFolders(undefined);
     await waitForRoots(['.specs', 'tools/.specs']);
@@ -861,13 +866,14 @@ test('SIDE-02 the "Abrir painel" button of a notification shows the feature in t
   }
 });
 
-test('SIDE-02 with the side bar closed, "Abrir feature no painel" brings the panel back on that feature', async () => {
+test('SIDE-02/PNL-05 with the side bar closed, "Abrir feature no painel" brings the panel back on that feature, completed or not', async () => {
   await closeAll();
   await vscode.commands.executeCommand('tlcSpecs.openFile', projectId(), 'features/user-auth/tasks.md', 1);
   const editor = (await waitFor('text editor', () => vscode.window.activeTextEditor)).document.uri.toString();
   await vscode.commands.executeCommand('workbench.action.closeSidebar');
   await waitFor('the side panel to hide', () => api.sidePanelReport() === undefined);
 
+  assert.equal(feature('billing-invoices').health, 'complete');
   await vscode.commands.executeCommand('tlcSpecs.showFeature', { projectId: projectId(), feature: 'billing-invoices' });
   const report = await sideReport('the side panel to come back on billing-invoices', (r) => r.detail === 'billing-invoices');
   assert.deepEqual(report.projects, projectIds());

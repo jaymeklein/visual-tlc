@@ -1,6 +1,6 @@
 import type { Project } from '../core/types.ts';
 import type { FromWebview, ToWebview } from '../core/protocol.ts';
-import { actionFor, renderApp, type ViewState } from './render.ts';
+import { actionFor, DEFAULT_VIEW, renderApp, type ViewState } from './render.ts';
 
 declare function acquireVsCodeApi(): {
   postMessage(message: FromWebview): void;
@@ -13,7 +13,7 @@ const app = document.getElementById('app')!;
 let projects: Project[] = [];
 let now = Date.now();
 let loaded = false;
-let view: ViewState = { selected: null, query: '', hideDone: false, expandedTasks: [], ...vscode.getState() };
+let view: ViewState = { ...DEFAULT_VIEW, ...vscode.getState() };
 
 function setView(patch: Partial<ViewState>): void {
   view = { ...view, ...patch };
@@ -65,6 +65,7 @@ function report(): void {
     emptyStages: shown('.column.is-empty').length,
     emptyMessage: app.querySelector('.empty-state h1')?.textContent ?? null,
     width: window.innerWidth,
+    boardWidth: boards.length ? boards[0].clientWidth : 0,
     overflow: root.scrollWidth > root.clientWidth || boards.some((b) => b.scrollWidth > b.clientWidth),
   });
 }
