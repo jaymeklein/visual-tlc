@@ -105,22 +105,22 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Requirement ID | Story       | Phase  | Status  |
 | -------------- | ----------- | ------ | ------- |
-| NAV-01 | P1: Abrir artefatos em modo visualização | - | Implementing |
-| NAV-02 | P1: Abrir artefatos em modo visualização | - | Implementing |
-| NAV-03 | P1: Abrir artefatos em modo visualização | - | Implementing |
-| NAV-04 | P1: Abrir artefatos em modo visualização | - | Implementing |
-| NAV-05 | P1: Abrir artefatos em modo visualização | - | Implementing |
-| NAV-06 | P1: Tasks como lista somente leitura | - | Implementing |
-| NAV-07 | P1: Tasks como lista somente leitura | - | Implementing |
-| NAV-08 | P1: Tasks como lista somente leitura | - | Implementing |
-| NAV-09 | P1: Tasks como lista somente leitura | - | Implementing |
-| NAV-10 | P2: Mesmo comportamento no painel | - | Implementing |
-| NAV-11 | P2: Mesmo comportamento no painel | - | Implementing |
-| NAV-12 | P2: Mesmo comportamento no painel | - | Implementing |
-| NAV-13 | P2: Mesmo comportamento no painel | - | Implementing |
-| NAV-14 | P2: Mesmo comportamento no painel | - | Implementing |
-| NAV-15 | Edge case: etapa sem arquivo | - | Implementing |
-| NAV-16 | Edge case: Tasks e Execução expandidas | - | Implementing |
+| NAV-01 | P1: Abrir artefatos em modo visualização | - | Verified |
+| NAV-02 | P1: Abrir artefatos em modo visualização | - | Verified |
+| NAV-03 | P1: Abrir artefatos em modo visualização | - | Verified |
+| NAV-04 | P1: Abrir artefatos em modo visualização | - | Verified |
+| NAV-05 | P1: Abrir artefatos em modo visualização | - | Verified |
+| NAV-06 | P1: Tasks como lista somente leitura | - | Verified |
+| NAV-07 | P1: Tasks como lista somente leitura | - | Verified |
+| NAV-08 | P1: Tasks como lista somente leitura | - | Verified |
+| NAV-09 | P1: Tasks como lista somente leitura | - | Verified |
+| NAV-10 | P2: Mesmo comportamento no painel | - | Verified |
+| NAV-11 | P2: Mesmo comportamento no painel | - | Verified |
+| NAV-12 | P2: Mesmo comportamento no painel | - | Verified |
+| NAV-13 | P2: Mesmo comportamento no painel | - | Verified |
+| NAV-14 | P2: Mesmo comportamento no painel | - | Verified |
+| NAV-15 | Edge case: etapa sem arquivo | - | Verified |
+| NAV-16 | Edge case: Tasks e Execução expandidas | - | Verified |
 
 **ID format:** `NAV-NN`, na ordem dos critérios acima (P1 artefatos → NAV-01..05, P1 tasks → NAV-06..09, P2 painel → NAV-10..14, edge cases → NAV-15..16).
 

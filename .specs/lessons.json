@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "promote_threshold": 2,
+  "window_days": 45,
+  "quarantine_threshold": 2,
+  "next_id": 3,
+  "lessons": [
+    {
+      "id": "L-001",
+      "key": "surviving_mutant::drive the extension host handler of every new webview message in an integration test not only the message the webview emits",
+      "text": "Drive the extension-host handler of every new webview message in an integration test, not only the message the webview emits",
+      "signal": "surviving_mutant",
+      "scope": "webview",
+      "status": "candidate",
+      "features": [
+        "readonly-navigation"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "src/ui/dashboard.ts:65 (webview)"
+      ],
+      "created": "2026-09-29T12:11:05Z",
+      "last_seen": "2026-09-29T12:11:05Z"
+    },
+    {
+      "id": "L-002",
+      "key": "ac_gap::assert a ui acceptance criterion at its user visible outcome not at an intermediate message",
+      "text": "Assert a UI acceptance criterion at its user-visible outcome, not at an intermediate message",
+      "signal": "ac_gap",
+      "scope": "webview",
+      "status": "candidate",
+      "features": [
+        "readonly-navigation"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "NAV-10 (webview)"
+      ],
+      "created": "2026-09-29T12:11:05Z",
+      "last_seen": "2026-09-29T12:11:05Z"
+    }
+  ]
+}
