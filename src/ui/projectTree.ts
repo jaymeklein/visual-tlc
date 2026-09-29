@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import type { Decision, Issue, Lesson, LessonStatus } from '../core/types.ts';
 import type { LoadedProject, SpecsStore } from './store.ts';
-import { issueIcon, openFileCommand } from './common.ts';
+import { issueIcon, openFileCommand, previewFileCommand } from './common.ts';
 
 type Node =
   | { kind: 'root'; loaded: LoadedProject }
@@ -91,7 +91,7 @@ export class ProjectTree implements vscode.TreeDataProvider<Node> {
         item.iconPath = new vscode.ThemeIcon('debug-pause');
         item.description = [h.feature, h.phaseTask].filter(Boolean).join(' · ');
         item.tooltip = 'Snapshot da última pausa (STATE.md › ## Handoff). É uma hipótese — a skill reconcilia com o git ao retomar.';
-        item.command = openFileCommand(pid, 'STATE.md', h.line);
+        item.command = previewFileCommand(pid, 'STATE.md');
         return item;
       }
       case 'field': {
@@ -100,7 +100,7 @@ export class ProjectTree implements vscode.TreeDataProvider<Node> {
         item.tooltip = `${node.label}: ${node.value}`;
         const blocked = node.label === 'Bloqueios' && !/^(none|nenhum|-|n\/a)\.?$/i.test(node.value);
         item.iconPath = new vscode.ThemeIcon(node.icon, blocked ? new vscode.ThemeColor('list.warningForeground') : undefined);
-        item.command = openFileCommand(pid, 'STATE.md', node.line);
+        item.command = previewFileCommand(pid, 'STATE.md');
         return item;
       }
       case 'decisions': {
@@ -128,7 +128,7 @@ export class ProjectTree implements vscode.TreeDataProvider<Node> {
           if (v) md.appendMarkdown(`- **${k}:** `).appendText(v + '\n');
         }
         item.tooltip = md;
-        item.command = openFileCommand(pid, 'STATE.md', d.line);
+        item.command = previewFileCommand(pid, 'STATE.md');
         return item;
       }
       case 'lessons': {
@@ -137,7 +137,7 @@ export class ProjectTree implements vscode.TreeDataProvider<Node> {
         item.iconPath = new vscode.ThemeIcon('mortar-board');
         item.description = `${c('confirmed')} confirmada(s) · ${c('candidate')} candidata(s)`;
         item.tooltip = 'Camada de lições da skill (.specs/lessons.json) — gerada a partir de falhas do Verifier.';
-        item.command = openFileCommand(pid, 'LESSONS.md');
+        item.command = previewFileCommand(pid, 'LESSONS.md');
         return item;
       }
       case 'lessonGroup': {
@@ -153,7 +153,7 @@ export class ProjectTree implements vscode.TreeDataProvider<Node> {
         const item = new vscode.TreeItem(`${l.id}: ${l.text}`, C.None);
         item.description = [l.scope, `×${l.recurrence}`].filter(Boolean).join(' · ');
         item.tooltip = `${l.text}\n\nSinal: ${l.signal}\nFeatures: ${l.features.join(', ') || '-'}\nRecorrência: ${l.recurrence} · Prejudicial: ${l.harmful}\nÚltima vez: ${l.lastSeen || '-'}`;
-        item.command = openFileCommand(pid, 'LESSONS.md');
+        item.command = previewFileCommand(pid, 'LESSONS.md');
         return item;
       }
       case 'issues': {

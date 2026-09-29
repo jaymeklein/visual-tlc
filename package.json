@@ -94,6 +94,17 @@
         "command": "tlcSpecs.openFile",
         "title": "Abrir arquivo",
         "category": "TLC Specs"
+      },
+      {
+        "command": "tlcSpecs.previewFile",
+        "title": "Visualizar markdown",
+        "category": "TLC Specs"
+      },
+      {
+        "command": "tlcSpecs.openInEditor",
+        "title": "Abrir no editor",
+        "category": "TLC Specs",
+        "icon": "$(edit)"
       }
     ],
     "menus": {
@@ -126,6 +137,16 @@
           "group": "inline@3"
         },
         {
+          "command": "tlcSpecs.openInEditor",
+          "when": "view == tlcSpecs.features && viewItem == artifact",
+          "group": "inline"
+        },
+        {
+          "command": "tlcSpecs.openInEditor",
+          "when": "view == tlcSpecs.features && viewItem == artifact",
+          "group": "navigation"
+        },
+        {
           "command": "tlcSpecs.previewFeatureMarkdown",
           "when": "view == tlcSpecs.features && viewItem == feature",
           "group": "navigation@1"
@@ -156,6 +177,14 @@
         },
         {
           "command": "tlcSpecs.openFile",
+          "when": "false"
+        },
+        {
+          "command": "tlcSpecs.previewFile",
+          "when": "false"
+        },
+        {
+          "command": "tlcSpecs.openInEditor",
           "when": "false"
         }
       ]

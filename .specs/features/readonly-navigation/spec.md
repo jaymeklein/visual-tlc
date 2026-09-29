@@ -105,11 +105,11 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Requirement ID | Story       | Phase  | Status  |
 | -------------- | ----------- | ------ | ------- |
-| NAV-01 | P1: Abrir artefatos em modo visualização | - | Pending |
-| NAV-02 | P1: Abrir artefatos em modo visualização | - | Pending |
-| NAV-03 | P1: Abrir artefatos em modo visualização | - | Pending |
-| NAV-04 | P1: Abrir artefatos em modo visualização | - | Pending |
-| NAV-05 | P1: Abrir artefatos em modo visualização | - | Pending |
+| NAV-01 | P1: Abrir artefatos em modo visualização | - | Implementing |
+| NAV-02 | P1: Abrir artefatos em modo visualização | - | Implementing |
+| NAV-03 | P1: Abrir artefatos em modo visualização | - | Implementing |
+| NAV-04 | P1: Abrir artefatos em modo visualização | - | Implementing |
+| NAV-05 | P1: Abrir artefatos em modo visualização | - | Implementing |
 | NAV-06 | P1: Tasks como lista somente leitura | - | Pending |
 | NAV-07 | P1: Tasks como lista somente leitura | - | Pending |
 | NAV-08 | P1: Tasks como lista somente leitura | - | Pending |
@@ -119,7 +119,7 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 | NAV-12 | P2: Mesmo comportamento no painel | - | Pending |
 | NAV-13 | P2: Mesmo comportamento no painel | - | Pending |
 | NAV-14 | P2: Mesmo comportamento no painel | - | Pending |
-| NAV-15 | Edge case: etapa sem arquivo | - | Pending |
+| NAV-15 | Edge case: etapa sem arquivo | - | Implementing |
 | NAV-16 | Edge case: Tasks e Execução expandidas | - | Pending |
 
 **ID format:** `NAV-NN`, na ordem dos critérios acima (P1 artefatos → NAV-01..05, P1 tasks → NAV-06..09, P2 painel → NAV-10..14, edge cases → NAV-15..16).

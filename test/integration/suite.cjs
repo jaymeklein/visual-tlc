@@ -132,6 +132,134 @@ test('folder button reveals the feature folder without errors', async () => {
   await vscode.commands.executeCommand('tlcSpecs.revealFeatureFolder', { projectId: projectId(), feature: 'billing-invoices' });
 });
 
+// ---------- readonly-navigation (spec: .specs/features/readonly-navigation/spec.md) ----------
+
+const tree = () => api.featuresTree;
+const kids = async (provider, node) => (await provider.getChildren(node)) ?? [];
+const featureNode = async (name) => (await kids(tree())).find((n) => n.kind === 'feature' && n.feature.name === name);
+const stageNode = async (featureName, id) => (await kids(tree(), await featureNode(featureName))).find((n) => n.kind === 'stage' && n.stage.id === id);
+const closeAll = () => vscode.commands.executeCommand('workbench.action.closeAllEditors');
+const runCmd = (cmd) => vscode.commands.executeCommand(cmd.command, ...(cmd.arguments ?? []));
+
+async function expectPreviewOf(fileName) {
+  const tab = await waitFor(`preview of ${fileName}`, () => previewTabs().find((t) => t.label.includes(fileName)));
+  assert.ok(tab);
+  assert.equal(vscode.window.activeTextEditor, undefined, 'a text editor was opened instead of the preview');
+}
+
+test('NAV-01 stages open their markdown in the preview', async () => {
+  const cases = [
+    ['user-auth', 'spec', 'features/user-auth/spec.md'],
+    ['user-auth', 'design', 'features/user-auth/design.md'],
+    ['user-auth', 'tasks', 'features/user-auth/tasks.md'],
+    ['user-auth', 'execute', 'features/user-auth/tasks.md'],
+    ['billing-invoices', 'verify', 'features/billing-invoices/validation.md'],
+  ];
+  for (const [f, s, file] of cases) {
+    const item = await tree().getTreeItem(await stageNode(f, s));
+    assert.equal(item.command?.command, 'tlcSpecs.previewFile', `${f}/${s}`);
+    assert.deepEqual(item.command.arguments.slice(0, 2), [projectId(), file], `${f}/${s}`);
+  }
+  await closeAll();
+  await runCmd((await tree().getTreeItem(await stageNode('user-auth', 'design'))).command);
+  await expectPreviewOf('design.md');
+});
+
+test('NAV-02 file, requirement and phase rows open the preview', async () => {
+  const children = await kids(tree(), await featureNode('user-auth'));
+  const file = (await kids(tree(), children.find((n) => n.kind === 'files'))).find((n) => n.file.name === 'context.md');
+  const req = (await kids(tree(), children.find((n) => n.kind === 'reqs'))).find((n) => n.req.id === 'AUTH-03');
+  const phase = (await kids(tree(), await stageNode('user-auth', 'execute'))).find((n) => n.kind === 'phase' && n.phase.number === 2);
+  for (const [node, expected] of [
+    [file, 'features/user-auth/context.md'],
+    [req, 'features/user-auth/spec.md'],
+    [phase, 'features/user-auth/tasks.md'],
+  ]) {
+    const item = await tree().getTreeItem(node);
+    assert.equal(item.command?.command, 'tlcSpecs.previewFile', node.kind);
+    assert.deepEqual(item.command.arguments.slice(0, 2), [projectId(), expected], node.kind);
+  }
+  await closeAll();
+  await runCmd((await tree().getTreeItem(req)).command);
+  await expectPreviewOf('spec.md');
+});
+
+test('NAV-03 Projeto rows open STATE.md / LESSONS.md in the preview', async () => {
+  const project = api.projectTree;
+  const sections = await kids(project);
+  const handoff = sections.find((n) => n.kind === 'handoff');
+  const field = (await kids(project, handoff))[0];
+  const decision = (await kids(project, sections.find((n) => n.kind === 'decisions')))[0];
+  const group = (await kids(project, sections.find((n) => n.kind === 'lessons')))[0];
+  const lesson = (await kids(project, group))[0];
+  for (const [node, expected] of [
+    [handoff, 'STATE.md'],
+    [field, 'STATE.md'],
+    [decision, 'STATE.md'],
+    [lesson, 'LESSONS.md'],
+  ]) {
+    const item = await project.getTreeItem(node);
+    assert.equal(item.command?.command, 'tlcSpecs.previewFile', node.kind);
+    assert.deepEqual(item.command.arguments.slice(0, 2), [projectId(), expected], node.kind);
+  }
+  await closeAll();
+  await runCmd((await project.getTreeItem(lesson)).command);
+  await expectPreviewOf('LESSONS.md');
+});
+
+test('NAV-04 "Abrir no editor" opens the text editor at the row line', async () => {
+  const menus = vscode.extensions.getExtension('visual-tlc.visual-tlc').packageJSON.contributes.menus['view/item/context'];
+  const inline = menus.find((m) => m.command === 'tlcSpecs.openInEditor' && m.group.startsWith('inline'));
+  assert.ok(inline, 'openInEditor has no inline button');
+  assert.match(inline.when, /viewItem == artifact/);
+
+  const children = await kids(tree(), await featureNode('user-auth'));
+  const req = (await kids(tree(), children.find((n) => n.kind === 'reqs'))).find((n) => n.req.id === 'AUTH-03');
+  const phase = (await kids(tree(), await stageNode('user-auth', 'execute'))).find((n) => n.kind === 'phase' && n.phase.number === 2);
+  const file = (await kids(tree(), children.find((n) => n.kind === 'files'))).find((n) => n.file.name === 'design.md');
+  const stage = await stageNode('user-auth', 'spec');
+  for (const node of [req, phase, file, stage]) {
+    assert.equal((await tree().getTreeItem(node)).contextValue, 'artifact', node.kind);
+  }
+  for (const [node, fileName, line] of [
+    [req, 'spec.md', req.req.line - 1],
+    [phase, 'tasks.md', phase.phase.line - 1],
+    [stage, 'spec.md', 0],
+    [file, 'design.md', 0],
+  ]) {
+    await closeAll();
+    await vscode.commands.executeCommand('tlcSpecs.openInEditor', node);
+    const editor = await waitFor('text editor', () => vscode.window.activeTextEditor);
+    assert.ok(editor.document.uri.path.endsWith(`/user-auth/${fileName}`), node.kind);
+    assert.equal(editor.selection.active.line, line, node.kind);
+  }
+});
+
+test('NAV-05 warnings open the text editor at the warning line', async () => {
+  const children = await kids(tree(), await featureNode('user-auth'));
+  const warning = (await kids(tree(), children.find((n) => n.kind === 'issues'))).find((n) => n.issue.message.startsWith('Requisito(s) sem task'));
+  const item = await tree().getTreeItem(warning);
+  assert.equal(item.command?.command, 'tlcSpecs.openFile');
+  assert.deepEqual(item.command.arguments, [projectId(), 'features/user-auth/spec.md', warning.issue.line]);
+  await closeAll();
+  await runCmd(item.command);
+  const editor = await waitFor('text editor', () => vscode.window.activeTextEditor);
+  assert.ok(editor.document.uri.path.endsWith('/user-auth/spec.md'));
+  assert.equal(editor.selection.active.line, warning.issue.line - 1);
+});
+
+test('NAV-15 stages without a file have no click action and no editor button', async () => {
+  for (const [f, s] of [
+    ['user-auth', 'verify'],
+    ['csv-export', 'design'],
+    ['csv-export', 'tasks'],
+  ]) {
+    const item = await tree().getTreeItem(await stageNode(f, s));
+    assert.equal(item.command, undefined, `${f}/${s}`);
+    assert.notEqual(item.contextValue, 'artifact', `${f}/${s}`);
+  }
+});
+
 exports.run = async function run() {
   const failures = [];
   for (const c of cases) {

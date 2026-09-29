@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import type { Feature, FeatureFile, Issue, Requirement, Stage, Task, TaskPhase } from '../core/types.ts';
 import { HEALTH_LABEL, progressBar, REQ_STATUS_LABEL, STAGE_LABEL, STAGE_STATE_LABEL, TASK_STATUS_LABEL } from '../core/labels.ts';
 import type { LoadedProject, SpecsStore } from './store.ts';
-import { issueIcon, openFileCommand } from './common.ts';
+import { issueIcon, openFileCommand, previewFileCommand } from './common.ts';
 
 type Node =
   | { kind: 'root'; loaded: LoadedProject }
@@ -18,6 +18,23 @@ type Node =
   | { kind: 'issue'; loaded: LoadedProject; issue: Issue };
 
 export type FeatureNode = Extract<Node, { kind: 'feature' }>;
+
+/** File (and line) behind an artifact row: what "Abrir no editor" opens. */
+export function artifactTarget(node: Node): { projectId: string; file: string; line?: number } | undefined {
+  const projectId = node.loaded.project.id;
+  switch (node.kind) {
+    case 'stage':
+      return node.stage.file ? { projectId, file: node.stage.file } : undefined;
+    case 'phase':
+      return { projectId, file: `${node.feature.dir}/tasks.md`, line: node.phase.line };
+    case 'req':
+      return { projectId, file: `${node.feature.dir}/spec.md`, line: node.req.line };
+    case 'file':
+      return { projectId, file: node.file.path };
+    default:
+      return undefined;
+  }
+}
 
 const color = (id: string) => new vscode.ThemeColor(id);
 const icon = (id: string, c?: string) => new vscode.ThemeIcon(id, c ? color(c) : undefined);
@@ -122,7 +139,10 @@ export class FeaturesTree implements vscode.TreeDataProvider<Node> {
         item.iconPath = STAGE_ICON[stage.state];
         item.description = stage.detail;
         item.tooltip = `${STAGE_LABEL[stage.id]} — ${STAGE_STATE_LABEL[stage.state]}\n${stage.detail}`;
-        if (stage.file) item.command = openFileCommand(pid, stage.file);
+        if (stage.file) {
+          item.command = previewFileCommand(pid, stage.file);
+          item.contextValue = 'artifact';
+        }
         return item;
       }
       case 'phase': {
@@ -132,7 +152,8 @@ export class FeaturesTree implements vscode.TreeDataProvider<Node> {
         item.id = `phase:${pid}:${node.feature.name}:${node.phase.number}`;
         item.description = `${done}/${tasks.length}`;
         item.iconPath = done === tasks.length ? icon('pass-filled', 'testing.iconPassed') : done > 0 ? icon('circle-large-filled', 'charts.blue') : icon('circle-large-outline');
-        item.command = openFileCommand(pid, `${node.feature.dir}/tasks.md`, node.phase.line);
+        item.command = previewFileCommand(pid, `${node.feature.dir}/tasks.md`);
+        item.contextValue = 'artifact';
         return item;
       }
       case 'task': {
@@ -168,7 +189,8 @@ export class FeaturesTree implements vscode.TreeDataProvider<Node> {
               : r.statusKind === 'implementing'
                 ? icon('sync', 'charts.blue')
                 : icon('circle-small');
-        item.command = openFileCommand(pid, `${node.feature.dir}/spec.md`, r.line);
+        item.command = previewFileCommand(pid, `${node.feature.dir}/spec.md`);
+        item.contextValue = 'artifact';
         return item;
       }
       case 'files': {
@@ -183,7 +205,8 @@ export class FeaturesTree implements vscode.TreeDataProvider<Node> {
         const item = uri ? new vscode.TreeItem(uri, C.None) : new vscode.TreeItem(node.file.name, C.None);
         item.id = `file:${pid}:${node.file.path}`;
         item.description = node.file.empty ? 'vazio' : node.file.kind === 'other' ? 'extra' : undefined;
-        item.command = openFileCommand(pid, node.file.path);
+        item.command = previewFileCommand(pid, node.file.path);
+        item.contextValue = 'artifact';
         return item;
       }
       case 'issues': {
