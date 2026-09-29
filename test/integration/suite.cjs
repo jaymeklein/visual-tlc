@@ -437,8 +437,9 @@ test('SF-03 a configuration change reloads trees, panel, status bar and diagnost
   await setFolders(['.specs']);
   await waitForRoots(['.specs']);
   await closeAll();
+  await waitFor('the panel to close', () => api.dashboardProjects() === undefined);
   await vscode.commands.executeCommand('tlcSpecs.openDashboard');
-  const before = await waitFor('the panel to receive its first state', () => api.dashboardProjects());
+  const before = await waitFor('the panel to render its first state', () => api.dashboardProjects());
   assert.deepEqual(before, [projectId()]);
   assert.match(api.statusBarText(), /user-auth/);
   let fired = 0;
@@ -447,10 +448,8 @@ test('SF-03 a configuration change reloads trees, panel, status bar and diagnost
     await setFolders(['docs/specs']);
     await waitForRoots(['docs/specs', 'packages/api/docs/specs']);
     assert.ok(fired > 0, 'the Features tree was not told to reload');
-    assert.deepEqual(
-      api.dashboardProjects(),
-      api.getProjects().map((p) => p.id),
-    );
+    const ids = JSON.stringify(api.getProjects().map((p) => p.id));
+    await waitFor(`the panel to render ${ids}`, () => JSON.stringify(api.dashboardProjects()) === ids);
     assert.match(api.statusBarText(), /^\$\(tasklist\) (custom-one|nested-one) · /);
     const groups = api.featuresTree.getChildren();
     assert.deepEqual(groups.map((n) => n.kind), ['root', 'root']);

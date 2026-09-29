@@ -79,7 +79,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<TlcSpe
     refresh: () => store.refresh(),
     dashboardHealth: () => dashboard.health,
     dashboardMessage: (message) => dashboard.onMessage(message),
-    dashboardProjects: () => dashboard.posted,
+    dashboardProjects: () => dashboard.rendered,
     statusBarText: () => statusBar.text,
     featuresTree: featuresTree as vscode.TreeDataProvider<unknown>,
     projectTree: projectTree as vscode.TreeDataProvider<unknown>,

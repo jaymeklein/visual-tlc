@@ -11,8 +11,8 @@ export class Dashboard implements vscode.Disposable {
   private readonly disposables: vscode.Disposable[] = [];
   /** Webview health, surfaced for the integration tests. */
   readonly health = { ready: false, errors: [] as string[] };
-  /** Project ids of the last state posted to the open panel, for the integration tests. */
-  posted: string[] | undefined;
+  /** Project ids the open panel last rendered, undefined without a panel (for the integration tests). */
+  rendered: string[] | undefined;
 
   private readonly extensionUri: vscode.Uri;
   private readonly store: SpecsStore;
@@ -35,11 +35,17 @@ export class Dashboard implements vscode.Disposable {
       enableScripts: true,
       localResourceRoots: [vscode.Uri.joinPath(this.extensionUri, 'dist'), vscode.Uri.joinPath(this.extensionUri, 'media')],
     });
-    this.posted = undefined;
     panel.iconPath = vscode.Uri.joinPath(this.extensionUri, 'media', 'tlc-color.svg');
     panel.webview.html = this.html(panel.webview);
     panel.webview.onDidReceiveMessage((m: FromWebview) => this.onMessage(m), undefined, this.disposables);
-    panel.onDidDispose(() => (this.panel = undefined), undefined, this.disposables);
+    panel.onDidDispose(
+      () => {
+        this.panel = undefined;
+        this.rendered = undefined;
+      },
+      undefined,
+      this.disposables,
+    );
     this.panel = panel;
   }
 
@@ -53,6 +59,9 @@ export class Dashboard implements vscode.Disposable {
         break;
       case 'refresh':
         await this.store.refresh();
+        break;
+      case 'rendered':
+        if (this.panel) this.rendered = m.projects;
         break;
       case 'error':
         this.health.errors.push(m.message);
@@ -82,9 +91,7 @@ export class Dashboard implements vscode.Disposable {
   }
 
   private postState(): void {
-    const projects = this.store.projects.map((p) => p.project);
-    if (this.panel) this.posted = projects.map((p) => p.id);
-    this.post({ type: 'state', projects, now: Date.now() });
+    this.post({ type: 'state', projects: this.store.projects.map((p) => p.project), now: Date.now() });
   }
 
   private flushSelect(): void {

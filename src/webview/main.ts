@@ -28,6 +28,7 @@ window.addEventListener('message', (event: MessageEvent<ToWebview>) => {
     now = msg.now;
     loaded = true;
     render();
+    vscode.postMessage({ type: 'rendered', projects: projects.map((p) => p.id) });
   } else if (msg.type === 'select') {
     setView({ selected: msg.target });
     window.scrollTo(0, 0);

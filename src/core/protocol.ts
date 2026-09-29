@@ -12,6 +12,8 @@ export type ToWebview =
 export type FromWebview =
   | { type: 'ready' }
   | { type: 'refresh' }
+  /** Sent after each state is on screen, with the ids of the projects it rendered. */
+  | { type: 'rendered'; projects: string[] }
   | { type: 'open'; projectId: string; file: string; line?: number }
   | { type: 'previewFile'; projectId: string; file: string }
   | { type: 'error'; message: string }

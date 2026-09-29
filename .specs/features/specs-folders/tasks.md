@@ -391,11 +391,11 @@ T11 → T12 → T13
 
 **Done when**:
 
-- [ ] Depois da troca de configuração, os projetos confirmados pela webview são os de `getProjects()`
-- [ ] Sem painel aberto, a leitura de teste devolve `undefined`
-- [ ] Mutantes N2, N6 e N8 do Verifier morrem; P2 e N1 continuam mortos
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [ ] Test count: nenhum teste removido
+- [x] Depois da troca de configuração, os projetos confirmados pela webview são os de `getProjects()`
+- [x] Sem painel aberto, a leitura de teste devolve `undefined`
+- [x] Mutantes N2, N6 e N8 do Verifier morrem; P2 e N1 continuam mortos
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] Test count: nenhum teste removido
 
 **Tests**: integration
 **Gate**: full
