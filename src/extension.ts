@@ -24,6 +24,7 @@ export interface TlcSpecsApi {
   dashboardMessage(message: FromWebview): Promise<void>;
   dashboardProjects(): readonly string[] | undefined;
   dashboardReport(): Rendered | undefined;
+  sidePanelReport(): Rendered | undefined;
   statusBarText(): string | undefined;
   featuresTree: vscode.TreeDataProvider<unknown>;
   projectTree: vscode.TreeDataProvider<unknown>;
@@ -78,10 +79,11 @@ export async function activate(context: vscode.ExtensionContext): Promise<TlcSpe
   return {
     getProjects: () => store.projects.map((p) => p.project),
     refresh: () => store.refresh(),
-    dashboardHealth: () => dashboard.health,
-    dashboardMessage: (message) => dashboard.onMessage(message),
-    dashboardProjects: () => dashboard.rendered?.projects,
-    dashboardReport: () => dashboard.rendered,
+    dashboardHealth: () => dashboard.tab.health,
+    dashboardMessage: (message) => dashboard.tab.onMessage(message),
+    dashboardProjects: () => dashboard.tab.rendered?.projects,
+    dashboardReport: () => dashboard.tab.rendered,
+    sidePanelReport: () => dashboard.side.rendered,
     statusBarText: () => statusBar.text,
     featuresTree: featuresTree as vscode.TreeDataProvider<unknown>,
     projectTree: projectTree as vscode.TreeDataProvider<unknown>,

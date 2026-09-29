@@ -17,8 +17,8 @@ export interface Rendered {
   columns: number;
   /** Stages without features that are on screen. */
   emptyStages: number;
-  /** True with the "Nenhuma spec encontrada" message on screen. */
-  empty: boolean;
+  /** Title of the message shown when there is no specs folder, null otherwise. */
+  emptyMessage: string | null;
   /** Width of the webview in px. */
   width: number;
   /** True when the page or a board scrolls horizontally. */

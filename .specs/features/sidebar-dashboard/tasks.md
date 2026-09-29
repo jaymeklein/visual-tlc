@@ -133,12 +133,12 @@ T7 → T8
 
 **Done when**:
 
-- [ ] `package.json` declara a view "Painel" (`tlcSpecs.panel`, tipo webview) no contêiner `tlcSpecs`, depois de Projeto
-- [ ] A view renderiza os mesmos projetos de `getProjects()`
-- [ ] Feature nova gravada numa pasta de specs aparece nos cartões da view
-- [ ] Sem pasta de specs, a view mostra "Nenhuma spec encontrada"
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [ ] Test count: nenhum teste removido
+- [x] `package.json` declara a view "Painel" (`tlcSpecs.panel`, tipo webview) no contêiner `tlcSpecs`, depois de Projeto
+- [x] A view renderiza os mesmos projetos de `getProjects()`
+- [x] Feature nova gravada numa pasta de specs aparece nos cartões da view
+- [x] Sem pasta de specs, a view mostra "Nenhuma spec encontrada"
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] Test count: nenhum teste removido
 
 **Tests**: integration
 **Gate**: full

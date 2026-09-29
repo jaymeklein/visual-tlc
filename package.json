@@ -45,6 +45,11 @@
         {
           "id": "tlcSpecs.project",
           "name": "Projeto"
+        },
+        {
+          "type": "webview",
+          "id": "tlcSpecs.panel",
+          "name": "Painel"
         }
       ]
     },

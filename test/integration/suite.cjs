@@ -582,6 +582,63 @@ test('SIDE-09 the panel in a tab shows the six stages side by side at 700px or m
   assert.equal(report.detail, null);
 });
 
+const showSidePanel = () => vscode.commands.executeCommand('tlcSpecs.panel.focus');
+const sideReport = (what, ok) =>
+  waitFor(what, () => {
+    const r = api.sidePanelReport();
+    return r && ok(r) ? r : undefined;
+  });
+const tabReport = (what, ok) =>
+  waitFor(what, () => {
+    const r = api.dashboardReport();
+    return r && ok(r) ? r : undefined;
+  });
+const projectIds = () => api.getProjects().map((p) => p.id);
+const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+
+test('SIDE-01 the side bar has a Painel view with the projects of the panel in a tab', async () => {
+  const views = vscode.extensions.getExtension('visual-tlc.visual-tlc').packageJSON.contributes.views.tlcSpecs;
+  assert.deepEqual(
+    views.map((v) => v.id),
+    ['tlcSpecs.features', 'tlcSpecs.project', 'tlcSpecs.panel'],
+  );
+  assert.deepEqual(views[2], { type: 'webview', id: 'tlcSpecs.panel', name: 'Painel' });
+
+  await showSidePanel();
+  const side = await sideReport('the side panel to render the projects', (r) => r.projects.length > 0);
+  assert.deepEqual(side.projects, projectIds());
+  assert.deepEqual([...side.cards].sort(), featureNames(api.getProjects()));
+  const tab = await tabReport('the tab to render the projects', (r) => r.projects.length > 0);
+  assert.deepEqual(side.projects, tab.projects);
+  assert.deepEqual(side.cards, tab.cards);
+});
+
+test('SIDE-05 an artifact written in a specs folder shows up in the side panel', async () => {
+  await showSidePanel();
+  await sideReport('the side panel to render', (r) => r.projects.length > 0);
+  await write('.specs/features/side-new/spec.md', SPEC_WITHOUT_SHALL);
+  const report = await sideReport('the card of side-new', (r) => r.cards.includes('side-new'));
+  assert.deepEqual([...report.cards].sort(), featureNames(api.getProjects()));
+});
+
+test('SIDE-11 without a specs folder the side panel says that no spec was found', async () => {
+  await showSidePanel();
+  try {
+    await setFolders(['nada/aqui']);
+    await waitForRoots([]);
+    const report = await sideReport('the empty message', (r) => r.emptyMessage !== null);
+    assert.equal(report.emptyMessage, 'Nenhuma spec encontrada');
+    assert.deepEqual(report.projects, []);
+    assert.deepEqual(report.cards, []);
+    assert.equal(report.columns, 0);
+  } finally {
+    await setFolders(undefined);
+    await waitForRoots(['.specs', 'tools/.specs']);
+  }
+  const back = await sideReport('the projects to come back', (r) => same(r.projects, projectIds()));
+  assert.equal(back.emptyMessage, null);
+});
+
 exports.run = async function run() {
   const failures = [];
   for (const c of cases) {

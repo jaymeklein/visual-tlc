@@ -91,17 +91,17 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Requirement ID | Story       | Phase  | Status  |
 | -------------- | ----------- | ------ | ------- |
-| SIDE-01 | P1: Ver o painel na barra lateral | - | Pending |
+| SIDE-01 | P1: Ver o painel na barra lateral | Tasks | Implementing |
 | SIDE-02 | P1: Ver o painel na barra lateral | - | Pending |
 | SIDE-03 | P1: Ver o painel na barra lateral | - | Pending |
 | SIDE-04 | P1: Ver o painel na barra lateral | Tasks | Implementing |
-| SIDE-05 | P1: Ver o painel na barra lateral | - | Pending |
+| SIDE-05 | P1: Ver o painel na barra lateral | Tasks | Implementing |
 | SIDE-06 | P1: Ver o painel na barra lateral | - | Pending |
 | SIDE-07 | P1: Ver o painel na barra lateral | - | Pending |
 | SIDE-08 | P2: Abrir a visão larga em aba | - | Pending |
 | SIDE-09 | P2: Abrir a visão larga em aba | Tasks | Implementing |
 | SIDE-10 | Edge case: as duas superfícies abertas | - | Pending |
-| SIDE-11 | Edge case: workspace sem specs | - | Pending |
+| SIDE-11 | Edge case: workspace sem specs | Tasks | Implementing |
 
 **ID format:** `SIDE-NN`, na ordem dos critérios acima.
 

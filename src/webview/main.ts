@@ -60,7 +60,7 @@ function report(): void {
     detail: app.querySelector('.detail-title .mono')?.textContent ?? null,
     columns: boards.length ? getComputedStyle(boards[0]).gridTemplateColumns.split(' ').length : 0,
     emptyStages: [...app.querySelectorAll<HTMLElement>('.column.is-empty')].filter((el) => getComputedStyle(el).display !== 'none').length,
-    empty: app.querySelector('.empty-state') !== null,
+    emptyMessage: app.querySelector('.empty-state h1')?.textContent ?? null,
     width: window.innerWidth,
     overflow: root.scrollWidth > root.clientWidth || boards.some((b) => b.scrollWidth > b.clientWidth),
   });
