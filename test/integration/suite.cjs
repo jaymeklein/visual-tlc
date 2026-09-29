@@ -513,9 +513,13 @@ test('HID-09/HID-10 a spec row has the open eye "Ocultar spec", a marked row the
     assert.equal((await rowOf('csv-export')).contextValue, 'feature.hidden');
     assert.equal(feature('billing-invoices').health, 'complete');
     assert.equal((await rowOf('billing-invoices')).contextValue, 'feature.done');
+    // A spec marked while open and completed later still has no eye.
+    await setHidden(api.dashboardMessage, 'billing-invoices', true);
+    assert.equal((await rowOf('billing-invoices')).contextValue, 'feature.done');
   } finally {
     await vscode.commands.executeCommand('tlcSpecs.hideHidden');
     await setHidden(api.dashboardMessage, 'csv-export', false);
+    await setHidden(api.dashboardMessage, 'billing-invoices', false);
   }
 });
 

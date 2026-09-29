@@ -321,6 +321,9 @@ test('HID-09/HID-10 a card on view has the open eye "Ocultar spec", a marked car
   assert.deepEqual(cardEyes(cards.get('user-auth')!.body), [{ action: 'hide', title: 'Ocultar spec', glyph: 'eye-open' }]);
   assert.deepEqual(cardEyes(cards.get('csv-export')!.body), [{ action: 'unhide', title: 'Desocultar spec', glyph: 'eye-closed' }]);
   assert.deepEqual(cardEyes(cards.get('billing-invoices')!.body), []);
+  // A spec marked while open and completed later still has no eye.
+  const both = cardsOf((await board(true, mark('csv-export', 'billing-invoices'))).html);
+  assert.deepEqual(cardEyes(both.get('billing-invoices')!.body), []);
   // The eye means hiding now: "Visualizar" draws another glyph.
   const preview = cards.get('user-auth')!.body.match(/data-action="preview"[^>]*>(<svg class="ic ([\w-]*)")/);
   assert.ok(preview, 'user-auth has no "Visualizar" button');
