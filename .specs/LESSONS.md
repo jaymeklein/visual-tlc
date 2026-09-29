@@ -87,8 +87,8 @@ Seen once or not yet corroborated. Tracked, not trusted.
 ### L-013 - Keep a defensive guard only with a test that fails without it
 - signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `extension-host` · harmful: 0
 - features: sidebar-dashboard
-- evidence: H4 src/ui/dashboard.ts:111 (extension-host)
-- last seen: 2026-09-29T15:08:17Z
+- evidence: H4 src/ui/dashboard.ts:111 (extension-host) (+1 more)
+- last seen: 2026-09-29T17:12:11Z
 
 ### L-014 - Give every flag a test hook reports one test that expects true and one that expects false
 - signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `test-hooks` · harmful: 0

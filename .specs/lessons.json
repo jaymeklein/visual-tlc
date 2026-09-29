@@ -241,10 +241,11 @@
       "recurrence": 1,
       "harmful": 0,
       "evidence": [
-        "H4 src/ui/dashboard.ts:111 (extension-host)"
+        "H4 src/ui/dashboard.ts:111 (extension-host)",
+        "M4 media/dashboard.css:319 (extension-host)"
       ],
       "created": "2026-09-29T15:08:17Z",
-      "last_seen": "2026-09-29T15:08:17Z"
+      "last_seen": "2026-09-29T17:12:11Z"
     },
     {
       "id": "L-014",

@@ -6,9 +6,9 @@ O painel abre como uma aba do editor. Para vê-lo, a pessoa troca de aba e perde
 
 ## Goals
 
-- [ ] O painel aparece na barra lateral TLC Specs sem abrir, fechar ou dividir abas do editor
-- [ ] O painel cabe na largura da barra lateral sem rolagem horizontal
-- [ ] A visão larga em aba do editor continua disponível por comando
+- [x] O painel aparece na barra lateral TLC Specs sem abrir, fechar ou dividir abas do editor
+- [x] O painel cabe na largura da barra lateral sem rolagem horizontal
+- [x] A visão larga em aba do editor continua disponível por comando
 
 ## Out of Scope
 
@@ -91,25 +91,25 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Requirement ID | Story       | Phase  | Status  |
 | -------------- | ----------- | ------ | ------- |
-| SIDE-01 | P1: Ver o painel na barra lateral | Tasks | Implementing |
-| SIDE-02 | P1: Ver o painel na barra lateral | Tasks | Implementing |
-| SIDE-03 | P1: Ver o painel na barra lateral | Tasks | Implementing |
-| SIDE-04 | P1: Ver o painel na barra lateral | Tasks | Implementing |
-| SIDE-05 | P1: Ver o painel na barra lateral | Tasks | Implementing |
-| SIDE-06 | P1: Ver o painel na barra lateral | Tasks | Implementing |
-| SIDE-07 | P1: Ver o painel na barra lateral | Tasks | Implementing |
-| SIDE-08 | P2: Abrir a visão larga em aba | Tasks | Implementing |
-| SIDE-09 | P2: Abrir a visão larga em aba | Tasks | Implementing |
-| SIDE-10 | Edge case: as duas superfícies abertas | Tasks | Implementing |
-| SIDE-11 | Edge case: workspace sem specs | Tasks | Implementing |
+| SIDE-01 | P1: Ver o painel na barra lateral | Tasks | Verified |
+| SIDE-02 | P1: Ver o painel na barra lateral | Tasks | Verified |
+| SIDE-03 | P1: Ver o painel na barra lateral | Tasks | Verified |
+| SIDE-04 | P1: Ver o painel na barra lateral | Tasks | Verified |
+| SIDE-05 | P1: Ver o painel na barra lateral | Tasks | Verified |
+| SIDE-06 | P1: Ver o painel na barra lateral | Tasks | Verified |
+| SIDE-07 | P1: Ver o painel na barra lateral | Tasks | Verified |
+| SIDE-08 | P2: Abrir a visão larga em aba | Tasks | Verified |
+| SIDE-09 | P2: Abrir a visão larga em aba | Tasks | Verified |
+| SIDE-10 | Edge case: as duas superfícies abertas | Tasks | Verified |
+| SIDE-11 | Edge case: workspace sem specs | Tasks | Verified |
 
 **ID format:** `SIDE-NN`, na ordem dos critérios acima.
 
-**Coverage:** 11 total, 0 mapeados em tasks, 11 sem task.
+**Coverage:** 11 total, 11 mapeados em `tasks.md`, 0 sem task.
 
 ---
 
 ## Success Criteria
 
-- [ ] Clicar numa feature mostra o painel na barra lateral e o código aberto continua na mesma aba
-- [ ] Os testes unitários e de integração atuais continuam passando; os que abriam a aba por `tlcSpecs.showFeature` passam a abri-la pelo comando da aba
+- [x] Clicar numa feature mostra o painel na barra lateral e o código aberto continua na mesma aba
+- [x] Os testes unitários e de integração atuais continuam passando; os que abriam a aba por `tlcSpecs.showFeature` passam a abri-la pelo comando da aba
