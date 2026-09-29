@@ -9,7 +9,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 ---
 
 **Design**: inline (sem `design.md`)
-**Status**: In Progress
+**Status**: Done
 
 Design inline:
 
@@ -527,11 +527,11 @@ T15 → T16 → T17
 
 **Done when**:
 
-- [ ] A rolagem do quadro largo é esperada abaixo de 1298px
-- [ ] O teste da barra lateral fechada espera o detalhe da feature pedida
-- [ ] O SIDE-05 compara a fase de cada cartão com o modelo
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [ ] Test count: nenhum teste removido
+- [x] A rolagem do quadro largo é esperada abaixo de 1298px
+- [x] O teste da barra lateral fechada espera o detalhe da feature pedida
+- [x] O SIDE-05 compara a fase de cada cartão com o modelo
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] Test count: nenhum teste removido
 
 **Tests**: integration
 **Gate**: full

@@ -579,8 +579,8 @@ test('SIDE-09 the panel in a tab shows the six stages side by side at 700px or m
   });
   assert.ok(report.width >= 700, `the tab is only ${report.width}px wide`);
   assert.equal(report.columns, 6);
-  // Six stages of at least 200px with their gaps need 1250px: a narrower tab scrolls the board sideways.
-  assert.equal(report.overflow, report.width < 1250, `overflow at ${report.width}px`);
+  // Six stages of at least 200px, their gaps and the page padding need 1298px: a narrower tab scrolls the board sideways.
+  assert.equal(report.overflow, report.width < 1298, `overflow at ${report.width}px`);
   assert.equal(report.emptyStages, emptyStagesOf(api.getProjects()));
   assert.deepEqual([...report.cards].sort(), featureNames(api.getProjects()));
   assert.equal(report.detail, null);
@@ -594,7 +594,7 @@ test('SIDE-09 the panel in a tab shows the six stages side by side at 700px or m
   });
   assert.ok(beside.width >= 700, `the tab is only ${beside.width}px wide beside the side bar`);
   assert.equal(beside.columns, 6);
-  assert.equal(beside.overflow, beside.width < 1250, `overflow at ${beside.width}px`);
+  assert.equal(beside.overflow, beside.width < 1298, `overflow at ${beside.width}px`);
   assert.equal(beside.emptyStages, emptyStagesOf(api.getProjects()));
 });
 
@@ -631,6 +631,9 @@ test('SIDE-01 the side bar has a Painel view with the projects of the panel in a
 
 test('SIDE-05 an artifact created, changed or removed in a specs folder shows in the side panel', async () => {
   const phaseOnCard = (r, name) => (r.cards.includes(name) ? r.phases[r.cards.indexOf(name)] : undefined);
+  /** Every card with its phase, to compare with every feature of the model. */
+  const onCards = (r) => r.cards.map((name, i) => `${name}: ${r.phases[i]}`).sort();
+  const inModel = () => api.getProjects().flatMap((p) => p.features.map((f) => `${f.name}: ${f.phaseLabel}`)).sort();
   const tasks = await readFile(path.join(specsDir(), 'features', 'search-filters', 'tasks.md'), 'utf8');
   assert.ok(tasks.includes('- [x] '), 'the fixture has no finished task');
   await showSidePanel();
@@ -641,20 +644,24 @@ test('SIDE-05 an artifact created, changed or removed in a specs folder shows in
   const created = await sideReport('the card of side-new', (r) => r.cards.includes('side-new'));
   assert.deepEqual([...created.cards].sort(), featureNames(api.getProjects()));
   assert.equal(phaseOnCard(created, 'side-new'), feature('side-new').phaseLabel);
+  assert.deepEqual(onCards(created), inModel());
   await write('.specs/features/side-new/tasks.md', tasks.replaceAll('- [x] ', '- [ ] '));
   const started = await sideReport('side-new to reach its tasks', (r) => phaseOnCard(r, 'side-new') !== phaseOnCard(created, 'side-new'));
   assert.equal(phaseOnCard(started, 'side-new'), feature('side-new').phaseLabel);
+  assert.deepEqual(onCards(started), inModel());
 
   // changed
   await write('.specs/features/side-new/tasks.md', tasks);
   const changed = await sideReport('side-new to finish its tasks', (r) => phaseOnCard(r, 'side-new') === 'Aguardando verificação');
   assert.equal(feature('side-new').phaseLabel, 'Aguardando verificação');
   assert.notEqual(phaseOnCard(started, 'side-new'), phaseOnCard(changed, 'side-new'));
+  assert.deepEqual(onCards(changed), inModel());
 
   // removed
   await rm(path.join(specsDir(), 'features', 'side-new'), { recursive: true });
   const removed = await sideReport('the card of side-new to go away', (r) => !r.cards.includes('side-new'));
   assert.deepEqual([...removed.cards].sort(), featureNames(api.getProjects()));
+  assert.deepEqual(onCards(removed), inModel());
 });
 
 test('SIDE-11 without a specs folder the side panel says that no spec was found', async () => {
@@ -862,8 +869,8 @@ test('SIDE-02 with the side bar closed, "Abrir feature no painel" brings the pan
   await waitFor('the side panel to hide', () => api.sidePanelReport() === undefined);
 
   await vscode.commands.executeCommand('tlcSpecs.showFeature', { projectId: projectId(), feature: 'billing-invoices' });
-  const report = await sideReport('the side panel to come back', (r) => r.projects.length > 0);
-  assert.equal(report.detail, 'billing-invoices');
+  const report = await sideReport('the side panel to come back on billing-invoices', (r) => r.detail === 'billing-invoices');
+  assert.deepEqual(report.projects, projectIds());
   assert.deepEqual(
     allTabs().map((t) => t.label),
     ['tasks.md'],
