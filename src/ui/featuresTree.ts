@@ -271,9 +271,11 @@ export class FeaturesTree implements vscode.TreeDataProvider<Node> {
     const f = node.feature;
     const item = new vscode.TreeItem(f.name, f.active ? vscode.TreeItemCollapsibleState.Expanded : vscode.TreeItemCollapsibleState.Collapsed);
     item.id = `feature:${node.loaded.project.id}:${f.name}`;
-    item.contextValue = 'feature';
+    const marked = this.hidden.isMarked({ projectId: node.loaded.project.id, feature: f.name });
+    // Picks the eye of the row: a completed spec has none (package.json, view/item/context).
+    item.contextValue = f.health === 'complete' ? 'feature.done' : marked ? 'feature.hidden' : 'feature';
     const errors = f.issues.filter((i) => i.severity === 'error').length;
-    item.description = `${f.active ? '● ' : ''}${f.phaseLabel} · ${Math.round(f.progress * 100)}%${errors ? ` · ${errors} erro(s)` : ''}`;
+    item.description = `${f.active ? '● ' : ''}${f.phaseLabel} · ${Math.round(f.progress * 100)}%${errors ? ` · ${errors} erro(s)` : ''}${marked ? ' · oculta' : ''}`;
     item.iconPath =
       f.health === 'complete'
         ? icon('pass-filled', 'testing.iconPassed')

@@ -85,6 +85,18 @@
         "icon": "$(eye)"
       },
       {
+        "command": "tlcSpecs.hideFeature",
+        "title": "Ocultar spec",
+        "category": "TLC Specs",
+        "icon": "$(eye)"
+      },
+      {
+        "command": "tlcSpecs.unhideFeature",
+        "title": "Desocultar spec",
+        "category": "TLC Specs",
+        "icon": "$(eye-closed)"
+      },
+      {
         "command": "tlcSpecs.openDashboard",
         "title": "Abrir painel em aba",
         "category": "TLC Specs",
@@ -151,18 +163,28 @@
       "view/item/context": [
         {
           "command": "tlcSpecs.previewFeatureMarkdown",
-          "when": "view == tlcSpecs.features && viewItem == feature",
+          "when": "view == tlcSpecs.features && (viewItem == feature || viewItem == feature.hidden || viewItem == feature.done)",
           "group": "inline@1"
         },
         {
           "command": "tlcSpecs.revealFeatureFolder",
-          "when": "view == tlcSpecs.features && viewItem == feature",
+          "when": "view == tlcSpecs.features && (viewItem == feature || viewItem == feature.hidden || viewItem == feature.done)",
           "group": "inline@2"
         },
         {
           "command": "tlcSpecs.showFeature",
-          "when": "view == tlcSpecs.features && viewItem == feature",
+          "when": "view == tlcSpecs.features && (viewItem == feature || viewItem == feature.hidden || viewItem == feature.done)",
           "group": "inline@3"
+        },
+        {
+          "command": "tlcSpecs.hideFeature",
+          "when": "view == tlcSpecs.features && viewItem == feature",
+          "group": "inline@4"
+        },
+        {
+          "command": "tlcSpecs.unhideFeature",
+          "when": "view == tlcSpecs.features && viewItem == feature.hidden",
+          "group": "inline@4"
         },
         {
           "command": "tlcSpecs.openInEditor",
@@ -176,18 +198,28 @@
         },
         {
           "command": "tlcSpecs.previewFeatureMarkdown",
-          "when": "view == tlcSpecs.features && viewItem == feature",
+          "when": "view == tlcSpecs.features && (viewItem == feature || viewItem == feature.hidden || viewItem == feature.done)",
           "group": "navigation@1"
         },
         {
           "command": "tlcSpecs.revealFeatureFolder",
-          "when": "view == tlcSpecs.features && viewItem == feature",
+          "when": "view == tlcSpecs.features && (viewItem == feature || viewItem == feature.hidden || viewItem == feature.done)",
           "group": "navigation@2"
         },
         {
           "command": "tlcSpecs.showFeature",
-          "when": "view == tlcSpecs.features && viewItem == feature",
+          "when": "view == tlcSpecs.features && (viewItem == feature || viewItem == feature.hidden || viewItem == feature.done)",
           "group": "navigation@3"
+        },
+        {
+          "command": "tlcSpecs.hideFeature",
+          "when": "view == tlcSpecs.features && viewItem == feature",
+          "group": "navigation@4"
+        },
+        {
+          "command": "tlcSpecs.unhideFeature",
+          "when": "view == tlcSpecs.features && viewItem == feature.hidden",
+          "group": "navigation@4"
         }
       ],
       "commandPalette": [
@@ -209,6 +241,14 @@
         },
         {
           "command": "tlcSpecs.revealFeatureFolder",
+          "when": "false"
+        },
+        {
+          "command": "tlcSpecs.hideFeature",
+          "when": "false"
+        },
+        {
+          "command": "tlcSpecs.unhideFeature",
           "when": "false"
         },
         {

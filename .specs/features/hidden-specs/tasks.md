@@ -232,14 +232,14 @@ T6 → T7
 
 **Done when**:
 
-- [ ] Linha à vista: `contextValue` `feature` e o menu inline `hideFeature` com `$(eye)`. Marcada: `feature.hidden` e `unhideFeature` com `$(eye-closed)`. Concluída: `feature.done`, sem olho (HID-09, HID-10)
-- [ ] Os botões antigos da linha continuam nas três formas
-- [ ] `hideFeature` com a linha da árvore tira a spec da árvore e dos cards do painel e soma 1 à mensagem (HID-11)
-- [ ] `unhideFeature` a devolve às duas superfícies (HID-12)
-- [ ] Com o olho aberto, a marcada tem a descrição terminada em "· oculta", e a mesma spec sem marca não tem (HID-14)
-- [ ] Os comandos por spec ficam fora da paleta
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [ ] Test count: 67 unit, 63 + 1 + 2 integration tests pass (60 antes + 3 novos)
+- [x] Linha à vista: `contextValue` `feature` e o menu inline `hideFeature` com `$(eye)`. Marcada: `feature.hidden` e `unhideFeature` com `$(eye-closed)`. Concluída: `feature.done`, sem olho (HID-09, HID-10)
+- [x] Os botões antigos da linha continuam nas três formas
+- [x] `hideFeature` com a linha da árvore tira a spec da árvore e dos cards do painel e soma 1 à mensagem (HID-11)
+- [x] `unhideFeature` a devolve às duas superfícies (HID-12)
+- [x] Com o olho aberto, a marcada tem a descrição terminada em "· oculta", e a mesma spec sem marca não tem (HID-14)
+- [x] Os comandos por spec ficam fora da paleta
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] Test count: 67 unit, 63 + 1 + 2 integration tests pass (60 antes + 3 novos)
 
 **Tests**: integration
 **Gate**: full

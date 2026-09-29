@@ -404,6 +404,7 @@ test('NAV-11/NAV-14 (host) an open message from the dashboard opens the text edi
 
 /** The eye of a card, as the webview sends it. */
 const setHidden = (send, feature, hidden) => send({ type: 'setHidden', target: { projectId: projectId(), feature }, hidden });
+const ocultas = (n) => `${n} ${n === 1 ? 'oculta' : 'ocultas'}`;
 const treeNames = () => api.featuresTree.getChildren().map((n) => n.feature.name).sort();
 const modelNames = (keep) => api.getProjects()[0].features.filter(keep).map((f) => f.name).sort();
 const contributes = () => vscode.extensions.getExtension('visual-tlc.visual-tlc').packageJSON.contributes;
@@ -486,6 +487,78 @@ test('HID-16 with every spec hidden Features is empty, its message counts them a
     for (const name of open) await setHidden(api.dashboardMessage, name, false);
   }
   assert.deepEqual(treeNames(), open);
+});
+
+const rowOf = async (name) => api.featuresTree.getTreeItem(await featureNode(name));
+/** The buttons every spec row keeps, whatever its eye. */
+const ANY_ROW = 'view == tlcSpecs.features && (viewItem == feature || viewItem == feature.hidden || viewItem == feature.done)';
+
+test('HID-09/HID-10 a spec row has the open eye "Ocultar spec", a marked row the closed eye "Desocultar spec", a completed row none', async () => {
+  const menus = contributes().menus;
+  assert.deepEqual(declared('tlcSpecs.hideFeature'), { command: 'tlcSpecs.hideFeature', title: 'Ocultar spec', category: 'TLC Specs', icon: '$(eye)' });
+  assert.deepEqual(declared('tlcSpecs.unhideFeature'), { command: 'tlcSpecs.unhideFeature', title: 'Desocultar spec', category: 'TLC Specs', icon: '$(eye-closed)' });
+  const inline = (command) => menus['view/item/context'].filter((m) => m.command === command && m.group.startsWith('inline')).map((m) => m.when);
+  assert.deepEqual(inline('tlcSpecs.hideFeature'), ['view == tlcSpecs.features && viewItem == feature']);
+  assert.deepEqual(inline('tlcSpecs.unhideFeature'), ['view == tlcSpecs.features && viewItem == feature.hidden']);
+  for (const command of ['tlcSpecs.previewFeatureMarkdown', 'tlcSpecs.revealFeatureFolder', 'tlcSpecs.showFeature']) {
+    assert.deepEqual(menus['view/item/context'].filter((m) => m.command === command).map((m) => m.when), [ANY_ROW, ANY_ROW], command);
+  }
+  for (const command of ['tlcSpecs.hideFeature', 'tlcSpecs.unhideFeature']) {
+    assert.deepEqual(menus.commandPalette.filter((m) => m.command === command).map((m) => m.when), ['false'], command);
+  }
+  try {
+    await setHidden(api.dashboardMessage, 'csv-export', true);
+    await vscode.commands.executeCommand('tlcSpecs.showHidden');
+    assert.equal((await rowOf('user-auth')).contextValue, 'feature');
+    assert.equal((await rowOf('csv-export')).contextValue, 'feature.hidden');
+    assert.equal(feature('billing-invoices').health, 'complete');
+    assert.equal((await rowOf('billing-invoices')).contextValue, 'feature.done');
+  } finally {
+    await vscode.commands.executeCommand('tlcSpecs.hideHidden');
+    await setHidden(api.dashboardMessage, 'csv-export', false);
+  }
+});
+
+test('HID-11/HID-12 the eye of a spec row takes it off Features and the panel and counts it, then brings it back', async () => {
+  const features = api.getProjects()[0].features;
+  const done = features.filter((f) => f.health === 'complete').length;
+  const base = `${features.length} feature(s) · ${done} concluída(s)`;
+  const onBoard = boardNames(api.getProjects());
+  await vscode.commands.executeCommand('tlcSpecs.openDashboard');
+  await tabReport('the tab on the board', (r) => r.detail === null && same([...r.cards].sort(), onBoard));
+  try {
+    await vscode.commands.executeCommand('tlcSpecs.hideFeature', await featureNode('csv-export'));
+    assert.deepEqual(treeNames(), modelNames((f) => f.health !== 'complete' && f.name !== 'csv-export'));
+    assert.equal(api.featuresViewMessage(), `${base} · ${done + 1} oculta(s)`);
+    const off = await tabReport('csv-export to leave the tab', (r) => !r.cards.includes('csv-export'));
+    assert.deepEqual([...off.cards].sort(), onBoard.filter((n) => n !== 'csv-export'));
+    assert.equal(off.toggle.text, ocultas(done + 1));
+
+    // Back through its row, reached with the eye of the title open.
+    await vscode.commands.executeCommand('tlcSpecs.showHidden');
+    await vscode.commands.executeCommand('tlcSpecs.unhideFeature', await featureNode('csv-export'));
+    await vscode.commands.executeCommand('tlcSpecs.hideHidden');
+    assert.deepEqual(treeNames(), modelNames((f) => f.health !== 'complete'));
+    assert.equal(api.featuresViewMessage(), `${base} · ${done} oculta(s)`);
+    const back = await tabReport('csv-export to come back to the tab', (r) => r.cards.includes('csv-export'));
+    assert.deepEqual([...back.cards].sort(), onBoard);
+    assert.equal(back.toggle.text, ocultas(done));
+  } finally {
+    await vscode.commands.executeCommand('tlcSpecs.hideHidden');
+    await setHidden(api.dashboardMessage, 'csv-export', false);
+  }
+});
+
+test('HID-14 with the eye of Features open a marked row ends its description with "· oculta", the same row unmarked does not', async () => {
+  try {
+    await vscode.commands.executeCommand('tlcSpecs.showHidden');
+    assert.doesNotMatch((await rowOf('csv-export')).description, /oculta/);
+    await setHidden(api.dashboardMessage, 'csv-export', true);
+    assert.match((await rowOf('csv-export')).description, / · oculta$/);
+  } finally {
+    await vscode.commands.executeCommand('tlcSpecs.hideHidden');
+    await setHidden(api.dashboardMessage, 'csv-export', false);
+  }
 });
 
 // --- specs-folders -------------------------------------------------------------------------------------------
@@ -805,7 +878,7 @@ test('SIDE-11 without a specs folder the side panel says that no spec was found'
 
 /** Specs out of the board while its eye is closed: the completed and the marked ones, over every project. */
 const hiddenCountOf = (projects, marked = []) => projects.reduce((n, p) => n + p.features.filter((f) => f.health === 'complete' || marked.includes(f.name)).length, 0);
-const ocultas = (n) => `${n} ${n === 1 ? 'oculta' : 'ocultas'}`;
+
 test('HID-01 the panel opens with the closed eye and the count of hidden specs, in a tab and in the side bar', async () => {
   const expected = { title: 'Mostrar as specs ocultas', text: ocultas(hiddenCountOf(api.getProjects())) };
   assert.ok(hasCompleted(api.getProjects()), 'the fixture has no completed feature to count');

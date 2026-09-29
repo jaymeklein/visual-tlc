@@ -60,6 +60,8 @@ export async function activate(context: vscode.ExtensionContext): Promise<TlcSpe
     vscode.commands.registerCommand('tlcSpecs.refresh', () => store.refresh()),
     vscode.commands.registerCommand('tlcSpecs.showHidden', () => featuresTree.setShowHidden(true)),
     vscode.commands.registerCommand('tlcSpecs.hideHidden', () => featuresTree.setShowHidden(false)),
+    vscode.commands.registerCommand('tlcSpecs.hideFeature', (arg: FeatureNode | FeatureRef) => hidden.set(toRef(arg), true)),
+    vscode.commands.registerCommand('tlcSpecs.unhideFeature', (arg: FeatureNode | FeatureRef) => hidden.set(toRef(arg), false)),
     vscode.commands.registerCommand('tlcSpecs.openDashboard', (arg?: FeatureNode | FeatureRef) => dashboard.show(target(arg))),
     vscode.commands.registerCommand('tlcSpecs.showFeature', (arg?: FeatureNode | FeatureRef) => dashboard.showSide(target(arg))),
     vscode.commands.registerCommand('tlcSpecs.previewFeatureMarkdown', (arg: FeatureNode | FeatureRef) => previewFeatureMarkdown(store, toRef(arg))),
