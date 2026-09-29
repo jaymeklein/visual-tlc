@@ -9,7 +9,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 ---
 
 **Design**: inline (escopo Medium, sem `design.md`)
-**Status**: In Progress
+**Status**: Done
 
 Design inline: `src/core/folders.ts` concentra a lógica pura (normalizar entradas, achar raízes, rotular). `src/ui/store.ts` lê a configuração por pasta do workspace, busca arquivos, recria os watchers e mostra os avisos.
 
@@ -356,12 +356,12 @@ T8 → T9 → T10 → T11
 
 **Done when**:
 
-- [ ] A spec nomeia os três eventos no SF-04
-- [ ] Alterar `spec.md` em `docs/specs` muda os avisos da feature
-- [ ] Remover a pasta da feature em `docs/specs` tira a feature da visão
-- [ ] Mutante H16 do Verifier morre
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [ ] Test count: nenhum teste removido
+- [x] A spec nomeia os três eventos no SF-04
+- [x] Alterar `spec.md` em `docs/specs` muda os avisos da feature
+- [x] Remover a pasta da feature em `docs/specs` tira a feature da visão
+- [x] Mutante H16 do Verifier morre
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] Test count: nenhum teste removido
 
 **Tests**: integration
 **Gate**: full

@@ -396,6 +396,8 @@ test('NAV-11/NAV-14 (host) an open message from the dashboard opens the text edi
 const SPEC_WITHOUT_SHALL =
   '# Custom Specification\n\n## Problem Statement\n\nX.\n\n## Out of Scope\n\n| Feature | Reason |\n| --- | --- |\n| A | B |\n\n## Assumptions & Open Questions\n\n**Open questions:** none\n\n## User Stories\n\n### P1: Do it ⭐ MVP\n\n**Acceptance Criteria**:\n\n1. WHEN x THEN the system does y\n\n## Requirement Traceability\n\n| Requirement ID | Story | Phase | Status |\n| --- | --- | --- | --- |\n| CUS-01 | P1 | - | Pending |\n';
 
+const { rm } = require('node:fs/promises');
+
 async function write(rel, text) {
   const file = path.join(folder().fsPath, ...rel.split('/'));
   await mkdir(path.dirname(file), { recursive: true });
@@ -472,13 +474,24 @@ test('SF-03 a configuration change reloads trees, panel, status bar and diagnost
   }
 });
 
-test('SF-04 a file written inside a configured folder updates its view', async () => {
+test('SF-04 a file created, changed or removed inside a configured folder updates its view', async () => {
+  const customTwo = () => api.getProjects().flatMap((p) => p.features).find((f) => f.name === 'custom-two');
+  const withoutShall = (f) => f.issues.filter((i) => i.message.includes('sem SHALL')).length;
   await setFolders(['docs/specs']);
   await waitForRoots(['docs/specs', 'packages/api/docs/specs']);
+
   await write('docs/specs/features/custom-two/spec.md', SPEC_WITHOUT_SHALL);
   await waitFor('custom-two in docs/specs', () => (featuresOf('docs/specs') || []).includes('custom-two'));
   assert.deepEqual(featuresOf('docs/specs'), ['custom-one', 'custom-two']);
   assert.deepEqual(featuresOf('packages/api/docs/specs'), ['nested-one']);
+  assert.equal(withoutShall(customTwo()), 1);
+
+  await write('docs/specs/features/custom-two/spec.md', SPEC_WITHOUT_SHALL.replace('the system does y', 'the system SHALL do y'));
+  await waitFor('the changed spec.md to be read again', () => withoutShall(customTwo()) === 0);
+
+  await rm(path.join(folder().fsPath, 'docs', 'specs', 'features', 'custom-two'), { recursive: true });
+  await waitFor('custom-two to leave docs/specs', () => !customTwo());
+  assert.deepEqual(featuresOf('docs/specs'), ['custom-one']);
 });
 
 test('SF-05 a matching folder without skill artifacts is ignored, unless it is named .specs', async () => {
