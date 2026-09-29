@@ -676,6 +676,9 @@ test('SIDE-03/SIDE-04 under 700px the side panel stacks the stages, hides the em
 const dashboardTab = () => allTabs().find((t) => t.input instanceof vscode.TabInputWebview && t.label === 'TLC Specs');
 
 test('SIDE-02 "Abrir feature no painel" shows the feature in the side panel and leaves the editor tabs alone', async () => {
+  const { commands } = vscode.extensions.getExtension('visual-tlc.visual-tlc').packageJSON.contributes;
+  assert.equal(commands.find((c) => c.command === 'tlcSpecs.showFeature').title, 'Abrir feature no painel');
+
   await closeAll();
   await vscode.commands.executeCommand('tlcSpecs.openFile', projectId(), 'features/user-auth/tasks.md', 1);
   const editor = (await waitFor('text editor', () => vscode.window.activeTextEditor)).document.uri.toString();
@@ -700,8 +703,12 @@ test('SIDE-02 "Abrir feature no painel" shows the feature in the side panel and 
 });
 
 test('SIDE-08 "Abrir painel em aba" opens the panel in an editor tab named TLC Specs', async () => {
-  const declared = vscode.extensions.getExtension('visual-tlc.visual-tlc').packageJSON.contributes.commands.find((c) => c.command === 'tlcSpecs.openDashboard');
-  assert.equal(declared.title, 'Abrir painel em aba');
+  const { commands, menus } = vscode.extensions.getExtension('visual-tlc.visual-tlc').packageJSON.contributes;
+  assert.equal(commands.find((c) => c.command === 'tlcSpecs.openDashboard').title, 'Abrir painel em aba');
+  assert.deepEqual(
+    menus['view/title'].filter((m) => m.command === 'tlcSpecs.openDashboard').map((m) => m.when),
+    ['view == tlcSpecs.features || view == tlcSpecs.panel'],
+  );
 
   await closeAll();
   await waitFor('the tab to close', () => !dashboardTab() && api.dashboardReport() === undefined);

@@ -410,11 +410,11 @@ T8 → T9 → T10 → T11 → T12 → T13 → T14 → T15
 
 **Done when**:
 
-- [ ] `view/title` de `tlcSpecs.openDashboard` vale para `tlcSpecs.panel`
-- [ ] `tlcSpecs.showFeature` se chama "Abrir feature no painel"
-- [ ] Mutantes P3 e P4 do Verifier morrem
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [ ] Test count: nenhum teste removido
+- [x] `view/title` de `tlcSpecs.openDashboard` vale para `tlcSpecs.panel`
+- [x] `tlcSpecs.showFeature` se chama "Abrir feature no painel"
+- [x] Mutantes P3 e P4 do Verifier morrem
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] Test count: nenhum teste removido
 
 **Tests**: integration
 **Gate**: full
