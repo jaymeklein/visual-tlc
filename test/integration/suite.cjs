@@ -600,6 +600,24 @@ test('SIDE-09/PNL-02/PNL-03 the panel in a tab shows the five open stages side b
   assert.equal(beside.columns, 5);
   assert.equal(beside.overflow, beside.boardWidth < 1040, `overflow with a ${beside.boardWidth}px board in a ${beside.width}px tab`);
   assert.equal(beside.emptyStages, emptyStagesOf(api.getProjects()));
+
+  // The same tab without the side bar and the activity bar: the board fits its five stages and does not scroll sideways.
+  await vscode.commands.executeCommand('workbench.action.closeSidebar');
+  const workbench = vscode.workspace.getConfiguration('workbench');
+  await workbench.update('activityBar.location', 'hidden', vscode.ConfigurationTarget.Global);
+  try {
+    const wide = await waitFor('the tab to render without the activity bar', async () => {
+      await api.refresh();
+      const r = api.dashboardReport();
+      return r && r.width > report.width ? r : undefined;
+    });
+    assert.ok(wide.boardWidth >= 1040, `the board is only ${wide.boardWidth}px wide in a ${wide.width}px tab`);
+    assert.equal(wide.columns, 5);
+    assert.equal(wide.overflow, false, `overflow with a ${wide.boardWidth}px board in a ${wide.width}px tab`);
+  } finally {
+    await workbench.update('activityBar.location', undefined, vscode.ConfigurationTarget.Global);
+    await vscode.commands.executeCommand('tlcSpecs.panel.focus');
+  }
 });
 
 const showSidePanel =() => vscode.commands.executeCommand('tlcSpecs.panel.focus');
