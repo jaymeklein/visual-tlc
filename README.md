@@ -9,7 +9,7 @@ Ela lê os artefatos que a skill grava em `.specs/` (ou nas pastas que você con
 
 **Barra lateral › TLC Specs**
 
-- **Features** — uma entrada por pasta em `.specs/features/`, com a fase atual e o progresso. Cada linha tem botões para **visualizar o markdown** da spec (`spec.md` no preview do VS Code — ou o primeiro markdown da pasta, se não houver spec), **abrir a pasta** da feature no Explorer e abrir a feature no painel (também no menu de contexto). Ao expandir:
+- **Features** — uma entrada por pasta em `.specs/features/`, com a fase atual e o progresso. Cada linha tem botões para **visualizar o markdown** da spec (`spec.md` no preview do VS Code — ou o primeiro markdown da pasta, se não houver spec), **abrir a pasta** da feature no Explorer, abrir a feature no painel e **ocultar a spec** pelo olho (também no menu de contexto). A árvore abre sem as specs ocultas: as concluídas e as que você ocultou. O **olho no título** de Features mostra ou esconde as ocultas, e a mensagem no topo conta quantas estão fora. Com o olho aberto, a spec ocultada à mão aparece com "· oculta" e o olho fechado na linha, que a desoculta. Ao expandir:
   - o pipeline **Spec → Design → Tasks → Execução → Verificação**, com cada etapa concluída, ativa, pulada, pendente ou com falha;
   - em **Tasks** e **Execução**, a lista de tasks agrupada por *Phase* (status vindo dos checkboxes de *Done when*, do campo `**Status**` ou de ✅ no título). Cada task expande seus detalhes (O quê, Onde, Depende de, Requisitos, Tests/Gate, Done when) como itens de leitura, sem abrir o `tasks.md`;
   - requisitos da *Requirement Traceability*, arquivos da feature e **avisos**.
@@ -22,8 +22,9 @@ Ela lê os artefatos que a skill grava em `.specs/` (ou nas pastas que você con
 - Fica na barra lateral, fora da área do editor: o código aberto continua na mesma aba, sem dividir a tela. Abrir uma feature no painel (botão da feature, barra de status ou notificação) mostra os detalhes dela ali.
 - Abaixo de 700px de largura o quadro fica em uma coluna e esconde as fases sem features. A seção pode ser arrastada para a barra lateral direita.
 - `TLC Specs: Abrir painel em aba` (ou o ícone no topo de Features e do Painel) abre a visão larga numa aba do editor, com as fases lado a lado.
-- Resumo do projeto, feature em foco e um **quadro por fase** com as specs; cada card tem os mesmos botões de visualizar o markdown e abrir a pasta.
-- O painel abre com **Ocultar concluídas** marcada: o quadro mostra só as features em andamento, nas cinco fases. Desmarque para ver a coluna Concluídas com as features verificadas com PASS. O resumo sempre conta as concluídas, e uma feature concluída aberta pela árvore ou por uma notificação mostra os detalhes normalmente.
+- Resumo do projeto, feature em foco e um **quadro por fase** com as specs; cada card tem os mesmos botões de visualizar o markdown e abrir a pasta, e o olho para ocultar a spec.
+- O painel abre com o **olho fechado** no topo, com o número de specs ocultas: as concluídas e as que você ocultou. O quadro mostra só o resto, nas cinco fases. Clique no olho para ver as ocultas: as concluídas voltam na coluna Concluídas, e as ocultadas à mão voltam esmaecidas na fase delas, com o olho fechado no card para desocultá-las. O resumo sempre conta todas, e uma spec oculta aberta pela árvore ou por uma notificação mostra os detalhes normalmente.
+- Cada superfície tem o seu olho: a árvore, a aba e a barra lateral. As specs ocultadas à mão valem para todas, ficam guardadas no estado do workspace no VS Code (fora de `.specs/`) e continuam ocultas ao reabrir.
 - Detalhe da feature: stepper do pipeline, próximo passo, tasks por fase, histórias com os padrões EARS, requisitos, veredito do Verifier (critérios, mutantes, UAT, fix plans), design/contexto, arquivos e avisos. As mesmas regras da árvore: cliques abrem o markdown no preview, cada task expande os detalhes no lugar, a seção Arquivos tem o lápis para abrir no editor e avisos abrem o editor na linha.
 
 **Também**

@@ -76,7 +76,7 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 1. WHEN o usuário executa "Abrir painel em aba" THEN a extensão SHALL abrir o painel numa aba do editor chamada "TLC Specs"
 2. WHILE o painel em aba tem 700px ou mais de largura a extensão SHALL mostrar as seis etapas do quadro lado a lado
 
-> Desde `panel-in-progress` (PNL-03 e PNL-04), as seis etapas aparecem com "Ocultar concluídas" desmarcada. Com a opção marcada, que é o padrão, o quadro mostra cinco.
+> Desde `panel-in-progress` (PNL-03 e PNL-04), as seis etapas aparecem com "Ocultar concluídas" desmarcada. Com a opção marcada, que é o padrão, o quadro mostra cinco. Desde `hidden-specs`, a opção é o olho do topo: fechado, que é o padrão, cinco; aberto, seis.
 
 **Independent Test**: Executar "TLC Specs: Abrir painel em aba" na paleta de comandos. Abre a aba com as etapas lado a lado: cinco colunas com "Ocultar concluídas" marcada, seis com ela desmarcada.
 

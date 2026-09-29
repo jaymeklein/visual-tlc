@@ -57,6 +57,8 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 3. WHILE a opção "Ocultar concluídas" está marcada e o painel tem 700px ou mais the extensão SHALL mostrar as cinco etapas lado a lado, sem espaço reservado à coluna Concluídas
 4. WHEN o usuário desmarca a opção "Ocultar concluídas" THEN a extensão SHALL mostrar a coluna Concluídas com os cards das features verificadas com PASS, e as seis etapas lado a lado
 
+> Desde `hidden-specs` (HID-01 a HID-04), a caixa "Ocultar concluídas" é um olho no topo do painel. A caixa marcada é o olho fechado, que também esconde as specs ocultadas à mão. Desmarcar a caixa é abrir o olho.
+
 **Independent Test**: Abrir o painel em aba neste repositório. As features com `validation.md` em PASS não aparecem no quadro, e não há coluna Concluídas. Desmarcar "Ocultar concluídas" traz a coluna e os cards.
 
 ---

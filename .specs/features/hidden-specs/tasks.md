@@ -9,7 +9,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 ---
 
 **Design**: `.specs/features/hidden-specs/design.md`
-**Status**: In Progress
+**Status**: Done
 
 ---
 
@@ -263,9 +263,9 @@ T6 → T7
 
 **Done when**:
 
-- [ ] README cita o olho no topo do painel, no título de Features e em cada spec, e que as marcas ficam no workspace
-- [ ] Nota na spec panel-in-progress, junto do PNL-01
-- [ ] Gate check passes: `npm run typecheck && npm test`
+- [x] README cita o olho no topo do painel, no título de Features e em cada spec, e que as marcas ficam no workspace
+- [x] Nota na spec panel-in-progress, junto dos PNL-01 a PNL-04, e na nota do SIDE-09 em sidebar-dashboard
+- [x] Gate check passes: `npm run typecheck && npm test`
 
 **Tests**: none
 **Gate**: build
