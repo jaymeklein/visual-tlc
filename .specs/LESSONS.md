@@ -23,8 +23,14 @@ Corroborated across multiple features. Safe to apply as guidance.
 ### L-009 - Drive every trigger the spec lists for an action, including callbacks that bypass the command
 - signal: `surviving_mutant` · recurrence: 2 feature(s) · scope: `extension-host` · harmful: 0
 - features: sidebar-dashboard, panel-in-progress
-- evidence: C2 src/extension.ts:47 (extension-host) (+1 more)
-- last seen: 2026-09-29T19:24:45Z
+- evidence: C2 src/extension.ts:47 (extension-host) (+2 more)
+- last seen: 2026-09-29T19:41:10Z
+
+### L-014 - Give every flag a test hook reports one test that expects true and one that expects false
+- signal: `surviving_mutant` · recurrence: 2 feature(s) · scope: `test-hooks` · harmful: 0
+- features: sidebar-dashboard, panel-in-progress
+- evidence: W2 src/webview/main.ts:65 (test-hooks) (+1 more)
+- last seen: 2026-09-29T19:41:10Z
 
 ## Candidates (under observation - do NOT load as guidance yet)
 
@@ -89,12 +95,6 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - features: sidebar-dashboard
 - evidence: H4 src/ui/dashboard.ts:111 (extension-host) (+1 more)
 - last seen: 2026-09-29T17:12:11Z
-
-### L-014 - Give every flag a test hook reports one test that expects true and one that expects false
-- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `test-hooks` · harmful: 0
-- features: sidebar-dashboard
-- evidence: W2 src/webview/main.ts:65 (test-hooks)
-- last seen: 2026-09-29T15:08:17Z
 
 ### L-015 - Measure a narrow layout at the smallest width the spec names, not only at the default width of the test window
 - signal: `ac_gap` · recurrence: 1 feature(s) · scope: `webview` · harmful: 0

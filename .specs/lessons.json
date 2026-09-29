@@ -171,10 +171,11 @@
       "harmful": 0,
       "evidence": [
         "C2 src/extension.ts:47 (extension-host)",
-        "U10 src/webview/main.ts:108 (webview)"
+        "U10 src/webview/main.ts:108 (webview)",
+        "G1-G5 src/webview/main.ts:108 (webview)"
       ],
       "created": "2026-09-29T15:08:17Z",
-      "last_seen": "2026-09-29T19:24:45Z"
+      "last_seen": "2026-09-29T19:41:10Z"
     },
     {
       "id": "L-010",
@@ -255,17 +256,19 @@
       "text": "Give every flag a test hook reports one test that expects true and one that expects false",
       "signal": "surviving_mutant",
       "scope": "test-hooks",
-      "status": "candidate",
+      "status": "confirmed",
       "features": [
-        "sidebar-dashboard"
+        "sidebar-dashboard",
+        "panel-in-progress"
       ],
-      "recurrence": 1,
+      "recurrence": 2,
       "harmful": 0,
       "evidence": [
-        "W2 src/webview/main.ts:65 (test-hooks)"
+        "W2 src/webview/main.ts:65 (test-hooks)",
+        "I4 media/dashboard.css:129 (survives the af81a85 suite; only test/integration/suite.cjs:616 kills it) (test-hooks)"
       ],
       "created": "2026-09-29T15:08:17Z",
-      "last_seen": "2026-09-29T15:08:17Z"
+      "last_seen": "2026-09-29T19:41:10Z"
     },
     {
       "id": "L-015",

@@ -6,8 +6,8 @@ O painel mostra todas as features, inclusive as concluídas, que ficam na coluna
 
 ## Goals
 
-- [ ] O painel abre mostrando só as features que não estão concluídas
-- [ ] As concluídas continuam a um clique, na opção "Ocultar concluídas"
+- [x] O painel abre mostrando só as features que não estão concluídas
+- [x] As concluídas continuam a um clique, na opção "Ocultar concluídas"
 
 ## Out of Scope
 
@@ -71,19 +71,19 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Requirement ID | Story       | Phase  | Status  |
 | -------------- | ----------- | ------ | ------- |
-| PNL-01 | P1: Ver só o que está em andamento | Execute | Implementing |
-| PNL-02 | P1: Ver só o que está em andamento | Execute | Implementing |
-| PNL-03 | P1: Ver só o que está em andamento | Execute | Implementing |
-| PNL-04 | P1: Ver só o que está em andamento | Execute | Implementing |
-| PNL-05 | Edge case: detalhe de uma concluída | Execute | Implementing |
+| PNL-01 | P1: Ver só o que está em andamento | Execute | Verified |
+| PNL-02 | P1: Ver só o que está em andamento | Execute | Verified |
+| PNL-03 | P1: Ver só o que está em andamento | Execute | Verified |
+| PNL-04 | P1: Ver só o que está em andamento | Execute | Verified |
+| PNL-05 | Edge case: detalhe de uma concluída | Execute | Verified |
 
 **ID format:** `PNL-NN`, na ordem dos critérios acima.
 
-**Coverage:** 5 total, escopo Medium (passos listados na execução, sem `tasks.md`).
+**Coverage:** 5 total, 5 verificados; escopo Medium (passos listados na execução, sem `tasks.md`).
 
 ---
 
 ## Success Criteria
 
-- [ ] Ao abrir o painel, nenhuma feature verificada com PASS aparece no quadro
-- [ ] Os testes unitários e de integração atuais continuam passando, com os do SIDE-09 ajustados ao novo padrão
+- [x] Ao abrir o painel, nenhuma feature verificada com PASS aparece no quadro
+- [x] Os testes unitários e de integração atuais continuam passando, com os do SIDE-09 ajustados ao novo padrão
