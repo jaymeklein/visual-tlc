@@ -76,12 +76,12 @@ T7 → T8
 
 **Done when**:
 
-- [ ] Lista vazia ou ausente devolve `['.specs']`
-- [ ] Entrada absoluta, com `..` ou com glob sai em `invalid` e fica fora de `entries`
-- [ ] `docs\specs` e `docs/specs/` viram `docs/specs`
-- [ ] Entradas repetidas depois de normalizadas aparecem uma vez
-- [ ] Gate check passes: `npm run typecheck && npm test`
-- [ ] Test count: 25 existentes + novos passam
+- [x] Lista vazia ou ausente devolve `['.specs']`
+- [x] Entrada absoluta, com `..` ou com glob sai em `invalid` e fica fora de `entries`
+- [x] `docs\specs` e `docs/specs/` viram `docs/specs`
+- [x] Entradas repetidas depois de normalizadas aparecem uma vez
+- [x] Gate check passes: `npm run typecheck && npm test`
+- [x] Test count: 25 existentes + novos passam
 
 **Tests**: unit
 **Gate**: quick

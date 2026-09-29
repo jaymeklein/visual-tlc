@@ -94,10 +94,10 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 | SF-05 | P1: Configurar as pastas de specs | - | Pending |
 | SF-06 | P1: Configurar as pastas de specs | - | Pending |
 | SF-07 | P2: Distinguir pastas do mesmo projeto | - | Pending |
-| SF-08 | Edge case: lista vazia | - | Pending |
-| SF-09 | Edge case: entrada inválida | - | Pending |
-| SF-10 | Edge case: entradas sobrepostas | - | Pending |
-| SF-11 | Edge case: separadores e barra final | - | Pending |
+| SF-08 | Edge case: lista vazia | Tasks | Implementing |
+| SF-09 | Edge case: entrada inválida | Tasks | Implementing |
+| SF-10 | Edge case: entradas sobrepostas | Tasks | Implementing |
+| SF-11 | Edge case: separadores e barra final | Tasks | Implementing |
 
 **ID format:** `SF-NN`, na ordem dos critérios acima.
 
