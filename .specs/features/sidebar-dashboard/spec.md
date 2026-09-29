@@ -78,7 +78,7 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 > Desde `panel-in-progress` (PNL-03 e PNL-04), as seis etapas aparecem com "Ocultar concluídas" desmarcada. Com a opção marcada, que é o padrão, o quadro mostra cinco.
 
-**Independent Test**: Executar "TLC Specs: Abrir painel em aba" na paleta de comandos. Abre a aba com o quadro de seis colunas.
+**Independent Test**: Executar "TLC Specs: Abrir painel em aba" na paleta de comandos. Abre a aba com as etapas lado a lado: cinco colunas com "Ocultar concluídas" marcada, seis com ela desmarcada.
 
 ---
 
