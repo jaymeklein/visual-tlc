@@ -42,4 +42,6 @@ export type FromWebview =
   | { type: 'previewFile'; projectId: string; file: string }
   | { type: 'error'; message: string }
   | { type: 'previewMarkdown'; target: FeatureRef }
-  | { type: 'revealFolder'; target: FeatureRef };
+  | { type: 'revealFolder'; target: FeatureRef }
+  /** The eye of a card: marks or unmarks the spec as hidden. */
+  | { type: 'setHidden'; target: FeatureRef; hidden: boolean };

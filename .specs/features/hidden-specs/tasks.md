@@ -98,7 +98,7 @@ T6 → T7
 ### T2: Olho no topo e olho no card, no HTML do painel
 
 **What**: `renderApp` troca a caixa pelo olho que alterna, conta as ocultas, esconde as marcadas, desenha o olho por card e esmaece a marcada. `actionFor` ganha `toggle-hidden`, `hide` e `unhide`
-**Where**: `src/webview/render.ts`
+**Where**: `src/webview/render.ts` (e o tipo `setHidden` em `src/core/protocol.ts`, e `hidden` vazio em `src/webview/main.ts`, para compilar até o T4)
 **Depends on**: T1
 **Reuses**: filtro de `projectSection`, `featureActions`, `DEFAULT_VIEW`
 **Requirement**: HID-01, HID-02, HID-03, HID-04, HID-09, HID-10, HID-14, HID-15
@@ -110,18 +110,18 @@ T6 → T7
 
 **Done when**:
 
-- [ ] `DEFAULT_VIEW` desenha o olho fechado com "Mostrar as specs ocultas" e "N ocultas", sem a caixa (HID-01)
-- [ ] Olho fechado: o quadro não tem concluídas, marcadas nem a coluna Concluídas (HID-02)
-- [ ] Olho aberto: todas as specs, seis etapas, olho aberto com "Esconder as specs ocultas" (HID-03)
-- [ ] `actionFor` do olho vai e volta: `{ showHidden: true }` e `{ showHidden: false }` (HID-03, HID-04)
-- [ ] Card à vista: olho aberto "Ocultar spec" com `data-action="hide"`. Card marcado: olho fechado "Desocultar spec" com `unhide`. Concluída sem olho (HID-09, HID-10)
-- [ ] `actionFor` de `hide` e `unhide` manda `setHidden` com `hidden: true` e `false`
-- [ ] Card marcado esmaecido só enquanto marcado (HID-14)
-- [ ] Detalhe de uma marcada com o olho fechado (HID-15)
-- [ ] "Visualizar" não usa mais o olho
-- [ ] Testes antigos do "Ocultar concluídas" reescritos para o olho, sem perder asserção
-- [ ] Gate check passes: `npm run typecheck && npm test`
-- [ ] Test count: 64 unit tests pass (59 antes + 5 novos)
+- [x] `DEFAULT_VIEW` desenha o olho fechado com "Mostrar as specs ocultas" e "N ocultas", sem a caixa (HID-01)
+- [x] Olho fechado: o quadro não tem concluídas, marcadas nem a coluna Concluídas (HID-02)
+- [x] Olho aberto: todas as specs, seis etapas, olho aberto com "Esconder as specs ocultas" (HID-03)
+- [x] `actionFor` do olho vai e volta: `{ showHidden: true }` e `{ showHidden: false }` (HID-03, HID-04)
+- [x] Card à vista: olho aberto "Ocultar spec" com `data-action="hide"`. Card marcado: olho fechado "Desocultar spec" com `unhide`. Concluída sem olho (HID-09, HID-10)
+- [x] `actionFor` de `hide` e `unhide` manda `setHidden` com `hidden: true` e `false`
+- [x] Card marcado esmaecido só enquanto marcado (HID-14)
+- [x] Detalhe de uma marcada com o olho fechado (HID-15)
+- [x] "Visualizar" não usa mais o olho
+- [x] Testes antigos do "Ocultar concluídas" reescritos para o olho, sem perder asserção
+- [x] Gate check passes: `npm run typecheck && npm test`
+- [x] Test count: 66 unit tests pass (59 antes + 7 novos)
 
 **Tests**: unit
 **Gate**: quick
@@ -148,7 +148,7 @@ T6 → T7
 - [ ] `.card.is-hidden` tem opacidade menor, e o teste da folha de estilo prova a regra (HID-14)
 - [ ] O olho do topo cabe na barra da lateral estreita, sem rolagem horizontal
 - [ ] Gate check passes: `npm run typecheck && npm test`
-- [ ] Test count: 65 unit tests pass (64 antes + 1 novo)
+- [ ] Test count: 67 unit tests pass (66 antes + 1 novo)
 
 **Tests**: unit
 **Gate**: quick
@@ -177,7 +177,7 @@ T6 → T7
 - [ ] A marcada aberta por `showFeature` mostra o detalhe na lateral (HID-15)
 - [ ] Os testes que marcam desmarcam num `finally`
 - [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [ ] Test count: 65 unit, 56 + 1 + 2 integration tests pass (53 antes + 3 novos)
+- [ ] Test count: 67 unit, 56 + 1 + 2 integration tests pass (53 antes + 3 novos)
 
 **Tests**: integration
 **Gate**: full
@@ -208,7 +208,7 @@ T6 → T7
 - [ ] Projeto único com tudo oculto: lista vazia e a mensagem com o número de ocultas (HID-16)
 - [ ] Os testes que leem `billing-invoices` na árvore abrem o olho antes e o fecham depois
 - [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [ ] Test count: 65 unit, 60 + 1 + 2 integration tests pass (56 antes + 4 novos)
+- [ ] Test count: 67 unit, 60 + 1 + 2 integration tests pass (56 antes + 4 novos)
 
 **Tests**: integration
 **Gate**: full
@@ -239,7 +239,7 @@ T6 → T7
 - [ ] Com o olho aberto, a marcada tem a descrição terminada em "· oculta", e a mesma spec sem marca não tem (HID-14)
 - [ ] Os comandos por spec ficam fora da paleta
 - [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [ ] Test count: 65 unit, 63 + 1 + 2 integration tests pass (60 antes + 3 novos)
+- [ ] Test count: 67 unit, 63 + 1 + 2 integration tests pass (60 antes + 3 novos)
 
 **Tests**: integration
 **Gate**: full

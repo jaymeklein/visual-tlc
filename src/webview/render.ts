@@ -1,6 +1,7 @@
 import type { Feature, Issue, Project, Stage, Task, TaskPhase } from '../core/types.ts';
 import type { FeatureRef, FromWebview } from '../core/protocol.ts';
 import { plain } from '../core/markdown.ts';
+import { hiddenKey, isHidden } from '../core/hidden.ts';
 import { featureMarkdown, HEALTH_LABEL, REQ_STATUS_LABEL, STAGE_LABEL, STAGE_ORDER, STAGE_STATE_LABEL, TASK_STATUS_LABEL } from '../core/labels.ts';
 
 // Pure rendering of the dashboard: state in, HTML out. No DOM access, so it runs under node --test.
@@ -8,7 +9,8 @@ import { featureMarkdown, HEALTH_LABEL, REQ_STATUS_LABEL, STAGE_LABEL, STAGE_ORD
 export interface ViewState {
   selected: FeatureRef | null;
   query: string;
-  hideDone: boolean;
+  /** Eye open: the hidden specs (completed or marked) are on the board. */
+  showHidden: boolean;
   /** taskKey()s of the task rows expanded in the detail view. */
   expandedTasks: string[];
 }
@@ -17,13 +19,15 @@ export interface RenderCtx {
   projects: Project[];
   now: number;
   loaded: boolean;
+  /** hiddenKey()s of the specs marked as hidden by hand. */
+  hidden: readonly string[];
   view: ViewState;
 }
 
-/** View state of a panel that just opened: on the board, with the completed features hidden. */
-export const DEFAULT_VIEW: ViewState = { selected: null, query: '', hideDone: true, expandedTasks: [] };
+/** View state of a panel that just opened: on the board, with the hidden specs off it. */
+export const DEFAULT_VIEW: ViewState = { selected: null, query: '', showHidden: false, expandedTasks: [] };
 
-let ctx: RenderCtx = { projects: [], now: 0, loaded: false, view: DEFAULT_VIEW };
+let ctx: RenderCtx = { projects: [], now: 0, loaded: false, hidden: [], view: DEFAULT_VIEW };
 
 export const taskKey = (projectId: string, feature: string, taskId: string) => `${projectId}|${feature}|${taskId}`;
 
@@ -64,7 +68,9 @@ const I = {
   pause: svg('<path d="M6 4v8M10 4v8" class="st"/>'),
   folder: svg('<path d="M1.8 3.6h4.3l1.5 1.7h6.6v7.1H1.8z" class="st"/>'),
   edit: svg('<path d="M10.6 2.6l2.8 2.8-7.7 7.7-3.3.6.6-3.3z" class="st"/>'),
-  eye: svg('<path d="M1.5 8s2.4-4.3 6.5-4.3S14.5 8 14.5 8s-2.4 4.3-6.5 4.3S1.5 8 1.5 8z" class="st"/><circle cx="8" cy="8" r="1.9" class="st"/>'),
+  eye: svg('<path d="M1.5 8s2.4-4.3 6.5-4.3S14.5 8 14.5 8s-2.4 4.3-6.5 4.3S1.5 8 1.5 8z" class="st"/><circle cx="8" cy="8" r="1.9" class="st"/>', 'eye-open'),
+  eyeClosed: svg('<path d="M1.8 6.2s2.3 3.4 6.2 3.4 6.2-3.4 6.2-3.4" class="st"/><path d="M4.1 8.9 3 10.6M8 9.6v2M11.9 8.9l1.1 1.7" class="st"/>', 'eye-closed'),
+  preview: svg('<path d="M8 14.2H3.5V1.8h5l3 3v2.4" class="st"/><path d="M8.5 1.8v3h3" class="st"/><circle cx="10.8" cy="10.8" r="2.2" class="st"/><path d="M12.4 12.4l1.8 1.8" class="st"/>'),
   branch: svg('<circle cx="5" cy="3.5" r="1.6" class="st"/><circle cx="5" cy="12.5" r="1.6" class="st"/><circle cx="11" cy="6" r="1.6" class="st"/><path d="M5 5.1v5.8M11 7.6c0 2.2-2.5 2.6-6 3.3" class="st"/>'),
 };
 
@@ -82,6 +88,9 @@ function previewAttrs(projectId: string, file: string | undefined): string {
   if (!file) return '';
   return `data-action="preview-file" data-pid="${esc(projectId)}" data-file="${esc(file)}" tabindex="0" role="button"`;
 }
+
+const marked = (p: Project, f: Feature) => ctx.hidden.includes(hiddenKey(p.id, f.name));
+const hiddenOf = (p: Project, f: Feature) => isHidden(f, marked(p, f));
 
 function counts(f: Feature) {
   return {
@@ -131,6 +140,9 @@ function overview(): string {
   const tasksTotal = all.reduce((n, f) => n + f.taskStats.total, 0);
   const reqV = all.reduce((n, f) => n + f.requirementStats.verified, 0);
   const reqT = all.reduce((n, f) => n + f.requirementStats.total, 0);
+  const hidden = ctx.projects.reduce((n, p) => n + p.features.filter((f) => hiddenOf(p, f)).length, 0);
+  const show = ctx.view.showHidden;
+  const eyeTitle = show ? 'Esconder as specs ocultas' : 'Mostrar as specs ocultas';
 
   const tile = (label: string, value: string, hint = '', cls = '') =>
     `<div class="tile ${cls}"><div class="tile-value">${value}</div><div class="tile-label">${esc(label)}</div>${hint ? `<div class="tile-hint">${esc(hint)}</div>` : ''}</div>`;
@@ -143,7 +155,7 @@ function overview(): string {
     </div>
     <div class="toolbar">
       <input id="search" type="search" placeholder="Filtrar features…" value="${esc(ctx.view.query)}" aria-label="Filtrar features">
-      <label class="check"><input type="checkbox" data-action="toggle-done" ${ctx.view.hideDone ? 'checked' : ''}> Ocultar concluídas</label>
+      <button class="btn-ghost eye-toggle" data-action="toggle-hidden" data-show="${!show}" aria-pressed="${show}" title="${eyeTitle}">${show ? I.eye : I.eyeClosed}<span>${hidden} ${hidden === 1 ? 'oculta' : 'ocultas'}</span></button>
       <button class="icon-btn" data-action="refresh" title="Atualizar" aria-label="Atualizar">${I.refresh}</button>
     </div>
   </header>
@@ -163,17 +175,17 @@ function overview(): string {
 function projectSection(p: Project): string {
   const q = ctx.view.query.trim().toLowerCase();
   const visible = p.features.filter(
-    (f) => (!ctx.view.hideDone || f.health !== 'complete') && (!q || f.name.toLowerCase().includes(q) || (f.spec?.title ?? '').toLowerCase().includes(q)),
+    (f) => (ctx.view.showHidden || !hiddenOf(p, f)) && (!q || f.name.toLowerCase().includes(q) || (f.spec?.title ?? '').toLowerCase().includes(q)),
   );
   const multi = ctx.projects.length > 1;
   return `
   <section class="project">
     ${multi ? `<h2 class="project-title">${esc(p.label)}</h2>` : ''}
     ${focusCard(p)}
-    <div class="board${ctx.view.hideDone ? ' five-stages' : ''}" role="list">
+    <div class="board${ctx.view.showHidden ? '' : ' five-stages'}" role="list">
       ${COLUMNS.map((col) => {
         const cards = visible.filter((f) => columnOf(f) === col.id);
-        if (col.id === 'done' && ctx.view.hideDone) return '';
+        if (col.id === 'done' && !ctx.view.showHidden) return '';
         return `<div class="column${cards.length ? '' : ' is-empty'}" role="listitem" aria-label="${esc(col.label)}">
           <div class="column-head"><span>${esc(col.label)}</span><span class="count">${cards.length}</span></div>
           ${cards.length ? cards.map((f) => card(p, f)).join('') : '<div class="column-empty">—</div>'}
@@ -220,16 +232,25 @@ function miniPipe(f: Feature): string {
     .join('')}</div>`;
 }
 
-/** Preview-markdown and reveal-folder buttons; `labels` renders text buttons (detail header). */
-function featureActions(p: Project, f: Feature, labels = false): string {
+/** Preview-markdown and reveal-folder buttons, then `extra`; `labels` renders text buttons (detail header). */
+function featureActions(p: Project, f: Feature, labels = false, extra = ''): string {
   const ref = `data-pid="${esc(p.id)}" data-feature="${esc(f.name)}"`;
   const md = featureMarkdown(f);
   const cls = labels ? 'btn-ghost' : 'icon-btn sm';
   const preview = md
-    ? `<button class="${cls}" data-action="preview" ${ref} title="Visualizar ${esc(md.name)}" aria-label="Visualizar ${esc(md.name)}">${I.eye}${labels ? ` Visualizar ${esc(md.name)}` : ''}</button>`
+    ? `<button class="${cls}" data-action="preview" ${ref} title="Visualizar ${esc(md.name)}" aria-label="Visualizar ${esc(md.name)}">${I.preview}${labels ? ` Visualizar ${esc(md.name)}` : ''}</button>`
     : '';
   const folder = `<button class="${cls}" data-action="reveal" ${ref} title="Abrir pasta da feature no Explorer" aria-label="Abrir pasta da feature">${I.folder}${labels ? ' Abrir pasta' : ''}</button>`;
-  return `<span class="feature-actions">${preview}${folder}</span>`;
+  return `<span class="feature-actions">${preview}${folder}${extra}</span>`;
+}
+
+/** Eye of a spec that is not completed: open while it is on view, closed while it is marked as hidden. */
+function eyeButton(p: Project, f: Feature): string {
+  if (f.health === 'complete') return '';
+  const ref = `data-pid="${esc(p.id)}" data-feature="${esc(f.name)}"`;
+  return marked(p, f)
+    ? `<button class="icon-btn sm" data-action="unhide" ${ref} title="Desocultar spec" aria-label="Desocultar spec">${I.eyeClosed}</button>`
+    : `<button class="icon-btn sm" data-action="hide" ${ref} title="Ocultar spec" aria-label="Ocultar spec">${I.eye}</button>`;
 }
 
 function card(p: Project, f: Feature): string {
@@ -241,13 +262,13 @@ function card(p: Project, f: Feature): string {
   ].join('');
   const tasks = f.taskStats.total ? `${f.taskStats.done}/${f.taskStats.total} tasks` : f.requirementStats.total ? `${f.requirementStats.total} req.` : '';
   return `
-  <div class="card h-${f.health}" role="button" tabindex="0" data-action="select" data-pid="${esc(p.id)}" data-feature="${esc(f.name)}" title="${esc(f.nextStep)}" aria-label="Detalhes de ${esc(f.name)}">
+  <div class="card h-${f.health}${marked(p, f) ? ' is-hidden' : ''}" role="button" tabindex="0" data-action="select" data-pid="${esc(p.id)}" data-feature="${esc(f.name)}" title="${esc(f.nextStep)}" aria-label="Detalhes de ${esc(f.name)}">
     <div class="card-head"><span class="card-name">${esc(f.name)}</span><span class="badges">${badges}</span></div>
     ${f.spec?.title && f.spec.title.toLowerCase() !== f.name.toLowerCase() ? `<div class="card-title">${esc(f.spec.title)}</div>` : ''}
     ${miniPipe(f)}
     <div class="card-meta"><span class="card-phase">${esc(f.phaseLabel)}</span><span>${pct(f.progress)}%</span></div>
     ${f.health !== 'complete' ? `<div class="card-next">${esc(f.nextStep)}</div>` : ''}
-    <div class="card-foot"><span>${esc([tasks, ago(f.lastModified)].filter(Boolean).join(' · '))}</span>${featureActions(p, f)}</div>
+    <div class="card-foot"><span>${esc([tasks, ago(f.lastModified)].filter(Boolean).join(' · '))}</span>${featureActions(p, f, false, eyeButton(p, f))}</div>
   </div>`;
 }
 
@@ -579,7 +600,7 @@ export interface ActionResult {
   scrollTop?: boolean;
 }
 
-/** Maps a clicked element's data-* attributes (plus `checked` for the checkbox) to a view change and/or a message for the extension. */
+/** Maps a clicked element's data-* attributes to a view change and/or a message for the extension. */
 export function actionFor(d: Record<string, string | undefined>, expandedTasks: readonly string[] = []): ActionResult {
   const ref = (): FeatureRef => ({ projectId: d.pid!, feature: d.feature! });
   switch (d.action) {
@@ -595,8 +616,11 @@ export function actionFor(d: Record<string, string | undefined>, expandedTasks: 
       return { message: { type: 'revealFolder', target: ref() } };
     case 'preview-file':
       return { message: { type: 'previewFile', projectId: d.pid!, file: d.file! } };
-    case 'toggle-done':
-      return { view: { hideDone: d.checked === 'true' } };
+    case 'toggle-hidden':
+      return { view: { showHidden: d.show === 'true' } };
+    case 'hide':
+    case 'unhide':
+      return { message: { type: 'setHidden', target: ref(), hidden: d.action === 'hide' } };
     case 'toggle-task': {
       const key = d.key!;
       return { view: { expandedTasks: expandedTasks.includes(key) ? expandedTasks.filter((k) => k !== key) : [...expandedTasks, key] } };
