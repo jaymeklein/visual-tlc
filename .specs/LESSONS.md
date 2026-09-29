@@ -108,6 +108,12 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: H6 src/ui/store.ts:119 (settings)
 - last seen: 2026-09-29T17:51:51Z
 
+### L-017 - Pin the default of a new optional parameter with a test on the caller that keeps the old behavior
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `core` · harmful: 0
+- features: exclude-folders
+- evidence: K7 src/core/folders.ts:67 (core)
+- last seen: 2026-09-29T18:03:28Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.

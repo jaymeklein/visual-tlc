@@ -6,8 +6,8 @@ O pedido original era incluir e excluir diretórios da listagem de specs. A feat
 
 ## Goals
 
-- [ ] Uma lista de pastas tira da listagem tudo o que está dentro delas
-- [ ] Quem já usa `tlcSpecs.exclude` como glob continua com o mesmo resultado
+- [x] Uma lista de pastas tira da listagem tudo o que está dentro delas
+- [x] Quem já usa `tlcSpecs.exclude` como glob continua com o mesmo resultado
 
 ## Out of Scope
 
@@ -73,23 +73,23 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Requirement ID | Story       | Phase  | Status  |
 | -------------- | ----------- | ------ | ------- |
-| EXC-01 | P1: Excluir pastas da listagem | Execute | Implementing |
-| EXC-02 | P1: Excluir pastas da listagem | Execute | Implementing |
-| EXC-03 | P1: Excluir pastas da listagem | Execute | Implementing |
-| EXC-04 | P1: Excluir pastas da listagem | Execute | Implementing |
-| EXC-05 | P1: Excluir pastas da listagem | Execute | Implementing |
-| EXC-06 | Edge case: lista vazia | Execute | Implementing |
-| EXC-07 | Edge case: entrada inválida | Execute | Implementing |
-| EXC-08 | Edge case: nome parecido | Execute | Implementing |
-| EXC-09 | Edge case: incluída e excluída | Execute | Implementing |
+| EXC-01 | P1: Excluir pastas da listagem | Execute | Verified |
+| EXC-02 | P1: Excluir pastas da listagem | Execute | Verified |
+| EXC-03 | P1: Excluir pastas da listagem | Execute | Verified |
+| EXC-04 | P1: Excluir pastas da listagem | Execute | Verified |
+| EXC-05 | P1: Excluir pastas da listagem | Execute | Verified |
+| EXC-06 | Edge case: lista vazia | Execute | Verified |
+| EXC-07 | Edge case: entrada inválida | Execute | Verified |
+| EXC-08 | Edge case: nome parecido | Execute | Verified |
+| EXC-09 | Edge case: incluída e excluída | Execute | Verified |
 
 **ID format:** `EXC-NN`, na ordem dos critérios acima.
 
-**Coverage:** 9 total, escopo Medium (passos listados na execução, sem `tasks.md`).
+**Coverage:** 9 total, 9 verificados; escopo Medium (passos listados na execução, sem `tasks.md`).
 
 ---
 
 ## Success Criteria
 
-- [ ] Com `test` na lista, nenhuma spec de dentro de uma pasta `test` aparece na listagem
-- [ ] Os testes unitários e de integração atuais continuam passando
+- [x] Com `test` na lista, nenhuma spec de dentro de uma pasta `test` aparece na listagem
+- [x] Os testes unitários e de integração atuais continuam passando

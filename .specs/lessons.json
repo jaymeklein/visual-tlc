@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 17,
+  "next_id": 18,
   "lessons": [
     {
       "id": "L-001",
@@ -300,6 +300,24 @@
       ],
       "created": "2026-09-29T17:51:51Z",
       "last_seen": "2026-09-29T17:51:51Z"
+    },
+    {
+      "id": "L-017",
+      "key": "surviving_mutant::pin the default of a new optional parameter with a test on the caller that keeps the old behavior",
+      "text": "Pin the default of a new optional parameter with a test on the caller that keeps the old behavior",
+      "signal": "surviving_mutant",
+      "scope": "core",
+      "status": "candidate",
+      "features": [
+        "exclude-folders"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "K7 src/core/folders.ts:67 (core)"
+      ],
+      "created": "2026-09-29T18:03:28Z",
+      "last_seen": "2026-09-29T18:03:28Z"
     }
   ]
 }
