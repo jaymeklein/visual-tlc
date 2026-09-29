@@ -1,7 +1,7 @@
 # Visual TLC — Spec-Driven Tracker
 
 Extensão do VS Code que acompanha visualmente o desenvolvimento feito com a skill **`/tlc-spec-driven`**.
-Ela lê os artefatos que a skill grava em `.specs/` e mostra, para cada feature, em que fase está, quanto falta e o que está incompleto.
+Ela lê os artefatos que a skill grava em `.specs/` (ou nas pastas que você configurar) e mostra, para cada feature, em que fase está, quanto falta e o que está incompleto.
 
 > **Somente leitura.** A extensão nunca escreve em `.specs/` e não depende da skill instalada — apenas interpreta os arquivos gerados por ela.
 
@@ -27,7 +27,7 @@ Ela lê os artefatos que a skill grava em `.specs/` e mostra, para cada feature,
 - **Painel Problemas** — os avisos viram diagnósticos no arquivo e na linha exatos.
 - **Barra de status** — feature em foco (a do Handoff, ou a mais recente não concluída) e sua fase.
 - **Notificações** — quando surge uma spec nova, uma feature muda de fase, é concluída ou falha na verificação.
-- Atualização automática sempre que algo em `.specs/` muda. Suporta vários `.specs` no workspace (monorepo e multi-root).
+- Atualização automática sempre que algo nas pastas de specs muda. Suporta várias pastas no workspace (monorepo e multi-root).
 
 ## Como a fase é calculada
 
@@ -61,7 +61,23 @@ As checagens reproduzem os validadores da própria skill (`validate_spec.py`, `v
 | `tlcSpecs.diagnostics.enabled` | `true` | Publica os avisos no painel Problemas. |
 | `tlcSpecs.notifications.enabled` | `true` | Notifica mudanças de fase, conclusão e falhas. |
 | `tlcSpecs.staleAfterDays` | `14` | Dias sem alteração para marcar uma feature como parada (0 desativa). |
-| `tlcSpecs.exclude` | `**/node_modules/**` | Pastas ignoradas ao procurar `.specs`. |
+| `tlcSpecs.specsFolders` | `[".specs"]` | Pastas onde a extensão procura as specs. |
+| `tlcSpecs.exclude` | `**/node_modules/**` | Pastas ignoradas ao procurar as pastas de specs. |
+
+### Pastas de specs
+
+Use `tlcSpecs.specsFolders` quando o projeto guarda os artefatos da skill fora de `.specs`:
+
+```json
+{ "tlcSpecs.specsFolders": [".specs", "docs/specs"] }
+```
+
+- Cada entrada é um caminho relativo, procurado em qualquer profundidade de cada pasta do workspace. `docs/specs` acha `docs/specs` e `packages/api/docs/specs`.
+- A pasta precisa seguir o layout da skill (`features/`, `STATE.md`, `lessons.json`). Uma pasta de nome diferente de `.specs` só aparece quando tem algum desses artefatos.
+- Entradas absolutas, com `..` ou com glob são ignoradas, com um aviso que nomeia a entrada.
+- Lista vazia usa `.specs`.
+- A configuração vale por pasta do workspace: em multi-root, cada pasta pode ter a sua lista.
+- Quando um projeto tem mais de uma pasta de specs, cada grupo mostra o projeto e a pasta (`api · docs/specs`).
 
 ## Desenvolvimento
 
@@ -69,7 +85,7 @@ As checagens reproduzem os validadores da própria skill (`validate_spec.py`, `v
 npm install
 npm run build            # dist/extension.cjs + dist/webview.js
 npm test                 # testes unitários dos parsers (node --test)
-npm run test:integration # abre um VS Code isolado com uma cópia de test/fixtures/sample
+npm run test:integration # abre um VS Code isolado com uma cópia de cada workspace em test/fixtures
 npm run package          # gera o .vsix
 ```
 

@@ -9,7 +9,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 ---
 
 **Design**: inline (escopo Medium, sem `design.md`)
-**Status**: In Progress
+**Status**: Done
 
 Design inline: `src/core/folders.ts` concentra a lógica pura (normalizar entradas, achar raízes, rotular). `src/ui/store.ts` lê a configuração por pasta do workspace, busca arquivos, recria os watchers e mostra os avisos.
 
@@ -270,8 +270,8 @@ T7 → T8
 
 **Done when**:
 
-- [ ] Tabela de configurações lista `tlcSpecs.specsFolders` com padrão e regras das entradas
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] Tabela de configurações lista `tlcSpecs.specsFolders` com padrão e regras das entradas
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
 
 **Tests**: none
 **Gate**: build

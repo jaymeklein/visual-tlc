@@ -111,7 +111,7 @@ function findFeature(ref: FeatureRef): { project: Project; feature: Feature } | 
 function emptyState(): string {
   return `<div class="empty-state">
     <h1>Nenhuma spec encontrada</h1>
-    <p>A extensão procura pastas <code>.specs/</code> no workspace. Elas aparecem assim que a skill
+    <p>A extensão procura pastas <code>.specs/</code> no workspace, ou as pastas de <code>tlcSpecs.specsFolders</code>. Elas aparecem assim que a skill
     <code>/tlc-spec-driven</code> criar <code>.specs/features/&lt;feature&gt;/spec.md</code>.</p>
     <button class="btn" data-action="refresh">${I.refresh} Procurar de novo</button>
   </div>`;

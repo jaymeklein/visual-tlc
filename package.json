@@ -51,7 +51,7 @@
     "viewsWelcome": [
       {
         "view": "tlcSpecs.features",
-        "contents": "Nenhuma pasta .specs encontrada neste workspace.\nAs features aparecem aqui assim que a skill /tlc-spec-driven gerar .specs/features/<feature>/spec.md.\n[Atualizar](command:tlcSpecs.refresh)",
+        "contents": "Nenhuma pasta de specs encontrada neste workspace.\nA extensão procura as pastas da configuração tlcSpecs.specsFolders (.specs por padrão).\nAs features aparecem aqui assim que a skill /tlc-spec-driven gerar .specs/features/<feature>/spec.md.\n[Atualizar](command:tlcSpecs.refresh)",
         "when": "!tlcSpecs.hasSpecs"
       },
       {
