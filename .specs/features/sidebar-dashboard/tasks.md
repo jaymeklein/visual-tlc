@@ -382,11 +382,11 @@ T8 → T9 → T10 → T11 → T12 → T13 → T14 → T15
 
 **Done when**:
 
-- [ ] `tlcSpecs.openDashboard` com uma feature mostra os detalhes dela, em aba nova e em aba já aberta
-- [ ] O quadro de 6 colunas numa aba com menos de 1298px relata rolagem horizontal
-- [ ] Mutantes C3 e W2 do Verifier morrem
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [ ] Test count: nenhum teste removido
+- [x] `tlcSpecs.openDashboard` com uma feature mostra os detalhes dela, em aba nova e em aba já aberta
+- [x] O quadro de 6 colunas numa aba com menos de 1298px relata rolagem horizontal
+- [x] Mutantes C3 e W2 do Verifier morrem
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] Test count: nenhum teste removido
 
 **Tests**: integration
 **Gate**: full

@@ -69,7 +69,9 @@ test('opens the dashboard webview', async () => {
   );
   assert.ok(tab);
   await waitFor('webview script ready (CSP allowed it)', () => api.dashboardHealth().ready);
+  await waitFor('the details of user-auth in the tab', () => (api.dashboardReport() || {}).detail === 'user-auth');
   await vscode.commands.executeCommand('tlcSpecs.openDashboard', { projectId: projectId(), feature: 'notifications' });
+  await waitFor('the details of notifications in the tab', () => (api.dashboardReport() || {}).detail === 'notifications');
   await vscode.commands.executeCommand('tlcSpecs.openDashboard');
   await new Promise((r) => setTimeout(r, 800));
   assert.deepEqual(api.dashboardHealth().errors, []);
@@ -577,6 +579,8 @@ test('SIDE-09 the panel in a tab shows the six stages side by side at 700px or m
   });
   assert.ok(report.width >= 700, `the tab is only ${report.width}px wide`);
   assert.equal(report.columns, 6);
+  // Six stages of at least 200px with their gaps need 1250px: a narrower tab scrolls the board sideways.
+  assert.equal(report.overflow, report.width < 1250, `overflow at ${report.width}px`);
   assert.equal(report.emptyStages, emptyStagesOf(api.getProjects()));
   assert.deepEqual([...report.cards].sort(), featureNames(api.getProjects()));
   assert.equal(report.detail, null);
@@ -590,6 +594,7 @@ test('SIDE-09 the panel in a tab shows the six stages side by side at 700px or m
   });
   assert.ok(beside.width >= 700, `the tab is only ${beside.width}px wide beside the side bar`);
   assert.equal(beside.columns, 6);
+  assert.equal(beside.overflow, beside.width < 1250, `overflow at ${beside.width}px`);
   assert.equal(beside.emptyStages, emptyStagesOf(api.getProjects()));
 });
 
@@ -704,6 +709,13 @@ test('SIDE-08 "Abrir painel em aba" opens the panel in an editor tab named TLC S
   await waitFor('the TLC Specs tab', dashboardTab);
   const report = await tabReport('the tab to render the projects', (r) => r.projects.length > 0);
   assert.deepEqual(report.projects, projectIds());
+  assert.equal(report.detail, null);
+
+  await closeAll();
+  await waitFor('the tab to close', () => !dashboardTab() && api.dashboardReport() === undefined);
+  await vscode.commands.executeCommand('tlcSpecs.openDashboard', { projectId: projectId(), feature: 'billing-invoices' });
+  await waitFor('the TLC Specs tab', dashboardTab);
+  await tabReport('the details of billing-invoices in a new tab', (r) => r.detail === 'billing-invoices');
 });
 
 test('SIDE-06 the side panel comes back with the current projects and the selected feature', async () => {
