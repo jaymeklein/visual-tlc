@@ -1,6 +1,8 @@
 // Dashboard behaviour (spec: .specs/features/readonly-navigation/spec.md, story P2).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { actionFor, renderApp, taskDetailsHtml, taskKey, type RenderCtx } from '../../src/webview/render.ts';
 import { loadProject } from '../../src/core/project.ts';
 import { nodeReader, SAMPLE_SPECS } from './nodeReader.ts';
@@ -161,4 +163,19 @@ test('SIDE-04 board stages without features are marked is-empty, the others are 
   for (const [, cls, label, body] of columns) {
     assert.equal(cls.split(' ').includes('is-empty'), !body.includes('class="card '), label);
   }
+});
+
+test('SIDE-03/SIDE-04 the stylesheet stacks the board and hides the empty stages under 700px, and only there', () => {
+  const css = readFileSync(join(import.meta.dirname, '..', '..', 'media', 'dashboard.css'), 'utf8').replace(/\r\n/g, '\n');
+  const blocks = [...css.matchAll(/^@media \(max-width: (\d+)px\) \{\n([\s\S]*?)\n\}/gm)].map(([, width, body]) => ({ width, body }));
+  const narrow = blocks.filter((b) => b.body.includes('.board {') || b.body.includes('.column.is-empty'));
+  assert.deepEqual(
+    narrow.map((b) => b.width),
+    ['699'],
+  );
+  assert.ok(narrow[0].body.includes('.board { grid-template-columns: minmax(0, 1fr); overflow-x: visible; }'));
+  assert.ok(narrow[0].body.includes('.column.is-empty { display: none; }'));
+  const outside = css.replace(narrow[0].body, '');
+  assert.ok(outside.includes('.board { display: grid; grid-template-columns: repeat(6, minmax(200px, 1fr));'));
+  assert.ok(!outside.includes('.column.is-empty'));
 });

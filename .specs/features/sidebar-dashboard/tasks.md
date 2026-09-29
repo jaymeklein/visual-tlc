@@ -354,11 +354,11 @@ T8 → T9 → T10 → T11 → T12 → T13 → T14 → T15
 
 **Done when**:
 
-- [ ] O bloco de 699px contém a regra de uma coluna e a que esconde as fases vazias
-- [ ] A aba com a barra lateral aberta (700px ou mais) mostra 6 colunas
-- [ ] Mutantes S5 e S6 do Verifier morrem
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [ ] Test count: nenhum teste removido
+- [x] O bloco de 699px contém a regra de uma coluna e a que esconde as fases vazias
+- [x] A aba com a barra lateral aberta (700px ou mais) mostra 6 colunas
+- [x] Mutantes S5 e S6 do Verifier morrem
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] Test count: nenhum teste removido
 
 **Tests**: integration
 **Gate**: full

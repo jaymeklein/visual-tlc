@@ -580,9 +580,20 @@ test('SIDE-09 the panel in a tab shows the six stages side by side at 700px or m
   assert.equal(report.emptyStages, emptyStagesOf(api.getProjects()));
   assert.deepEqual([...report.cards].sort(), featureNames(api.getProjects()));
   assert.equal(report.detail, null);
+
+  // The same tab beside the open side bar: narrower, and still 700px or more.
+  await vscode.commands.executeCommand('tlcSpecs.panel.focus');
+  const beside = await waitFor('the tab to render beside the side bar', async () => {
+    await api.refresh();
+    const r = api.dashboardReport();
+    return r && r.width < report.width ? r : undefined;
+  });
+  assert.ok(beside.width >= 700, `the tab is only ${beside.width}px wide beside the side bar`);
+  assert.equal(beside.columns, 6);
+  assert.equal(beside.emptyStages, emptyStagesOf(api.getProjects()));
 });
 
-const showSidePanel = () => vscode.commands.executeCommand('tlcSpecs.panel.focus');
+const showSidePanel =() => vscode.commands.executeCommand('tlcSpecs.panel.focus');
 const sideReport = (what, ok) =>
   waitFor(what, () => {
     const r = api.sidePanelReport();
