@@ -11,6 +11,8 @@ export class Dashboard implements vscode.Disposable {
   private readonly disposables: vscode.Disposable[] = [];
   /** Webview health, surfaced for the integration tests. */
   readonly health = { ready: false, errors: [] as string[] };
+  /** Project ids of the last state posted to the open panel, for the integration tests. */
+  posted: string[] | undefined;
 
   private readonly extensionUri: vscode.Uri;
   private readonly store: SpecsStore;
@@ -33,6 +35,7 @@ export class Dashboard implements vscode.Disposable {
       enableScripts: true,
       localResourceRoots: [vscode.Uri.joinPath(this.extensionUri, 'dist'), vscode.Uri.joinPath(this.extensionUri, 'media')],
     });
+    this.posted = undefined;
     panel.iconPath = vscode.Uri.joinPath(this.extensionUri, 'media', 'tlc-color.svg');
     panel.webview.html = this.html(panel.webview);
     panel.webview.onDidReceiveMessage((m: FromWebview) => this.onMessage(m), undefined, this.disposables);
@@ -79,7 +82,9 @@ export class Dashboard implements vscode.Disposable {
   }
 
   private postState(): void {
-    this.post({ type: 'state', projects: this.store.projects.map((p) => p.project), now: Date.now() });
+    const projects = this.store.projects.map((p) => p.project);
+    if (this.panel) this.posted = projects.map((p) => p.id);
+    this.post({ type: 'state', projects, now: Date.now() });
   }
 
   private flushSelect(): void {

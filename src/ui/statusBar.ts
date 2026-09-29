@@ -7,6 +7,8 @@ import { featureTooltip } from './featuresTree.ts';
 /** Shows the feature in focus: the Handoff feature, else the most recently touched unfinished one. */
 export class StatusBar implements vscode.Disposable {
   private readonly item = vscode.window.createStatusBarItem('tlcSpecs.status', vscode.StatusBarAlignment.Left, 50);
+  /** Text on screen, undefined while hidden (VS Code cannot read it back; used by the integration tests). */
+  text: string | undefined;
 
   private readonly store: SpecsStore;
 
@@ -20,6 +22,7 @@ export class StatusBar implements vscode.Disposable {
     const focus = this.focus();
     if (!focus) {
       this.item.hide();
+      this.text = undefined;
       return;
     }
     const { feature: f, ref } = focus;
@@ -30,6 +33,7 @@ export class StatusBar implements vscode.Disposable {
     this.item.backgroundColor = f.health === 'failed' ? new vscode.ThemeColor('statusBarItem.errorBackground') : undefined;
     this.item.command = { command: 'tlcSpecs.showFeature', title: 'Abrir no painel', arguments: [ref] };
     this.item.show();
+    this.text = this.item.text;
   }
 
   private focus(): { feature: Feature; ref: FeatureRef } | undefined {

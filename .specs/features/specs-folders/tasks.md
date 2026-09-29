@@ -329,10 +329,10 @@ T8 → T9 → T10 → T11
 
 **Done when**:
 
-- [ ] Depois da troca de configuração, a barra de status nomeia uma feature de `docs/specs`
-- [ ] Depois da troca de configuração, o último estado enviado ao painel tem os mesmos projetos de `getProjects()`
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [ ] Test count: nenhum teste removido
+- [x] Depois da troca de configuração, a barra de status nomeia uma feature de `docs/specs`
+- [x] Depois da troca de configuração, o último estado enviado ao painel tem os mesmos projetos de `getProjects()`
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] Test count: nenhum teste removido
 
 **Tests**: integration
 **Gate**: full

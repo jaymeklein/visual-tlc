@@ -22,6 +22,8 @@ export interface TlcSpecsApi {
   refresh(): Promise<void>;
   dashboardHealth(): { ready: boolean; errors: readonly string[] };
   dashboardMessage(message: FromWebview): Promise<void>;
+  dashboardProjects(): readonly string[] | undefined;
+  statusBarText(): string | undefined;
   featuresTree: vscode.TreeDataProvider<unknown>;
   projectTree: vscode.TreeDataProvider<unknown>;
 }
@@ -33,6 +35,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<TlcSpe
   const projectTree = new ProjectTree(store);
   const featuresView = vscode.window.createTreeView('tlcSpecs.features', { treeDataProvider: featuresTree, showCollapseAll: true });
   const projectView = vscode.window.createTreeView('tlcSpecs.project', { treeDataProvider: projectTree });
+  const statusBar = new StatusBar(store);
   new PhaseNotifier(store, (ref) => dashboard.show(ref));
 
   context.subscriptions.push(
@@ -40,7 +43,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<TlcSpe
     dashboard,
     featuresView,
     projectView,
-    new StatusBar(store),
+    statusBar,
     new SpecDiagnostics(store),
     vscode.commands.registerCommand('tlcSpecs.refresh', () => store.refresh()),
     vscode.commands.registerCommand('tlcSpecs.openDashboard', () => dashboard.show()),
@@ -76,6 +79,8 @@ export async function activate(context: vscode.ExtensionContext): Promise<TlcSpe
     refresh: () => store.refresh(),
     dashboardHealth: () => dashboard.health,
     dashboardMessage: (message) => dashboard.onMessage(message),
+    dashboardProjects: () => dashboard.posted,
+    statusBarText: () => statusBar.text,
     featuresTree: featuresTree as vscode.TreeDataProvider<unknown>,
     projectTree: projectTree as vscode.TreeDataProvider<unknown>,
   };
