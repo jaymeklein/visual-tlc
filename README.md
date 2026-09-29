@@ -93,7 +93,7 @@ Use `tlcSpecs.exclude` para esconder da listagem as specs que estão dentro de c
 - Cada entrada é um caminho relativo, ignorado em qualquer profundidade. `test` esconde `test/fixtures/.specs` e `packages/api/test/.specs`; a pasta `tests` continua aparecendo.
 - A exclusão vence a inclusão: uma pasta de `tlcSpecs.specsFolders` que esteja dentro de uma pasta excluída não aparece.
 - Ao definir a lista, mantenha `node_modules` nela. Lista vazia não exclui nada.
-- Entradas absolutas, com `..` ou com glob são ignoradas, com um aviso que nomeia a entrada.
+- Entradas absolutas, com `..`, com vírgula ou com glob são ignoradas, com um aviso que nomeia a entrada e a configuração.
 - Um texto no lugar da lista é usado como glob (`"**/node_modules/**"`), como nas versões anteriores.
 - A configuração vale por pasta do workspace, como `tlcSpecs.specsFolders`.
 - Quando um projeto tem mais de uma pasta de specs, cada grupo mostra o projeto e a pasta (`api · docs/specs`).
