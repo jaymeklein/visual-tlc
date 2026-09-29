@@ -175,6 +175,7 @@ test('SIDE-03/SIDE-04 the stylesheet stacks the board and hides the empty stages
   );
   assert.ok(narrow[0].body.includes('.board { grid-template-columns: minmax(0, 1fr); overflow-x: visible; }'));
   assert.ok(narrow[0].body.includes('.column.is-empty { display: none; }'));
+  assert.ok(narrow[0].body.includes('h3 { flex-wrap: wrap; }'), 'section headings must wrap in the narrow layout');
   const outside = css.replace(narrow[0].body, '');
   assert.ok(outside.includes('.board { display: grid; grid-template-columns: repeat(6, minmax(200px, 1fr));'));
   assert.ok(!outside.includes('.column.is-empty'));

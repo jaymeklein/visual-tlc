@@ -685,12 +685,49 @@ test('SIDE-03/SIDE-04 under 700px the side panel stacks the stages, hides the em
   assert.equal(board.overflow, false);
   assert.deepEqual([...board.cards].sort(), featureNames(api.getProjects()));
 
-  for (const name of ['user-auth', 'billing-invoices', 'notifications']) {
-    await vscode.commands.executeCommand('tlcSpecs.showFeature', { projectId: projectId(), feature: name });
-    const detail = await sideReport(`the details of ${name}`, (r) => r.detail === name);
-    assert.ok(detail.width < 700, `the side panel is ${detail.width}px wide`);
-    assert.equal(detail.overflow, false, `${name} scrolls sideways at ${detail.width}px`);
+  const details = async () => {
+    for (const name of ['user-auth', 'billing-invoices', 'notifications']) {
+      await vscode.commands.executeCommand('tlcSpecs.showFeature', { projectId: projectId(), feature: name });
+      const detail = await sideReport(`the details of ${name}`, (r) => r.detail === name);
+      assert.ok(detail.width < 700, `the side panel is ${detail.width}px wide`);
+      assert.equal(detail.overflow, false, `${name} scrolls sideways at ${detail.width}px`);
+    }
+  };
+
+  // Side bars run from 250 to 500px: narrow this one step by step, down to 250px or less.
+  /** The report after the side bar was resized: a resize alone renders nothing, a refresh does. */
+  const resized = (from, narrower) =>
+    waitFor(`the side panel to get ${narrower ? 'narrower' : 'wider'} than ${from}px`, async () => {
+      await api.refresh();
+      const r = api.sidePanelReport();
+      return r && (narrower ? r.width < from : r.width > from) ? r : undefined;
+    });
+  let narrow = board;
+  let steps = 0;
+  try {
+    while (narrow.width > 250) {
+      assert.ok(steps < 40, `the side bar is still ${narrow.width}px wide after ${steps} steps`);
+      // The resize commands act on the part that has the focus: a wider editor area is a narrower side bar.
+      await vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
+      await vscode.commands.executeCommand('workbench.action.increaseViewWidth');
+      steps++;
+      narrow = await resized(narrow.width, true);
+      assert.equal(narrow.detail, null);
+      assert.equal(narrow.columns, 1, `columns at ${narrow.width}px`);
+      assert.equal(narrow.emptyStages, 0, `empty stages at ${narrow.width}px`);
+      assert.equal(narrow.overflow, false, `the board scrolls sideways at ${narrow.width}px`);
+      assert.deepEqual([...narrow.cards].sort(), featureNames(api.getProjects()));
+    }
+    assert.ok(narrow.width <= 250, `the narrowest side panel measured was ${narrow.width}px`);
+    await details();
+  } finally {
+    // Give the side bar its width back for the tests that follow.
+    await vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
+    for (; steps > 0; steps--) await vscode.commands.executeCommand('workbench.action.decreaseViewWidth');
   }
+  const wide = await resized(narrow.width, false);
+  assert.ok(wide.width < 700, `the side panel is ${wide.width}px wide`);
+  await details();
 });
 
 const dashboardTab = () => allTabs().find((t) => t.input instanceof vscode.TabInputWebview && t.label === 'TLC Specs');

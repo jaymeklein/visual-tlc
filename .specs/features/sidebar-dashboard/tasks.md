@@ -499,11 +499,11 @@ T15 → T16 → T17
 
 **Done when**:
 
-- [ ] O quadro fica em uma coluna e sem rolagem horizontal em cada largura medida, do padrão até 250px ou menos
-- [ ] Os detalhes das features não rolam na horizontal na menor largura medida
-- [ ] A barra lateral volta à largura inicial no fim do teste
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [ ] Test count: nenhum teste removido
+- [x] O quadro fica em uma coluna e sem rolagem horizontal em cada largura medida, do padrão até 250px ou menos
+- [x] Os detalhes das features não rolam na horizontal na menor largura medida
+- [x] A barra lateral volta à largura inicial no fim do teste
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] Test count: nenhum teste removido
 
 **Tests**: integration
 **Gate**: full
