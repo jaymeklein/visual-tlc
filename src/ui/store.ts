@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { DEFAULT_SPECS_FOLDER, findSpecsRoots, parseSpecsFolders } from '../core/folders.ts';
+import { DEFAULT_SPECS_FOLDER, findSpecsRoots, parseSpecsFolders, rootLabel } from '../core/folders.ts';
 import { loadProject, type SpecsReader } from '../core/project.ts';
 import type { Feature, Project } from '../core/types.ts';
 
@@ -103,9 +103,9 @@ export class SpecsStore implements vscode.Disposable {
     const roots = await discoverSpecsRoots(exclude);
     const now = Date.now();
     return Promise.all(
-      roots.map(async (specsUri) => ({
+      roots.map(async ({ specsUri, label }) => ({
         specsUri,
-        project: await loadProject(uriReader(specsUri), specsUri.toString(), labelFor(specsUri), { now, staleAfterDays }),
+        project: await loadProject(uriReader(specsUri), specsUri.toString(), label, { now, staleAfterDays }),
       })),
     );
   }
@@ -135,27 +135,20 @@ function searchPattern(entry: string): string {
   return named ? `**/${entry}/**` : `**/${entry}/{STATE.md,lessons.json,LESSONS.md,features/*/*.md}`;
 }
 
-async function discoverSpecsRoots(exclude: string): Promise<vscode.Uri[]> {
-  const roots = new Map<string, vscode.Uri>();
+async function discoverSpecsRoots(exclude: string): Promise<{ specsUri: vscode.Uri; label: string }[]> {
+  const roots = new Map<string, { specsUri: vscode.Uri; label: string }>();
   for (const folder of vscode.workspace.workspaceFolders ?? []) {
     const { entries } = specsFolders(folder);
-    const found = await Promise.all(entries.map((entry) => vscode.workspace.findFiles(new vscode.RelativePattern(folder, searchPattern(entry)), exclude || null, 5000)));
+    const matches = await Promise.all(entries.map((entry) => vscode.workspace.findFiles(new vscode.RelativePattern(folder, searchPattern(entry)), exclude || null, 5000)));
     const base = folder.uri.path.replace(/\/$/, '');
-    const files = found.flat().map((f) => f.path.slice(base.length + 1));
-    for (const { path } of findSpecsRoots(files, entries)) {
-      const root = vscode.Uri.joinPath(folder.uri, ...path.split('/'));
-      roots.set(root.toString(), root);
+    const files = matches.flat().map((f) => f.path.slice(base.length + 1));
+    const found = findSpecsRoots(files, entries);
+    for (const root of found) {
+      const specsUri = vscode.Uri.joinPath(folder.uri, ...root.path.split('/'));
+      if (!roots.has(specsUri.toString())) roots.set(specsUri.toString(), { specsUri, label: rootLabel(root, found, folder.name) });
     }
   }
-  return [...roots.values()].sort((a, b) => a.path.localeCompare(b.path));
-}
-
-function labelFor(specsUri: vscode.Uri): string {
-  const parent = vscode.Uri.joinPath(specsUri, '..');
-  const folder = vscode.workspace.getWorkspaceFolder(specsUri);
-  if (!folder) return parent.path.split('/').pop() ?? parent.path;
-  if (parent.path === folder.uri.path) return folder.name;
-  return `${folder.name}/${vscode.workspace.asRelativePath(parent, false)}`;
+  return [...roots.values()].sort((a, b) => a.specsUri.path.localeCompare(b.specsUri.path));
 }
 
 function uriReader(root: vscode.Uri): SpecsReader {

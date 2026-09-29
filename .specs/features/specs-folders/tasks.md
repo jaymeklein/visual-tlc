@@ -218,9 +218,9 @@ T7 → T8
 
 **Done when**:
 
-- [ ] Com `[".specs", "docs/specs"]` a árvore Features mostra dois grupos, `ws · .specs` e `ws · docs/specs`
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [ ] Test count: nenhum teste removido
+- [x] Com `[".specs", "docs/specs"]` a árvore Features mostra dois grupos, `ws · .specs` e `ws · docs/specs`
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] Test count: nenhum teste removido
 
 **Tests**: integration
 **Gate**: full

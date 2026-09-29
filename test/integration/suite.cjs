@@ -507,6 +507,19 @@ test('SF-09 an invalid entry is ignored with a warning that names it', async () 
   }
 });
 
+const groupLabels = () => api.featuresTree.getChildren().map((n) => api.featuresTree.getTreeItem(n).label).sort();
+
+test('SF-07 two specs folders of the same project are labelled with project and folder path', async () => {
+  const ws = vscode.workspace.workspaceFolders[0].name;
+  await setFolders(['.specs', 'docs/specs']);
+  await waitForRoots(['.specs', 'docs/specs', 'packages/api/docs/specs', 'tools/.specs']);
+  assert.deepEqual(groupLabels(), [`${ws} · .specs`, `${ws} · docs/specs`, `${ws}/packages/api`, `${ws}/tools`].sort());
+
+  await setFolders(['docs/specs']);
+  await waitForRoots(['docs/specs', 'packages/api/docs/specs']);
+  assert.deepEqual(groupLabels(), [ws, `${ws}/packages/api`].sort());
+});
+
 test('SF-08 an empty list uses .specs', async () => {
   await setFolders([]);
   await waitForRoots(['.specs', 'tools/.specs']);
