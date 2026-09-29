@@ -340,3 +340,10 @@ test('HID-14 with the eye open a marked card is faded, the same card unmarked is
   assert.equal(cardsOf((await board(true, mark('csv-export'))).html).get('csv-export')!.cls, 'card h-ok is-hidden');
   assert.equal(cardsOf((await board(true)).html).get('csv-export')!.cls, 'card h-ok');
 });
+
+test('HID-14 the stylesheet fades a marked card at every width', () => {
+  const css = readFileSync(join(import.meta.dirname, '..', '..', 'media', 'dashboard.css'), 'utf8').replace(/\r\n/g, '\n');
+  const rules = [...css.matchAll(/^\.card\.is-hidden \{ opacity: ([\d.]+); \}$/gm)];
+  assert.equal(rules.length, 1, 'one top-level .card.is-hidden rule');
+  assert.ok(Number(rules[0][1]) < 1, `opacity ${rules[0][1]} does not fade the card`);
+});

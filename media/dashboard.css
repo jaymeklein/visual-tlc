@@ -78,7 +78,9 @@ input[type='search'] {
   font: inherit;
 }
 input[type='search']:focus { outline: 1px solid var(--focus); outline-offset: -1px; }
-.check { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); cursor: pointer; user-select: none; }
+/* The eye of the top bar: closed while the hidden specs are off the board, open and highlighted while they are on it. */
+.eye-toggle { flex: none; white-space: nowrap; }
+.eye-toggle[aria-pressed='true'] { border-color: var(--vscode-inputOption-activeBorder, var(--focus)); background: var(--vscode-inputOption-activeBackground, var(--hover)); color: var(--vscode-inputOption-activeForeground, var(--fg)); }
 
 /* pills & chips */
 .pill { display: inline-flex; align-items: center; gap: 3px; padding: 1px 7px; border-radius: 10px; font-size: 11px; background: var(--vscode-badge-background); color: var(--vscode-badge-foreground); white-space: nowrap; }
@@ -144,6 +146,9 @@ input[type='search']:focus { outline: 1px solid var(--focus); outline-offset: -1
 .card.h-complete { border-left-color: var(--ok); }
 .card.h-failed { border-left-color: var(--err); }
 .card.h-attention { border-left-color: var(--warn); }
+/* Marked as hidden, on the board while the eye is open. */
+.card.is-hidden { opacity: 0.55; }
+.card.is-hidden:hover, .card.is-hidden:focus-within { opacity: 1; }
 .card-head { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
 .card-name { font-family: var(--mono); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .badges { display: inline-flex; gap: 4px; flex: none; }

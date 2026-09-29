@@ -145,10 +145,9 @@ T6 → T7
 
 **Done when**:
 
-- [ ] `.card.is-hidden` tem opacidade menor, e o teste da folha de estilo prova a regra (HID-14)
-- [ ] O olho do topo cabe na barra da lateral estreita, sem rolagem horizontal
-- [ ] Gate check passes: `npm run typecheck && npm test`
-- [ ] Test count: 67 unit tests pass (66 antes + 1 novo)
+- [x] `.card.is-hidden` tem opacidade menor, e o teste da folha de estilo prova a regra (HID-14)
+- [x] Gate check passes: `npm run typecheck && npm test`
+- [x] Test count: 67 unit tests pass (66 antes + 1 novo)
 
 **Tests**: unit
 **Gate**: quick
@@ -176,6 +175,7 @@ T6 → T7
 - [ ] `setHidden` vindo da lateral tira a spec dos cards da aba e da lateral e soma 1 ao número. O `setHidden` de volta a devolve (HID-11, HID-12)
 - [ ] A marcada aberta por `showFeature` mostra o detalhe na lateral (HID-15)
 - [ ] Os testes que marcam desmarcam num `finally`
+- [ ] O olho do topo cabe na lateral estreita: o SIDE-03/04 mede a lateral sem rolagem horizontal (vindo do T3)
 - [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
 - [ ] Test count: 67 unit, 56 + 1 + 2 integration tests pass (53 antes + 3 novos)
 
