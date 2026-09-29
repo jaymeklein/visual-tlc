@@ -12,7 +12,11 @@ export const PANEL_VIEW = 'tlcSpecs.panel';
 class Surface implements vscode.Disposable {
   private webview: vscode.Webview | undefined;
   private pendingSelect: FeatureRef | null | undefined;
-  /** True from the webview's "ready" until it goes away: messages posted before that are lost. */
+  /**
+   * True from the webview's "ready" until it is hidden or gone; a selection made meanwhile waits for the next "ready".
+   * VS Code 1.120 delivers a message posted to a page that is still loading, so nothing fails there without this.
+   * It stays because the older versions this extension accepts (from 1.90) were not checked.
+   */
   private live = false;
   private readonly disposables: vscode.Disposable[] = [];
   /** Webview health, surfaced for the integration tests. */

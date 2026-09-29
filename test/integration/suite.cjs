@@ -797,6 +797,24 @@ test('SIDE-02 the "Abrir painel" button of a notification shows the feature in t
   }
 });
 
+test('SIDE-02 with the side bar closed, "Abrir feature no painel" brings the panel back on that feature', async () => {
+  await closeAll();
+  await vscode.commands.executeCommand('tlcSpecs.openFile', projectId(), 'features/user-auth/tasks.md', 1);
+  const editor = (await waitFor('text editor', () => vscode.window.activeTextEditor)).document.uri.toString();
+  await vscode.commands.executeCommand('workbench.action.closeSidebar');
+  await waitFor('the side panel to hide', () => api.sidePanelReport() === undefined);
+
+  await vscode.commands.executeCommand('tlcSpecs.showFeature', { projectId: projectId(), feature: 'billing-invoices' });
+  const report = await sideReport('the side panel to come back', (r) => r.projects.length > 0);
+  assert.equal(report.detail, 'billing-invoices');
+  assert.deepEqual(
+    allTabs().map((t) => t.label),
+    ['tasks.md'],
+  );
+  assert.equal(vscode.window.activeTextEditor.document.uri.toString(), editor);
+  assert.equal(vscode.window.tabGroups.all.length, 1);
+});
+
 exports.run = async function run() {
   const failures = [];
   for (const c of cases) {

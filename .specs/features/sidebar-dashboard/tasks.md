@@ -438,10 +438,10 @@ T8 → T9 → T10 → T11 → T12 → T13 → T14 → T15
 
 **Done when**:
 
-- [ ] Com a barra lateral fechada, o clique reabre a view nos detalhes da feature, sem mexer nas abas
-- [ ] O comentário de `live` registra que o VS Code 1.120 entrega a mensagem sem a guarda e que as versões anteriores não foram verificadas
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [ ] Test count: nenhum teste removido
+- [x] Com a barra lateral fechada, o clique reabre a view nos detalhes da feature, sem mexer nas abas
+- [x] O comentário de `live` registra que o VS Code 1.120 entrega a mensagem sem a guarda e que as versões anteriores não foram verificadas
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] Test count: nenhum teste removido
 
 **Tests**: integration
 **Gate**: full
