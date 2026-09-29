@@ -74,12 +74,12 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 | Requirement ID | Story       | Phase  | Status  |
 | -------------- | ----------- | ------ | ------- |
 | EXC-01 | P1: Excluir pastas da listagem | - | Pending |
-| EXC-02 | P1: Excluir pastas da listagem | - | Pending |
+| EXC-02 | P1: Excluir pastas da listagem | Execute | Implementing |
 | EXC-03 | P1: Excluir pastas da listagem | - | Pending |
-| EXC-04 | P1: Excluir pastas da listagem | - | Pending |
+| EXC-04 | P1: Excluir pastas da listagem | Execute | Implementing |
 | EXC-05 | P1: Excluir pastas da listagem | - | Pending |
-| EXC-06 | Edge case: lista vazia | - | Pending |
-| EXC-07 | Edge case: entrada inválida | - | Pending |
+| EXC-06 | Edge case: lista vazia | Execute | Implementing |
+| EXC-07 | Edge case: entrada inválida | Execute | Implementing |
 | EXC-08 | Edge case: nome parecido | - | Pending |
 | EXC-09 | Edge case: incluída e excluída | - | Pending |
 

@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { findSpecsRoots, parseSpecsFolders, rootLabel } from '../../src/core/folders.ts';
+import { findSpecsRoots, parseExclude, parseSpecsFolders, rootLabel } from '../../src/core/folders.ts';
 
 test('SF-08 an empty or missing list falls back to .specs', () => {
   assert.deepEqual(parseSpecsFolders([]), { entries: ['.specs'], invalid: [] });
@@ -76,4 +76,31 @@ test('SF-07 two specs folders of the same project are labelled with project and 
     roots.map((r) => rootLabel(r, roots, 'api')),
     ['api · .specs', 'api · docs/specs', 'api/packages/api · .specs', 'api/packages/api · docs/specs', 'api/packages/web'],
   );
+});
+
+// Excluded folders (spec: .specs/features/exclude-folders/spec.md).
+
+test('EXC-02 a listed folder is excluded at any depth', () => {
+  assert.deepEqual(parseExclude(['test']), { glob: '**/test/**', invalid: [] });
+  assert.deepEqual(parseExclude(['node_modules', 'test', 'packages/legacy']), { glob: '{**/node_modules/**,**/test/**,**/packages/legacy/**}', invalid: [] });
+});
+
+test('EXC-02 entries are normalized and kept once', () => {
+  assert.deepEqual(parseExclude(['test', 'test/', './test', 'packages\\legacy\\']), { glob: '{**/test/**,**/packages/legacy/**}', invalid: [] });
+});
+
+test('EXC-04 a text value is used as the exclusion glob', () => {
+  assert.deepEqual(parseExclude('**/node_modules/**'), { glob: '**/node_modules/**', invalid: [] });
+  assert.deepEqual(parseExclude('{**/node_modules/**,**/test/**}'), { glob: '{**/node_modules/**,**/test/**}', invalid: [] });
+  assert.deepEqual(parseExclude(''), { glob: null, invalid: [] });
+});
+
+test('EXC-06 an empty list excludes nothing', () => {
+  assert.deepEqual(parseExclude([]), { glob: null, invalid: [] });
+});
+
+test('EXC-07 absolute, parent and glob entries are left out and reported as written', () => {
+  const invalid = ['/abs/test', 'C:\\abs\\test', '../out', 'docs/../test', '**/test/**', 'test?', 'te[s]t', '{a,b}'];
+  assert.deepEqual(parseExclude([...invalid, 'test']), { glob: '**/test/**', invalid });
+  assert.deepEqual(parseExclude(['../out']), { glob: null, invalid: ['../out'] });
 });
