@@ -9,7 +9,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 ---
 
 **Design**: inline (escopo Medium, sem `design.md`)
-**Status**: In Progress
+**Status**: Done
 
 Design inline: `src/core/folders.ts` concentra a lógica pura (normalizar entradas, achar raízes, rotular). `src/ui/store.ts` lê a configuração por pasta do workspace, busca arquivos, recria os watchers e mostra os avisos.
 
@@ -419,10 +419,10 @@ T11 → T12 → T13
 
 **Done when**:
 
-- [ ] Com uma entrada que não acha nada, não há projetos, a barra de status some e o painel renderiza zero projetos
-- [ ] Mutante N4 do Verifier morre
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [ ] Test count: nenhum teste removido
+- [x] Com uma entrada que não acha nada, não há projetos, a barra de status some e o painel renderiza zero projetos
+- [x] Mutante N4 do Verifier morre
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] Test count: nenhum teste removido
 
 **Tests**: integration
 **Gate**: full

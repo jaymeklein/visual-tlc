@@ -468,6 +468,13 @@ test('SF-03 a configuration change reloads trees, panel, status bar and diagnost
     const custom = diags.find(([uri]) => uri.path.endsWith('/docs/specs/features/custom-one/spec.md'));
     assert.ok(custom, 'no diagnostics for docs/specs/features/custom-one/spec.md');
     assert.ok(custom[1].some((d) => d.message.includes('sem SHALL')));
+
+    await setFolders(['nada/aqui']);
+    await waitForRoots([]);
+    assert.equal(api.statusBarText(), undefined);
+    assert.deepEqual(api.featuresTree.getChildren(), []);
+    await waitFor('the panel to render no project', () => JSON.stringify(api.dashboardProjects()) === '[]');
+    await waitFor('the diagnostics to clear', () => !vscode.languages.getDiagnostics().some(([, list]) => list.some((x) => x.source === 'TLC Specs')));
   } finally {
     sub.dispose();
   }
