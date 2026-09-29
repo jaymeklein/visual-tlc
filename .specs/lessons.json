@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 3,
+  "next_id": 7,
   "lessons": [
     {
       "id": "L-001",
@@ -40,6 +40,79 @@
       ],
       "created": "2026-09-29T12:11:05Z",
       "last_seen": "2026-09-29T12:11:05Z"
+    },
+    {
+      "id": "L-003",
+      "key": "surviving_mutant::test a resource scoped setting in a multi root workspace where each folder holds a different value",
+      "text": "Test a resource-scoped setting in a multi-root workspace where each folder holds a different value",
+      "signal": "surviving_mutant",
+      "scope": "settings",
+      "status": "candidate",
+      "features": [
+        "specs-folders"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "H12 src/ui/store.ts:129 (settings)",
+        "H7 package.json:220 (settings)"
+      ],
+      "created": "2026-09-29T13:09:09Z",
+      "last_seen": "2026-09-29T13:09:09Z"
+    },
+    {
+      "id": "L-004",
+      "key": "surviving_mutant::test every file watcher event the code subscribes to create change and delete",
+      "text": "Test every file watcher event the code subscribes to: create, change and delete",
+      "signal": "surviving_mutant",
+      "scope": "watchers",
+      "status": "candidate",
+      "features": [
+        "specs-folders"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "H16 src/ui/store.ts:49 (watchers)"
+      ],
+      "created": "2026-09-29T13:09:09Z",
+      "last_seen": "2026-09-29T13:09:09Z"
+    },
+    {
+      "id": "L-005",
+      "key": "ac_gap::assert every surface an acceptance criterion lists exposing a test hook on the extension api when vs code cannot read the surface",
+      "text": "Assert every surface an acceptance criterion lists, exposing a test hook on the extension API when VS Code cannot read the surface",
+      "signal": "ac_gap",
+      "scope": "extension-host",
+      "status": "candidate",
+      "features": [
+        "specs-folders"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "SF-03 test/integration/suite.cjs:432 (extension-host)"
+      ],
+      "created": "2026-09-29T13:09:09Z",
+      "last_seen": "2026-09-29T13:09:09Z"
+    },
+    {
+      "id": "L-006",
+      "key": "spec_precision_gap::name the file events create change delete that a watcher acceptance criterion covers",
+      "text": "Name the file events (create, change, delete) that a watcher acceptance criterion covers",
+      "signal": "spec_precision_gap",
+      "scope": "spec",
+      "status": "candidate",
+      "features": [
+        "specs-folders"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "SF-04 spec.md:55 (spec)"
+      ],
+      "created": "2026-09-29T13:09:10Z",
+      "last_seen": "2026-09-29T13:09:10Z"
     }
   ]
 }

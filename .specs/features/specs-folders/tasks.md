@@ -9,7 +9,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 ---
 
 **Design**: inline (escopo Medium, sem `design.md`)
-**Status**: Done
+**Status**: In Progress
 
 Design inline: `src/core/folders.ts` concentra a lógica pura (normalizar entradas, achar raízes, rotular). `src/ui/store.ts` lê a configuração por pasta do workspace, busca arquivos, recria os watchers e mostra os avisos.
 
@@ -55,6 +55,12 @@ T3 → T4 → T5 → T6 → T7
 
 ```
 T7 → T8
+```
+
+### Phase 4: Correções do Verifier (iteração 1)
+
+```
+T8 → T9 → T10 → T11
 ```
 
 ---
@@ -280,14 +286,99 @@ T7 → T8
 
 ---
 
+### T9: Provar a configuração por pasta do workspace
+
+**What**: suíte de integração num workspace multi-root em que cada pasta tem a sua lista
+**Where**: `test/integration/multiroot.cjs`
+**Depends on**: T8
+**Reuses**: `test/integration/startup.cjs`, `test/integration/run.mjs`
+**Requirement**: SF-01, SF-02
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] Pasta `a` com `["docs/specs"]` mostra só `a/docs/specs`; pasta `b` sem configuração mostra só `b/.specs`
+- [ ] O teste do SF-01 confere o escopo `resource` da configuração
+- [ ] Mutantes H7 e H12 do Verifier morrem
+- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [ ] Test count: nenhum teste removido
+
+**Tests**: integration
+**Gate**: full
+
+**Commit**: `test(store): cover per-folder specs folders in a multi-root workspace`
+
+---
+
+### T10: Provar painel e barra de status no SF-03
+
+**What**: a API de teste expõe o texto da barra de status e os projetos do último estado enviado ao painel
+**Where**: `src/extension.ts` (modify)
+**Depends on**: T9
+**Reuses**: `dashboardHealth` em `src/extension.ts`
+**Requirement**: SF-03
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] Depois da troca de configuração, a barra de status nomeia uma feature de `docs/specs`
+- [ ] Depois da troca de configuração, o último estado enviado ao painel tem os mesmos projetos de `getProjects()`
+- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [ ] Test count: nenhum teste removido
+
+**Tests**: integration
+**Gate**: full
+
+**Commit**: `test(dashboard): cover panel and status bar on configuration change`
+
+---
+
+### T11: Provar alteração e remoção de arquivo no SF-04
+
+**What**: o teste do SF-04 cobre arquivo criado, alterado e removido numa pasta configurada
+**Where**: `test/integration/suite.cjs` (modify)
+**Depends on**: T10
+**Reuses**: teste `SF-04` existente
+**Requirement**: SF-04
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] A spec nomeia os três eventos no SF-04
+- [ ] Alterar `spec.md` em `docs/specs` muda os avisos da feature
+- [ ] Remover a pasta da feature em `docs/specs` tira a feature da visão
+- [ ] Mutante H16 do Verifier morre
+- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [ ] Test count: nenhum teste removido
+
+**Tests**: integration
+**Gate**: full
+
+**Commit**: `test(store): cover file change and removal in configured folders`
+
+---
+
 ## Phase Execution Map
 
 ```
-Phase 1 → Phase 2 → Phase 3
+Phase 1 → Phase 2 → Phase 3 → Phase 4
 
 Phase 1:  T1 ------→ T2 ------→ T3
 Phase 2:  T4 ------→ T5 ------→ T6 ------→ T7
 Phase 3:  T8
+Phase 4:  T9 ------→ T10 ------→ T11
 ```
 
 ---
@@ -304,6 +395,9 @@ Phase 3:  T8
 | T6: Rotular os grupos na árvore | 1 chamada no store | ✅ Granular |
 | T7: Ativar ao iniciar | 1 evento de ativação | ✅ Granular |
 | T8: Documentar a configuração | 1 arquivo | ✅ Granular |
+| T9: Provar a configuração por pasta do workspace | 1 suíte + fixture | ✅ Granular |
+| T10: Provar painel e barra de status no SF-03 | 2 leituras de teste na API | ✅ Coeso |
+| T11: Provar alteração e remoção de arquivo no SF-04 | 1 teste | ✅ Granular |
 
 ## Diagram-Definition Cross-Check
 
@@ -317,6 +411,9 @@ Phase 3:  T8
 | T6 | T5 | T5 | ✅ Match |
 | T7 | T6 | T6 | ✅ Match |
 | T8 | T7 | T7 | ✅ Match |
+| T9 | T8 | T8 | ✅ Match |
+| T10 | T9 | T9 | ✅ Match |
+| T11 | T10 | T10 | ✅ Match |
 
 ## Test Co-location Validation
 
@@ -330,3 +427,6 @@ Phase 3:  T8
 | T6 | Extension host | integration | integration | ✅ OK |
 | T7 | Extension host | integration | integration | ✅ OK |
 | T8 | Docs | none | none | ✅ OK |
+| T9 | Extension host | integration | integration | ✅ OK |
+| T10 | Extension host | integration | integration | ✅ OK |
+| T11 | Extension host | integration | integration | ✅ OK |
