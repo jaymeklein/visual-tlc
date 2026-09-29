@@ -322,10 +322,10 @@ T7 → T8 → T9 → T10
 
 **Done when**:
 
-- [ ] Unit: com csv-export marcada e o olho aberto, billing-invoices tem `cls` `card h-complete` (mata M12)
-- [ ] Integração: com o olho aberto, a descrição de billing-invoices não tem "oculta" (mata H4)
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [ ] Test count: 67 unit, 63 + 1 + 2 integration tests pass (asserções novas em testes existentes)
+- [x] Unit: com csv-export marcada e o olho aberto, billing-invoices tem `cls` `card h-complete` (mata M12)
+- [x] Integração: com o olho aberto, a descrição de billing-invoices não tem "oculta" (mata H4)
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] Test count: 67 unit, 63 + 1 + 2 integration tests pass (asserções novas em testes existentes)
 
 **Tests**: integration
 **Gate**: full

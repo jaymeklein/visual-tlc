@@ -559,6 +559,8 @@ test('HID-14 with the eye of Features open a marked row ends its description wit
     assert.doesNotMatch((await rowOf('csv-export')).description, /oculta/);
     await setHidden(api.dashboardMessage, 'csv-export', true);
     assert.match((await rowOf('csv-export')).description, / · oculta$/);
+    // Hidden but not marked: the completed row has no "· oculta".
+    assert.doesNotMatch((await rowOf('billing-invoices')).description, /oculta/);
   } finally {
     await vscode.commands.executeCommand('tlcSpecs.hideHidden');
     await setHidden(api.dashboardMessage, 'csv-export', false);

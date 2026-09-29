@@ -340,8 +340,11 @@ test('HID-11/HID-12 the eye of a card asks the extension to mark or unmark that 
 });
 
 test('HID-14 with the eye open a marked card is faded, the same card unmarked is not', async () => {
-  assert.equal(cardsOf((await board(true, mark('csv-export'))).html).get('csv-export')!.cls, 'card h-ok is-hidden');
+  const marked = cardsOf((await board(true, mark('csv-export'))).html);
+  assert.equal(marked.get('csv-export')!.cls, 'card h-ok is-hidden');
   assert.equal(cardsOf((await board(true)).html).get('csv-export')!.cls, 'card h-ok');
+  // Hidden but not marked: the completed card is not faded.
+  assert.equal(marked.get('billing-invoices')!.cls, 'card h-complete');
 });
 
 test('HID-14 the stylesheet fades a marked card at every width', () => {
