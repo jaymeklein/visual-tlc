@@ -77,18 +77,18 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 | -------------- | ----------- | ------ | ------- |
 | EXC-01 | P1: Excluir pastas da listagem | Execute | Verified |
 | EXC-02 | P1: Excluir pastas da listagem | Execute | Verified |
-| EXC-03 | P1: Excluir pastas da listagem | Execute | Implementing |
+| EXC-03 | P1: Excluir pastas da listagem | Execute | Verified |
 | EXC-04 | P1: Excluir pastas da listagem | Execute | Verified |
 | EXC-05 | P1: Excluir pastas da listagem | Execute | Verified |
 | EXC-06 | Edge case: lista vazia | Execute | Verified |
-| EXC-07 | Edge case: entrada inválida | Execute | Needs Fix |
+| EXC-07 | Edge case: entrada inválida | Execute | Verified |
 | EXC-08 | Edge case: nome parecido | Execute | Verified |
 | EXC-09 | Edge case: incluída e excluída | Execute | Verified |
-| EXC-10 | Edge case: mesma entrada inválida nas duas configurações | Execute | Implementing |
+| EXC-10 | Edge case: mesma entrada inválida nas duas configurações | Execute | Verified |
 
 **ID format:** `EXC-NN`, na ordem dos critérios acima.
 
-**Coverage:** 10 total, 7 verificados, EXC-03 e EXC-10 em implementação, EXC-07 com fix pendente; escopo Medium (passos listados na execução, sem `tasks.md`).
+**Coverage:** 10 total, 10 verificados; escopo Medium (passos listados na execução, sem `tasks.md`).
 
 ---
 
