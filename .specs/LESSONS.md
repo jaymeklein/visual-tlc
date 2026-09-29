@@ -102,6 +102,12 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: SIDE-03 test/integration/suite.cjs:685 (webview)
 - last seen: 2026-09-29T15:57:24Z
 
+### L-016 - Test the same invalid value in two settings at once when both settings share one warning routine
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `settings` · harmful: 0
+- features: exclude-folders
+- evidence: H6 src/ui/store.ts:119 (settings)
+- last seen: 2026-09-29T17:51:51Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.

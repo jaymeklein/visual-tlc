@@ -33,7 +33,7 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 | Valor em texto | Usado como glob, como antes | Compatibilidade com quem já configurou | n |
 | Escopo | `resource`: cada pasta de um workspace multi-root pode ter a sua lista | Mesmo escopo de `tlcSpecs.specsFolders` | n |
 | Inclusão e exclusão da mesma pasta | A exclusão vence | Excluir é o pedido mais específico de quem configurou | n |
-| Entrada inválida (absoluta, com `..` ou com glob) | Ignorada, com aviso que nomeia a entrada | Mesma regra de `tlcSpecs.specsFolders` | n |
+| Entrada inválida (absoluta, com `..`, com vírgula ou com glob) | Ignorada, com aviso que nomeia a entrada e a configuração | Mesma regra de `tlcSpecs.specsFolders`; a vírgula separa as entradas no glob que a busca recebe | n |
 | Dimensões implícitas | Remaining dimensions N/A for this scope | Configuração local e leitura de arquivos: sem persistência, chamadas externas, auth ou concorrência | n |
 
 **Open questions:** none - all resolved or logged above.
@@ -63,7 +63,7 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 ## Edge Cases
 
 - IF a lista está vazia THEN a extensão SHALL listar todas as pastas de specs, inclusive as que estão em `node_modules`
-- IF uma entrada é absoluta, contém `..` ou caracteres de glob THEN a extensão SHALL ignorar essa entrada e mostrar um aviso com o nome dela
+- IF uma entrada é absoluta, contém `..`, vírgula ou caracteres de glob THEN a extensão SHALL ignorar essa entrada e mostrar um aviso com o nome dela e o da configuração `tlcSpecs.exclude`
 - WHEN uma pasta tem o nome de uma entrada como parte do nome (`tests` com a entrada `test`) THEN a extensão SHALL manter essa pasta na listagem
 - WHEN uma pasta está em `tlcSpecs.specsFolders` e dentro de uma entrada de `tlcSpecs.exclude` THEN a extensão SHALL deixá-la fora da listagem
 

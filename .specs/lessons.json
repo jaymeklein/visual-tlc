@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 16,
+  "next_id": 17,
   "lessons": [
     {
       "id": "L-001",
@@ -282,6 +282,24 @@
       ],
       "created": "2026-09-29T15:57:24Z",
       "last_seen": "2026-09-29T15:57:24Z"
+    },
+    {
+      "id": "L-016",
+      "key": "surviving_mutant::test the same invalid value in two settings at once when both settings share one warning routine",
+      "text": "Test the same invalid value in two settings at once when both settings share one warning routine",
+      "signal": "surviving_mutant",
+      "scope": "settings",
+      "status": "candidate",
+      "features": [
+        "exclude-folders"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "H6 src/ui/store.ts:119 (settings)"
+      ],
+      "created": "2026-09-29T17:51:51Z",
+      "last_seen": "2026-09-29T17:51:51Z"
     }
   ]
 }
