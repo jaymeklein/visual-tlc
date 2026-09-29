@@ -27,10 +27,13 @@ export interface Rendered {
   boardWidth: number;
   /** True when the page or a board scrolls horizontally. */
   overflow: boolean;
+  /** Eye of the top bar (its title and text), null without a board. */
+  toggle: { title: string; text: string } | null;
 }
 
 export type ToWebview =
-  | { type: 'state'; projects: Project[]; now: number }
+  /** `hidden`: hiddenKey()s of the specs marked as hidden. */
+  | { type: 'state'; projects: Project[]; now: number; hidden: string[] }
   | { type: 'select'; target: FeatureRef | null };
 
 export type FromWebview =

@@ -27,6 +27,7 @@ window.addEventListener('message', (event: MessageEvent<ToWebview>) => {
   if (msg.type === 'state') {
     projects = msg.projects;
     now = msg.now;
+    hidden = msg.hidden;
     loaded = true;
     render();
   } else if (msg.type === 'select') {
@@ -56,6 +57,7 @@ function report(): void {
   const root = document.documentElement;
   // offsetParent is null for an element that is not displayed (itself or an ancestor).
   const shown = (selector: string) => [...app.querySelectorAll<HTMLElement>(selector)].filter((el) => el.offsetParent !== null);
+  const eye = app.querySelector<HTMLElement>('[data-action="toggle-hidden"]');
   vscode.postMessage({
     type: 'rendered',
     projects: projects.map((p) => p.id),
@@ -68,13 +70,14 @@ function report(): void {
     width: window.innerWidth,
     boardWidth: boards.length ? boards[0].clientWidth : 0,
     overflow: root.scrollWidth > root.clientWidth || boards.some((b) => b.scrollWidth > b.clientWidth),
+    toggle: eye ? { title: eye.title, text: eye.textContent?.trim() ?? '' } : null,
   });
 }
 
 // ---------- events ----------
 
-function activate(el: HTMLElement, data: Record<string, string | undefined> = el.dataset): void {
-  const result = actionFor(data, view.expandedTasks);
+function activate(el: HTMLElement): void {
+  const result = actionFor(el.dataset, view.expandedTasks);
   if (result.message) vscode.postMessage(result.message);
   if (result.view) setView(result.view);
   if (result.scrollTop) window.scrollTo(0, 0);
@@ -82,8 +85,7 @@ function activate(el: HTMLElement, data: Record<string, string | undefined> = el
 
 document.addEventListener('click', (e) => {
   const el = (e.target as Element).closest<HTMLElement>('[data-action]');
-  if (!el || el.dataset.action === 'toggle-done') return;
-  activate(el);
+  if (el) activate(el);
 });
 
 document.addEventListener('keydown', (e) => {
@@ -102,11 +104,6 @@ document.addEventListener('keydown', (e) => {
 document.addEventListener('input', (e) => {
   const el = e.target as HTMLInputElement;
   if (el.id === 'search') setView({ query: el.value });
-});
-
-document.addEventListener('change', (e) => {
-  const el = e.target as HTMLInputElement;
-  if (el.dataset.action === 'toggle-done') activate(el, { ...el.dataset, checked: String(el.checked) });
 });
 
 window.addEventListener('error', (e) => vscode.postMessage({ type: 'error', message: String(e.error?.stack ?? e.message) }));

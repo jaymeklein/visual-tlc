@@ -566,7 +566,7 @@ test('specs-folders: restores the default configuration', async () => {
 // --- sidebar-dashboard ---------------------------------------------------------------------------------------
 
 /** Stages of the board without features, counted from the model: a feature sits in "done" when complete, else in its phase. */
-// A panel opens with "Ocultar concluídas" checked (PNL-01): the board holds the open features in five stages, without Concluídas.
+// A panel opens with its eye closed (PNL-01, HID-01): the board holds the open features in five stages, without Concluídas.
 const emptyStagesOf = (projects) => projects.reduce((n, p) => n + 5 - new Set(p.features.filter((f) => f.health !== 'complete').map((f) => f.phase)).size, 0);
 const boardNames = (projects) => projects.flatMap((p) => p.features.filter((f) => f.health !== 'complete').map((f) => f.name)).sort();
 const hasCompleted = (projects) => projects.some((p) => p.features.some((f) => f.health === 'complete'));
@@ -703,6 +703,52 @@ test('SIDE-11 without a specs folder the side panel says that no spec was found'
   }
   const back = await sideReport('the projects to come back', (r) => same(r.projects, projectIds()));
   assert.equal(back.emptyMessage, null);
+});
+
+// --- hidden-specs, panel (spec: .specs/features/hidden-specs/spec.md) ---------------------------------------------
+// Before SIDE-03/SIDE-04: these tests need the side panel on the board, and select nothing.
+
+/** Specs out of the board while its eye is closed: the completed and the marked ones, over every project. */
+const hiddenCountOf = (projects, marked = []) => projects.reduce((n, p) => n + p.features.filter((f) => f.health === 'complete' || marked.includes(f.name)).length, 0);
+const ocultas = (n) => `${n} ${n === 1 ? 'oculta' : 'ocultas'}`;
+/** The eye of a card, as the webview sends it. */
+const setHidden = (send, feature, hidden) => send({ type: 'setHidden', target: { projectId: projectId(), feature }, hidden });
+
+test('HID-01 the panel opens with the closed eye and the count of hidden specs, in a tab and in the side bar', async () => {
+  const expected = { title: 'Mostrar as specs ocultas', text: ocultas(hiddenCountOf(api.getProjects())) };
+  assert.ok(hasCompleted(api.getProjects()), 'the fixture has no completed feature to count');
+  await showSidePanel();
+  const side = await sideReport('the eye of the side panel', (r) => r.detail === null && r.toggle !== null);
+  assert.deepEqual(side.toggle, expected);
+  await closeAll();
+  await waitFor('the tab to close', () => api.dashboardReport() === undefined);
+  await vscode.commands.executeCommand('tlcSpecs.openDashboard');
+  const tab = await tabReport('the eye of a new tab', (r) => r.detail === null && r.toggle !== null);
+  assert.deepEqual(tab.toggle, expected);
+});
+
+test('HID-11/HID-12 the eye of a card takes the spec off the tab and the side panel and counts it, then brings it back', async () => {
+  await showSidePanel();
+  const before = hiddenCountOf(api.getProjects());
+  assert.ok(boardNames(api.getProjects()).includes('csv-export'), 'csv-export is not on the board');
+  try {
+    await setHidden(api.sidePanelMessage, 'csv-export', true);
+    const off = boardNames(api.getProjects()).filter((n) => n !== 'csv-export');
+    const tab = await tabReport('csv-export to leave the tab', (r) => r.detail === null && !r.cards.includes('csv-export'));
+    const side = await sideReport('csv-export to leave the side panel', (r) => r.detail === null && !r.cards.includes('csv-export'));
+    assert.deepEqual([...tab.cards].sort(), off);
+    assert.deepEqual([...side.cards].sort(), off);
+    assert.equal(tab.toggle.text, ocultas(before + 1));
+    assert.equal(side.toggle.text, ocultas(before + 1));
+  } finally {
+    await setHidden(api.dashboardMessage, 'csv-export', false);
+  }
+  const tab = await tabReport('csv-export to come back to the tab', (r) => r.cards.includes('csv-export'));
+  const side = await sideReport('csv-export to come back to the side panel', (r) => r.cards.includes('csv-export'));
+  assert.deepEqual([...tab.cards].sort(), boardNames(api.getProjects()));
+  assert.deepEqual([...side.cards].sort(), boardNames(api.getProjects()));
+  assert.equal(tab.toggle.text, ocultas(before));
+  assert.equal(side.toggle.text, ocultas(before));
 });
 
 test('SIDE-03/SIDE-04 under 700px the side panel stacks the stages, hides the empty ones and never scrolls sideways', async () => {
@@ -901,6 +947,17 @@ test('SIDE-02/PNL-05 with the side bar closed, "Abrir feature no painel" brings 
   );
   assert.equal(vscode.window.activeTextEditor.document.uri.toString(), editor);
   assert.equal(vscode.window.tabGroups.all.length, 1);
+});
+
+test('HID-15 a spec marked as hidden opens on its details in the side panel, where the board eye is gone', async () => {
+  try {
+    await setHidden(api.sidePanelMessage, 'csv-export', true);
+    await vscode.commands.executeCommand('tlcSpecs.showFeature', { projectId: projectId(), feature: 'csv-export' });
+    const report = await sideReport('the details of csv-export', (r) => r.detail === 'csv-export');
+    assert.equal(report.toggle, null);
+  } finally {
+    await setHidden(api.sidePanelMessage, 'csv-export', false);
+  }
 });
 
 // --- exclude-folders -----------------------------------------------------------------------------------------

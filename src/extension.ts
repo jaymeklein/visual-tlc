@@ -10,6 +10,7 @@ import { PhaseNotifier } from './ui/notifier.ts';
 import { Dashboard } from './ui/dashboard.ts';
 import { openUri, previewUri } from './ui/common.ts';
 import { previewFeatureMarkdown, revealFeatureFolder } from './ui/featureActions.ts';
+import { HiddenSpecs } from './core/hidden.ts';
 
 /** Tree rows pass their node; the status bar and tests pass a plain ref. */
 function toRef(arg: FeatureNode | FeatureRef): FeatureRef {
@@ -38,7 +39,8 @@ export interface TlcSpecsApi {
 
 export async function activate(context: vscode.ExtensionContext): Promise<TlcSpecsApi> {
   const store = new SpecsStore();
-  const dashboard = new Dashboard(context.extensionUri, store);
+  const hidden = new HiddenSpecs(context.workspaceState);
+  const dashboard = new Dashboard(context.extensionUri, store, hidden);
   const featuresTree = new FeaturesTree(store);
   const projectTree = new ProjectTree(store);
   const featuresView = vscode.window.createTreeView('tlcSpecs.features', { treeDataProvider: featuresTree, showCollapseAll: true });

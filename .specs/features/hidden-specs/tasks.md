@@ -171,13 +171,13 @@ T6 → T7
 
 **Done when**:
 
-- [ ] Aba e lateral abrem com o olho "Mostrar as specs ocultas" e o número de ocultas do modelo (HID-01)
-- [ ] `setHidden` vindo da lateral tira a spec dos cards da aba e da lateral e soma 1 ao número. O `setHidden` de volta a devolve (HID-11, HID-12)
-- [ ] A marcada aberta por `showFeature` mostra o detalhe na lateral (HID-15)
-- [ ] Os testes que marcam desmarcam num `finally`
-- [ ] O olho do topo cabe na lateral estreita: o SIDE-03/04 mede a lateral sem rolagem horizontal (vindo do T3)
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [ ] Test count: 67 unit, 56 + 1 + 2 integration tests pass (53 antes + 3 novos)
+- [x] Aba e lateral abrem com o olho "Mostrar as specs ocultas" e o número de ocultas do modelo (HID-01)
+- [x] `setHidden` vindo da lateral tira a spec dos cards da aba e da lateral e soma 1 ao número. O `setHidden` de volta a devolve (HID-11, HID-12)
+- [x] A marcada aberta por `showFeature` mostra o detalhe na lateral (HID-15)
+- [x] Os testes que marcam desmarcam num `finally`
+- [x] O olho do topo cabe na lateral estreita: o SIDE-03/04 mede a lateral sem rolagem horizontal (vindo do T3)
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] Test count: 67 unit, 56 + 1 + 2 integration tests pass (53 antes + 3 novos)
 
 **Tests**: integration
 **Gate**: full

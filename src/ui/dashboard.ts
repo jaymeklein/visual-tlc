@@ -2,6 +2,7 @@ import { randomBytes } from 'node:crypto';
 import * as vscode from 'vscode';
 import type { FeatureRef, FromWebview, Rendered, ToWebview } from '../core/protocol.ts';
 import type { SpecsStore } from './store.ts';
+import type { HiddenSpecs } from '../core/hidden.ts';
 import { openUri, previewUri } from './common.ts';
 import { previewFeatureMarkdown, revealFeatureFolder } from './featureActions.ts';
 
@@ -26,12 +27,14 @@ class Surface implements vscode.Disposable {
 
   private readonly extensionUri: vscode.Uri;
   private readonly store: SpecsStore;
+  private readonly hidden: HiddenSpecs;
   /** Class of the page body: "side" takes the side bar colors. */
   private readonly bodyClass: string;
 
-  constructor(extensionUri: vscode.Uri, store: SpecsStore, bodyClass: string) {
+  constructor(extensionUri: vscode.Uri, store: SpecsStore, hidden: HiddenSpecs, bodyClass: string) {
     this.extensionUri = extensionUri;
     this.store = store;
+    this.hidden = hidden;
     this.bodyClass = bodyClass;
   }
 
@@ -90,6 +93,9 @@ class Surface implements vscode.Disposable {
       case 'revealFolder':
         await revealFeatureFolder(this.store, m.target);
         break;
+      case 'setHidden':
+        await this.hidden.set(m.target, m.hidden);
+        break;
       case 'previewFile': {
         const uri = this.store.uriFor(m.projectId, m.file);
         if (uri) await previewUri(uri);
@@ -108,7 +114,7 @@ class Surface implements vscode.Disposable {
   }
 
   postState(): void {
-    this.post({ type: 'state', projects: this.store.projects.map((p) => p.project), now: Date.now() });
+    this.post({ type: 'state', projects: this.store.projects.map((p) => p.project), now: Date.now(), hidden: this.hidden.keys() });
   }
 
   private flushSelect(): void {
@@ -151,17 +157,19 @@ export class Dashboard implements vscode.Disposable, vscode.WebviewViewProvider 
 
   private readonly extensionUri: vscode.Uri;
 
-  constructor(extensionUri: vscode.Uri, store: SpecsStore) {
+  constructor(extensionUri: vscode.Uri, store: SpecsStore, hidden: HiddenSpecs) {
     this.extensionUri = extensionUri;
-    this.tab = new Surface(extensionUri, store, 'tab');
-    this.side = new Surface(extensionUri, store, 'side');
+    this.tab = new Surface(extensionUri, store, hidden, 'tab');
+    this.side = new Surface(extensionUri, store, hidden, 'side');
+    const postState = () => {
+      this.tab.postState();
+      this.side.postState();
+    };
     this.disposables.push(
       this.tab,
       this.side,
-      store.onDidChange(() => {
-        this.tab.postState();
-        this.side.postState();
-      }),
+      store.onDidChange(postState),
+      hidden.onDidChange(postState),
       vscode.window.registerWebviewViewProvider(PANEL_VIEW, this),
     );
   }
