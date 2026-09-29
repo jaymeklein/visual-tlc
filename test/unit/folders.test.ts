@@ -110,6 +110,10 @@ test('EXC-07 an entry with a comma is left out: the comma separates the entries 
   assert.deepEqual(parseExclude(['node_modules', 'a,b', 'test']), { glob: '{**/node_modules/**,**/test/**}', invalid: ['a,b'] });
 });
 
+test('EXC-07 the comma rule stays out of tlcSpecs.specsFolders, which searches each entry apart', () => {
+  assert.deepEqual(parseSpecsFolders(['docs,old']), { entries: ['docs,old'], invalid: [] });
+});
+
 test('EXC-07 each invalid entry is warned once per setting, until it leaves that setting', () => {
   const fora = (setting: string) => ({ setting, entry: '../fora' });
   const first = pendingWarnings([fora('tlcSpecs.specsFolders'), fora('tlcSpecs.exclude'), fora('tlcSpecs.exclude')], new Set());
