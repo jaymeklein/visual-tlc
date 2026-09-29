@@ -19,6 +19,7 @@ export class SpecsStore implements vscode.Disposable {
   readonly onDidChange = this.emitter.event;
   private readonly disposables: vscode.Disposable[] = [];
   private watchers: vscode.Disposable[] = [];
+  private warned = new Set<string>();
   private timer: ReturnType<typeof setTimeout> | undefined;
   private running: Promise<void> | undefined;
   private rerun = false;
@@ -98,6 +99,7 @@ export class SpecsStore implements vscode.Disposable {
     const config = vscode.workspace.getConfiguration('tlcSpecs');
     const exclude = config.get<string>('exclude', '**/node_modules/**');
     const staleAfterDays = config.get<number>('staleAfterDays', 14);
+    this.warn((vscode.workspace.workspaceFolders ?? []).flatMap((folder) => specsFolders(folder).invalid));
     const roots = await discoverSpecsRoots(exclude);
     const now = Date.now();
     return Promise.all(
@@ -106,6 +108,15 @@ export class SpecsStore implements vscode.Disposable {
         project: await loadProject(uriReader(specsUri), specsUri.toString(), labelFor(specsUri), { now, staleAfterDays }),
       })),
     );
+  }
+
+  /** Names each ignored entry once, until it leaves the setting. */
+  private warn(invalid: string[]): void {
+    for (const entry of new Set(invalid)) {
+      if (this.warned.has(entry)) continue;
+      void vscode.window.showWarningMessage(`TLC Specs: a entrada "${entry}" de tlcSpecs.specsFolders foi ignorada. Use um caminho relativo, sem ".." e sem glob.`);
+    }
+    this.warned = new Set(invalid);
   }
 
   dispose(): void {

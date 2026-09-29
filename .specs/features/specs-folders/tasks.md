@@ -191,10 +191,10 @@ T7 → T8
 
 **Done when**:
 
-- [ ] Entrada `../fora` gera um aviso com o texto `../fora` e não vira projeto
-- [ ] As entradas válidas da mesma lista continuam funcionando
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [ ] Test count: nenhum teste removido
+- [x] Entrada `../fora` gera um aviso com o texto `../fora` e não vira projeto
+- [x] As entradas válidas da mesma lista continuam funcionando
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] Test count: nenhum teste removido
 
 **Tests**: integration
 **Gate**: full

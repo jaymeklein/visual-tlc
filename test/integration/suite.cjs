@@ -487,6 +487,26 @@ test('SF-10/SF-11 entries that lead to the same folder show it once', async () =
   assert.deepEqual(ids, [...new Set(ids)]);
 });
 
+test('SF-09 an invalid entry is ignored with a warning that names it', async () => {
+  const shown = [];
+  const original = vscode.window.showWarningMessage;
+  vscode.window.showWarningMessage = (message) => {
+    shown.push(message);
+    return Promise.resolve(undefined);
+  };
+  try {
+    await setFolders(['../fora', 'docs/*', 'docs/specs']);
+    await waitForRoots(['docs/specs', 'packages/api/docs/specs']);
+    await waitFor('two warnings', () => shown.length >= 2);
+    assert.equal(shown.filter((m) => m.includes('"../fora"')).length, 1);
+    assert.equal(shown.filter((m) => m.includes('"docs/*"')).length, 1);
+    await api.refresh();
+    assert.equal(shown.length, 2, 'the warning was repeated on refresh');
+  } finally {
+    vscode.window.showWarningMessage = original;
+  }
+});
+
 test('SF-08 an empty list uses .specs', async () => {
   await setFolders([]);
   await waitForRoots(['.specs', 'tools/.specs']);
