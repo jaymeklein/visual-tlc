@@ -244,9 +244,9 @@ T7 → T8
 
 **Done when**:
 
-- [ ] Num workspace sem `.specs` e com `tlcSpecs.specsFolders = ["docs/specs"]`, a extensão fica ativa sem chamada a `activate()` e lista as features
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [ ] Test count: nenhum teste removido
+- [x] Num workspace sem `.specs` e com `tlcSpecs.specsFolders = ["docs/specs"]`, a extensão fica ativa sem chamada a `activate()` e lista as features
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] Test count: nenhum teste removido
 
 **Tests**: integration
 **Gate**: full
