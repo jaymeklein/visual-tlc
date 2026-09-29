@@ -9,7 +9,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 ---
 
 **Design**: inline (sem `design.md`)
-**Status**: Done
+**Status**: In Progress
 
 Design inline:
 
@@ -65,6 +65,12 @@ T7 → T8
 
 ```
 T8 → T9 → T10 → T11 → T12 → T13 → T14 → T15
+```
+
+### Phase 5: Correções do Verifier (iteração 2)
+
+```
+T15 → T16 → T17
 ```
 
 ---
@@ -478,15 +484,72 @@ T8 → T9 → T10 → T11 → T12 → T13 → T14 → T15
 
 ---
 
+### T16: Caber até 250px
+
+**What**: no layout estreito os títulos das seções quebram linha; o teste estreita a barra lateral passo a passo até 250px
+**Where**: `media/dashboard.css` (modify)
+**Depends on**: T15
+**Reuses**: testes da seção sidebar-dashboard
+**Requirement**: SIDE-03
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] O quadro fica em uma coluna e sem rolagem horizontal em cada largura medida, do padrão até 250px ou menos
+- [ ] Os detalhes das features não rolam na horizontal na menor largura medida
+- [ ] A barra lateral volta à largura inicial no fim do teste
+- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [ ] Test count: nenhum teste removido
+
+**Tests**: integration
+**Gate**: full
+
+**Commit**: `fix(dashboard): keep the narrow panel from scrolling down to 250px`
+
+---
+
+### T17: Firmar os testes novos
+
+**What**: os testes usam o limite real de rolagem (1298px), esperam pelo detalhe certo e conferem a fase de todos os cartões
+**Where**: `test/integration/suite.cjs` (modify)
+**Depends on**: T16
+**Reuses**: testes da seção sidebar-dashboard
+**Requirement**: SIDE-02, SIDE-05, SIDE-09
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] A rolagem do quadro largo é esperada abaixo de 1298px
+- [ ] O teste da barra lateral fechada espera o detalhe da feature pedida
+- [ ] O SIDE-05 compara a fase de cada cartão com o modelo
+- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [ ] Test count: nenhum teste removido
+
+**Tests**: integration
+**Gate**: full
+
+**Commit**: `test(dashboard): harden the side panel tests`
+
+---
+
 ## Phase Execution Map
 
 ```
-Phase 1 → Phase 2 → Phase 3 → Phase 4
+Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5
 
 Phase 1:  T1 ------→ T2
 Phase 2:  T3 ------→ T4 ------→ T5 ------→ T6 ------→ T7
 Phase 3:  T8
 Phase 4:  T9 ------→ T10 ------→ T11 ------→ T12 ------→ T13 ------→ T14 ------→ T15
+Phase 5:  T16 ------→ T17
 ```
 
 ---
@@ -510,6 +573,8 @@ Phase 4:  T9 ------→ T10 ------→ T11 ------→ T12 ------→ T13 ------→ T
 | T13: Provar as entradas do manifesto | 1 teste ou leitura | ✅ Granular |
 | T14: Provar o clique com a barra lateral fechada | 1 teste ou leitura | ✅ Granular |
 | T15: Nomear os eventos do SIDE-05 | 1 teste ou leitura | ✅ Granular |
+| T16: Caber até 250px | 1 regra de CSS | ✅ Granular |
+| T17: Firmar os testes novos | 3 asserções | ✅ Coeso |
 
 ## Diagram-Definition Cross-Check
 
@@ -530,6 +595,8 @@ Phase 4:  T9 ------→ T10 ------→ T11 ------→ T12 ------→ T13 ------→ T
 | T13 | T12 | T12 | ✅ Match |
 | T14 | T13 | T13 | ✅ Match |
 | T15 | T14 | T14 | ✅ Match |
+| T16 | T15 | T15 | ✅ Match |
+| T17 | T16 | T16 | ✅ Match |
 
 ## Test Co-location Validation
 
@@ -550,3 +617,5 @@ Phase 4:  T9 ------→ T10 ------→ T11 ------→ T12 ------→ T13 ------→ T
 | T13 | Webview script, host e manifesto | integration | integration | ✅ OK |
 | T14 | Webview script, host e manifesto | integration | integration | ✅ OK |
 | T15 | Webview script, host e manifesto | integration | integration | ✅ OK |
+| T16 | CSS | integration | integration | ✅ OK |
+| T17 | Webview script, host e manifesto | integration | integration | ✅ OK |

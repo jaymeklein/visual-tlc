@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 15,
+  "next_id": 16,
   "lessons": [
     {
       "id": "L-001",
@@ -263,6 +263,24 @@
       ],
       "created": "2026-09-29T15:08:17Z",
       "last_seen": "2026-09-29T15:08:17Z"
+    },
+    {
+      "id": "L-015",
+      "key": "ac_gap::measure a narrow layout at the smallest width the spec names not only at the default width of the test window",
+      "text": "Measure a narrow layout at the smallest width the spec names, not only at the default width of the test window",
+      "signal": "ac_gap",
+      "scope": "webview",
+      "status": "candidate",
+      "features": [
+        "sidebar-dashboard"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "SIDE-03 test/integration/suite.cjs:685 (webview)"
+      ],
+      "created": "2026-09-29T15:57:24Z",
+      "last_seen": "2026-09-29T15:57:24Z"
     }
   ]
 }

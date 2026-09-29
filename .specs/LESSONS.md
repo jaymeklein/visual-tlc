@@ -96,6 +96,12 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: W2 src/webview/main.ts:65 (test-hooks)
 - last seen: 2026-09-29T15:08:17Z
 
+### L-015 - Measure a narrow layout at the smallest width the spec names, not only at the default width of the test window
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `webview` · harmful: 0
+- features: sidebar-dashboard
+- evidence: SIDE-03 test/integration/suite.cjs:685 (webview)
+- last seen: 2026-09-29T15:57:24Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.
