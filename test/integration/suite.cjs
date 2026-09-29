@@ -735,6 +735,14 @@ test('SIDE-10 the panel in a tab and the side panel are updated together', async
   }
 });
 
+test('SIDE-07 (host) a click on an artifact in the side panel opens the Markdown preview', async () => {
+  await closeAll();
+  await showSidePanel();
+  await api.sidePanelMessage({ type: 'previewFile', projectId: projectId(), file: 'features/user-auth/design.md' });
+  await expectPreviewOf('design.md');
+  assert.equal(dashboardTab(), undefined, 'the panel tab was opened');
+});
+
 exports.run = async function run() {
   const failures = [];
   for (const c of cases) {

@@ -243,9 +243,9 @@ T7 → T8
 
 **Done when**:
 
-- [ ] Uma mensagem `previewFile` vinda da view lateral abre o preview do markdown
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [ ] Test count: nenhum teste removido
+- [x] Uma mensagem `previewFile` vinda da view lateral abre o preview do markdown
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] Test count: nenhum teste removido
 
 **Tests**: integration
 **Gate**: full
