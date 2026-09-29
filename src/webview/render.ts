@@ -171,7 +171,7 @@ function projectSection(p: Project): string {
       ${COLUMNS.map((col) => {
         const cards = visible.filter((f) => columnOf(f) === col.id);
         if (col.id === 'done' && ctx.view.hideDone) return '';
-        return `<div class="column" role="listitem" aria-label="${esc(col.label)}">
+        return `<div class="column${cards.length ? '' : ' is-empty'}" role="listitem" aria-label="${esc(col.label)}">
           <div class="column-head"><span>${esc(col.label)}</span><span class="count">${cards.length}</span></div>
           ${cards.length ? cards.map((f) => card(p, f)).join('') : '<div class="column-empty">—</div>'}
         </div>`;

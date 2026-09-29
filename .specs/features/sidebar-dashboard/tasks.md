@@ -80,9 +80,9 @@ T7 → T8
 
 **Done when**:
 
-- [ ] Coluna sem features tem a classe `is-empty`; coluna com features não tem
-- [ ] Gate check passes: `npm run typecheck && npm test`
-- [ ] Test count: 37 existentes + novos passam
+- [x] Coluna sem features tem a classe `is-empty`; coluna com features não tem
+- [x] Gate check passes: `npm run typecheck && npm test`
+- [x] Test count: 37 existentes + novos passam
 
 **Tests**: unit
 **Gate**: quick

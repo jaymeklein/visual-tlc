@@ -94,7 +94,7 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 | SIDE-01 | P1: Ver o painel na barra lateral | - | Pending |
 | SIDE-02 | P1: Ver o painel na barra lateral | - | Pending |
 | SIDE-03 | P1: Ver o painel na barra lateral | - | Pending |
-| SIDE-04 | P1: Ver o painel na barra lateral | - | Pending |
+| SIDE-04 | P1: Ver o painel na barra lateral | Tasks | Implementing |
 | SIDE-05 | P1: Ver o painel na barra lateral | - | Pending |
 | SIDE-06 | P1: Ver o painel na barra lateral | - | Pending |
 | SIDE-07 | P1: Ver o painel na barra lateral | - | Pending |

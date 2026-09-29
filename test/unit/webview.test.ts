@@ -148,3 +148,17 @@ test('NAV-10 "abrir validation.md" and "abrir STATE.md" links open the preview',
   const overview = tags(renderApp({ ...ctx, view: { ...ctx.view, selected: null } }));
   assert.equal(by(overview, { 'data-action': 'preview-file', 'data-file': 'STATE.md' }).filter((x) => x.tag === 'button').length, 1);
 });
+
+// Side bar panel (spec: .specs/features/sidebar-dashboard/spec.md).
+
+test('SIDE-04 board stages without features are marked is-empty, the others are not', async () => {
+  const project = await loadProject(nodeReader(SAMPLE_SPECS), 'sample', 'sample', { now: Date.now(), staleAfterDays: 14 });
+  const html = renderApp({ projects: [project], now: Date.now(), loaded: true, view: { selected: null, query: 'user-auth', hideDone: false, expandedTasks: [] } });
+  const columns = [...html.matchAll(/<div class="column([^"]*)" role="listitem" aria-label="([^"]+)">([\s\S]*?)(?=<div class="column[ "]|$)/g)];
+  assert.equal(columns.length, 6);
+  const withCards = columns.filter((c) => c[3].includes('class="card '));
+  assert.deepEqual(withCards.map((c) => c[2]), ['Execução']);
+  for (const [, cls, label, body] of columns) {
+    assert.equal(cls.split(' ').includes('is-empty'), !body.includes('class="card '), label);
+  }
+});
