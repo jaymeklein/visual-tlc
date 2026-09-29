@@ -247,6 +247,16 @@ input[type='search']:focus { outline: 1px solid var(--focus); outline-offset: -1
 .task.st-done .task-title { color: var(--muted); }
 .task .task-title, .task .id { color: var(--fg); }
 .task.st-done .id { color: var(--muted); }
+.task.expanded { background: var(--hover); }
+.rows li.task-details { display: block; padding: 4px 8px 10px 72px; }
+.task-details .kv { margin: 0; }
+.details-sub { margin-top: 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+.checklist { list-style: none; margin: 4px 0 0; padding: 0; }
+.check-item { display: flex; align-items: flex-start; gap: 6px; padding: 1px 0; }
+.check-item .ic { margin-top: 2px; }
+.check-item.checked .ic { color: var(--ok); }
+.check-item.checked span { color: var(--muted); }
+.check-item.unchecked .ic { color: var(--idle); }
 
 /* verification */
 .verdict { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 600; margin-bottom: 10px; }

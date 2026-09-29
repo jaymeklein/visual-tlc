@@ -1,7 +1,7 @@
 // Dashboard behaviour (spec: .specs/features/readonly-navigation/spec.md, story P2).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { actionFor, renderApp, type RenderCtx } from '../../src/webview/render.ts';
+import { actionFor, renderApp, taskDetailsHtml, taskKey, type RenderCtx } from '../../src/webview/render.ts';
 import { loadProject } from '../../src/core/project.ts';
 import { nodeReader, SAMPLE_SPECS } from './nodeReader.ts';
 
@@ -21,13 +21,13 @@ function tags(html: string): Tag[] {
   return out;
 }
 
-async function detailOf(feature: string): Promise<{ html: string; ctx: RenderCtx }> {
+async function detailOf(feature: string, expandedTasks: string[] = []): Promise<{ html: string; ctx: RenderCtx }> {
   const project = await loadProject(nodeReader(SAMPLE_SPECS), 'sample', 'sample', { now: Date.now(), staleAfterDays: 14 });
   const ctx: RenderCtx = {
     projects: [project],
     now: Date.now(),
     loaded: true,
-    view: { selected: { projectId: 'sample', feature }, query: '', hideDone: false },
+    view: { selected: { projectId: 'sample', feature }, query: '', hideDone: false, expandedTasks },
   };
   return { html: renderApp(ctx), ctx };
 }
@@ -95,4 +95,47 @@ test('NAV-14 dashboard warnings open the text editor at the warning line', async
   assert.deepEqual(actionFor({ action: 'open', pid: 'sample', file: issue.file, line: String(issue.line) }), {
     message: { type: 'open', projectId: 'sample', file: issue.file, line: issue.line },
   });
+});
+
+test('NAV-12 clicking a collapsed task row expands its details in place, without opening a file', async () => {
+  const key = taskKey('sample', 'user-auth', 'T5');
+  const collapsed = await detailOf('user-auth');
+  const row = by(tags(collapsed.html), { 'data-action': 'toggle-task', 'data-key': key });
+  assert.equal(row.length, 1, 'T5 row toggles');
+  assert.equal(row[0].tag, 'li');
+  assert.equal(row[0].attrs['aria-expanded'], 'false');
+  assert.equal(row[0].attrs['data-file'], undefined, 'task row carries no file to open');
+  assert.equal(by(tags(collapsed.html), { class: 'task-details', 'data-key': key }).length, 0, 'details hidden while collapsed');
+
+  const click = actionFor({ action: 'toggle-task', key }, []);
+  assert.deepEqual(click, { view: { expandedTasks: [key] } }, 'expands, sends no message to the extension');
+
+  const expanded = await detailOf('user-auth', click.view!.expandedTasks);
+  assert.equal(by(tags(expanded.html), { 'data-action': 'toggle-task', 'data-key': key })[0].attrs['aria-expanded'], 'true');
+  assert.equal(by(tags(expanded.html), { class: 'task-details', 'data-key': key }).length, 1, 'details rendered in place');
+
+  const t5 = expanded.ctx.projects[0].features.find((f) => f.name === 'user-auth')!.tasks!.tasks.find((t) => t.id === 'T5')!;
+  const details = taskDetailsHtml(t5);
+  for (const text of ['O quê', 'Lock account for 15 minutes after 5 failures', 'Onde', 'src/auth/auth.service.ts (modify)', 'Depende de', 'T4', 'Done when', '6th attempt returns 423', 'Gate check passes: npm run test:unit']) {
+    assert.ok(details.includes(text), `details show "${text}"`);
+  }
+  assert.equal(by(tags(details), { class: 'check-item unchecked' }).length, 2, 'two unchecked Done when items');
+  assert.ok(!details.includes('data-action'), 'details are read-only');
+
+  // Only warnings and the explicit "Abrir no editor" buttons may open the text editor.
+  const opens = by(tags(expanded.html), { 'data-action': 'open' });
+  assert.ok(opens.length > 0);
+  for (const el of opens) {
+    assert.ok(/^sev-/.test(el.attrs.class ?? '') || el.attrs.title === 'Abrir no editor', `unexpected editor opener: ${JSON.stringify(el.attrs)}`);
+  }
+});
+
+test('NAV-13 clicking an expanded task row collapses its details', async () => {
+  const key = taskKey('sample', 'user-auth', 'T5');
+  const other = taskKey('sample', 'user-auth', 'T1');
+  const click = actionFor({ action: 'toggle-task', key }, [other, key]);
+  assert.deepEqual(click, { view: { expandedTasks: [other] } });
+  const { html } = await detailOf('user-auth', click.view!.expandedTasks);
+  assert.equal(by(tags(html), { class: 'task-details', 'data-key': key }).length, 0, 'T5 collapsed');
+  assert.equal(by(tags(html), { class: 'task-details', 'data-key': other }).length, 1, 'T1 stays expanded');
 });

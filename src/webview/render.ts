@@ -1,5 +1,6 @@
 import type { Feature, Issue, Project, Stage, Task, TaskPhase } from '../core/types.ts';
 import type { FeatureRef, FromWebview } from '../core/protocol.ts';
+import { plain } from '../core/markdown.ts';
 import { featureMarkdown, HEALTH_LABEL, REQ_STATUS_LABEL, STAGE_LABEL, STAGE_ORDER, STAGE_STATE_LABEL, TASK_STATUS_LABEL } from '../core/labels.ts';
 
 // Pure rendering of the dashboard: state in, HTML out. No DOM access, so it runs under node --test.
@@ -8,6 +9,8 @@ export interface ViewState {
   selected: FeatureRef | null;
   query: string;
   hideDone: boolean;
+  /** taskKey()s of the task rows expanded in the detail view. */
+  expandedTasks: string[];
 }
 
 export interface RenderCtx {
@@ -17,7 +20,9 @@ export interface RenderCtx {
   view: ViewState;
 }
 
-let ctx: RenderCtx = { projects: [], now: 0, loaded: false, view: { selected: null, query: '', hideDone: false } };
+let ctx: RenderCtx = { projects: [], now: 0, loaded: false, view: { selected: null, query: '', hideDone: false, expandedTasks: [] } };
+
+export const taskKey = (projectId: string, feature: string, taskId: string) => `${projectId}|${feature}|${taskId}`;
 
 // ---------- helpers ----------
 
@@ -380,32 +385,48 @@ function tasksPanel(p: Project, f: Feature): string {
             <span class="phase-bar"><span class="bar-fill h-ok" data-pct="${pct(tasks.length ? d / tasks.length : 0)}"></span></span>
             <span class="muted small">${d}/${tasks.length}</span>
           </div>
-          <ul class="rows tasks">${tasks.map((x) => taskRow(p, tasksFile, x)).join('')}</ul>
+          <ul class="rows tasks">${tasks.map((x) => taskRow(p, f, x)).join('')}</ul>
         </div>`;
       })
       .join('')}
   </section>`;
 }
 
-function taskRow(p: Project, file: string, t: Task): string {
+/** Read-only task row: a click toggles the details below it, never opens tasks.md. */
+function taskRow(p: Project, f: Feature, t: Task): string {
+  const key = taskKey(p.id, f.name, t.id);
+  const expanded = ctx.view.expandedTasks.includes(key);
   const checks = t.doneWhen.length ? `${t.doneWhen.filter((c) => c.checked).length}/${t.doneWhen.length}` : '';
-  const tip = [
-    `${t.id}: ${t.title} — ${TASK_STATUS_LABEL[t.status]}`,
-    t.what,
-    t.where && `Onde: ${t.where}`,
-    t.dependsOn.length ? `Depende de: ${t.dependsOn.join(', ')}` : '',
-    ...t.doneWhen.map((c) => `${c.checked ? '☑' : '☐'} ${c.text}`),
-  ]
-    .filter(Boolean)
-    .join('\n');
-  return `<li class="task st-${t.status}" ${openAttrs(p.id, file, t.line)} title="${esc(tip)}">
+  const title = `${t.id}: ${t.title} — ${TASK_STATUS_LABEL[t.status]} · ${expanded ? 'clique para recolher' : 'clique para ver os detalhes'}`;
+  const details = expanded ? `<li class="task-details" data-key="${esc(key)}">${taskDetailsHtml(t)}</li>` : '';
+  return `<li class="task st-${t.status}${expanded ? ' expanded' : ''}" data-action="toggle-task" data-key="${esc(key)}" tabindex="0" role="button" aria-expanded="${expanded}" title="${esc(title)}">
     <span class="glyph">${TASK_GLYPH[t.status]}</span>
     <span class="mono id">${esc(t.id)}</span>
     <span class="grow"><span class="task-title">${esc(t.title)}</span>${t.what ? `<span class="task-what">${esc(t.what)}</span>` : ''}</span>
     <span class="chips">${t.requirements.map((r) => `<span class="chip-sm mono">${esc(r)}</span>`).join('')}</span>
     <span class="muted small nowrap">${esc([t.tests, t.gate].filter(Boolean).join(' · '))}</span>
     <span class="muted small nowrap checks">${checks}</span>
-  </li>`;
+  </li>${details}`;
+}
+
+export function taskDetailsHtml(t: Task): string {
+  const fields: [string, string][] = [
+    ['O quê', t.what],
+    ['Onde', plain(t.where)],
+    ['Depende de', t.dependsOn.join(', ') || 'nenhuma'],
+    ['Requisitos', t.requirements.join(', ')],
+    ['Tests / Gate', [t.tests, t.gate].filter(Boolean).join(' · ')],
+  ];
+  const kv = fields
+    .filter(([, v]) => v)
+    .map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`)
+    .join('');
+  const checks = t.doneWhen.length
+    ? `<div class="details-sub">Done when</div><ul class="checklist">${t.doneWhen
+        .map((c) => `<li class="check-item ${c.checked ? 'checked' : 'unchecked'}">${c.checked ? I.check : I.ring}<span>${esc(c.text)}</span></li>`)
+        .join('')}</ul>`
+    : '';
+  return `<dl class="kv small">${kv}</dl>${checks}`;
 }
 
 function verifyPanel(p: Project, f: Feature): string {
@@ -556,7 +577,7 @@ export interface ActionResult {
 }
 
 /** Maps a clicked element's data-* attributes to a view change and/or a message for the extension. */
-export function actionFor(d: Record<string, string | undefined>): ActionResult {
+export function actionFor(d: Record<string, string | undefined>, expandedTasks: readonly string[] = []): ActionResult {
   const ref = (): FeatureRef => ({ projectId: d.pid!, feature: d.feature! });
   switch (d.action) {
     case 'select':
@@ -571,6 +592,10 @@ export function actionFor(d: Record<string, string | undefined>): ActionResult {
       return { message: { type: 'revealFolder', target: ref() } };
     case 'preview-file':
       return { message: { type: 'previewFile', projectId: d.pid!, file: d.file! } };
+    case 'toggle-task': {
+      const key = d.key!;
+      return { view: { expandedTasks: expandedTasks.includes(key) ? expandedTasks.filter((k) => k !== key) : [...expandedTasks, key] } };
+    }
     case 'open':
       return { message: { type: 'open', projectId: d.pid!, file: d.file!, line: d.line ? Number(d.line) : undefined } };
     default:

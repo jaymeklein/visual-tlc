@@ -116,8 +116,8 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 | NAV-09 | P1: Tasks como lista somente leitura | - | Implementing |
 | NAV-10 | P2: Mesmo comportamento no painel | - | Implementing |
 | NAV-11 | P2: Mesmo comportamento no painel | - | Implementing |
-| NAV-12 | P2: Mesmo comportamento no painel | - | Pending |
-| NAV-13 | P2: Mesmo comportamento no painel | - | Pending |
+| NAV-12 | P2: Mesmo comportamento no painel | - | Implementing |
+| NAV-13 | P2: Mesmo comportamento no painel | - | Implementing |
 | NAV-14 | P2: Mesmo comportamento no painel | - | Implementing |
 | NAV-15 | Edge case: etapa sem arquivo | - | Implementing |
 | NAV-16 | Edge case: Tasks e Execução expandidas | - | Implementing |

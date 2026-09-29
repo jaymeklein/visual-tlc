@@ -13,7 +13,7 @@ const app = document.getElementById('app')!;
 let projects: Project[] = [];
 let now = Date.now();
 let loaded = false;
-let view: ViewState = { selected: null, query: '', hideDone: false, ...vscode.getState() };
+let view: ViewState = { selected: null, query: '', hideDone: false, expandedTasks: [], ...vscode.getState() };
 
 function setView(patch: Partial<ViewState>): void {
   view = { ...view, ...patch };
@@ -51,7 +51,7 @@ function render(): void {
 // ---------- events ----------
 
 function activate(el: HTMLElement): void {
-  const result = actionFor(el.dataset);
+  const result = actionFor(el.dataset, view.expandedTasks);
   if (result.message) vscode.postMessage(result.message);
   if (result.view) setView(result.view);
   if (result.scrollTop) window.scrollTo(0, 0);
