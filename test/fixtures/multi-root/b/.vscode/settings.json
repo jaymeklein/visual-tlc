@@ -1,0 +1,3 @@
+{
+  "tlcSpecs.exclude": ["node_modules", "legacy"]
+}
