@@ -180,3 +180,47 @@ test('SIDE-03/SIDE-04 the stylesheet stacks the board and hides the empty stages
   assert.ok(outside.includes('.board { display: grid; grid-template-columns: repeat(6, minmax(200px, 1fr));'));
   assert.ok(!outside.includes('.column.is-empty'));
 });
+
+// Panel in progress (spec: .specs/features/panel-in-progress/spec.md).
+
+async function board(hideDone: boolean) {
+  const project = await loadProject(nodeReader(SAMPLE_SPECS), 'sample', 'sample', { now: Date.now(), staleAfterDays: 14 });
+  const html = renderApp({ projects: [project], now: Date.now(), loaded: true, view: { selected: null, query: '', hideDone, expandedTasks: [] } });
+  const columns = [...html.matchAll(/<div class="column[^"]*" role="listitem" aria-label="([^"]+)">([\s\S]*?)(?=<div class="column[ "]|$)/g)];
+  const cards = (body: string) => [...body.matchAll(/<span class="card-name">([^<]+)<\/span>/g)].map((m) => m[1]).sort();
+  return {
+    boardClass: tags(html).find((t) => t.attrs.role === 'list')!.attrs.class,
+    labels: columns.map((c) => c[1]),
+    cards: columns.flatMap((c) => cards(c[2])).sort(),
+    doneCards: cards(columns.find((c) => c[1] === 'Concluídas')?.[2] ?? ''),
+    complete: project.features.filter((f) => f.health === 'complete').map((f) => f.name).sort(),
+    open: project.features.filter((f) => f.health !== 'complete').map((f) => f.name).sort(),
+  };
+}
+
+test('PNL-02/PNL-03 with "Ocultar concluídas" checked the board leaves out the completed cards and the Concluídas column, in five stages', async () => {
+  const b = await board(true);
+  assert.ok(b.complete.length > 0, 'the sample has no completed feature');
+  assert.deepEqual(b.cards, b.open);
+  assert.deepEqual(b.labels, ['Spec', 'Design', 'Tasks', 'Execução', 'Verificação']);
+  assert.equal(b.boardClass, 'board five-stages');
+});
+
+test('PNL-04 with "Ocultar concluídas" unchecked the Concluídas column holds the completed cards, in six stages', async () => {
+  const b = await board(false);
+  assert.deepEqual(b.doneCards, b.complete);
+  assert.deepEqual(b.cards, [...b.open, ...b.complete].sort());
+  assert.equal(b.labels.length, 6);
+  assert.equal(b.labels[5], 'Concluídas');
+  assert.equal(b.boardClass, 'board');
+});
+
+test('PNL-03/PNL-04 the stylesheet lays five stages side by side for the board without Concluídas, and one stage under 700px', () => {
+  const css = readFileSync(join(import.meta.dirname, '..', '..', 'media', 'dashboard.css'), 'utf8').replace(/\r\n/g, '\n');
+  const six = css.indexOf('.board { display: grid; grid-template-columns: repeat(6, minmax(200px, 1fr));');
+  const five = css.indexOf('.board:where(.five-stages) { grid-template-columns: repeat(5, minmax(200px, 1fr)); }');
+  const narrow = css.indexOf('  .board { grid-template-columns: minmax(0, 1fr); overflow-x: visible; }');
+  assert.ok(six >= 0 && five > six, 'the five-stage rule must follow the base board rule');
+  // Same specificity as .board: the narrow rule, later in the file, still stacks the stages.
+  assert.ok(narrow > five, 'the narrow board rule must come after the five-stage rule');
+});

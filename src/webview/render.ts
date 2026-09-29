@@ -167,7 +167,7 @@ function projectSection(p: Project): string {
   <section class="project">
     ${multi ? `<h2 class="project-title">${esc(p.label)}</h2>` : ''}
     ${focusCard(p)}
-    <div class="board" role="list">
+    <div class="board${ctx.view.hideDone ? ' five-stages' : ''}" role="list">
       ${COLUMNS.map((col) => {
         const cards = visible.filter((f) => columnOf(f) === col.id);
         if (col.id === 'done' && ctx.view.hideDone) return '';
