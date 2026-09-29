@@ -2,7 +2,7 @@ import { randomBytes } from 'node:crypto';
 import * as vscode from 'vscode';
 import type { FeatureRef, FromWebview, ToWebview } from '../core/protocol.ts';
 import type { SpecsStore } from './store.ts';
-import { openUri } from './common.ts';
+import { openUri, previewUri } from './common.ts';
 import { previewFeatureMarkdown, revealFeatureFolder } from './featureActions.ts';
 
 export class Dashboard implements vscode.Disposable {
@@ -60,6 +60,11 @@ export class Dashboard implements vscode.Disposable {
       case 'revealFolder':
         await revealFeatureFolder(this.store, m.target);
         break;
+      case 'previewFile': {
+        const uri = this.store.uriFor(m.projectId, m.file);
+        if (uri) await previewUri(uri);
+        break;
+      }
       case 'open': {
         const uri = this.store.uriFor(m.projectId, m.file);
         if (uri) await openUri(uri, m.line);
