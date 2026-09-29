@@ -105,12 +105,12 @@ T7 → T8
 
 **Done when**:
 
-- [ ] Acha a entrada na raiz e em subpastas
-- [ ] Pasta de nome diferente de `.specs` sem artefato da skill fica de fora
-- [ ] Pasta `.specs` aparece com qualquer arquivo
-- [ ] Pasta alcançada por duas entradas aparece uma vez
-- [ ] Gate check passes: `npm run typecheck && npm test`
-- [ ] Test count: nenhum teste removido
+- [x] Acha a entrada na raiz e em subpastas
+- [x] Pasta de nome diferente de `.specs` sem artefato da skill fica de fora
+- [x] Pasta `.specs` aparece com qualquer arquivo
+- [x] Pasta alcançada por duas entradas aparece uma vez
+- [x] Gate check passes: `npm run typecheck && npm test`
+- [x] Test count: nenhum teste removido
 
 **Tests**: unit
 **Gate**: quick
