@@ -237,7 +237,7 @@
             "node_modules"
           ],
           "scope": "resource",
-          "markdownDescription": "Pastas que ficam fora da listagem de specs. Cada entrada é um caminho relativo (`node_modules`, `test`, `packages/legacy`), ignorado em qualquer profundidade do projeto. Entradas absolutas, com `..` ou com glob são ignoradas. Um texto no lugar da lista é usado como glob, como nas versões anteriores."
+          "markdownDescription": "Pastas que ficam fora da listagem de specs. Cada entrada é um caminho relativo (`node_modules`, `test`, `packages/legacy`), ignorado em qualquer profundidade do projeto. Entradas absolutas, com `..`, com vírgula ou com glob são ignoradas, com um aviso. Um texto no lugar da lista é usado como glob, como nas versões anteriores."
         }
       }
     }
