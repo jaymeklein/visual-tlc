@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { findSpecsRoots, parseSpecsFolders } from '../../src/core/folders.ts';
+import { findSpecsRoots, parseSpecsFolders, rootLabel } from '../../src/core/folders.ts';
 
 test('SF-08 an empty or missing list falls back to .specs', () => {
   assert.deepEqual(parseSpecsFolders([]), { entries: ['.specs'], invalid: [] });
@@ -60,4 +60,20 @@ test('SF-05 a folder named .specs is kept without any skill artifact', () => {
 test('SF-10 a folder reached by two entries is listed once', () => {
   const files = ['api/docs/specs/STATE.md', 'api/docs/specs/features/auth/spec.md'];
   assert.deepEqual(findSpecsRoots(files, ['specs', 'docs/specs']), [{ path: 'api/docs/specs', entry: 'docs/specs', project: 'api' }]);
+});
+
+test('SF-07 a project with one specs folder is labelled by the project alone', () => {
+  const roots = findSpecsRoots(['docs/specs/STATE.md', 'packages/api/.specs/STATE.md'], ['.specs', 'docs/specs']);
+  assert.deepEqual(
+    roots.map((r) => rootLabel(r, roots, 'ws')),
+    ['ws', 'ws/packages/api'],
+  );
+});
+
+test('SF-07 two specs folders of the same project are labelled with project and folder path', () => {
+  const roots = findSpecsRoots(['.specs/STATE.md', 'docs/specs/STATE.md', 'packages/api/.specs/STATE.md', 'packages/api/docs/specs/STATE.md', 'packages/web/.specs/STATE.md'], ['.specs', 'docs/specs']);
+  assert.deepEqual(
+    roots.map((r) => rootLabel(r, roots, 'api')),
+    ['api · .specs', 'api · docs/specs', 'api/packages/api · .specs', 'api/packages/api · docs/specs', 'api/packages/web'],
+  );
 });

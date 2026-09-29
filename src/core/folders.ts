@@ -63,3 +63,10 @@ export function findSpecsRoots(files: readonly string[], entries: readonly strin
   }
   return [...roots.values()].sort((a, b) => a.path.localeCompare(b.path));
 }
+
+/** "project", or "project · folder" when the project has more than one specs folder among `all`. */
+export function rootLabel(root: SpecsRoot, all: readonly SpecsRoot[], folderName: string): string {
+  const project = root.project ? `${folderName}/${root.project}` : folderName;
+  const shared = all.some((r) => r.path !== root.path && r.project === root.project);
+  return shared ? `${project} · ${root.entry}` : project;
+}

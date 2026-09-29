@@ -134,10 +134,10 @@ T7 → T8
 
 **Done when**:
 
-- [ ] Projeto com uma pasta mantém o rótulo atual (`api`, `ws/packages/api`)
-- [ ] Projeto com duas pastas rotula `projeto · caminho` em cada grupo
-- [ ] Gate check passes: `npm run typecheck && npm test`
-- [ ] Test count: nenhum teste removido
+- [x] Projeto com uma pasta mantém o rótulo atual (`api`, `ws/packages/api`)
+- [x] Projeto com duas pastas rotula `projeto · caminho` em cada grupo
+- [x] Gate check passes: `npm run typecheck && npm test`
+- [x] Test count: nenhum teste removido
 
 **Tests**: unit
 **Gate**: quick
