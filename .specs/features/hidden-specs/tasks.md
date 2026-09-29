@@ -9,7 +9,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 ---
 
 **Design**: `.specs/features/hidden-specs/design.md`
-**Status**: Approved
+**Status**: In Progress
 
 ---
 
@@ -81,12 +81,12 @@ T6 → T7
 
 **Done when**:
 
-- [ ] Uma instância nova sobre o mesmo `Memento` vê as marcas gravadas (HID-13)
-- [ ] `set` avisa quem ouve só quando a marca muda
-- [ ] Um valor gravado que não é lista de textos vira lista vazia
-- [ ] `isHidden` é verdadeiro para concluída, para marcada e para as duas, e falso para as outras
-- [ ] Gate check passes: `npm run typecheck && npm test`
-- [ ] Test count: 59 unit tests pass (53 antes + 6 novos)
+- [x] Uma instância nova sobre o mesmo `Memento` vê as marcas gravadas (HID-13)
+- [x] `set` avisa quem ouve só quando a marca muda
+- [x] Um valor gravado que não é lista de textos vira lista vazia
+- [x] `isHidden` é verdadeiro para concluída, para marcada e para as duas, e falso para as outras
+- [x] Gate check passes: `npm run typecheck && npm test`
+- [x] Test count: 59 unit tests pass (53 antes + 6 novos)
 
 **Tests**: unit
 **Gate**: quick

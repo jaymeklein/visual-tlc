@@ -102,26 +102,26 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Requirement ID | Story       | Phase  | Status  |
 | -------------- | ----------- | ------ | ------- |
-| HID-01 | P1: Ver e esconder as ocultas pelo olho | Design | Pending |
-| HID-02 | P1: Ver e esconder as ocultas pelo olho | Design | Pending |
-| HID-03 | P1: Ver e esconder as ocultas pelo olho | Design | Pending |
-| HID-04 | P1: Ver e esconder as ocultas pelo olho | Design | Pending |
-| HID-05 | P1: Ver e esconder as ocultas pelo olho | Design | Pending |
-| HID-06 | P1: Ver e esconder as ocultas pelo olho | Design | Pending |
-| HID-07 | P1: Ver e esconder as ocultas pelo olho | Design | Pending |
-| HID-08 | P1: Ver e esconder as ocultas pelo olho | Design | Pending |
-| HID-09 | P2: Ocultar uma spec à mão | Design | Pending |
-| HID-10 | P2: Ocultar uma spec à mão | Design | Pending |
-| HID-11 | P2: Ocultar uma spec à mão | Design | Pending |
-| HID-12 | P2: Ocultar uma spec à mão | Design | Pending |
-| HID-13 | P2: Ocultar uma spec à mão | Design | Pending |
-| HID-14 | P2: Ocultar uma spec à mão | Design | Pending |
-| HID-15 | Edge case: detalhe de uma marcada | Design | Pending |
-| HID-16 | Edge case: todas ocultas | Design | Pending |
+| HID-01 | P1: Ver e esconder as ocultas pelo olho | Execute | In Tasks |
+| HID-02 | P1: Ver e esconder as ocultas pelo olho | Execute | Implementing |
+| HID-03 | P1: Ver e esconder as ocultas pelo olho | Execute | In Tasks |
+| HID-04 | P1: Ver e esconder as ocultas pelo olho | Execute | In Tasks |
+| HID-05 | P1: Ver e esconder as ocultas pelo olho | Execute | In Tasks |
+| HID-06 | P1: Ver e esconder as ocultas pelo olho | Execute | In Tasks |
+| HID-07 | P1: Ver e esconder as ocultas pelo olho | Execute | In Tasks |
+| HID-08 | P1: Ver e esconder as ocultas pelo olho | Execute | In Tasks |
+| HID-09 | P2: Ocultar uma spec à mão | Execute | In Tasks |
+| HID-10 | P2: Ocultar uma spec à mão | Execute | In Tasks |
+| HID-11 | P2: Ocultar uma spec à mão | Execute | Implementing |
+| HID-12 | P2: Ocultar uma spec à mão | Execute | Implementing |
+| HID-13 | P2: Ocultar uma spec à mão | Execute | Implementing |
+| HID-14 | P2: Ocultar uma spec à mão | Execute | In Tasks |
+| HID-15 | Edge case: detalhe de uma marcada | Execute | In Tasks |
+| HID-16 | Edge case: todas ocultas | Execute | In Tasks |
 
 **ID format:** `HID-NN`, na ordem dos critérios acima.
 
-**Coverage:** 16 total, 0 mapped to tasks, 16 unmapped ⚠️
+**Coverage:** 16 total, 16 mapped to tasks, 0 unmapped
 
 ---
 
