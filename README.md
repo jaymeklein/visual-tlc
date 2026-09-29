@@ -21,8 +21,9 @@ Ela lê os artefatos que a skill grava em `.specs/` (ou nas pastas que você con
 
 - Fica na barra lateral, fora da área do editor: o código aberto continua na mesma aba, sem dividir a tela. Abrir uma feature no painel (botão da feature, barra de status ou notificação) mostra os detalhes dela ali.
 - Abaixo de 700px de largura o quadro fica em uma coluna e esconde as fases sem features. A seção pode ser arrastada para a barra lateral direita.
-- `TLC Specs: Abrir painel em aba` (ou o ícone no topo de Features e do Painel) abre a visão larga numa aba do editor, com as seis fases lado a lado.
-- Resumo do projeto, feature em foco e um **quadro por fase** com todas as specs; cada card tem os mesmos botões de visualizar o markdown e abrir a pasta.
+- `TLC Specs: Abrir painel em aba` (ou o ícone no topo de Features e do Painel) abre a visão larga numa aba do editor, com as fases lado a lado.
+- Resumo do projeto, feature em foco e um **quadro por fase** com as specs; cada card tem os mesmos botões de visualizar o markdown e abrir a pasta.
+- O painel abre com **Ocultar concluídas** marcada: o quadro mostra só as features em andamento, nas cinco fases. Desmarque para ver a coluna Concluídas com as features verificadas com PASS. O resumo sempre conta as concluídas, e uma feature concluída aberta pela árvore ou por uma notificação mostra os detalhes normalmente.
 - Detalhe da feature: stepper do pipeline, próximo passo, tasks por fase, histórias com os padrões EARS, requisitos, veredito do Verifier (critérios, mutantes, UAT, fix plans), design/contexto, arquivos e avisos. As mesmas regras da árvore: cliques abrem o markdown no preview, cada task expande os detalhes no lugar, a seção Arquivos tem o lápis para abrir no editor e avisos abrem o editor na linha.
 
 **Também**
