@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { DEFAULT_SPECS_FOLDER, findSpecsRoots, parseExclude, parseSpecsFolders, rootLabel } from '../core/folders.ts';
+import { DEFAULT_SPECS_FOLDER, findSpecsRoots, type InvalidEntry, parseExclude, parseSpecsFolders, pendingWarnings, rootLabel } from '../core/folders.ts';
 import { loadProject, type SpecsReader } from '../core/project.ts';
 import type { Feature, Project } from '../core/types.ts';
 
@@ -113,16 +113,12 @@ export class SpecsStore implements vscode.Disposable {
   }
 
   /** Names each ignored entry once, until it leaves the setting. */
-  private warn(invalid: { setting: string; entry: string }[]): void {
-    const seen = new Set<string>();
-    for (const { setting, entry } of invalid) {
-      const key = `${setting}: ${entry}`;
-      if (!this.warned.has(key) && !seen.has(key)) {
-        void vscode.window.showWarningMessage(`TLC Specs: a entrada "${entry}" de ${setting} foi ignorada. Use um caminho relativo, sem ".." e sem glob.`);
-      }
-      seen.add(key);
+  private warn(invalid: InvalidEntry[]): void {
+    const { show, warned } = pendingWarnings(invalid, this.warned);
+    for (const { setting, entry } of show) {
+      void vscode.window.showWarningMessage(`TLC Specs: a entrada "${entry}" de ${setting} foi ignorada. Use um caminho relativo, sem "..", sem vírgula e sem glob.`);
     }
-    this.warned = seen;
+    this.warned = warned;
   }
 
   dispose(): void {

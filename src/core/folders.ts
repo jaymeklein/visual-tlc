@@ -37,16 +37,38 @@ export function parseSpecsFolders(raw: unknown): SpecsFolders {
 /** Setting tlcSpecs.exclude: a list of folders, left out at any depth, or a glob in a text (the older form). */
 export function parseExclude(raw: unknown): Exclude {
   if (typeof raw === 'string') return { glob: raw || null, invalid: [] };
-  const { entries, invalid } = parseEntries(raw);
+  // A comma would split the group of globs built below.
+  const { entries, invalid } = parseEntries(raw, (entry) => !entry.includes(','));
   const globs = entries.map((entry) => `**/${entry}/**`);
   return { glob: globs.length > 1 ? `{${globs.join(',')}}` : (globs[0] ?? null), invalid };
 }
 
-function parseEntries(raw: unknown): SpecsFolders {
+/** An entry a setting rejected, as written in it. */
+export interface InvalidEntry {
+  setting: string;
+  entry: string;
+}
+
+/**
+ * Which of the invalid entries still need their warning, given the ones already warned:
+ * once per setting and entry, and again when the entry comes back after leaving the setting.
+ */
+export function pendingWarnings(invalid: readonly InvalidEntry[], warned: ReadonlySet<string>): { show: InvalidEntry[]; warned: Set<string> } {
+  const seen = new Set<string>();
+  const show: InvalidEntry[] = [];
+  for (const item of invalid) {
+    const key = `${item.setting}: ${item.entry}`;
+    if (!warned.has(key) && !seen.has(key)) show.push(item);
+    seen.add(key);
+  }
+  return { show, warned: seen };
+}
+
+function parseEntries(raw: unknown, accepts: (entry: string) => boolean = () => true): SpecsFolders {
   const entries: string[] = [];
   const invalid: string[] = [];
   for (const item of Array.isArray(raw) ? raw : []) {
-    const entry = typeof item === 'string' ? normalize(item) : undefined;
+    const entry = typeof item === 'string' && accepts(item) ? normalize(item) : undefined;
     if (entry === undefined) invalid.push(String(item));
     else if (!entries.includes(entry)) entries.push(entry);
   }

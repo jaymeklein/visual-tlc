@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { findSpecsRoots, parseExclude, parseSpecsFolders, rootLabel } from '../../src/core/folders.ts';
+import { findSpecsRoots, parseExclude, parseSpecsFolders, pendingWarnings, rootLabel } from '../../src/core/folders.ts';
 
 test('SF-08 an empty or missing list falls back to .specs', () => {
   assert.deepEqual(parseSpecsFolders([]), { entries: ['.specs'], invalid: [] });
@@ -103,4 +103,23 @@ test('EXC-07 absolute, parent and glob entries are left out and reported as writ
   const invalid = ['/abs/test', 'C:\\abs\\test', '../out', 'docs/../test', '**/test/**', 'test?', 'te[s]t', '{a,b}'];
   assert.deepEqual(parseExclude([...invalid, 'test']), { glob: '**/test/**', invalid });
   assert.deepEqual(parseExclude(['../out']), { glob: null, invalid: ['../out'] });
+});
+
+test('EXC-07 an entry with a comma is left out: the comma separates the entries of the glob', () => {
+  assert.deepEqual(parseExclude(['docs,old', 'test']), { glob: '**/test/**', invalid: ['docs,old'] });
+  assert.deepEqual(parseExclude(['node_modules', 'a,b', 'test']), { glob: '{**/node_modules/**,**/test/**}', invalid: ['a,b'] });
+});
+
+test('EXC-07 each invalid entry is warned once per setting, until it leaves that setting', () => {
+  const fora = (setting: string) => ({ setting, entry: '../fora' });
+  const first = pendingWarnings([fora('tlcSpecs.specsFolders'), fora('tlcSpecs.exclude'), fora('tlcSpecs.exclude')], new Set());
+  assert.deepEqual(first.show, [fora('tlcSpecs.specsFolders'), fora('tlcSpecs.exclude')]);
+
+  const again = pendingWarnings([fora('tlcSpecs.specsFolders'), fora('tlcSpecs.exclude')], first.warned);
+  assert.deepEqual(again.show, []);
+
+  const left = pendingWarnings([fora('tlcSpecs.specsFolders')], again.warned);
+  assert.deepEqual(left.show, []);
+  const back = pendingWarnings([fora('tlcSpecs.specsFolders'), fora('tlcSpecs.exclude')], left.warned);
+  assert.deepEqual(back.show, [fora('tlcSpecs.exclude')]);
 });

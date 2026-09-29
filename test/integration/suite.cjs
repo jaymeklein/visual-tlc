@@ -957,7 +957,7 @@ test('EXC-07 an invalid entry is ignored with a warning that names it', async ()
     await waitFor('two warnings', () => shown.length >= 2);
     assert.deepEqual(
       [...shown].sort(),
-      ['TLC Specs: a entrada "**/tools/**" de tlcSpecs.exclude foi ignorada. Use um caminho relativo, sem ".." e sem glob.', 'TLC Specs: a entrada "../fora" de tlcSpecs.exclude foi ignorada. Use um caminho relativo, sem ".." e sem glob.'],
+      ['TLC Specs: a entrada "**/tools/**" de tlcSpecs.exclude foi ignorada. Use um caminho relativo, sem "..", sem vírgula e sem glob.', 'TLC Specs: a entrada "../fora" de tlcSpecs.exclude foi ignorada. Use um caminho relativo, sem "..", sem vírgula e sem glob.'],
     );
     await api.refresh();
     assert.equal(shown.length, 2, 'the warning was repeated on refresh');
