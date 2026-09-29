@@ -51,8 +51,8 @@ Seen once or not yet corroborated. Tracked, not trusted.
 ### L-007 - Drive a test hook from the real side effect, not from a value recorded beside it
 - signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `test-hooks` · harmful: 0
 - features: specs-folders
-- evidence: N2 src/ui/dashboard.ts:87 (test-hooks) (+1 more)
-- last seen: 2026-09-29T13:40:47Z
+- evidence: N2 src/ui/dashboard.ts:87 (test-hooks) (+2 more)
+- last seen: 2026-09-29T14:04:07Z
 
 ## Quarantined (failed when applied - ignore)
 

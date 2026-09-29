@@ -130,10 +130,11 @@
       "harmful": 0,
       "evidence": [
         "N2 src/ui/dashboard.ts:87 (test-hooks)",
-        "N8 src/ui/dashboard.ts:87 (test-hooks)"
+        "N8 src/ui/dashboard.ts:87 (test-hooks)",
+        "R1 src/webview/main.ts:30 (test-hooks)"
       ],
       "created": "2026-09-29T13:40:46Z",
-      "last_seen": "2026-09-29T13:40:47Z"
+      "last_seen": "2026-09-29T14:04:07Z"
     }
   ]
 }

@@ -6,8 +6,8 @@ A extensão só encontra specs em pastas chamadas `.specs`: o nome está fixo na
 
 ## Goals
 
-- [ ] Qualquer pasta listada na configuração aparece na extensão com o mesmo comportamento de uma `.specs`
-- [ ] Sem configuração, o comportamento atual continua idêntico
+- [x] Qualquer pasta listada na configuração aparece na extensão com o mesmo comportamento de uma `.specs`
+- [x] Sem configuração, o comportamento atual continua idêntico
 
 ## Out of Scope
 
@@ -87,25 +87,25 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Requirement ID | Story       | Phase  | Status  |
 | -------------- | ----------- | ------ | ------- |
-| SF-01 | P1: Configurar as pastas de specs | Tasks | Implementing |
-| SF-02 | P1: Configurar as pastas de specs | Tasks | Implementing |
-| SF-03 | P1: Configurar as pastas de specs | Tasks | Implementing |
-| SF-04 | P1: Configurar as pastas de specs | Tasks | Implementing |
-| SF-05 | P1: Configurar as pastas de specs | Tasks | Implementing |
-| SF-06 | P1: Configurar as pastas de specs | Tasks | Implementing |
-| SF-07 | P2: Distinguir pastas do mesmo projeto | Tasks | Implementing |
-| SF-08 | Edge case: lista vazia | Tasks | Implementing |
-| SF-09 | Edge case: entrada inválida | Tasks | Implementing |
-| SF-10 | Edge case: entradas sobrepostas | Tasks | Implementing |
-| SF-11 | Edge case: separadores e barra final | Tasks | Implementing |
+| SF-01 | P1: Configurar as pastas de specs | Tasks | Verified |
+| SF-02 | P1: Configurar as pastas de specs | Tasks | Verified |
+| SF-03 | P1: Configurar as pastas de specs | Tasks | Verified |
+| SF-04 | P1: Configurar as pastas de specs | Tasks | Verified |
+| SF-05 | P1: Configurar as pastas de specs | Tasks | Verified |
+| SF-06 | P1: Configurar as pastas de specs | Tasks | Verified |
+| SF-07 | P2: Distinguir pastas do mesmo projeto | Tasks | Verified |
+| SF-08 | Edge case: lista vazia | Tasks | Verified |
+| SF-09 | Edge case: entrada inválida | Tasks | Verified |
+| SF-10 | Edge case: entradas sobrepostas | Tasks | Verified |
+| SF-11 | Edge case: separadores e barra final | Tasks | Verified |
 
 **ID format:** `SF-NN`, na ordem dos critérios acima.
 
-**Coverage:** 11 total, escopo Medium (tasks implícitas na execução, sem `tasks.md`).
+**Coverage:** 11 total, 11 mapeados em `tasks.md`, 0 sem task.
 
 ---
 
 ## Success Criteria
 
-- [ ] Um projeto com specs em `docs/specs` aparece completo na extensão só com a configuração
-- [ ] Sem configuração, os 24 testes de integração e os testes unitários atuais continuam passando
+- [x] Um projeto com specs em `docs/specs` aparece completo na extensão só com a configuração
+- [x] Sem configuração, os 24 testes de integração e os testes unitários atuais continuam passando
