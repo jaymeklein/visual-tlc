@@ -33,7 +33,8 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 | Valor em texto | Usado como glob, como antes | Compatibilidade com quem já configurou | n |
 | Escopo | `resource`: cada pasta de um workspace multi-root pode ter a sua lista | Mesmo escopo de `tlcSpecs.specsFolders` | n |
 | Inclusão e exclusão da mesma pasta | A exclusão vence | Excluir é o pedido mais específico de quem configurou | n |
-| Entrada inválida (absoluta, com `..`, com vírgula ou com glob) | Ignorada, com aviso que nomeia a entrada e a configuração | Mesma regra de `tlcSpecs.specsFolders`; a vírgula separa as entradas no glob que a busca recebe | n |
+| Entrada inválida (absoluta, com `..`, com vírgula ou com glob) | Ignorada, com aviso que nomeia a entrada e a configuração | Absoluta, com `..` ou com glob: mesma regra de `tlcSpecs.specsFolders`. A vírgula vale só para `tlcSpecs.exclude`, porque separa as entradas no glob que a busca recebe; `tlcSpecs.specsFolders` busca cada entrada à parte e aceita vírgula | n |
+| Texto do aviso | Cada configuração orienta só pelas regras dela: o aviso de `tlcSpecs.specsFolders` não fala de vírgula | Um aviso não pede o que a configuração aceita | n |
 | Dimensões implícitas | Remaining dimensions N/A for this scope | Configuração local e leitura de arquivos: sem persistência, chamadas externas, auth ou concorrência | n |
 
 **Open questions:** none - all resolved or logged above.
@@ -52,7 +53,7 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 1. The extensão SHALL oferecer a configuração `tlcSpecs.exclude` como lista de caminhos relativos, com padrão `["node_modules"]`
 2. WHEN a lista tem uma pasta THEN a extensão SHALL deixar fora da listagem toda pasta de specs que esteja dentro dela, em qualquer profundidade
-3. WHEN a configuração `tlcSpecs.exclude` muda THEN a extensão SHALL atualizar projetos, árvores e diagnósticos sem recarregar a janela
+3. WHEN a configuração `tlcSpecs.exclude` muda THEN a extensão SHALL atualizar projetos, árvores, painel (na aba e na barra lateral) e diagnósticos sem recarregar a janela
 4. IF o valor de `tlcSpecs.exclude` é um texto THEN a extensão SHALL usá-lo como glob de exclusão
 5. WHERE o workspace tem mais de uma pasta the extensão SHALL aplicar a cada pasta do workspace a lista configurada nela
 
@@ -66,6 +67,7 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 - IF uma entrada é absoluta, contém `..`, vírgula ou caracteres de glob THEN a extensão SHALL ignorar essa entrada e mostrar um aviso com o nome dela e o da configuração `tlcSpecs.exclude`
 - WHEN uma pasta tem o nome de uma entrada como parte do nome (`tests` com a entrada `test`) THEN a extensão SHALL manter essa pasta na listagem
 - WHEN uma pasta está em `tlcSpecs.specsFolders` e dentro de uma entrada de `tlcSpecs.exclude` THEN a extensão SHALL deixá-la fora da listagem
+- WHEN a mesma entrada inválida está em `tlcSpecs.specsFolders` e em `tlcSpecs.exclude` THEN a extensão SHALL mostrar um aviso para cada configuração, com o nome dela
 
 ---
 
@@ -75,17 +77,18 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 | -------------- | ----------- | ------ | ------- |
 | EXC-01 | P1: Excluir pastas da listagem | Execute | Verified |
 | EXC-02 | P1: Excluir pastas da listagem | Execute | Verified |
-| EXC-03 | P1: Excluir pastas da listagem | Execute | Verified |
+| EXC-03 | P1: Excluir pastas da listagem | Execute | Implementing |
 | EXC-04 | P1: Excluir pastas da listagem | Execute | Verified |
 | EXC-05 | P1: Excluir pastas da listagem | Execute | Verified |
 | EXC-06 | Edge case: lista vazia | Execute | Verified |
 | EXC-07 | Edge case: entrada inválida | Execute | Needs Fix |
 | EXC-08 | Edge case: nome parecido | Execute | Verified |
 | EXC-09 | Edge case: incluída e excluída | Execute | Verified |
+| EXC-10 | Edge case: mesma entrada inválida nas duas configurações | Execute | Implementing |
 
 **ID format:** `EXC-NN`, na ordem dos critérios acima.
 
-**Coverage:** 9 total, 8 verificados, EXC-07 com fix pendente; escopo Medium (passos listados na execução, sem `tasks.md`).
+**Coverage:** 10 total, 7 verificados, EXC-03 e EXC-10 em implementação, EXC-07 com fix pendente; escopo Medium (passos listados na execução, sem `tasks.md`).
 
 ---
 
