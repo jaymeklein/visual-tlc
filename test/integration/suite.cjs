@@ -894,7 +894,7 @@ test('EXC-01 contributes tlcSpecs.exclude as a list of folders with ["node_modul
   assert.deepEqual(vscode.workspace.getConfiguration('tlcSpecs', folder()).get('exclude'), ['node_modules']);
 });
 
-test('EXC-02/EXC-03/EXC-08 a listed folder leaves the listing at any depth, without a window reload', async () => {
+test('EXC-02/EXC-03/EXC-08 a listed folder leaves the listing and the panel at any depth, without a window reload', async () => {
   await closeAll();
   await setFolders(undefined);
   await write('test/nested/.specs/features/in-test/spec.md', SPEC_WITHOUT_SHALL);
@@ -903,10 +903,16 @@ test('EXC-02/EXC-03/EXC-08 a listed folder leaves the listing at any depth, with
   await write('node_modules/pkg/.specs/STATE.md', EMPTY_STATE);
   await waitForRoots(['.specs', 'packages/api/test/.specs', 'test/nested/.specs', 'tests/.specs', 'tools/.specs']);
   await waitFor('the diagnostics of test/nested', () => tlcDiagnostics().some(([uri]) => uri.path.includes('/test/nested/.specs/')));
+  await showSidePanel();
+  await vscode.commands.executeCommand('tlcSpecs.openDashboard');
+  await tabReport('the tab to show in-test and in-tests', (r) => r.detail === null && r.cards.includes('in-test') && r.cards.includes('in-tests'));
+  await sideReport('the side panel to render every project', (r) => same(r.projects, projectIds()));
 
   await setExclude(['node_modules', 'test']);
   await waitForRoots(['.specs', 'tests/.specs', 'tools/.specs']);
   assert.deepEqual(featuresOf('tests/.specs'), ['in-tests']);
+  await tabReport('the tab to drop the features of the excluded folders', (r) => !r.cards.includes('in-test') && r.cards.includes('in-tests'));
+  await sideReport('the side panel to drop the excluded projects', (r) => same(r.projects, projectIds()));
   assert.deepEqual(
     api.featuresTree.getChildren().map((n) => n.loaded.project.id),
     projectIds(),
