@@ -695,6 +695,46 @@ test('SIDE-08 "Abrir painel em aba" opens the panel in an editor tab named TLC S
   assert.deepEqual(report.projects, projectIds());
 });
 
+test('SIDE-06 the side panel comes back with the current projects and the selected feature', async () => {
+  await vscode.commands.executeCommand('tlcSpecs.showFeature', { projectId: projectId(), feature: 'user-auth' });
+  await sideReport('the details of user-auth', (r) => r.detail === 'user-auth');
+  await vscode.commands.executeCommand('workbench.action.closeSidebar');
+  await waitFor('the side panel to hide', () => api.sidePanelReport() === undefined);
+  try {
+    await setFolders(['.specs', 'docs/specs']);
+    await waitForRoots(['.specs', 'docs/specs', 'packages/api/docs/specs', 'tools/.specs']);
+    assert.equal(api.sidePanelReport(), undefined, 'the hidden side panel rendered something');
+
+    await showSidePanel();
+    const report = await sideReport('the side panel to render again', (r) => r.projects.length > 0);
+    assert.deepEqual(report.projects, projectIds());
+    assert.equal(report.detail, 'user-auth');
+  } finally {
+    await setFolders(undefined);
+    await waitForRoots(['.specs', 'tools/.specs']);
+  }
+});
+
+test('SIDE-10 the panel in a tab and the side panel are updated together', async () => {
+  await closeAll();
+  await vscode.commands.executeCommand('tlcSpecs.openDashboard');
+  await showSidePanel();
+  await tabReport('the tab to render the projects', (r) => same(r.projects, projectIds()));
+  await sideReport('the side panel to render the projects', (r) => same(r.projects, projectIds()));
+  try {
+    await setFolders(['docs/specs']);
+    await waitForRoots(['docs/specs', 'packages/api/docs/specs']);
+    const ids = projectIds();
+    const tab = await tabReport('the tab to render docs/specs', (r) => same(r.projects, ids));
+    const side = await sideReport('the side panel to render docs/specs', (r) => same(r.projects, ids));
+    assert.deepEqual([...tab.cards].sort(), featureNames(api.getProjects()));
+    assert.deepEqual([...side.cards].sort(), featureNames(api.getProjects()));
+  } finally {
+    await setFolders(undefined);
+    await waitForRoots(['.specs', 'tools/.specs']);
+  }
+});
+
 exports.run = async function run() {
   const failures = [];
   for (const c of cases) {

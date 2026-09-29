@@ -46,6 +46,11 @@ class Surface implements vscode.Disposable {
 
   detach(): void {
     this.webview = undefined;
+    this.sleep();
+  }
+
+  /** The webview is hidden: VS Code dropped its page, and it says "ready" again when it comes back. */
+  sleep(): void {
     this.live = false;
     this.rendered = undefined;
   }
@@ -69,7 +74,7 @@ class Surface implements vscode.Disposable {
         await this.store.refresh();
         break;
       case 'rendered':
-        if (this.webview) this.rendered = m;
+        if (this.live) this.rendered = m;
         break;
       case 'error':
         this.health.errors.push(m.message);
@@ -188,6 +193,7 @@ export class Dashboard implements vscode.Disposable, vscode.WebviewViewProvider 
   resolveWebviewView(view: vscode.WebviewView): void {
     view.webview.options = this.side.options;
     this.side.attach(view.webview);
+    view.onDidChangeVisibility(() => !view.visible && this.side.sleep(), undefined, this.disposables);
     view.onDidDispose(() => this.side.detach(), undefined, this.disposables);
   }
 

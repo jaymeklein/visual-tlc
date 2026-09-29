@@ -96,11 +96,11 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 | SIDE-03 | P1: Ver o painel na barra lateral | Tasks | Implementing |
 | SIDE-04 | P1: Ver o painel na barra lateral | Tasks | Implementing |
 | SIDE-05 | P1: Ver o painel na barra lateral | Tasks | Implementing |
-| SIDE-06 | P1: Ver o painel na barra lateral | - | Pending |
+| SIDE-06 | P1: Ver o painel na barra lateral | Tasks | Implementing |
 | SIDE-07 | P1: Ver o painel na barra lateral | - | Pending |
 | SIDE-08 | P2: Abrir a visão larga em aba | Tasks | Implementing |
 | SIDE-09 | P2: Abrir a visão larga em aba | Tasks | Implementing |
-| SIDE-10 | Edge case: as duas superfícies abertas | - | Pending |
+| SIDE-10 | Edge case: as duas superfícies abertas | Tasks | Implementing |
 | SIDE-11 | Edge case: workspace sem specs | Tasks | Implementing |
 
 **ID format:** `SIDE-NN`, na ordem dos critérios acima.

@@ -216,10 +216,10 @@ T7 → T8
 
 **Done when**:
 
-- [ ] Depois de fechar a barra lateral, mudar as pastas de specs e reabrir a view, o relatório tem os projetos novos e a mesma feature em detalhe
-- [ ] Com a aba e a view abertas, uma mudança nas pastas de specs chega ao relatório das duas
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [ ] Test count: nenhum teste removido
+- [x] Depois de fechar a barra lateral, mudar as pastas de specs e reabrir a view, o relatório tem os projetos novos e a mesma feature em detalhe
+- [x] Com a aba e a view abertas, uma mudança nas pastas de specs chega ao relatório das duas
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] Test count: nenhum teste removido
 
 **Tests**: integration
 **Gate**: full
