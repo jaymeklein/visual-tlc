@@ -260,6 +260,123 @@ test('NAV-15 stages without a file have no click action and no editor button', a
   }
 });
 
+const C = () => vscode.TreeItemCollapsibleState;
+
+/** All task nodes under a stage, flattening the phase level. */
+async function tasksUnder(stage) {
+  const out = [];
+  for (const n of await kids(tree(), stage)) {
+    if (n.kind === 'task') out.push(n);
+    else if (n.kind === 'phase') out.push(...(await kids(tree(), n)).filter((t) => t.kind === 'task'));
+  }
+  return out;
+}
+
+test('NAV-06 Tasks and Execução expand to the tasks grouped by Phase', async () => {
+  for (const stageId of ['tasks', 'execute']) {
+    const stage = await stageNode('user-auth', stageId);
+    assert.notEqual((await tree().getTreeItem(stage)).collapsibleState, C().None, stageId);
+    const phases = await kids(tree(), stage);
+    assert.deepEqual(
+      phases.map((n) => [n.kind, n.phase?.number]),
+      [
+        ['phase', 1],
+        ['phase', 2],
+        ['phase', 3],
+      ],
+      stageId,
+    );
+    const tasks = await tasksUnder(stage);
+    const labels = [];
+    for (const t of tasks) labels.push((await tree().getTreeItem(t)).label);
+    assert.deepEqual(labels, [
+      'T1: Switch password hashing to argon2id',
+      'T2: Create refresh_tokens migration',
+      'T3: Implement AuthService.login',
+      'T4: Implement RefreshService.rotate',
+      'T5: Lockout after failed attempts',
+      'T6: AuthController routes',
+      'T7: Wire auth module',
+    ]);
+    const icon = async (id) => (await tree().getTreeItem(tasks.find((t) => t.task.id === id))).iconPath.id;
+    assert.equal(await icon('T1'), 'pass', 'done task icon');
+    assert.equal(await icon('T6'), 'circle-large-outline', 'pending task icon');
+  }
+});
+
+test('NAV-07 a task expands to read-only detail items', async () => {
+  const tasks = await tasksUnder(await stageNode('user-auth', 'tasks'));
+  const detailsOf = async (id) => {
+    const node = tasks.find((t) => t.task.id === id);
+    assert.equal((await tree().getTreeItem(node)).collapsibleState, C().Collapsed, id);
+    const items = [];
+    for (const d of await kids(tree(), node)) items.push(await tree().getTreeItem(d));
+    return items;
+  };
+  const t5 = await detailsOf('T5');
+  assert.deepEqual(
+    t5.map((i) => [i.label, i.description ?? '', i.iconPath.id]).slice(0, 5),
+    [
+      ['O quê', 'Lock account for 15 minutes after 5 failures', 'info'],
+      ['Onde', 'src/auth/auth.service.ts (modify)', 'file'],
+      ['Depende de', 'T4', 'arrow-left'],
+      ['Requisitos', 'AUTH-03', 'references'],
+      ['Tests / Gate', 'unit · quick', 'beaker'],
+    ],
+  );
+  assert.deepEqual(
+    t5.slice(5).map((i) => [i.label, i.iconPath.id]),
+    [
+      ['6th attempt returns 423', 'circle-large-outline'],
+      ['Gate check passes: npm run test:unit', 'circle-large-outline'],
+    ],
+  );
+  const t3 = await detailsOf('T3');
+  assert.deepEqual(
+    t3.slice(5).map((i) => i.iconPath.id),
+    ['pass', 'pass', 'pass'],
+    'checked Done when items',
+  );
+});
+
+test('NAV-08 task and task-detail rows never open an editor', async () => {
+  for (const stageId of ['tasks', 'execute']) {
+    for (const t of await tasksUnder(await stageNode('user-auth', stageId))) {
+      const item = await tree().getTreeItem(t);
+      assert.equal(item.command, undefined, `${stageId}/${t.task.id}`);
+      assert.notEqual(item.contextValue, 'artifact', `${stageId}/${t.task.id}`);
+      for (const d of await kids(tree(), t)) {
+        const di = await tree().getTreeItem(d);
+        assert.equal(di.command, undefined, `${stageId}/${t.task.id} detail`);
+        assert.notEqual(di.contextValue, 'artifact', `${stageId}/${t.task.id} detail`);
+      }
+    }
+  }
+});
+
+test('NAV-09 the Tasks stage is not expandable without tasks', async () => {
+  for (const f of ['csv-export', 'audit-log', 'legacy-import']) {
+    const stage = await stageNode(f, 'tasks');
+    assert.equal((await tree().getTreeItem(stage)).collapsibleState, C().None, f);
+    assert.deepEqual(await kids(tree(), stage), [], f);
+  }
+});
+
+test('NAV-16 Tasks and Execução lists coexist without duplicate ids', async () => {
+  const ids = [];
+  const walk = async (node) => {
+    ids.push((await tree().getTreeItem(node)).id);
+    for (const child of await kids(tree(), node)) await walk(child);
+  };
+  for (const stageId of ['tasks', 'execute']) {
+    for (const child of await kids(tree(), await stageNode('user-auth', stageId))) await walk(child);
+  }
+  assert.ok(ids.length > 20, `expected both subtrees, got ${ids.length} ids`);
+  assert.ok(ids.every(Boolean), 'every row has an id');
+  const dupes = ids.filter((id, i) => ids.indexOf(id) !== i);
+  assert.deepEqual(dupes, []);
+});
+
 exports.run = async function run() {
   const failures = [];
   for (const c of cases) {

@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
-import type { Feature, FeatureFile, Issue, Requirement, Stage, Task, TaskPhase } from '../core/types.ts';
+import type { Feature, FeatureFile, Issue, Requirement, Stage, StageId, Task, TaskPhase } from '../core/types.ts';
+import { plain } from '../core/markdown.ts';
 import { HEALTH_LABEL, progressBar, REQ_STATUS_LABEL, STAGE_LABEL, STAGE_STATE_LABEL, TASK_STATUS_LABEL } from '../core/labels.ts';
 import type { LoadedProject, SpecsStore } from './store.ts';
 import { issueIcon, openFileCommand, previewFileCommand } from './common.ts';
@@ -8,8 +9,9 @@ type Node =
   | { kind: 'root'; loaded: LoadedProject }
   | { kind: 'feature'; loaded: LoadedProject; feature: Feature }
   | { kind: 'stage'; loaded: LoadedProject; feature: Feature; stage: Stage }
-  | { kind: 'phase'; loaded: LoadedProject; feature: Feature; phase: TaskPhase }
-  | { kind: 'task'; loaded: LoadedProject; feature: Feature; task: Task }
+  | { kind: 'phase'; loaded: LoadedProject; feature: Feature; phase: TaskPhase; via: StageId }
+  | { kind: 'task'; loaded: LoadedProject; feature: Feature; task: Task; via: StageId }
+  | { kind: 'detail'; loaded: LoadedProject; feature: Feature; task: Task; via: StageId; index: number; label: string; value?: string; icon: vscode.ThemeIcon }
   | { kind: 'reqs'; loaded: LoadedProject; feature: Feature }
   | { kind: 'req'; loaded: LoadedProject; feature: Feature; req: Requirement }
   | { kind: 'files'; loaded: LoadedProject; feature: Feature }
@@ -93,19 +95,22 @@ export class FeaturesTree implements vscode.TreeDataProvider<Node> {
       }
       case 'stage': {
         const tasks = node.feature.tasks;
-        if (node.stage.id !== 'execute' || !tasks || tasks.tasks.length === 0) return [];
+        if (!listsTasks(node.stage.id) || !tasks || tasks.tasks.length === 0) return [];
+        const via = node.stage.id;
         const phased = tasks.phases.filter((p) => p.taskIds.length > 0);
         const loose = tasks.tasks.filter((t) => t.phase === null || !phased.some((p) => p.number === t.phase));
-        if (phased.length <= 1) return tasks.tasks.map((task) => ({ kind: 'task', loaded, feature: node.feature, task }));
+        if (phased.length <= 1) return tasks.tasks.map((task) => ({ kind: 'task', loaded, feature: node.feature, task, via }));
         return [
-          ...phased.map((phase): Node => ({ kind: 'phase', loaded, feature: node.feature, phase })),
-          ...loose.map((task): Node => ({ kind: 'task', loaded, feature: node.feature, task })),
+          ...phased.map((phase): Node => ({ kind: 'phase', loaded, feature: node.feature, phase, via })),
+          ...loose.map((task): Node => ({ kind: 'task', loaded, feature: node.feature, task, via })),
         ];
       }
       case 'phase':
         return (node.feature.tasks?.tasks ?? [])
           .filter((t) => t.phase === node.phase.number)
-          .map((task) => ({ kind: 'task', loaded, feature: node.feature, task }));
+          .map((task) => ({ kind: 'task', loaded, feature: node.feature, task, via: node.via }));
+      case 'task':
+        return taskDetails(node);
       case 'reqs':
         return (node.feature.spec?.requirements ?? []).map((req) => ({ kind: 'req', loaded, feature: node.feature, req }));
       case 'files':
@@ -133,7 +138,7 @@ export class FeaturesTree implements vscode.TreeDataProvider<Node> {
         return this.featureItem(node);
       case 'stage': {
         const { stage, feature } = node;
-        const expandable = stage.id === 'execute' && (feature.tasks?.tasks.length ?? 0) > 0;
+        const expandable = listsTasks(stage.id) && (feature.tasks?.tasks.length ?? 0) > 0;
         const item = new vscode.TreeItem(STAGE_LABEL[stage.id], expandable ? (stage.state === 'active' ? C.Expanded : C.Collapsed) : C.None);
         item.id = `stage:${pid}:${feature.name}:${stage.id}`;
         item.iconPath = STAGE_ICON[stage.state];
@@ -149,7 +154,7 @@ export class FeaturesTree implements vscode.TreeDataProvider<Node> {
         const tasks = (node.feature.tasks?.tasks ?? []).filter((t) => t.phase === node.phase.number);
         const done = tasks.filter((t) => t.status === 'done').length;
         const item = new vscode.TreeItem(`Phase ${node.phase.number}${node.phase.name ? `: ${node.phase.name}` : ''}`, done === tasks.length ? C.Collapsed : C.Expanded);
-        item.id = `phase:${pid}:${node.feature.name}:${node.phase.number}`;
+        item.id = `phase:${pid}:${node.feature.name}:${node.via}:${node.phase.number}`;
         item.description = `${done}/${tasks.length}`;
         item.iconPath = done === tasks.length ? icon('pass-filled', 'testing.iconPassed') : done > 0 ? icon('circle-large-filled', 'charts.blue') : icon('circle-large-outline');
         item.command = previewFileCommand(pid, `${node.feature.dir}/tasks.md`);
@@ -157,14 +162,22 @@ export class FeaturesTree implements vscode.TreeDataProvider<Node> {
         return item;
       }
       case 'task': {
+        // Read-only: expanding shows the details; no command, so a click never opens tasks.md.
         const t = node.task;
-        const item = new vscode.TreeItem(`${t.id}: ${t.title}`, C.None);
-        item.id = `task:${pid}:${node.feature.name}:${t.id}:${t.line}`;
+        const item = new vscode.TreeItem(`${t.id}: ${t.title}`, taskDetails(node).length ? C.Collapsed : C.None);
+        item.id = `task:${pid}:${node.feature.name}:${node.via}:${t.id}:${t.line}`;
         item.iconPath = TASK_ICON[t.status];
         const checks = t.doneWhen.length ? ` · ${t.doneWhen.filter((c) => c.checked).length}/${t.doneWhen.length}` : '';
         item.description = `${t.requirements.join(', ')}${checks}`;
         item.tooltip = taskTooltip(t);
-        item.command = openFileCommand(pid, `${node.feature.dir}/tasks.md`, t.line);
+        return item;
+      }
+      case 'detail': {
+        const item = new vscode.TreeItem(node.label, C.None);
+        item.id = `detail:${pid}:${node.feature.name}:${node.via}:${node.task.id}:${node.task.line}:${node.index}`;
+        item.description = node.value;
+        item.tooltip = node.value ? `${node.label}: ${node.value}` : node.label;
+        item.iconPath = node.icon;
         return item;
       }
       case 'reqs': {
@@ -250,6 +263,26 @@ export class FeaturesTree implements vscode.TreeDataProvider<Node> {
     item.tooltip = featureTooltip(f);
     return item;
   }
+}
+
+/** Stages whose rows expand into the task list. */
+function listsTasks(stage: StageId): boolean {
+  return stage === 'tasks' || stage === 'execute';
+}
+
+function taskDetails(node: Extract<Node, { kind: 'task' }>): Node[] {
+  const t = node.task;
+  const rows: [string, string, vscode.ThemeIcon][] = [
+    ['O quê', t.what, icon('info')],
+    ['Onde', plain(t.where), icon('file')],
+    ['Depende de', t.dependsOn.join(', ') || 'nenhuma', icon('arrow-left')],
+    ['Requisitos', t.requirements.join(', '), icon('references')],
+    ['Tests / Gate', [t.tests, t.gate].filter(Boolean).join(' · '), icon('beaker')],
+  ];
+  const base = { kind: 'detail' as const, loaded: node.loaded, feature: node.feature, task: t, via: node.via };
+  const fields = rows.filter(([, value]) => value).map(([label, value, i]) => ({ label, value, icon: i }));
+  const checks = t.doneWhen.map((c) => ({ label: c.text, value: undefined, icon: c.checked ? icon('pass', 'testing.iconPassed') : icon('circle-large-outline') }));
+  return [...fields, ...checks].map((row, index) => ({ ...base, index, ...row }));
 }
 
 function sortIssues(issues: Issue[]): Issue[] {

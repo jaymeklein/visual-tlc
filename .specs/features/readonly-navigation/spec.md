@@ -110,17 +110,17 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 | NAV-03 | P1: Abrir artefatos em modo visualização | - | Implementing |
 | NAV-04 | P1: Abrir artefatos em modo visualização | - | Implementing |
 | NAV-05 | P1: Abrir artefatos em modo visualização | - | Implementing |
-| NAV-06 | P1: Tasks como lista somente leitura | - | Pending |
-| NAV-07 | P1: Tasks como lista somente leitura | - | Pending |
-| NAV-08 | P1: Tasks como lista somente leitura | - | Pending |
-| NAV-09 | P1: Tasks como lista somente leitura | - | Pending |
+| NAV-06 | P1: Tasks como lista somente leitura | - | Implementing |
+| NAV-07 | P1: Tasks como lista somente leitura | - | Implementing |
+| NAV-08 | P1: Tasks como lista somente leitura | - | Implementing |
+| NAV-09 | P1: Tasks como lista somente leitura | - | Implementing |
 | NAV-10 | P2: Mesmo comportamento no painel | - | Pending |
 | NAV-11 | P2: Mesmo comportamento no painel | - | Pending |
 | NAV-12 | P2: Mesmo comportamento no painel | - | Pending |
 | NAV-13 | P2: Mesmo comportamento no painel | - | Pending |
 | NAV-14 | P2: Mesmo comportamento no painel | - | Pending |
 | NAV-15 | Edge case: etapa sem arquivo | - | Implementing |
-| NAV-16 | Edge case: Tasks e Execução expandidas | - | Pending |
+| NAV-16 | Edge case: Tasks e Execução expandidas | - | Implementing |
 
 **ID format:** `NAV-NN`, na ordem dos critérios acima (P1 artefatos → NAV-01..05, P1 tasks → NAV-06..09, P2 painel → NAV-10..14, edge cases → NAV-15..16).
 
