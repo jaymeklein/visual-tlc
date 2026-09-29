@@ -59,6 +59,7 @@ function report(): void {
     type: 'rendered',
     projects: projects.map((p) => p.id),
     cards: shown('.card-name').map((el) => el.textContent ?? ''),
+    phases: shown('.card-phase').map((el) => el.textContent ?? ''),
     detail: app.querySelector('.detail-title .mono')?.textContent ?? null,
     columns: boards.length ? getComputedStyle(boards[0]).gridTemplateColumns.split(' ').length : 0,
     emptyStages: shown('.column.is-empty').length,

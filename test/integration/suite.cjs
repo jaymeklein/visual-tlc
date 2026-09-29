@@ -629,12 +629,32 @@ test('SIDE-01 the side bar has a Painel view with the projects of the panel in a
   assert.deepEqual(side.cards, tab.cards);
 });
 
-test('SIDE-05 an artifact written in a specs folder shows up in the side panel', async () => {
+test('SIDE-05 an artifact created, changed or removed in a specs folder shows in the side panel', async () => {
+  const phaseOnCard = (r, name) => (r.cards.includes(name) ? r.phases[r.cards.indexOf(name)] : undefined);
+  const tasks = await readFile(path.join(specsDir(), 'features', 'search-filters', 'tasks.md'), 'utf8');
+  assert.ok(tasks.includes('- [x] '), 'the fixture has no finished task');
   await showSidePanel();
   await sideReport('the side panel to render', (r) => r.projects.length > 0);
+
+  // created
   await write('.specs/features/side-new/spec.md', SPEC_WITHOUT_SHALL);
-  const report = await sideReport('the card of side-new', (r) => r.cards.includes('side-new'));
-  assert.deepEqual([...report.cards].sort(), featureNames(api.getProjects()));
+  const created = await sideReport('the card of side-new', (r) => r.cards.includes('side-new'));
+  assert.deepEqual([...created.cards].sort(), featureNames(api.getProjects()));
+  assert.equal(phaseOnCard(created, 'side-new'), feature('side-new').phaseLabel);
+  await write('.specs/features/side-new/tasks.md', tasks.replaceAll('- [x] ', '- [ ] '));
+  const started = await sideReport('side-new to reach its tasks', (r) => phaseOnCard(r, 'side-new') !== phaseOnCard(created, 'side-new'));
+  assert.equal(phaseOnCard(started, 'side-new'), feature('side-new').phaseLabel);
+
+  // changed
+  await write('.specs/features/side-new/tasks.md', tasks);
+  const changed = await sideReport('side-new to finish its tasks', (r) => phaseOnCard(r, 'side-new') === 'Aguardando verificação');
+  assert.equal(feature('side-new').phaseLabel, 'Aguardando verificação');
+  assert.notEqual(phaseOnCard(started, 'side-new'), phaseOnCard(changed, 'side-new'));
+
+  // removed
+  await rm(path.join(specsDir(), 'features', 'side-new'), { recursive: true });
+  const removed = await sideReport('the card of side-new to go away', (r) => !r.cards.includes('side-new'));
+  assert.deepEqual([...removed.cards].sort(), featureNames(api.getProjects()));
 });
 
 test('SIDE-11 without a specs folder the side panel says that no spec was found', async () => {

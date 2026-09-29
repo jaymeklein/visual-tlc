@@ -9,7 +9,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 ---
 
 **Design**: inline (sem `design.md`)
-**Status**: In Progress
+**Status**: Done
 
 Design inline:
 
@@ -465,11 +465,11 @@ T8 → T9 → T10 → T11 → T12 → T13 → T14 → T15
 
 **Done when**:
 
-- [ ] Artefato criado: o cartão aparece com a fase do modelo
-- [ ] Artefato alterado: a fase do cartão muda
-- [ ] Artefato removido: o cartão some
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [ ] Test count: nenhum teste removido
+- [x] Artefato criado: o cartão aparece com a fase do modelo
+- [x] Artefato alterado: a fase do cartão muda
+- [x] Artefato removido: o cartão some
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] Test count: nenhum teste removido
 
 **Tests**: integration
 **Gate**: full

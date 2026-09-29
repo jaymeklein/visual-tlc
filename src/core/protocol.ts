@@ -11,6 +11,8 @@ export interface Rendered {
   projects: string[];
   /** Names on the feature cards that are displayed. */
   cards: string[];
+  /** Phase written on each of those cards, in the same order. */
+  phases: string[];
   /** Feature of the detail view, null on the board. */
   detail: string | null;
   /** Columns the board lays its stages in, 0 without a board. */
