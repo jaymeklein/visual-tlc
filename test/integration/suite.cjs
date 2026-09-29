@@ -391,6 +391,112 @@ test('NAV-11/NAV-14 (host) an open message from the dashboard opens the text edi
   assert.equal(editor.selection.active.line, 11);
 });
 
+// --- specs-folders -------------------------------------------------------------------------------------------
+
+const SPEC_WITHOUT_SHALL =
+  '# Custom Specification\n\n## Problem Statement\n\nX.\n\n## Out of Scope\n\n| Feature | Reason |\n| --- | --- |\n| A | B |\n\n## Assumptions & Open Questions\n\n**Open questions:** none\n\n## User Stories\n\n### P1: Do it ⭐ MVP\n\n**Acceptance Criteria**:\n\n1. WHEN x THEN the system does y\n\n## Requirement Traceability\n\n| Requirement ID | Story | Phase | Status |\n| --- | --- | --- | --- |\n| CUS-01 | P1 | - | Pending |\n';
+
+async function write(rel, text) {
+  const file = path.join(folder().fsPath, ...rel.split('/'));
+  await mkdir(path.dirname(file), { recursive: true });
+  await writeFile(file, text);
+}
+const setFolders = (value) => vscode.workspace.getConfiguration('tlcSpecs', folder()).update('specsFolders', value, vscode.ConfigurationTarget.Workspace);
+/** Specs folders of the loaded projects, relative to the workspace folder. */
+const roots = () => api.getProjects().map((p) => vscode.workspace.asRelativePath(vscode.Uri.parse(p.id), false)).sort();
+const waitForRoots = (expected) => waitFor(`projects ${expected.join(', ')} (got ${roots().join(', ')})`, () => JSON.stringify(roots()) === JSON.stringify(expected));
+const featuresOf = (root) => {
+  const project = api.getProjects().find((p) => vscode.workspace.asRelativePath(vscode.Uri.parse(p.id), false) === root);
+  return project ? project.features.map((f) => f.name).sort() : undefined;
+};
+
+test('SF-01 contributes tlcSpecs.specsFolders with [".specs"] as the default', () => {
+  const setting = vscode.workspace.getConfiguration('tlcSpecs', folder()).inspect('specsFolders');
+  assert.deepEqual(setting.defaultValue, ['.specs']);
+  assert.deepEqual(vscode.workspace.getConfiguration('tlcSpecs', folder()).get('specsFolders'), ['.specs']);
+});
+
+test('SF-02 shows every folder that matches an entry, at any depth', async () => {
+  await write('docs/specs/features/custom-one/spec.md', SPEC_WITHOUT_SHALL);
+  await write('packages/api/docs/specs/STATE.md', '# STATE\n\n## Decisions\n\n## Handoff\n');
+  await write('packages/api/docs/specs/features/nested-one/spec.md', SPEC_WITHOUT_SHALL);
+  await setFolders(['docs/specs']);
+  await waitForRoots(['docs/specs', 'packages/api/docs/specs']);
+  assert.deepEqual(featuresOf('docs/specs'), ['custom-one']);
+  assert.deepEqual(featuresOf('packages/api/docs/specs'), ['nested-one']);
+
+  await setFolders(['.specs', 'docs/specs']);
+  await waitForRoots(['.specs', 'docs/specs', 'packages/api/docs/specs']);
+});
+
+test('SF-03 a configuration change reloads the tree and the diagnostics without a window reload', async () => {
+  await setFolders(['.specs']);
+  await waitForRoots(['.specs']);
+  let fired = 0;
+  const sub = api.featuresTree.onDidChangeTreeData(() => fired++);
+  try {
+    await setFolders(['docs/specs']);
+    await waitForRoots(['docs/specs', 'packages/api/docs/specs']);
+    assert.ok(fired > 0, 'the Features tree was not told to reload');
+    const groups = api.featuresTree.getChildren();
+    assert.deepEqual(groups.map((n) => n.kind), ['root', 'root']);
+    assert.deepEqual(
+      groups.map((n) => api.featuresTree.getChildren(n).map((f) => f.feature.name)),
+      [['custom-one'], ['nested-one']],
+    );
+    assert.deepEqual(
+      api.projectTree.getChildren().map((n) => n.loaded.project.id),
+      api.getProjects().map((p) => p.id),
+    );
+    const diags = await waitFor('diagnostics of docs/specs only', () => {
+      const d = vscode.languages.getDiagnostics().filter(([, list]) => list.some((x) => x.source === 'TLC Specs'));
+      return d.length && d.every(([uri]) => uri.path.includes('/docs/specs/')) ? d : undefined;
+    });
+    const custom = diags.find(([uri]) => uri.path.endsWith('/docs/specs/features/custom-one/spec.md'));
+    assert.ok(custom, 'no diagnostics for docs/specs/features/custom-one/spec.md');
+    assert.ok(custom[1].some((d) => d.message.includes('sem SHALL')));
+  } finally {
+    sub.dispose();
+  }
+});
+
+test('SF-04 a file written inside a configured folder updates its view', async () => {
+  await setFolders(['docs/specs']);
+  await waitForRoots(['docs/specs', 'packages/api/docs/specs']);
+  await write('docs/specs/features/custom-two/spec.md', SPEC_WITHOUT_SHALL);
+  await waitFor('custom-two in docs/specs', () => (featuresOf('docs/specs') || []).includes('custom-two'));
+  assert.deepEqual(featuresOf('docs/specs'), ['custom-one', 'custom-two']);
+  assert.deepEqual(featuresOf('packages/api/docs/specs'), ['nested-one']);
+});
+
+test('SF-05 a matching folder without skill artifacts is ignored, unless it is named .specs', async () => {
+  await write('notes/specs/readme.md', '# Notes\n');
+  await write('notes/specs/features/readme.md', '# Not a feature\n');
+  await write('tools/.specs/notes.txt', 'nothing from the skill\n');
+  await setFolders(['.specs', 'notes/specs']);
+  await waitForRoots(['.specs', 'tools/.specs']);
+
+  await write('notes/specs/lessons.json', '{"lessons": []}');
+  await waitForRoots(['.specs', 'notes/specs', 'tools/.specs']);
+});
+
+test('SF-10/SF-11 entries that lead to the same folder show it once', async () => {
+  await setFolders(['docs/specs', 'docs\\specs\\', 'specs']);
+  await waitForRoots(['docs/specs', 'notes/specs', 'packages/api/docs/specs']);
+  const ids = api.getProjects().map((p) => p.id);
+  assert.deepEqual(ids, [...new Set(ids)]);
+});
+
+test('SF-08 an empty list uses .specs', async () => {
+  await setFolders([]);
+  await waitForRoots(['.specs', 'tools/.specs']);
+});
+
+test('specs-folders: restores the default configuration', async () => {
+  await setFolders(undefined);
+  await waitForRoots(['.specs', 'tools/.specs']);
+});
+
 exports.run = async function run() {
   const failures = [];
   for (const c of cases) {

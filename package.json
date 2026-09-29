@@ -208,10 +208,21 @@
           "minimum": 0,
           "description": "Marca como parada uma feature não concluída sem alterações há N dias (0 desativa)."
         },
+        "tlcSpecs.specsFolders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            ".specs"
+          ],
+          "scope": "resource",
+          "markdownDescription": "Pastas onde a extensão procura as specs. Cada entrada é um caminho relativo (`.specs`, `docs/specs`), procurado em qualquer profundidade do projeto. Entradas absolutas, com `..` ou com glob são ignoradas. Uma pasta de nome diferente de `.specs` só aparece quando tem artefatos da skill."
+        },
         "tlcSpecs.exclude": {
           "type": "string",
           "default": "**/node_modules/**",
-          "description": "Glob de pastas ignoradas ao procurar diretórios .specs."
+          "description": "Glob de pastas ignoradas ao procurar as pastas de specs."
         }
       }
     }

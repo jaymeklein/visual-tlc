@@ -87,10 +87,10 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Requirement ID | Story       | Phase  | Status  |
 | -------------- | ----------- | ------ | ------- |
-| SF-01 | P1: Configurar as pastas de specs | - | Pending |
+| SF-01 | P1: Configurar as pastas de specs | Tasks | Implementing |
 | SF-02 | P1: Configurar as pastas de specs | Tasks | Implementing |
-| SF-03 | P1: Configurar as pastas de specs | - | Pending |
-| SF-04 | P1: Configurar as pastas de specs | - | Pending |
+| SF-03 | P1: Configurar as pastas de specs | Tasks | Implementing |
+| SF-04 | P1: Configurar as pastas de specs | Tasks | Implementing |
 | SF-05 | P1: Configurar as pastas de specs | Tasks | Implementing |
 | SF-06 | P1: Configurar as pastas de specs | - | Pending |
 | SF-07 | P2: Distinguir pastas do mesmo projeto | Tasks | Implementing |

@@ -161,13 +161,13 @@ T7 → T8
 
 **Done when**:
 
-- [ ] `package.json` declara `tlcSpecs.specsFolders` com padrão `[".specs"]` e escopo `resource`
-- [ ] Com `["docs/specs"]`, as features de `docs/specs` aparecem em projetos, árvore e diagnósticos sem recarregar a janela
-- [ ] Arquivo novo dentro de `docs/specs` atualiza a visão
-- [ ] Pasta `docs/specs` sem artefato não vira projeto
-- [ ] Duas entradas para a mesma pasta geram um projeto
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [ ] Test count: 24 testes de integração existentes + novos passam
+- [x] `package.json` declara `tlcSpecs.specsFolders` com padrão `[".specs"]` e escopo `resource`
+- [x] Com `["docs/specs"]`, as features de `docs/specs` aparecem em projetos, árvore e diagnósticos sem recarregar a janela
+- [x] Arquivo novo dentro de `docs/specs` atualiza a visão
+- [x] Pasta `docs/specs` sem artefato não vira projeto
+- [x] Duas entradas para a mesma pasta geram um projeto
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] Test count: 24 testes de integração existentes + novos passam
 
 **Tests**: integration
 **Gate**: full
