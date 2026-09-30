@@ -9,7 +9,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 ---
 
 **Design**: inline (sem `design.md`)
-**Status**: In Progress
+**Status**: Done
 
 Design inline: cada spec tem uma escolha, `'hidden'`, `'shown'` ou nenhuma. `isHidden(f, choice)` vale `choice === 'hidden'`, ou a spec concluída sem `'shown'`. `HiddenSpecs` guarda as ocultas na lista que já existe (`tlcSpecs.hidden`) e as concluídas à vista numa lista nova (`tlcSpecs.shown`). `set(ref, hidden, complete)` grava só a escolha que difere do padrão da spec e apaga a outra. A mensagem `state` leva as duas listas à webview. O host descobre se a spec está concluída pelo store, no `setHidden` do painel e nos comandos da árvore. A linha da árvore fica `feature` ou `feature.hidden`, sem `feature.done`.
 
@@ -171,9 +171,9 @@ T3 → T4
 
 **Done when**:
 
-- [ ] README descreve o olho em toda spec e a concluída à vista
-- [ ] Notas no HID-09, HID-10 e HID-14
-- [ ] Gate check passes: `npm run typecheck && npm test`
+- [x] README descreve o olho em toda spec e a concluída à vista
+- [x] Notas no HID-10 (cobre o HID-09 e o HID-10) e no HID-14
+- [x] Gate check passes: `npm run typecheck && npm test`
 
 **Tests**: none
 **Gate**: build
