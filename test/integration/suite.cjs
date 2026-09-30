@@ -696,6 +696,28 @@ test('HFD-05/HFD-06 the folder node reads "N feature(s) · oculta" with the eye 
   assert.equal(folderRow().description, base);
 });
 
+test('HFD-01/HFD-06 a completed spec kept in view by its eye keeps its folder in Features, described without "· oculta", with the eye closed or open', async () => {
+  const features = api.getProjects()[0].features;
+  const open = openNames();
+  const kept = 'billing-invoices';
+  const base = `${features.length} feature(s)`;
+  assert.ok(features.some((f) => f.name === kept && f.health === 'complete'), `${kept} is not a completed spec`);
+  try {
+    for (const name of open) await setHidden(api.dashboardMessage, name, true);
+    await setHidden(api.dashboardMessage, kept, false);
+    assert.deepEqual(api.featuresTree.getChildren().map((n) => n.kind), ['root']);
+    assert.deepEqual(treeNames(), [kept]);
+    assert.equal(folderRow().description, base);
+    await vscode.commands.executeCommand('tlcSpecs.showHidden');
+    assert.equal(folderRow().description, base);
+  } finally {
+    await vscode.commands.executeCommand('tlcSpecs.hideHidden');
+    await setHidden(api.dashboardMessage, kept, true);
+    for (const name of open) await setHidden(api.dashboardMessage, name, false);
+  }
+  assert.deepEqual(treeNames(), open);
+});
+
 // --- specs-folders -------------------------------------------------------------------------------------------
 
 const SPEC_WITHOUT_SHALL =
@@ -1399,7 +1421,7 @@ test('HFD-08 a specs folder without any spec keeps its node in Features with "0 
   await waitForRoots(['.specs']);
 });
 
-exports.run =async function run() {
+exports.run = async function run() {
   const failures = [];
   for (const c of cases) {
     try {
