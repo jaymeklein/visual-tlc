@@ -6,8 +6,8 @@ O olho de ocultar só existe nas specs que não estão concluídas. As concluíd
 
 ## Goals
 
-- [ ] Toda spec tem um olho na linha da árvore Features e no card do painel, concluída ou não
-- [ ] O clique no olho troca a spec entre oculta e à vista, e a escolha vale até o usuário trocar de novo
+- [x] Toda spec tem um olho na linha da árvore Features e no card do painel, concluída ou não
+- [x] O clique no olho troca a spec entre oculta e à vista, e a escolha vale até o usuário trocar de novo
 
 ## Out of Scope
 
@@ -78,26 +78,26 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Requirement ID | Story       | Phase  | Status  |
 | -------------- | ----------- | ------ | ------- |
-| EYE-01 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Implementing |
-| EYE-02 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Implementing |
-| EYE-03 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Implementing |
-| EYE-04 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Implementing |
-| EYE-05 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Implementing |
-| EYE-06 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Implementing |
-| EYE-07 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Implementing |
-| EYE-08 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Implementing |
-| EYE-09 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Implementing |
-| EYE-10 | Edge case: ocultar uma concluída à vista | Execute | Implementing |
-| EYE-11 | Edge case: detalhe de uma oculta | Execute | Implementing |
+| EYE-01 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Verified |
+| EYE-02 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Verified |
+| EYE-03 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Verified |
+| EYE-04 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Verified |
+| EYE-05 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Verified |
+| EYE-06 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Verified |
+| EYE-07 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Verified |
+| EYE-08 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Verified |
+| EYE-09 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Verified |
+| EYE-10 | Edge case: ocultar uma concluída à vista | Execute | Verified |
+| EYE-11 | Edge case: detalhe de uma oculta | Execute | Verified |
 
 **ID format:** `EYE-NN`, na ordem dos critérios acima.
 
-**Coverage:** 11 total, 11 mapped to tasks, 0 unmapped
+**Coverage:** 11 total, 11 verificados.
 
 ---
 
 ## Success Criteria
 
-- [ ] Neste repositório, onde todas as specs estão concluídas, cada linha da árvore Features tem o olho ao passar o mouse
-- [ ] Uma concluída deixada à vista continua à vista depois de recarregar a janela
-- [ ] Os testes do hidden-specs que diziam "concluída sem olho" e "concluída sem esmaecido" são reescritos para a regra nova, sem perder as outras asserções
+- [x] Neste repositório, onde todas as specs estão concluídas, cada linha da árvore Features tem o olho ao passar o mouse
+- [x] Uma concluída deixada à vista continua à vista depois de recarregar a janela. Provado com um `Memento` falso lido por uma instância nova, como no hidden-specs. Nenhum teste reabre o VS Code
+- [x] Os testes do hidden-specs que diziam "concluída sem olho" e "concluída sem esmaecido" são reescritos para a regra nova, sem perder as outras asserções

@@ -84,6 +84,7 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 10. WHILE uma spec não concluída está marcada como oculta the extensão SHALL mostrar na linha dela na árvore Features e no card dela no painel um botão com o olho fechado e o título "Desocultar spec"
 
 > Desde `eye-on-every-spec` (EYE-01 a EYE-03), toda spec tem o olho, concluída ou não. A concluída começa oculta, com o olho fechado.
+
 11. WHEN o usuário clica em "Ocultar spec", na árvore ou no painel, THEN a extensão SHALL tirar a spec da árvore Features e dos quadros do painel com o olho fechado, e somá-la ao número de ocultas
 12. WHEN o usuário clica em "Desocultar spec", na árvore ou no painel, THEN a extensão SHALL devolver a spec à árvore Features e aos quadros do painel, e tirá-la do número de ocultas
 13. WHEN o VS Code reabre o mesmo workspace THEN a extensão SHALL manter ocultas as specs marcadas antes
