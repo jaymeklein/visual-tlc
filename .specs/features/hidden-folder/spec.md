@@ -6,8 +6,8 @@ Com o olho de Features fechado, uma pasta de specs com todas as specs ocultas co
 
 ## Goals
 
-- [ ] Com o olho de Features fechado, a árvore mostra só as pastas com alguma spec à vista
-- [ ] Com o olho aberto, a pasta com todas as specs ocultas volta, marcada como oculta
+- [x] Com o olho de Features fechado, a árvore mostra só as pastas com alguma spec à vista
+- [x] Com o olho aberto, a pasta com todas as specs ocultas volta, marcada como oculta
 
 ## Out of Scope
 
@@ -71,7 +71,7 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Requirement ID | Story       | Phase  | Status  |
 | -------------- | ----------- | ------ | ------- |
-| HFD-01 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Implementing |
+| HFD-01 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Verified |
 | HFD-02 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Verified |
 | HFD-03 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Verified |
 | HFD-04 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Verified |
@@ -82,11 +82,11 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 **ID format:** `HFD-NN`, na ordem dos critérios acima.
 
-**Coverage:** 8 total, 7 verificados, 1 com o Fix 2 à espera da nova validação (iteração 3).
+**Coverage:** 8 total, 8 verificados.
 
 ---
 
 ## Success Criteria
 
 - [ ] Neste repositório, com todas as specs concluídas, a árvore Features abre vazia, só com a mensagem das ocultas
-- [ ] O teste do SFP-10/HID-16, que exigia o nó sem filhos, é reescrito para a regra nova, sem perder as asserções da mensagem e da tela de boas-vindas
+- [x] O teste do SFP-10/HID-16, que exigia o nó sem filhos, é reescrito para a regra nova, sem perder as asserções da mensagem e da tela de boas-vindas
