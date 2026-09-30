@@ -1398,9 +1398,10 @@ test('SFP-05/SFP-06 an entry without a folder is ignored without a warning, and 
   await waitForRoots(['.specs']);
 });
 
+const idOf = (root) => api.getProjects().find((p) => vscode.workspace.asRelativePath(vscode.Uri.parse(p.id), false) === root).id;
+const setHiddenIn = (projectId, feature, hidden) => api.dashboardMessage({ type: 'setHidden', target: { projectId, feature }, hidden });
+
 test('HFD-08 a specs folder without any spec keeps its node in Features with "0 feature(s)", while the folder beside it leaves with every spec hidden', async () => {
-  const idOf = (root) => api.getProjects().find((p) => vscode.workspace.asRelativePath(vscode.Uri.parse(p.id), false) === root).id;
-  const setHiddenIn = (projectId, feature, hidden) => api.dashboardMessage({ type: 'setHidden', target: { projectId, feature }, hidden });
   await write('bare/.specs/STATE.md', '# STATE\n\n## Decisions\n\n## Handoff\n');
   let specsId;
   let open = [];
@@ -1415,6 +1416,39 @@ test('HFD-08 a specs folder without any spec keeps its node in Features with "0 
     assert.deepEqual(nodes.map((n) => n.loaded.project.id), [idOf('bare/.specs')]);
     assert.equal(api.featuresTree.getTreeItem(nodes[0]).description, '0 feature(s)');
   } finally {
+    for (const name of open) await setHiddenIn(specsId, name, false);
+    await setFolders(undefined);
+  }
+  await waitForRoots(['.specs']);
+});
+
+test('HFD-01/HFD-05/HFD-06 with two folders of specs the one with every spec hidden leaves Features while the one with a spec in view stays, and only the first reads "· oculta" with the eye open', async () => {
+  await write('side/.specs/features/side-one/spec.md', SPEC_WITHOUT_SHALL);
+  let specsId;
+  let open = [];
+  try {
+    await setFolders(['.specs', 'side/.specs']);
+    await waitForRoots(['.specs', 'side/.specs']);
+    specsId = idOf('.specs');
+    const sideId = idOf('side/.specs');
+    assert.deepEqual(featuresOf('side/.specs'), ['side-one']);
+    const total = api.getProjects().find((p) => p.id === specsId).features.length;
+    open = api.getProjects().find((p) => p.id === specsId).features.filter((f) => f.health !== 'complete').map((f) => f.name);
+    for (const name of open) await setHiddenIn(specsId, name, true);
+
+    const closed = api.featuresTree.getChildren();
+    assert.deepEqual(closed.map((n) => n.loaded.project.id), [sideId]);
+    assert.equal(api.featuresTree.getTreeItem(closed[0]).description, '1 feature(s)');
+
+    await vscode.commands.executeCommand('tlcSpecs.showHidden');
+    const shown = api.featuresTree.getChildren();
+    assert.deepEqual(shown.map((n) => n.loaded.project.id), [specsId, sideId]);
+    assert.deepEqual(
+      shown.map((n) => api.featuresTree.getTreeItem(n).description),
+      [`${total} feature(s) · oculta`, '1 feature(s)'],
+    );
+  } finally {
+    await vscode.commands.executeCommand('tlcSpecs.hideHidden');
     for (const name of open) await setHiddenIn(specsId, name, false);
     await setFolders(undefined);
   }
