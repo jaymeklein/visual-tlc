@@ -9,7 +9,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 ---
 
 **Design**: inline (sem `design.md`)
-**Status**: In Progress
+**Status**: Done
 
 Design inline: `src/core/folders.ts` continua puro. `findSpecsRoots` passa a aceitar só arquivos que começam no caminho da entrada, e `rootLabel` rotula pela pasta do workspace e, quando ela tem mais de uma pasta de specs, pelo caminho da entrada. `parseExclude` sai. `src/ui/store.ts` procura e observa `<entrada>/**` a partir da raiz de cada pasta do workspace, sem exclusão. As árvores Features e Projeto deixam de pular o nó quando há um projeto só.
 
@@ -164,9 +164,9 @@ T3 → T4
 
 **Done when**:
 
-- [ ] README sem `tlcSpecs.exclude`, com exemplos de caminho exato
-- [ ] Notas no SF-02 e no SF-07 (specs-folders), no topo de exclude-folders e no HID-16 (hidden-specs)
-- [ ] Gate check passes: `npm run typecheck && npm test`
+- [x] README sem `tlcSpecs.exclude`, com exemplos de caminho exato
+- [x] Notas no SF-02 e no SF-07 (specs-folders), no topo de exclude-folders e no HID-16 (hidden-specs)
+- [x] Gate check passes: `npm run typecheck && npm test`
 
 **Tests**: none
 **Gate**: build

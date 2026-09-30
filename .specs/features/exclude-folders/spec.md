@@ -1,5 +1,7 @@
 # Exclude Folders Specification
 
+> Substituída por `specs-folder-paths` (SFP-04). A configuração `tlcSpecs.exclude` saiu da extensão, com os testes EXC: cada entrada de `tlcSpecs.specsFolders` passou a ser o caminho exato de uma pasta, e não há mais o que excluir.
+
 ## Problem Statement
 
 O pedido original era incluir e excluir diretórios da listagem de specs. A feature `specs-folders` entregou só a inclusão. A exclusão ficou na configuração antiga `tlcSpecs.exclude`, que é um glob único em texto: para tirar a pasta `test` da listagem é preciso escrever `{**/node_modules/**,**/test/**}`. Quem usa a extensão num projeto com specs de exemplo em `test/` vê essas specs misturadas com as reais.

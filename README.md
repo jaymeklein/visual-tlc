@@ -66,39 +66,25 @@ As checagens reproduzem os validadores da própria skill (`validate_spec.py`, `v
 | `tlcSpecs.diagnostics.enabled` | `true` | Publica os avisos no painel Problemas. |
 | `tlcSpecs.notifications.enabled` | `true` | Notifica mudanças de fase, conclusão e falhas. |
 | `tlcSpecs.staleAfterDays` | `14` | Dias sem alteração para marcar uma feature como parada (0 desativa). |
-| `tlcSpecs.specsFolders` | `[".specs"]` | Pastas onde a extensão procura as specs. |
-| `tlcSpecs.exclude` | `["node_modules"]` | Pastas que ficam fora da listagem de specs. |
+| `tlcSpecs.specsFolders` | `[".specs"]` | Pastas onde a extensão lê as specs, a partir da raiz do workspace. |
 
 ### Pastas de specs
 
-Use `tlcSpecs.specsFolders` quando o projeto guarda os artefatos da skill fora de `.specs`:
+A extensão lê só as pastas listadas em `tlcSpecs.specsFolders`. Cada entrada é o caminho de uma pasta a partir da raiz da pasta do workspace:
 
 ```json
-{ "tlcSpecs.specsFolders": [".specs", "docs/specs"] }
+{ "tlcSpecs.specsFolders": [".specs", "packages/api/.specs"] }
 ```
 
-- Cada entrada é um caminho relativo, procurado em qualquer profundidade de cada pasta do workspace. `docs/specs` acha `docs/specs` e `packages/api/docs/specs`.
+- O padrão `[".specs"]` lê só a `.specs` na raiz do workspace. Pastas `.specs` em subpastas, como as de exemplo em `test/fixtures`, não aparecem na barra lateral nem no painel.
+- Para ler outra pasta, liste o caminho dela: `docs/specs`, `packages/api/.specs`. Não há busca em profundidade nem glob.
 - A pasta precisa seguir o layout da skill (`features/`, `STATE.md`, `lessons.json`). Uma pasta de nome diferente de `.specs` só aparece quando tem algum desses artefatos.
+- Uma entrada que ainda não existe é ignorada sem aviso, e a pasta aparece assim que for criada.
 - Entradas absolutas, com `..` ou com glob são ignoradas, com um aviso que nomeia a entrada.
 - Lista vazia usa `.specs`.
 - A configuração vale por pasta do workspace: em multi-root, cada pasta pode ter a sua lista.
-
-### Pastas fora da listagem
-
-Use `tlcSpecs.exclude` para esconder da listagem as specs que estão dentro de certas pastas, como as de exemplo ou de teste:
-
-```json
-{ "tlcSpecs.exclude": ["node_modules", "test"] }
-```
-
-- A configuração só filtra o que aparece na extensão. Nenhuma pasta é criada, movida ou apagada.
-- Cada entrada é um caminho relativo, ignorado em qualquer profundidade. `test` esconde `test/fixtures/.specs` e `packages/api/test/.specs`; a pasta `tests` continua aparecendo.
-- A exclusão vence a inclusão: uma pasta de `tlcSpecs.specsFolders` que esteja dentro de uma pasta excluída não aparece.
-- Ao definir a lista, mantenha `node_modules` nela. Lista vazia não exclui nada.
-- Entradas absolutas, com `..`, com vírgula ou com glob são ignoradas, com um aviso que nomeia a entrada e a configuração.
-- Um texto no lugar da lista é usado como glob (`"**/node_modules/**"`), como nas versões anteriores.
-- A configuração vale por pasta do workspace, como `tlcSpecs.specsFolders`.
-- Quando um projeto tem mais de uma pasta de specs, cada grupo mostra o projeto e a pasta (`api · docs/specs`).
+- As árvores Features e Projeto mostram sempre o nó de cada pasta de specs, com o nome da pasta do workspace. Quando a mesma pasta do workspace tem mais de uma pasta de specs, o nó mostra também o caminho (`api · docs/specs`).
+- A configuração `tlcSpecs.exclude` das versões anteriores não existe mais. Um valor dela que tenha ficado no `settings.json` não tem efeito.
 
 ## Desenvolvimento
 

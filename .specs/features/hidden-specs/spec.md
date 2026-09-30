@@ -96,6 +96,8 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 - WHEN uma spec marcada é aberta no painel pela árvore Features ou por uma notificação THEN a extensão SHALL mostrar o detalhe dela, mesmo com o olho fechado
 - IF todas as specs de um projeto único estão ocultas e a árvore esconde as ocultas THEN a view Features SHALL mostrar a lista vazia com a mensagem do HID-08, sem a tela de boas-vindas
 
+> Desde `specs-folder-paths` (SFP-10), a árvore mostra o nó da pasta mesmo com um projeto só. Com tudo oculto, o nó fica sem filhos, e a mensagem continua contando as ocultas.
+
 ---
 
 ## Requirement Traceability
