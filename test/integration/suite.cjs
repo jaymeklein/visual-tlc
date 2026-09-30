@@ -138,7 +138,9 @@ test('folder button reveals the feature folder without errors', async () => {
 
 const tree = () => api.featuresTree;
 const kids = async (provider, node) => (await provider.getChildren(node)) ?? [];
-const featureNode = async (name) => (await kids(tree())).find((n) => n.kind === 'feature' && n.feature.name === name);
+/** Spec rows of the Features tree, under the folder node of each project (specs-folder-paths, SFP-07). */
+const featureNodes = async () => (await Promise.all((await kids(tree())).map((root) => kids(tree(), root)))).flat();
+const featureNode = async (name) => (await featureNodes()).find((n) => n.kind === 'feature' && n.feature.name === name);
 const stageNode = async (featureName, id) => (await kids(tree(), await featureNode(featureName))).find((n) => n.kind === 'stage' && n.stage.id === id);
 const closeAll = () => vscode.commands.executeCommand('workbench.action.closeAllEditors');
 const runCmd = (cmd) => vscode.commands.executeCommand(cmd.command, ...(cmd.arguments ?? []));
@@ -194,7 +196,8 @@ test('NAV-02 file, requirement and phase rows open the preview', async () => {
 
 test('NAV-03 Projeto rows open STATE.md / LESSONS.md in the preview', async () => {
   const project = api.projectTree;
-  const sections = await kids(project);
+  // Under the folder node of the project (specs-folder-paths, SFP-08).
+  const sections = await kids(project, (await kids(project))[0]);
   const handoff = sections.find((n) => n.kind === 'handoff');
   const field = (await kids(project, handoff))[0];
   const decision = (await kids(project, sections.find((n) => n.kind === 'decisions')))[0];
@@ -405,7 +408,12 @@ test('NAV-11/NAV-14 (host) an open message from the dashboard opens the text edi
 /** The eye of a card, as the webview sends it. */
 const setHidden = (send, feature, hidden) => send({ type: 'setHidden', target: { projectId: projectId(), feature }, hidden });
 const ocultas = (n) => `${n} ${n === 1 ? 'oculta' : 'ocultas'}`;
-const treeNames = () => api.featuresTree.getChildren().map((n) => n.feature.name).sort();
+const treeNames = () =>
+  api.featuresTree
+    .getChildren()
+    .flatMap((root) => api.featuresTree.getChildren(root))
+    .map((n) => n.feature.name)
+    .sort();
 const modelNames = (keep) => api.getProjects()[0].features.filter(keep).map((f) => f.name).sort();
 const contributes = () => vscode.extensions.getExtension('visual-tlc.visual-tlc').packageJSON.contributes;
 const declared = (command) => contributes().commands.find((c) => c.command === command);
@@ -426,6 +434,26 @@ async function showHiddenContext(fn) {
   }
   return values;
 }
+
+test('SFP-07/SFP-08 with a single specs folder both trees show its node, named after the workspace folder, with the content inside', async () => {
+  const ws = vscode.workspace.workspaceFolders[0].name;
+  assert.equal(api.getProjects().length, 1);
+  const features = api.featuresTree.getChildren();
+  assert.deepEqual(features.map((n) => n.kind), ['root']);
+  assert.equal(api.featuresTree.getTreeItem(features[0]).label, ws);
+  assert.deepEqual(
+    api.featuresTree
+      .getChildren(features[0])
+      .map((n) => n.feature.name)
+      .sort(),
+    modelNames((f) => f.health !== 'complete'),
+  );
+  const project = api.projectTree.getChildren();
+  assert.deepEqual(project.map((n) => n.kind), ['root']);
+  assert.equal(api.projectTree.getTreeItem(project[0]).label, ws);
+  const sections = api.projectTree.getChildren(project[0]).map((n) => n.kind);
+  for (const kind of ['handoff', 'decisions', 'lessons']) assert.ok(sections.includes(kind), `no ${kind} under the folder node: ${sections.join(', ')}`);
+});
 
 test('HID-05 Features starts without the hidden specs and with the closed eye "Mostrar specs ocultas" in its title', async () => {
   assert.equal(api.getProjects().length, 1);
@@ -470,13 +498,15 @@ test('HID-08 the Features message counts the hidden specs while the eye is close
   assert.equal(api.featuresViewMessage(), `${base} · ${done} oculta(s)`);
 });
 
-test('HID-16 with every spec hidden Features is empty, its message counts them all, and it is not the welcome view', async () => {
+test('SFP-10/HID-16 with every spec hidden Features keeps the folder node without children, its message counts them all, and it is not the welcome view', async () => {
   const features = api.getProjects()[0].features;
   const open = features.filter((f) => f.health !== 'complete').map((f) => f.name).sort();
   const done = features.length - open.length;
   try {
     for (const name of open) await setHidden(api.dashboardMessage, name, true);
-    assert.deepEqual(api.featuresTree.getChildren(), []);
+    const roots = api.featuresTree.getChildren();
+    assert.deepEqual(roots.map((n) => n.kind), ['root']);
+    assert.deepEqual(api.featuresTree.getChildren(roots[0]), []);
     assert.equal(api.featuresViewMessage(), `${features.length} feature(s) · ${done} concluída(s) · ${features.length} oculta(s)`);
     // The welcome view of Features is only for a workspace without specs.
     assert.deepEqual(

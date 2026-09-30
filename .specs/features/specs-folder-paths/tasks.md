@@ -135,12 +135,12 @@ T3 → T4
 
 **Done when**:
 
-- [ ] Features com uma pasta: um nó `root` com o nome da pasta do workspace e as specs dentro (SFP-07)
-- [ ] Projeto com uma pasta: um nó `root` com Handoff, decisões e lições dentro (SFP-08)
-- [ ] Duas pastas de specs na mesma pasta do workspace: "nome · entrada" nas duas árvores (SFP-09)
-- [ ] Todas as specs ocultas: o nó continua, sem filhos, e a mensagem conta as ocultas (SFP-10)
-- [ ] Os testes que liam as specs no topo da árvore passam a ler dentro do nó da pasta
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] Features com uma pasta: um nó `root` com o nome da pasta do workspace e as specs dentro (SFP-07)
+- [x] Projeto com uma pasta: um nó `root` com Handoff, decisões e lições dentro (SFP-08)
+- [x] Duas pastas de specs na mesma pasta do workspace: "nome · entrada" nas duas árvores (SFP-09)
+- [x] Todas as specs ocultas: o nó continua, sem filhos, e a mensagem conta as ocultas (SFP-10)
+- [x] Os testes que liam as specs no topo da árvore passam a ler dentro do nó da pasta
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
 
 **Tests**: integration
 **Gate**: full

@@ -99,10 +99,10 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 | SFP-04 | P1: Ler só as pastas configuradas | Execute | Implementing |
 | SFP-05 | P1: Ler só as pastas configuradas | Execute | Implementing |
 | SFP-06 | P1: Ler só as pastas configuradas | Execute | Implementing |
-| SFP-07 | P2: Ver a pasta de cada projeto nas árvores | Execute | In Tasks |
-| SFP-08 | P2: Ver a pasta de cada projeto nas árvores | Execute | In Tasks |
+| SFP-07 | P2: Ver a pasta de cada projeto nas árvores | Execute | Implementing |
+| SFP-08 | P2: Ver a pasta de cada projeto nas árvores | Execute | Implementing |
 | SFP-09 | P2: Ver a pasta de cada projeto nas árvores | Execute | Implementing |
-| SFP-10 | Edge case: projeto com tudo oculto | Execute | In Tasks |
+| SFP-10 | Edge case: projeto com tudo oculto | Execute | Implementing |
 | SFP-11 | Edge case: entrada inválida | Execute | Implementing |
 
 **ID format:** `SFP-NN`, na ordem dos critérios acima.

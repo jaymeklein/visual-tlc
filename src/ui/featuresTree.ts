@@ -99,9 +99,8 @@ export class FeaturesTree implements vscode.TreeDataProvider<Node> {
 
   getChildren(node?: Node): Node[] {
     if (!node) {
-      const projects = this.store.projects;
-      if (projects.length === 1) return this.featureNodes(projects[0]);
-      return projects.map((loaded) => ({ kind: 'root', loaded }));
+      // One node per specs folder, even when there is only one: the tree always says where the specs come from.
+      return this.store.projects.map((loaded) => ({ kind: 'root', loaded }));
     }
     const { loaded } = node;
     switch (node.kind) {
