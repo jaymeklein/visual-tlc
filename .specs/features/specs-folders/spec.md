@@ -51,12 +51,12 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 1. The extensão SHALL oferecer a configuração `tlcSpecs.specsFolders`, uma lista de caminhos relativos com padrão `[".specs"]`
 2. WHEN a configuração lista uma ou mais pastas THEN a extensão SHALL mostrar como projeto cada pasta do workspace que corresponda a qualquer entrada, em qualquer profundidade
-
-> Desde `specs-folder-paths` (SFP-01 e SFP-02), cada entrada é o caminho exato de uma pasta a partir da raiz da pasta do workspace. Não há mais busca em profundidade.
 3. WHEN a configuração muda THEN a extensão SHALL recarregar árvores, painel, barra de status e diagnósticos sem recarregar a janela
 4. WHEN um arquivo é criado, alterado ou removido dentro de qualquer pasta configurada THEN a extensão SHALL atualizar a visão dessa pasta
 5. IF uma pasta de nome diferente de `.specs` corresponde a uma entrada mas não tem artefato da skill (`features/*/*.md`, `STATE.md`, `lessons.json` ou `LESSONS.md`) THEN a extensão SHALL ignorá-la
 6. WHEN o workspace abre com uma pasta configurada de nome diferente de `.specs` THEN a extensão SHALL ativar sem que o usuário abra a barra lateral
+
+> Desde `specs-folder-paths` (SFP-01 e SFP-02), cada entrada é o caminho exato de uma pasta a partir da raiz da pasta do workspace. Não há mais busca em profundidade.
 
 **Independent Test**: Com `tlcSpecs.specsFolders = ["docs/specs"]` e as specs em `docs/specs/features/...`, as features aparecem na árvore; ao trocar para `[".specs"]`, somem sem recarregar a janela.
 

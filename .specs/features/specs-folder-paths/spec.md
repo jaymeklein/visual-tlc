@@ -76,7 +76,7 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 7. WHILE há uma única pasta de specs the árvore Features SHALL mostrar um nó com o nome da pasta do workspace, com as specs dentro dele
 8. WHILE há uma única pasta de specs the árvore Projeto SHALL mostrar um nó com o nome da pasta do workspace, com Handoff, decisões e lições dentro dele
-9. WHEN uma pasta do workspace tem mais de uma pasta de specs configurada THEN as árvores SHALL rotular cada nó como "nome da pasta do workspace · caminho da entrada"
+9. WHEN uma pasta do workspace tem mais de uma pasta de specs encontrada THEN as árvores SHALL rotular cada nó como "nome da pasta do workspace · caminho da entrada"
 
 **Independent Test**: Com só `.specs` configurada, a árvore Features mostra o nó `visual-tlc` com as specs dentro, e a árvore Projeto mostra o nó `visual-tlc` com o Handoff dentro.
 
