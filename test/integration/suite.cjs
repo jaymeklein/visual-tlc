@@ -815,6 +815,43 @@ test('CHF-04 with the eye open, hiding or showing a spec leaves its folder open 
   }
 });
 
+/** The user collapses the first row of Features from the keyboard. */
+async function collapseFirstRow() {
+  await vscode.commands.executeCommand('tlcSpecs.features.focus');
+  await vscode.commands.executeCommand('list.focusFirst');
+  await vscode.commands.executeCommand('list.collapse');
+}
+
+test('CHF-02 the eye of Features leaves a folder in view as it was: expanded when a completed spec kept in view is its only spec in view, collapsed once the user collapsed it', async () => {
+  const open = openNames();
+  const id = projectId();
+  const kept = 'billing-invoices';
+  assert.ok(api.getProjects()[0].features.some((f) => f.name === kept && f.health === 'complete'), `${kept} is not a completed spec`);
+  await vscode.commands.executeCommand('tlcSpecs.features.focus');
+  try {
+    for (const name of open) await setHidden(api.dashboardMessage, name, true);
+    await treeSettled();
+    assert.deepEqual(api.featuresTree.getChildren(), []);
+    // Kept in view from its card, the completed spec brings the folder back expanded, and the eye leaves it so.
+    assert.deepEqual(await expandedWhile(() => setHidden(api.dashboardMessage, kept, false)), [id]);
+    assert.deepEqual(await expandedWhile(openEye), [id]);
+    assert.equal(folderRow().collapsibleState, Expanded);
+
+    // The user collapses the folder in view: opening the eye again leaves it collapsed.
+    await closeEye();
+    await treeSettled();
+    await collapseFirstRow();
+    await treeSettled();
+    assert.deepEqual(await expandedWhile(openEye), []);
+  } finally {
+    await closeEye();
+    await treeSettled();
+    await setHidden(api.dashboardMessage, kept, true);
+    await restoreFolder(open);
+  }
+  assert.deepEqual(treeNames(), open);
+});
+
 // --- specs-folders -------------------------------------------------------------------------------------------
 
 const SPEC_WITHOUT_SHALL =
