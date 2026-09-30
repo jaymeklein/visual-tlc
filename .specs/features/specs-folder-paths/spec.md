@@ -6,8 +6,8 @@ Cada entrada de `tlcSpecs.specsFolders` é procurada em qualquer profundidade. P
 
 ## Goals
 
-- [ ] `tlcSpecs.specsFolders` sozinha decide quais pastas a extensão lê: cada entrada é o caminho exato de uma pasta, a partir da raiz da pasta do workspace
-- [ ] As árvores Features e Projeto mostram sempre a pasta de cada projeto, com o conteúdo dentro dela
+- [x] `tlcSpecs.specsFolders` sozinha decide quais pastas a extensão lê: cada entrada é o caminho exato de uma pasta, a partir da raiz da pasta do workspace
+- [x] As árvores Features e Projeto mostram sempre a pasta de cada projeto, com o conteúdo dentro dela
 
 ## Out of Scope
 
@@ -93,26 +93,26 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Requirement ID | Story       | Phase  | Status  |
 | -------------- | ----------- | ------ | ------- |
-| SFP-01 | P1: Ler só as pastas configuradas | Execute | Implementing |
-| SFP-02 | P1: Ler só as pastas configuradas | Execute | Implementing |
-| SFP-03 | P1: Ler só as pastas configuradas | Execute | Implementing |
-| SFP-04 | P1: Ler só as pastas configuradas | Execute | Implementing |
-| SFP-05 | P1: Ler só as pastas configuradas | Execute | Implementing |
-| SFP-06 | P1: Ler só as pastas configuradas | Execute | Implementing |
-| SFP-07 | P2: Ver a pasta de cada projeto nas árvores | Execute | Implementing |
-| SFP-08 | P2: Ver a pasta de cada projeto nas árvores | Execute | Implementing |
-| SFP-09 | P2: Ver a pasta de cada projeto nas árvores | Execute | Implementing |
-| SFP-10 | Edge case: projeto com tudo oculto | Execute | Implementing |
-| SFP-11 | Edge case: entrada inválida | Execute | Implementing |
+| SFP-01 | P1: Ler só as pastas configuradas | Execute | Verified |
+| SFP-02 | P1: Ler só as pastas configuradas | Execute | Verified |
+| SFP-03 | P1: Ler só as pastas configuradas | Execute | Verified |
+| SFP-04 | P1: Ler só as pastas configuradas | Execute | Verified |
+| SFP-05 | P1: Ler só as pastas configuradas | Execute | Verified |
+| SFP-06 | P1: Ler só as pastas configuradas | Execute | Verified |
+| SFP-07 | P2: Ver a pasta de cada projeto nas árvores | Execute | Verified |
+| SFP-08 | P2: Ver a pasta de cada projeto nas árvores | Execute | Verified |
+| SFP-09 | P2: Ver a pasta de cada projeto nas árvores | Execute | Verified |
+| SFP-10 | Edge case: projeto com tudo oculto | Execute | Verified |
+| SFP-11 | Edge case: entrada inválida | Execute | Verified |
 
 **ID format:** `SFP-NN`, na ordem dos critérios acima.
 
-**Coverage:** 11 total, 11 mapped to tasks, 0 unmapped
+**Coverage:** 11 total, 11 verificados.
 
 ---
 
 ## Success Criteria
 
-- [ ] Neste repositório, com a configuração padrão, nenhuma spec de `test/fixtures` aparece na barra lateral nem no painel
-- [ ] As configurações da extensão têm uma entrada de pastas só: `tlcSpecs.specsFolders`
-- [ ] Os testes atuais continuam passando, com os de `tlcSpecs.exclude` removidos junto com a configuração e os de busca em profundidade reescritos para o caminho exato
+- [x] Neste repositório, com a configuração padrão, nenhuma spec de `test/fixtures` aparece na barra lateral nem no painel
+- [x] As configurações da extensão têm uma entrada de pastas só: `tlcSpecs.specsFolders`
+- [x] Os testes atuais continuam passando, com os de `tlcSpecs.exclude` removidos junto com a configuração e os de busca em profundidade reescritos para o caminho exato
