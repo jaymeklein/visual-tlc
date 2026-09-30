@@ -33,10 +33,10 @@ Corroborated across multiple features. Safe to apply as guidance.
 - last seen: 2026-09-29T19:41:10Z
 
 ### L-020 - Test an item that meets both conditions of a rule, not only items that meet one of them
-- signal: `surviving_mutant` · recurrence: 2 feature(s) · scope: `tests` · harmful: 0
-- features: hidden-specs, hidden-folder
-- evidence: M11 src/webview/render.ts:249; H3 src/ui/featuresTree.ts:276 (validation.md, Fix 1) (tests) (+1 more)
-- last seen: 2026-09-30T14:16:07Z
+- signal: `surviving_mutant` · recurrence: 3 feature(s) · scope: `tests` · harmful: 1
+- features: hidden-specs, hidden-folder, collapsed-hidden-folder
+- evidence: M11 src/webview/render.ts:249; H3 src/ui/featuresTree.ts:276 (validation.md, Fix 1) (tests) (+2 more)
+- last seen: 2026-09-30T17:31:14Z
 
 ## Candidates (under observation - do NOT load as guidance yet)
 
@@ -161,6 +161,12 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - features: hidden-folder
 - evidence: M8 src/ui/featuresTree.ts:110; test/integration/suite.cjs:1401-1422 (validation.md, Fix 2) (tests)
 - last seen: 2026-09-30T14:31:13Z
+
+### L-026 - State the expected expand state of a tree node the user already expanded or collapsed by hand
+- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `spec` · harmful: 0
+- features: collapsed-hidden-folder
+- evidence: CHF-02 spec.md:52 (validation.md, nota 5, Fix 2) (spec)
+- last seen: 2026-09-30T17:31:14Z
 
 ## Quarantined (failed when applied - ignore)
 

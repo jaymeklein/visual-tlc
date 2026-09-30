@@ -67,15 +67,15 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Requirement ID | Story       | Phase  | Status  |
 | -------------- | ----------- | ------ | ------- |
-| CHF-01 | P1: Abrir o olho sem expandir as pastas ocultas | Execute | Implementing |
-| CHF-02 | P1: Abrir o olho sem expandir as pastas ocultas | Execute | Implementing |
-| CHF-03 | P1: Abrir o olho sem expandir as pastas ocultas | Execute | Implementing |
-| CHF-04 | P1: Abrir o olho sem expandir as pastas ocultas | Execute | Implementing |
-| CHF-05 | Edge case: abrir o olho de novo | Execute | Implementing |
+| CHF-01 | P1: Abrir o olho sem expandir as pastas ocultas | Execute | Verified |
+| CHF-02 | P1: Abrir o olho sem expandir as pastas ocultas | Execute | Needs Fix |
+| CHF-03 | P1: Abrir o olho sem expandir as pastas ocultas | Execute | Verified |
+| CHF-04 | P1: Abrir o olho sem expandir as pastas ocultas | Execute | Verified |
+| CHF-05 | Edge case: abrir o olho de novo | Execute | Verified |
 
 **ID format:** `CHF-NN`, na ordem dos critérios acima.
 
-**Coverage:** 5 total, 0 verificados.
+**Coverage:** 5 total, 4 verificados, 1 a corrigir (Fix 1 e Fix 2 da validação).
 
 ---
 

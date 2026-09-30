@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 26,
+  "next_id": 27,
   "lessons": [
     {
       "id": "L-001",
@@ -369,16 +369,18 @@
       "status": "confirmed",
       "features": [
         "hidden-specs",
-        "hidden-folder"
+        "hidden-folder",
+        "collapsed-hidden-folder"
       ],
-      "recurrence": 2,
-      "harmful": 0,
+      "recurrence": 3,
+      "harmful": 1,
       "evidence": [
         "M11 src/webview/render.ts:249; H3 src/ui/featuresTree.ts:276 (validation.md, Fix 1) (tests)",
-        "M6 src/ui/featuresTree.ts:103; test/integration/suite.cjs:638-697 (validation.md, Fix 1) (tests)"
+        "M6 src/ui/featuresTree.ts:103; test/integration/suite.cjs:638-697 (validation.md, Fix 1) (tests)",
+        "MD src/ui/featuresTree.ts:163; test/integration/suite.cjs:755-816 (validation.md, Fix 1) (tests)"
       ],
       "created": "2026-09-29T21:00:46Z",
-      "last_seen": "2026-09-30T14:16:07Z"
+      "last_seen": "2026-09-30T17:31:14Z"
     },
     {
       "id": "L-021",
@@ -469,6 +471,24 @@
       ],
       "created": "2026-09-30T14:31:13Z",
       "last_seen": "2026-09-30T14:31:13Z"
+    },
+    {
+      "id": "L-026",
+      "key": "spec_precision_gap::state the expected expand state of a tree node the user already expanded or collapsed by hand",
+      "text": "State the expected expand state of a tree node the user already expanded or collapsed by hand",
+      "signal": "spec_precision_gap",
+      "scope": "spec",
+      "status": "candidate",
+      "features": [
+        "collapsed-hidden-folder"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "CHF-02 spec.md:52 (validation.md, nota 5, Fix 2) (spec)"
+      ],
+      "created": "2026-09-30T17:31:14Z",
+      "last_seen": "2026-09-30T17:31:14Z"
     }
   ]
 }
