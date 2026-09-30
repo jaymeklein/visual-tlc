@@ -9,7 +9,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 ---
 
 **Design**: inline (sem `design.md`)
-**Status**: Done
+**Status**: In Progress
 
 Design inline: `src/core/folders.ts` continua puro. `findSpecsRoots` passa a aceitar só arquivos que começam no caminho da entrada, e `rootLabel` rotula pela pasta do workspace e, quando ela tem mais de uma pasta de specs, pelo caminho da entrada. `parseExclude` sai. `src/ui/store.ts` procura e observa `<entrada>/**` a partir da raiz de cada pasta do workspace, sem exclusão. As árvores Features e Projeto deixam de pular o nó quando há um projeto só.
 
@@ -55,6 +55,12 @@ T1 → T2 → T3
 
 ```
 T3 → T4
+```
+
+### Phase 4: Correções do Verifier (iteração 1)
+
+```
+T4 → T5 → T6
 ```
 
 ---
@@ -175,14 +181,68 @@ T3 → T4
 
 ---
 
+### T5: Fix 1 - o SFP-06 prova o watcher
+
+**What**: O teste do SFP-05/06 espera acabarem os recarregamentos que a troca de configuração agenda antes de criar a pasta, para que só o watcher possa mostrá-la
+**Where**: `test/integration/suite.cjs`
+**Depends on**: T4
+**Reuses**: `waitFor`, `api.featuresTree.onDidChangeTreeData`
+**Requirement**: SFP-06
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] Antes de criar `later/.specs`, o teste espera a árvore ficar parada por mais tempo que o debounce de 300 ms (mata HW)
+- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [ ] Test count: 62 unit, 61 + 1 + 1 integration tests pass
+
+**Tests**: integration
+**Gate**: full
+
+**Commit**: `test(store): prove that the watcher shows a specs folder created later`
+
+---
+
+### T6: Fix 2 - a regra do começo do caminho sozinha
+
+**What**: Os testes do SFP-01 e SFP-02 afirmam, sem nenhum caso positivo ao lado, que `.specs` em subpasta, o caminho numa subpasta e `.specs-old` não são pastas de specs
+**Where**: `test/unit/folders.test.ts`
+**Depends on**: T5
+**Reuses**: `findSpecsRoots`
+**Requirement**: SFP-01, SFP-02
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] Só arquivos em subpastas: `findSpecsRoots` devolve `[]` para `.specs` e para `packages/api/.specs` (mata U1)
+- [ ] `.specs-old/STATE.md` não conta como `.specs` (mata U2)
+- [ ] Gate check passes: `npm run typecheck && npm test`
+- [ ] Test count: 62 unit tests pass (asserções novas em testes existentes)
+
+**Tests**: unit
+**Gate**: quick
+
+**Commit**: `test(core): check the start-of-path rule without a matching folder beside it`
+
+---
+
 ## Phase Execution Map
 
 ```
-Phase 1 → Phase 2 → Phase 3
+Phase 1 → Phase 2 → Phase 3 → Phase 4
 
 Phase 1:  T1
 Phase 2:  T2 ------→ T3
 Phase 3:  T4
+Phase 4:  T5 ------→ T6
 ```
 
 ---
@@ -204,6 +264,8 @@ Phase 3:  T4
 | T2 | T1 | T1 → T2 | ✅ Match |
 | T3 | T2 | T2 → T3 | ✅ Match |
 | T4 | T3 | T3 → T4 | ✅ Match |
+| T5 | T4 | T4 → T5 | ✅ Match |
+| T6 | T5 | T5 → T6 | ✅ Match |
 
 ## Test Co-location Validation
 
@@ -213,3 +275,5 @@ Phase 3:  T4
 | T2 | Extension host | integration | integration | ✅ OK |
 | T3 | Extension host | integration | integration | ✅ OK |
 | T4 | Docs | none | none | ✅ OK |
+| T5 | Extension host (teste) | integration | integration | ✅ OK |
+| T6 | Core (teste) | unit | unit | ✅ OK |

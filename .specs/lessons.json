@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 23,
+  "next_id": 25,
   "lessons": [
     {
       "id": "L-001",
@@ -413,6 +413,42 @@
       ],
       "created": "2026-09-29T21:00:46Z",
       "last_seen": "2026-09-29T21:00:46Z"
+    },
+    {
+      "id": "L-023",
+      "key": "surviving_mutant::let the reloads a setting change schedules finish before a test creates the file a watcher must report",
+      "text": "Let the reloads a setting change schedules finish before a test creates the file a watcher must report",
+      "signal": "surviving_mutant",
+      "scope": "watchers",
+      "status": "candidate",
+      "features": [
+        "specs-folder-paths"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "HW src/ui/store.ts:47; SFP-06 test/integration/suite.cjs:1254-1258 (watchers)"
+      ],
+      "created": "2026-09-30T12:10:28Z",
+      "last_seen": "2026-09-30T12:10:28Z"
+    },
+    {
+      "id": "L-024",
+      "key": "surviving_mutant::test an exclusion rule with the excluded item alone so no other item can produce the same result",
+      "text": "Test an exclusion rule with the excluded item alone, so no other item can produce the same result",
+      "signal": "surviving_mutant",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "specs-folder-paths"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "U1/U2 src/core/folders.ts:78; test/unit/folders.test.ts:31, :36 (tests)"
+      ],
+      "created": "2026-09-30T12:10:29Z",
+      "last_seen": "2026-09-30T12:10:29Z"
     }
   ]
 }

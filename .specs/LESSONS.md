@@ -144,6 +144,18 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: M8 src/webview/render.ts:158 (validation.md, Fix 3) (webview)
 - last seen: 2026-09-29T21:00:46Z
 
+### L-023 - Let the reloads a setting change schedules finish before a test creates the file a watcher must report
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `watchers` · harmful: 0
+- features: specs-folder-paths
+- evidence: HW src/ui/store.ts:47; SFP-06 test/integration/suite.cjs:1254-1258 (watchers)
+- last seen: 2026-09-30T12:10:28Z
+
+### L-024 - Test an exclusion rule with the excluded item alone, so no other item can produce the same result
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: specs-folder-paths
+- evidence: U1/U2 src/core/folders.ts:78; test/unit/folders.test.ts:31, :36 (tests)
+- last seen: 2026-09-30T12:10:29Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.
