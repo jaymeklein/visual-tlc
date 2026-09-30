@@ -196,9 +196,9 @@ T4 → T5 → T6
 
 **Done when**:
 
-- [ ] Antes de criar `later/.specs`, o teste espera a árvore ficar parada por mais tempo que o debounce de 300 ms (mata HW)
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [ ] Test count: 62 unit, 61 + 1 + 1 integration tests pass
+- [x] Antes de criar `later/.specs`, o teste espera a árvore ficar parada por mais tempo que o debounce de 300 ms (mata HW)
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`, num worktree em 1cec99c com só esta mudança. Na árvore real, o HID-11/HID-12 da árvore falha por causa do T1 do eye-on-every-spec (abcd78b), e o T3 dele reescreve esse teste
+- [x] Test count: 62 unit, 61 + 1 + 1 integration tests pass
 
 **Tests**: integration
 **Gate**: full

@@ -403,7 +403,7 @@ test('NAV-11/NAV-14 (host) an open message from the dashboard opens the text edi
 });
 
 // --- hidden-specs, Features (spec: .specs/features/hidden-specs/spec.md) --------------------------------------------
-// Before specs-folders: the workspace still has one specs folder, so the tree lists its features at the top.
+// Before specs-folders: the workspace still has one specs folder, so the tree lists its features under one folder node.
 
 /** The eye of a card, as the webview sends it. */
 const setHidden = (send, feature, hidden) => send({ type: 'setHidden', target: { projectId: projectId(), feature }, hidden });
@@ -1243,6 +1243,17 @@ test('SFP-04 tlcSpecs.specsFolders is the only folder setting, and a leftover tl
   }
 });
 
+/** Waits until the Features tree has not reloaded for `quietMs`, well past the 300ms the store waits after a change. */
+async function treeSettled(quietMs = 1500) {
+  let last = Date.now();
+  const sub = api.featuresTree.onDidChangeTreeData(() => (last = Date.now()));
+  try {
+    await waitFor(`the tree to stay still for ${quietMs}ms`, () => Date.now() - last >= quietMs, 15000);
+  } finally {
+    sub.dispose();
+  }
+}
+
 test('SFP-05/SFP-06 an entry without a folder is ignored without a warning, and shows once its folder is created', async () => {
   const shown = [];
   const original = vscode.window.showWarningMessage;
@@ -1252,7 +1263,8 @@ test('SFP-05/SFP-06 an entry without a folder is ignored without a warning, and 
   };
   try {
     await setFolders(['.specs', 'later/.specs']);
-    await api.refresh();
+    // The setting change schedules a reload 300ms later: once it has run, only the watcher can show the new folder.
+    await treeSettled();
     assert.deepEqual(roots(), ['.specs']);
     await write('later/.specs/features/late-one/spec.md', SPEC_WITHOUT_SHALL);
     await waitForRoots(['.specs', 'later/.specs']);
