@@ -366,17 +366,19 @@
       "text": "Test an item that meets both conditions of a rule, not only items that meet one of them",
       "signal": "surviving_mutant",
       "scope": "tests",
-      "status": "candidate",
+      "status": "confirmed",
       "features": [
-        "hidden-specs"
+        "hidden-specs",
+        "hidden-folder"
       ],
-      "recurrence": 1,
+      "recurrence": 2,
       "harmful": 0,
       "evidence": [
-        "M11 src/webview/render.ts:249; H3 src/ui/featuresTree.ts:276 (validation.md, Fix 1) (tests)"
+        "M11 src/webview/render.ts:249; H3 src/ui/featuresTree.ts:276 (validation.md, Fix 1) (tests)",
+        "M6 src/ui/featuresTree.ts:103; test/integration/suite.cjs:638-697 (validation.md, Fix 1) (tests)"
       ],
       "created": "2026-09-29T21:00:46Z",
-      "last_seen": "2026-09-29T21:00:46Z"
+      "last_seen": "2026-09-30T14:16:07Z"
     },
     {
       "id": "L-021",

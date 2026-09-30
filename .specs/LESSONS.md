@@ -32,6 +32,12 @@ Corroborated across multiple features. Safe to apply as guidance.
 - evidence: W2 src/webview/main.ts:65 (test-hooks) (+1 more)
 - last seen: 2026-09-29T19:41:10Z
 
+### L-020 - Test an item that meets both conditions of a rule, not only items that meet one of them
+- signal: `surviving_mutant` · recurrence: 2 feature(s) · scope: `tests` · harmful: 0
+- features: hidden-specs, hidden-folder
+- evidence: M11 src/webview/render.ts:249; H3 src/ui/featuresTree.ts:276 (validation.md, Fix 1) (tests) (+1 more)
+- last seen: 2026-09-30T14:16:07Z
+
 ## Candidates (under observation - do NOT load as guidance yet)
 
 Seen once or not yet corroborated. Tracked, not trusted.
@@ -125,12 +131,6 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - features: panel-in-progress
 - evidence: PNL-04 src/webview/main.ts:106-109 (webview)
 - last seen: 2026-09-29T19:24:45Z
-
-### L-020 - Test an item that meets both conditions of a rule, not only items that meet one of them
-- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
-- features: hidden-specs
-- evidence: M11 src/webview/render.ts:249; H3 src/ui/featuresTree.ts:276 (validation.md, Fix 1) (tests)
-- last seen: 2026-09-29T21:00:46Z
 
 ### L-021 - Assert that a marker meant for one subset is absent from the other subsets on the same view
 - signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `ui` · harmful: 0
