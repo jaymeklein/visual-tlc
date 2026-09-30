@@ -71,14 +71,14 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Requirement ID | Story       | Phase  | Status  |
 | -------------- | ----------- | ------ | ------- |
-| HFD-01 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Pending |
-| HFD-02 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Pending |
-| HFD-03 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Pending |
-| HFD-04 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Pending |
-| HFD-05 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Pending |
-| HFD-06 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Pending |
-| HFD-07 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Pending |
-| HFD-08 | Edge case: pasta sem spec | Execute | Pending |
+| HFD-01 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Implementing |
+| HFD-02 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Implementing |
+| HFD-03 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Implementing |
+| HFD-04 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Implementing |
+| HFD-05 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Implementing |
+| HFD-06 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Implementing |
+| HFD-07 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Implementing |
+| HFD-08 | Edge case: pasta sem spec | Execute | Implementing |
 
 **ID format:** `HFD-NN`, na ordem dos critérios acima.
 

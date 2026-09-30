@@ -97,10 +97,17 @@ export class FeaturesTree implements vscode.TreeDataProvider<Node> {
     return isHidden(f, this.hidden.choiceOf({ projectId: loaded.project.id, feature: f.name }));
   }
 
+  /** A specs folder with specs, all of them hidden: nothing left to do there. One without specs is not hidden. */
+  private allHidden(loaded: LoadedProject): boolean {
+    const { features } = loaded.project;
+    return features.length > 0 && features.every((f) => this.isHidden(loaded, f));
+  }
+
   getChildren(node?: Node): Node[] {
     if (!node) {
       // One node per specs folder, even when there is only one: the tree always says where the specs come from.
-      return this.store.projects.map((loaded) => ({ kind: 'root', loaded }));
+      // A folder whose specs are all hidden leaves with them while the eye is closed.
+      return this.store.projects.filter((loaded) => this.show || !this.allHidden(loaded)).map((loaded) => ({ kind: 'root', loaded }));
     }
     const { loaded } = node;
     switch (node.kind) {
@@ -151,7 +158,7 @@ export class FeaturesTree implements vscode.TreeDataProvider<Node> {
         const p = node.loaded.project;
         const item = new vscode.TreeItem(p.label, C.Expanded);
         item.iconPath = icon('folder-library');
-        item.description = `${p.features.length} feature(s)`;
+        item.description = `${p.features.length} feature(s)${this.allHidden(node.loaded) ? ' · oculta' : ''}`;
         item.id = `root:${pid}`;
         return item;
       }
