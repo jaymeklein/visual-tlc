@@ -94,7 +94,7 @@ class Surface implements vscode.Disposable {
         await revealFeatureFolder(this.store, m.target);
         break;
       case 'setHidden':
-        await this.hidden.set(m.target, m.hidden);
+        await this.hidden.set(m.target, m.hidden, this.store.findFeature(m.target.projectId, m.target.feature)?.feature.health === 'complete');
         break;
       case 'previewFile': {
         const uri = this.store.uriFor(m.projectId, m.file);

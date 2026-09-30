@@ -90,7 +90,7 @@ function previewAttrs(projectId: string, file: string | undefined): string {
 }
 
 const marked = (p: Project, f: Feature) => ctx.hidden.includes(hiddenKey(p.id, f.name));
-const hiddenOf = (p: Project, f: Feature) => isHidden(f, marked(p, f));
+const hiddenOf = (p: Project, f: Feature) => isHidden(f, marked(p, f) ? 'hidden' : undefined);
 
 function counts(f: Feature) {
   return {

@@ -42,6 +42,8 @@ export interface TlcSpecsApi {
 export async function activate(context: vscode.ExtensionContext): Promise<TlcSpecsApi> {
   const store = new SpecsStore();
   const hidden = new HiddenSpecs(context.workspaceState);
+  /** The eye of a spec row: whether the spec is completed decides which choice is stored. */
+  const setHidden = (ref: FeatureRef, hide: boolean) => hidden.set(ref, hide, store.findFeature(ref.projectId, ref.feature)?.feature.health === 'complete');
   const dashboard = new Dashboard(context.extensionUri, store, hidden);
   const featuresTree = new FeaturesTree(store, hidden);
   const projectTree = new ProjectTree(store);
@@ -60,8 +62,8 @@ export async function activate(context: vscode.ExtensionContext): Promise<TlcSpe
     vscode.commands.registerCommand('tlcSpecs.refresh', () => store.refresh()),
     vscode.commands.registerCommand('tlcSpecs.showHidden', () => featuresTree.setShowHidden(true)),
     vscode.commands.registerCommand('tlcSpecs.hideHidden', () => featuresTree.setShowHidden(false)),
-    vscode.commands.registerCommand('tlcSpecs.hideFeature', (arg: FeatureNode | FeatureRef) => hidden.set(toRef(arg), true)),
-    vscode.commands.registerCommand('tlcSpecs.unhideFeature', (arg: FeatureNode | FeatureRef) => hidden.set(toRef(arg), false)),
+    vscode.commands.registerCommand('tlcSpecs.hideFeature', (arg: FeatureNode | FeatureRef) => setHidden(toRef(arg), true)),
+    vscode.commands.registerCommand('tlcSpecs.unhideFeature', (arg: FeatureNode | FeatureRef) => setHidden(toRef(arg), false)),
     vscode.commands.registerCommand('tlcSpecs.openDashboard', (arg?: FeatureNode | FeatureRef) => dashboard.show(target(arg))),
     vscode.commands.registerCommand('tlcSpecs.showFeature', (arg?: FeatureNode | FeatureRef) => dashboard.showSide(target(arg))),
     vscode.commands.registerCommand('tlcSpecs.previewFeatureMarkdown', (arg: FeatureNode | FeatureRef) => previewFeatureMarkdown(store, toRef(arg))),

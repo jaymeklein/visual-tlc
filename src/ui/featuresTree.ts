@@ -94,7 +94,7 @@ export class FeaturesTree implements vscode.TreeDataProvider<Node> {
   }
 
   private isHidden(loaded: LoadedProject, f: Feature): boolean {
-    return isHidden(f, this.hidden.isMarked({ projectId: loaded.project.id, feature: f.name }));
+    return isHidden(f, this.hidden.choiceOf({ projectId: loaded.project.id, feature: f.name }));
   }
 
   getChildren(node?: Node): Node[] {

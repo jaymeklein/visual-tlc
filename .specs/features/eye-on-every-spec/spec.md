@@ -78,21 +78,21 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Requirement ID | Story       | Phase  | Status  |
 | -------------- | ----------- | ------ | ------- |
-| EYE-01 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Design | Pending |
-| EYE-02 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Design | Pending |
-| EYE-03 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Design | Pending |
-| EYE-04 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Design | Pending |
-| EYE-05 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Design | Pending |
-| EYE-06 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Design | Pending |
-| EYE-07 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Design | Pending |
-| EYE-08 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Design | Pending |
-| EYE-09 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Design | Pending |
-| EYE-10 | Edge case: ocultar uma concluída à vista | Design | Pending |
-| EYE-11 | Edge case: detalhe de uma oculta | Design | Pending |
+| EYE-01 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | In Tasks |
+| EYE-02 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | In Tasks |
+| EYE-03 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | In Tasks |
+| EYE-04 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Implementing |
+| EYE-05 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Implementing |
+| EYE-06 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Implementing |
+| EYE-07 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | In Tasks |
+| EYE-08 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | In Tasks |
+| EYE-09 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Implementing |
+| EYE-10 | Edge case: ocultar uma concluída à vista | Execute | Implementing |
+| EYE-11 | Edge case: detalhe de uma oculta | Execute | In Tasks |
 
 **ID format:** `EYE-NN`, na ordem dos critérios acima.
 
-**Coverage:** 11 total, 0 mapped to tasks, 11 unmapped ⚠️
+**Coverage:** 11 total, 11 mapped to tasks, 0 unmapped
 
 ---
 
