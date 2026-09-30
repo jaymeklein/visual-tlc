@@ -71,18 +71,18 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Requirement ID | Story       | Phase  | Status  |
 | -------------- | ----------- | ------ | ------- |
-| HFD-01 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Implementing |
+| HFD-01 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Needs Fix |
 | HFD-02 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Verified |
 | HFD-03 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Verified |
 | HFD-04 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Verified |
 | HFD-05 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Verified |
-| HFD-06 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Implementing |
+| HFD-06 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Verified |
 | HFD-07 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Verified |
 | HFD-08 | Edge case: pasta sem spec | Execute | Verified |
 
 **ID format:** `HFD-NN`, na ordem dos critérios acima.
 
-**Coverage:** 8 total, 6 verificados, 2 com o Fix 1 à espera da nova validação.
+**Coverage:** 8 total, 7 verificados, 1 com o Fix 2 à espera da nova validação.
 
 ---
 

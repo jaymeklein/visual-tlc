@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 25,
+  "next_id": 26,
   "lessons": [
     {
       "id": "L-001",
@@ -451,6 +451,24 @@
       ],
       "created": "2026-09-30T12:10:29Z",
       "last_seen": "2026-09-30T12:10:29Z"
+    },
+    {
+      "id": "L-025",
+      "key": "surviving_mutant::test a rule applied to each group with two groups that need opposite outcomes at the same time",
+      "text": "Test a rule applied to each group with two groups that need opposite outcomes at the same time",
+      "signal": "surviving_mutant",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "hidden-folder"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "M8 src/ui/featuresTree.ts:110; test/integration/suite.cjs:1401-1422 (validation.md, Fix 2) (tests)"
+      ],
+      "created": "2026-09-30T14:31:13Z",
+      "last_seen": "2026-09-30T14:31:13Z"
     }
   ]
 }

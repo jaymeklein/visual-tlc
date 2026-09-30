@@ -156,6 +156,12 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: U1/U2 src/core/folders.ts:78; test/unit/folders.test.ts:31, :36 (tests)
 - last seen: 2026-09-30T12:10:29Z
 
+### L-025 - Test a rule applied to each group with two groups that need opposite outcomes at the same time
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: hidden-folder
+- evidence: M8 src/ui/featuresTree.ts:110; test/integration/suite.cjs:1401-1422 (validation.md, Fix 2) (tests)
+- last seen: 2026-09-30T14:31:13Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.
