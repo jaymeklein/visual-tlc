@@ -1,0 +1,215 @@
+# Specs Folder Paths Tasks
+
+## Execution Protocol (MANDATORY -- do not skip)
+
+Implement these tasks with the `tlc-spec-driven` skill: **activate it by name and follow its Execute flow and Critical Rules.** Do not search for skill files by filesystem path. The skill is the source of truth for the full flow (per-task cycle, sub-agent delegation, adequacy review, Verifier, discrimination sensor).
+
+**If the skill cannot be activated, STOP and tell the user - do not proceed without it.**
+
+---
+
+**Design**: inline (sem `design.md`)
+**Status**: Approved
+
+Design inline: `src/core/folders.ts` continua puro. `findSpecsRoots` passa a aceitar só arquivos que começam no caminho da entrada, e `rootLabel` rotula pela pasta do workspace e, quando ela tem mais de uma pasta de specs, pelo caminho da entrada. `parseExclude` sai. `src/ui/store.ts` procura e observa `<entrada>/**` a partir da raiz de cada pasta do workspace, sem exclusão. As árvores Features e Projeto deixam de pular o nó quando há um projeto só.
+
+---
+
+## Test Coverage Matrix
+
+> Generated from codebase, project guidelines, and spec - confirm before Execute. Guidelines found: none - strong defaults applied. Estilo de `test/unit/folders.test.ts` e `test/integration/*.cjs`.
+
+| Code Layer | Required Test Type | Coverage Expectation | Location Pattern | Run Command |
+| ---------- | ------------------ | -------------------- | ---------------- | ----------- |
+| Core (`src/core/folders.ts`) | unit | Todos os ramos; 1:1 com os ACs; um teste por edge case listado | `test/unit/folders.test.ts` | `npm test` |
+| Extension host (`src/ui`, `src/extension.ts`, `package.json` contributes) | integration | Cada AC no resultado visível: projetos, filhos das árvores, painel, barra de status, diagnósticos, aviso | `test/integration/*.cjs` | `npm run test:integration` |
+| Docs (`README.md`, specs) | none | - (build gate only) | - | build gate only |
+
+## Gate Check Commands
+
+> Generated from codebase - confirm before Execute. A integração roda num desktop oculto do Windows.
+
+| Gate Level | When to Use | Command |
+| ---------- | ----------- | ------- |
+| Quick | After tasks with unit tests only | `npm run typecheck && npm test` |
+| Full | After tasks with integration tests | `npm run typecheck && npm test && npm run test:integration` |
+| Build | After phase completion or docs-only tasks | `npm run typecheck && npm test && npm run test:integration` |
+
+---
+
+## Execution Plan
+
+### Phase 1: Core
+
+```
+T1
+```
+
+### Phase 2: Extension host
+
+```
+T1 → T2 → T3
+```
+
+### Phase 3: Docs
+
+```
+T3 → T4
+```
+
+---
+
+## Task Breakdown
+
+### T1: Achar as pastas pelo caminho exato
+
+**What**: `findSpecsRoots` aceita só arquivos que começam no caminho da entrada. `rootLabel` usa o nome da pasta do workspace, com " · entrada" quando ela tem mais de uma pasta de specs. `parseExclude` e o tipo `Exclude` saem
+**Where**: `src/core/folders.ts`
+**Depends on**: None
+**Reuses**: `parseSpecsFolders`, `pendingWarnings`, a regra de artefato (SF-05)
+**Requirement**: SFP-01, SFP-02, SFP-09, SFP-11
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] `.specs` acha `.specs/...` e não acha `test/fixtures/sample/.specs/...` (SFP-01)
+- [ ] `packages/api/.specs` acha a pasta nesse caminho e não acha `x/packages/api/.specs` (SFP-02)
+- [ ] Rótulo: nome da pasta do workspace com uma pasta de specs; "nome · entrada" com duas (SFP-09)
+- [ ] Entradas inválidas continuam recusadas e citadas (SFP-11)
+- [ ] Os testes de `parseExclude` saem com a função. Os de `pendingWarnings` ficam, agora só para `tlcSpecs.specsFolders`
+- [ ] Gate check passes: `npm run typecheck && npm test`
+
+**Tests**: unit
+**Gate**: quick
+
+**Commit**: `feat(core): find each specs folder at its exact path`
+
+---
+
+### T2: Ler só as pastas configuradas e tirar o exclude
+
+**What**: A busca e os watchers usam `<entrada>/**` a partir da raiz de cada pasta do workspace, sem exclusão. `tlcSpecs.exclude` sai do `package.json`, do store e dos avisos. A tela de boas-vindas diz que o caminho parte da raiz
+**Where**: `src/ui/store.ts`, `package.json`
+**Depends on**: T1
+**Reuses**: `discoverSpecsRoots`, `watch`, `warn`
+**Requirement**: SFP-01, SFP-02, SFP-03, SFP-04, SFP-05, SFP-06, SFP-11
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] Com o padrão, os projetos são só `.specs`, mesmo com `.specs` criadas em subpastas (SFP-01)
+- [ ] `packages/api/docs/specs` listada lê só essa pasta (SFP-02)
+- [ ] Uma spec numa pasta não configurada fica fora das árvores, do painel na aba e na lateral, da barra de status e do painel Problemas (SFP-03)
+- [ ] O `package.json` não declara `tlcSpecs.exclude`, e um valor dele nas configurações não muda a listagem (SFP-04)
+- [ ] Entrada que não existe: sem projeto e sem aviso. Ao criar a pasta, ela aparece sem recarregar a janela (SFP-05, SFP-06)
+- [ ] Os testes EXC saem com a configuração. Os SF de busca em profundidade são reescritos para o caminho exato. `multiroot.cjs` e o fixture `b` passam a usar só `specsFolders`
+- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+
+**Tests**: integration
+**Gate**: full
+
+**Commit**: `feat(store): read only the configured specs folders`
+
+---
+
+### T3: Nó da pasta com um projeto só
+
+**What**: As árvores Features e Projeto mostram o nó da pasta mesmo quando há uma única pasta de specs
+**Where**: `src/ui/featuresTree.ts`, `src/ui/projectTree.ts`
+**Depends on**: T2
+**Reuses**: nó `root` das duas árvores
+**Requirement**: SFP-07, SFP-08, SFP-09, SFP-10
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] Features com uma pasta: um nó `root` com o nome da pasta do workspace e as specs dentro (SFP-07)
+- [ ] Projeto com uma pasta: um nó `root` com Handoff, decisões e lições dentro (SFP-08)
+- [ ] Duas pastas de specs na mesma pasta do workspace: "nome · entrada" nas duas árvores (SFP-09)
+- [ ] Todas as specs ocultas: o nó continua, sem filhos, e a mensagem conta as ocultas (SFP-10)
+- [ ] Os testes que liam as specs no topo da árvore passam a ler dentro do nó da pasta
+- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+
+**Tests**: integration
+**Gate**: full
+
+**Commit**: `feat(tree): show the specs folder node with a single project`
+
+---
+
+### T4: Documentar o caminho exato
+
+**What**: O README descreve `tlcSpecs.specsFolders` como caminho exato e tira a seção de `tlcSpecs.exclude`. As specs specs-folders, exclude-folders e hidden-specs ganham notas do que mudou
+**Where**: `README.md`
+**Depends on**: T3
+**Reuses**: seção "Pastas de specs" do README
+**Requirement**: SFP-01, SFP-04
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] README sem `tlcSpecs.exclude`, com exemplos de caminho exato
+- [ ] Notas no SF-02 e no SF-07 (specs-folders), no topo de exclude-folders e no HID-16 (hidden-specs)
+- [ ] Gate check passes: `npm run typecheck && npm test`
+
+**Tests**: none
+**Gate**: build
+
+**Commit**: `docs(readme): describe the specs folders as exact paths`
+
+---
+
+## Phase Execution Map
+
+```
+Phase 1 → Phase 2 → Phase 3
+
+Phase 1:  T1
+Phase 2:  T2 ------→ T3
+Phase 3:  T4
+```
+
+---
+
+## Task Granularity Check
+
+| Task | Scope | Status |
+| ---- | ----- | ------ |
+| T1: caminho exato | 1 módulo | ✅ Granular |
+| T2: store e manifesto | store e `package.json` | ⚠️ Coeso: a configuração removida do manifesto e do store se testa junto |
+| T3: nó da pasta | duas árvores, a mesma regra | ⚠️ Coeso: uma regra nas duas árvores |
+| T4: docs | README e notas | ✅ Granular |
+
+## Diagram-Definition Cross-Check
+
+| Task | Depends On (task body) | Diagram Shows | Status |
+| ---- | ---------------------- | ------------- | ------ |
+| T1 | None | início | ✅ Match |
+| T2 | T1 | T1 → T2 | ✅ Match |
+| T3 | T2 | T2 → T3 | ✅ Match |
+| T4 | T3 | T3 → T4 | ✅ Match |
+
+## Test Co-location Validation
+
+| Task | Code Layer Created/Modified | Matrix Requires | Task Says | Status |
+| ---- | --------------------------- | --------------- | --------- | ------ |
+| T1 | Core | unit | unit | ✅ OK |
+| T2 | Extension host | integration | integration | ✅ OK |
+| T3 | Extension host | integration | integration | ✅ OK |
+| T4 | Docs | none | none | ✅ OK |
