@@ -58,16 +58,16 @@ function report(): void {
   const boards = [...app.querySelectorAll<HTMLElement>('.board')];
   const root = document.documentElement;
   // offsetParent is null for an element that is not displayed (itself or an ancestor).
-  const shown = (selector: string) => [...app.querySelectorAll<HTMLElement>(selector)].filter((el) => el.offsetParent !== null);
+  const displayed = (selector: string) => [...app.querySelectorAll<HTMLElement>(selector)].filter((el) => el.offsetParent !== null);
   const eye = app.querySelector<HTMLElement>('[data-action="toggle-hidden"]');
   vscode.postMessage({
     type: 'rendered',
     projects: projects.map((p) => p.id),
-    cards: shown('.card-name').map((el) => el.textContent ?? ''),
-    phases: shown('.card-phase').map((el) => el.textContent ?? ''),
+    cards: displayed('.card-name').map((el) => el.textContent ?? ''),
+    phases: displayed('.card-phase').map((el) => el.textContent ?? ''),
     detail: app.querySelector('.detail-title .mono')?.textContent ?? null,
     columns: boards.length ? getComputedStyle(boards[0]).gridTemplateColumns.split(' ').length : 0,
-    emptyStages: shown('.column.is-empty').length,
+    emptyStages: displayed('.column.is-empty').length,
     emptyMessage: app.querySelector('.empty-state h1')?.textContent ?? null,
     width: window.innerWidth,
     boardWidth: boards.length ? boards[0].clientWidth : 0,

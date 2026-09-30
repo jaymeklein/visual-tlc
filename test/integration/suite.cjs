@@ -632,7 +632,8 @@ test('EYE-05/EYE-04/EYE-10 the closed eye of a completed row keeps it in Feature
 test('EYE-05/EYE-07 the eye of a completed card keeps it in the Concluídas column of the tab, with the board eye closed', async () => {
   const done = api.getProjects()[0].features.filter((f) => f.health === 'complete').length;
   await vscode.commands.executeCommand('tlcSpecs.openDashboard');
-  const before = await tabReport('the tab on the board', (r) => r.detail === null && r.toggle !== null && !r.cards.includes('billing-invoices'));
+  // The count too: the report must come from a render after the tests before this one cleaned up.
+  const before = await tabReport('the tab on the board', (r) => r.detail === null && r.toggle?.text === ocultas(done) && !r.cards.includes('billing-invoices'));
   assert.equal(before.columns, 5);
   assert.equal(before.toggle.text, ocultas(done));
   try {

@@ -46,5 +46,5 @@ export type FromWebview =
   | { type: 'error'; message: string }
   | { type: 'previewMarkdown'; target: FeatureRef }
   | { type: 'revealFolder'; target: FeatureRef }
-  /** The eye of a card: marks or unmarks the spec as hidden. */
+  /** The eye of a card: hides the spec or shows it. The host knows whether it is completed. */
   | { type: 'setHidden'; target: FeatureRef; hidden: boolean };
