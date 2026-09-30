@@ -29,6 +29,10 @@ test('SF-10 entries that normalize to the same folder are kept once', () => {
 test('SFP-01 .specs is the folder at the workspace folder root, never one in a subfolder', () => {
   const files = ['.specs/features/auth/spec.md', 'test/fixtures/sample/.specs/features/user-auth/spec.md', 'tools/.specs/STATE.md', 'src/index.ts'];
   assert.deepEqual(findSpecsRoots(files, ['.specs']), [{ path: '.specs', entry: '.specs' }]);
+  // Alone, with no folder at the root to give the same answer.
+  assert.deepEqual(findSpecsRoots(['test/fixtures/sample/.specs/features/user-auth/spec.md', 'tools/.specs/STATE.md'], ['.specs']), []);
+  // A folder whose name only starts like the entry is another folder.
+  assert.deepEqual(findSpecsRoots(['.specs-old/STATE.md'], ['.specs']), []);
 });
 
 test('SFP-02 an entry with subfolders is read at that path from the workspace folder root', () => {
@@ -37,6 +41,7 @@ test('SFP-02 an entry with subfolders is read at that path from the workspace fo
     { path: 'docs/specs', entry: 'docs/specs' },
     { path: 'packages/api/.specs', entry: 'packages/api/.specs' },
   ]);
+  assert.deepEqual(findSpecsRoots(['x/packages/api/.specs/STATE.md'], ['packages/api/.specs']), []);
 });
 
 test('SFP-01 finds the folder of every entry', () => {
