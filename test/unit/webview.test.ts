@@ -31,6 +31,7 @@ async function detailOf(feature: string, expandedTasks: string[] = []): Promise<
     now: Date.now(),
     loaded: true,
     hidden: [],
+    shown: [],
     view: { selected: { projectId: 'sample', feature }, query: '', showHidden: true, expandedTasks },
   };
   return { html: renderApp(ctx), ctx };
@@ -157,7 +158,7 @@ test('NAV-10 "abrir validation.md" and "abrir STATE.md" links open the preview',
 
 test('SIDE-04 board stages without features are marked is-empty, the others are not', async () => {
   const project = await loadProject(nodeReader(SAMPLE_SPECS), 'sample', 'sample', { now: Date.now(), staleAfterDays: 14 });
-  const html = renderApp({ projects: [project], now: Date.now(), loaded: true, hidden: [], view: { selected: null, query: 'user-auth', showHidden: true, expandedTasks: [] } });
+  const html = renderApp({ projects: [project], now: Date.now(), loaded: true, hidden: [], shown: [], view: { selected: null, query: 'user-auth', showHidden: true, expandedTasks: [] } });
   const columns = [...html.matchAll(/<div class="column([^"]*)" role="listitem" aria-label="([^"]+)">([\s\S]*?)(?=<div class="column[ "]|$)/g)];
   assert.equal(columns.length, 6);
   const withCards = columns.filter((c) => c[3].includes('class="card '));
@@ -189,6 +190,8 @@ test('SIDE-03/SIDE-04 the stylesheet stacks the board and hides the empty stages
 
 const sampleProject = () => loadProject(nodeReader(SAMPLE_SPECS), 'sample', 'sample', { now: Date.now(), staleAfterDays: 14 });
 const mark = (...names: string[]) => names.map((name) => hiddenKey('sample', name));
+/** Keys of completed specs kept in view by their eye (eye-on-every-spec). */
+const show = (...names: string[]) => names.map((name) => hiddenKey('sample', name));
 
 /** Eye of the top bar: its attributes, the glyph it draws and its text. */
 function eyeToggle(html: string) {
@@ -212,9 +215,9 @@ function cardsOf(html: string): Map<string, { cls: string; body: string }> {
 const cardEyes = (body: string) =>
   [...body.matchAll(/<button class="icon-btn sm" data-action="(hide|unhide)"[^>]*title="([^"]+)"[^>]*>(<svg class="ic ([\w-]+)")/g)].map((m) => ({ action: m[1], title: m[2], glyph: m[4] }));
 
-async function board(showHidden: boolean, hidden: string[] = []) {
+async function board(showHidden: boolean, hidden: string[] = [], shown: string[] = []) {
   const project = await sampleProject();
-  const html = renderApp({ projects: [project], now: Date.now(), loaded: true, hidden, view: { selected: null, query: '', showHidden, expandedTasks: [] } });
+  const html = renderApp({ projects: [project], now: Date.now(), loaded: true, hidden, shown, view: { selected: null, query: '', showHidden, expandedTasks: [] } });
   const columns = [...html.matchAll(/<div class="column[^"]*" role="listitem" aria-label="([^"]+)">([\s\S]*?)(?=<div class="column[ "]|$)/g)];
   const cards = (body: string) => [...body.matchAll(/<span class="card-name">([^<]+)<\/span>/g)].map((m) => m[1]).sort();
   return {
@@ -278,7 +281,7 @@ test('PNL-03/PNL-04 the stylesheet lays five stages side by side for the board w
 
 test('PNL-01/HID-01 the panel opens with the closed eye, its count of hidden specs, and the completed features off the board', async () => {
   const project = await sampleProject();
-  const html = renderApp({ projects: [project], now: Date.now(), loaded: true, hidden: [], view: DEFAULT_VIEW });
+  const html = renderApp({ projects: [project], now: Date.now(), loaded: true, hidden: [], shown: [], view: DEFAULT_VIEW });
   assert.ok(!html.includes('type="checkbox"'), 'the "Ocultar concluídas" box is still there');
   const eye = eyeToggle(html);
   assert.equal(eye.glyph, 'eye-closed');
@@ -299,20 +302,20 @@ test('HID-01/HID-11 the count of hidden specs adds the marked ones, a completed 
   // Nothing completed and nothing marked: zero is written in the plural.
   const project = await sampleProject();
   const open = { ...project, features: project.features.filter((f) => f.health !== 'complete') };
-  const none = renderApp({ projects: [open], now: Date.now(), loaded: true, hidden: [], view: DEFAULT_VIEW });
+  const none = renderApp({ projects: [open], now: Date.now(), loaded: true, hidden: [], shown: [], view: DEFAULT_VIEW });
   assert.equal(eyeToggle(none).text, '0 ocultas');
 });
 
 test('PNL-05 a completed feature opened in the panel shows its details with the eye closed', async () => {
   const project = await sampleProject();
   const done = project.features.find((f) => f.health === 'complete')!;
-  const html = renderApp({ projects: [project], now: Date.now(), loaded: true, hidden: [], view: { ...DEFAULT_VIEW, selected: { projectId: 'sample', feature: done.name } } });
+  const html = renderApp({ projects: [project], now: Date.now(), loaded: true, hidden: [], shown: [], view: { ...DEFAULT_VIEW, selected: { projectId: 'sample', feature: done.name } } });
   assert.ok(html.includes(`<div class="detail-title">\n      <h1><span class="mono">${done.name}</span>`), `the details of ${done.name} are not shown`);
 });
 
 test('HID-15 a spec marked as hidden opened in the panel shows its details with the eye closed', async () => {
   const project = await sampleProject();
-  const html = renderApp({ projects: [project], now: Date.now(), loaded: true, hidden: mark('csv-export'), view: { ...DEFAULT_VIEW, selected: { projectId: 'sample', feature: 'csv-export' } } });
+  const html = renderApp({ projects: [project], now: Date.now(), loaded: true, hidden: mark('csv-export'), shown: [], view: { ...DEFAULT_VIEW, selected: { projectId: 'sample', feature: 'csv-export' } } });
   assert.ok(html.includes('<div class="detail-title">\n      <h1><span class="mono">csv-export</span>'), 'the details of csv-export are not shown');
 });
 
@@ -321,14 +324,18 @@ test('PNL-04/HID-03/HID-04 the closed eye shows the hidden specs, the open eye h
   assert.deepEqual(actionFor({ action: 'toggle-hidden', show: 'false' }), { view: { showHidden: false } });
 });
 
-test('HID-09/HID-10 a card on view has the open eye "Ocultar spec", a marked card the closed eye "Desocultar spec", a completed card none', async () => {
+test('HID-09/HID-10/EYE-01/EYE-02/EYE-03 every card has its eye: open "Ocultar spec" in view, closed "Desocultar spec" hidden, completed or not', async () => {
   const cards = cardsOf((await board(true, mark('csv-export'))).html);
   assert.deepEqual(cardEyes(cards.get('user-auth')!.body), [{ action: 'hide', title: 'Ocultar spec', glyph: 'eye-open' }]);
   assert.deepEqual(cardEyes(cards.get('csv-export')!.body), [{ action: 'unhide', title: 'Desocultar spec', glyph: 'eye-closed' }]);
-  assert.deepEqual(cardEyes(cards.get('billing-invoices')!.body), []);
-  // A spec marked while open and completed later still has no eye.
+  // Completed without a choice: hidden, so the closed eye.
+  assert.deepEqual(cardEyes(cards.get('billing-invoices')!.body), [{ action: 'unhide', title: 'Desocultar spec', glyph: 'eye-closed' }]);
+  // Marked while open and completed later: still hidden.
   const both = cardsOf((await board(true, mark('csv-export', 'billing-invoices'))).html);
-  assert.deepEqual(cardEyes(both.get('billing-invoices')!.body), []);
+  assert.deepEqual(cardEyes(both.get('billing-invoices')!.body), [{ action: 'unhide', title: 'Desocultar spec', glyph: 'eye-closed' }]);
+  // Completed and kept in view: the open eye.
+  const kept = cardsOf((await board(true, [], show('billing-invoices'))).html);
+  assert.deepEqual(cardEyes(kept.get('billing-invoices')!.body), [{ action: 'hide', title: 'Ocultar spec', glyph: 'eye-open' }]);
   // The eye means hiding now: "Visualizar" draws another glyph.
   const preview = cards.get('user-auth')!.body.match(/data-action="preview"[^>]*>(<svg class="ic ([\w-]*)")/);
   assert.ok(preview, 'user-auth has no "Visualizar" button');
@@ -344,12 +351,24 @@ test('HID-11/HID-12 the eye of a card asks the extension to mark or unmark that 
   });
 });
 
-test('HID-14 with the eye open a marked card is faded, the same card unmarked is not', async () => {
+test('HID-14/EYE-08 with the eye open every hidden card is faded, completed or not, and a card in view is not', async () => {
   const marked = cardsOf((await board(true, mark('csv-export'))).html);
   assert.equal(marked.get('csv-export')!.cls, 'card h-ok is-hidden');
   assert.equal(cardsOf((await board(true)).html).get('csv-export')!.cls, 'card h-ok');
-  // Hidden but not marked: the completed card is not faded.
-  assert.equal(marked.get('billing-invoices')!.cls, 'card h-complete');
+  // Completed without a choice: hidden, so faded.
+  assert.equal(marked.get('billing-invoices')!.cls, 'card h-complete is-hidden');
+  // Completed and kept in view: not faded.
+  assert.equal(cardsOf((await board(true, [], show('billing-invoices'))).html).get('billing-invoices')!.cls, 'card h-complete');
+});
+
+test('EYE-05/EYE-07 with the eye closed a completed spec kept in view is in the Concluídas column, in six stages, and out of the count', async () => {
+  const b = await board(false, [], show('billing-invoices'));
+  assert.deepEqual(b.labels, ['Spec', 'Design', 'Tasks', 'Execução', 'Verificação', 'Concluídas']);
+  assert.deepEqual(b.doneCards, ['billing-invoices']);
+  assert.deepEqual(b.cards, [...b.open, 'billing-invoices'].sort());
+  assert.equal(b.boardClass, 'board');
+  assert.equal(eyeToggle(b.html).text, '0 ocultas');
+  assert.equal(eyeToggle((await board(false, mark('csv-export'), show('billing-invoices'))).html).text, '1 oculta');
 });
 
 test('HID-14 the stylesheet fades a marked card at every width', () => {

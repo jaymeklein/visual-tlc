@@ -78,14 +78,14 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Requirement ID | Story       | Phase  | Status  |
 | -------------- | ----------- | ------ | ------- |
-| EYE-01 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | In Tasks |
-| EYE-02 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | In Tasks |
-| EYE-03 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | In Tasks |
+| EYE-01 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Implementing |
+| EYE-02 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Implementing |
+| EYE-03 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Implementing |
 | EYE-04 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Implementing |
 | EYE-05 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Implementing |
 | EYE-06 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Implementing |
-| EYE-07 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | In Tasks |
-| EYE-08 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | In Tasks |
+| EYE-07 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Implementing |
+| EYE-08 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Implementing |
 | EYE-09 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Implementing |
 | EYE-10 | Edge case: ocultar uma concluída à vista | Execute | Implementing |
 | EYE-11 | Edge case: detalhe de uma oculta | Execute | In Tasks |

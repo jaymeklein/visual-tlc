@@ -14,6 +14,7 @@ let projects: Project[] = [];
 let now = Date.now();
 let loaded = false;
 let hidden: string[] = [];
+let shown: string[] = [];
 let view: ViewState = { ...DEFAULT_VIEW, ...vscode.getState() };
 
 function setView(patch: Partial<ViewState>): void {
@@ -40,7 +41,7 @@ function render(): void {
   const active = document.activeElement as HTMLInputElement | null;
   const focusSearch = active?.id === 'search' ? [active.selectionStart, active.selectionEnd] : null;
 
-  app.innerHTML = renderApp({ projects, now, loaded, hidden, view });
+  app.innerHTML = renderApp({ projects, now, loaded, hidden, shown, view });
 
   for (const el of app.querySelectorAll<HTMLElement>('[data-pct]')) el.style.setProperty('--pct', `${el.dataset.pct}%`);
   if (focusSearch) {

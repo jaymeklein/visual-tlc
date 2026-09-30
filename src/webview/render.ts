@@ -1,7 +1,7 @@
 import type { Feature, Issue, Project, Stage, Task, TaskPhase } from '../core/types.ts';
 import type { FeatureRef, FromWebview } from '../core/protocol.ts';
 import { plain } from '../core/markdown.ts';
-import { hiddenKey, isHidden } from '../core/hidden.ts';
+import { type Choice, hiddenKey, isHidden } from '../core/hidden.ts';
 import { featureMarkdown, HEALTH_LABEL, REQ_STATUS_LABEL, STAGE_LABEL, STAGE_ORDER, STAGE_STATE_LABEL, TASK_STATUS_LABEL } from '../core/labels.ts';
 
 // Pure rendering of the dashboard: state in, HTML out. No DOM access, so it runs under node --test.
@@ -19,15 +19,17 @@ export interface RenderCtx {
   projects: Project[];
   now: number;
   loaded: boolean;
-  /** hiddenKey()s of the specs marked as hidden by hand. */
+  /** hiddenKey()s of the specs chosen hidden with their eye. */
   hidden: readonly string[];
+  /** hiddenKey()s of the completed specs kept in view with their eye. */
+  shown: readonly string[];
   view: ViewState;
 }
 
 /** View state of a panel that just opened: on the board, with the hidden specs off it. */
 export const DEFAULT_VIEW: ViewState = { selected: null, query: '', showHidden: false, expandedTasks: [] };
 
-let ctx: RenderCtx = { projects: [], now: 0, loaded: false, hidden: [], view: DEFAULT_VIEW };
+let ctx: RenderCtx = { projects: [], now: 0, loaded: false, hidden: [], shown: [], view: DEFAULT_VIEW };
 
 export const taskKey = (projectId: string, feature: string, taskId: string) => `${projectId}|${feature}|${taskId}`;
 
@@ -89,8 +91,11 @@ function previewAttrs(projectId: string, file: string | undefined): string {
   return `data-action="preview-file" data-pid="${esc(projectId)}" data-file="${esc(file)}" tabindex="0" role="button"`;
 }
 
-const marked = (p: Project, f: Feature) => ctx.hidden.includes(hiddenKey(p.id, f.name));
-const hiddenOf = (p: Project, f: Feature) => isHidden(f, marked(p, f) ? 'hidden' : undefined);
+function choiceOf(p: Project, f: Feature): Choice {
+  const key = hiddenKey(p.id, f.name);
+  return ctx.hidden.includes(key) ? 'hidden' : ctx.shown.includes(key) ? 'shown' : undefined;
+}
+const hiddenOf = (p: Project, f: Feature) => isHidden(f, choiceOf(p, f));
 
 function counts(f: Feature) {
   return {
@@ -178,14 +183,16 @@ function projectSection(p: Project): string {
     (f) => (ctx.view.showHidden || !hiddenOf(p, f)) && (!q || f.name.toLowerCase().includes(q) || (f.spec?.title ?? '').toLowerCase().includes(q)),
   );
   const multi = ctx.projects.length > 1;
+  // With the eye closed, Concluídas shows only when a completed spec was kept in view.
+  const withDone = ctx.view.showHidden || visible.some((f) => f.health === 'complete');
   return `
   <section class="project">
     ${multi ? `<h2 class="project-title">${esc(p.label)}</h2>` : ''}
     ${focusCard(p)}
-    <div class="board${ctx.view.showHidden ? '' : ' five-stages'}" role="list">
+    <div class="board${withDone ? '' : ' five-stages'}" role="list">
       ${COLUMNS.map((col) => {
         const cards = visible.filter((f) => columnOf(f) === col.id);
-        if (col.id === 'done' && !ctx.view.showHidden) return '';
+        if (col.id === 'done' && !withDone) return '';
         return `<div class="column${cards.length ? '' : ' is-empty'}" role="listitem" aria-label="${esc(col.label)}">
           <div class="column-head"><span>${esc(col.label)}</span><span class="count">${cards.length}</span></div>
           ${cards.length ? cards.map((f) => card(p, f)).join('') : '<div class="column-empty">—</div>'}
@@ -244,11 +251,10 @@ function featureActions(p: Project, f: Feature, labels = false, extra = ''): str
   return `<span class="feature-actions">${preview}${folder}${extra}</span>`;
 }
 
-/** Eye of a spec that is not completed: open while it is on view, closed while it is marked as hidden. */
+/** Eye of every spec: open while it is in view, closed while it is hidden. */
 function eyeButton(p: Project, f: Feature): string {
-  if (f.health === 'complete') return '';
   const ref = `data-pid="${esc(p.id)}" data-feature="${esc(f.name)}"`;
-  return marked(p, f)
+  return hiddenOf(p, f)
     ? `<button class="icon-btn sm" data-action="unhide" ${ref} title="Desocultar spec" aria-label="Desocultar spec">${I.eyeClosed}</button>`
     : `<button class="icon-btn sm" data-action="hide" ${ref} title="Ocultar spec" aria-label="Ocultar spec">${I.eye}</button>`;
 }
@@ -262,7 +268,7 @@ function card(p: Project, f: Feature): string {
   ].join('');
   const tasks = f.taskStats.total ? `${f.taskStats.done}/${f.taskStats.total} tasks` : f.requirementStats.total ? `${f.requirementStats.total} req.` : '';
   return `
-  <div class="card h-${f.health}${marked(p, f) ? ' is-hidden' : ''}" role="button" tabindex="0" data-action="select" data-pid="${esc(p.id)}" data-feature="${esc(f.name)}" title="${esc(f.nextStep)}" aria-label="Detalhes de ${esc(f.name)}">
+  <div class="card h-${f.health}${hiddenOf(p, f) ? ' is-hidden' : ''}" role="button" tabindex="0" data-action="select" data-pid="${esc(p.id)}" data-feature="${esc(f.name)}" title="${esc(f.nextStep)}" aria-label="Detalhes de ${esc(f.name)}">
     <div class="card-head"><span class="card-name">${esc(f.name)}</span><span class="badges">${badges}</span></div>
     ${f.spec?.title && f.spec.title.toLowerCase() !== f.name.toLowerCase() ? `<div class="card-title">${esc(f.spec.title)}</div>` : ''}
     ${miniPipe(f)}

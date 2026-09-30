@@ -100,7 +100,7 @@ T3 → T4
 ### T2: Olho em todo card
 
 **What**: `renderApp` desenha o olho em todo card, esmaece toda spec oculta com o olho geral aberto e mostra a coluna Concluídas com o olho fechado quando há concluída à vista
-**Where**: `src/webview/render.ts`
+**Where**: `src/webview/render.ts` (e `shown` vazio em `src/webview/main.ts`, para compilar até o T3)
 **Depends on**: T1
 **Reuses**: `eyeButton`, `projectSection`, `cardsOf`, `cardEyes`, `board`
 **Requirement**: EYE-01, EYE-02, EYE-03, EYE-05, EYE-07, EYE-08
@@ -112,12 +112,12 @@ T3 → T4
 
 **Done when**:
 
-- [ ] Card concluído oculto: olho fechado "Desocultar spec". Concluído à vista: olho aberto "Ocultar spec" (EYE-01, EYE-02, EYE-03)
-- [ ] Olho geral fechado com uma concluída à vista: ela na coluna Concluídas, seis etapas, e o número de ocultas cai um (EYE-05, EYE-07)
-- [ ] Olho geral fechado sem concluída à vista: cinco etapas, como no PNL-03
-- [ ] Olho geral aberto: toda spec oculta tem `is-hidden`, concluída ou não; a concluída à vista não tem (EYE-08)
-- [ ] Os testes do HID-09/10 e do HID-14 que diziam "concluída sem olho" e "concluída sem esmaecido" passam à regra nova
-- [ ] Gate check passes: `npm run typecheck && npm test`
+- [x] Card concluído oculto: olho fechado "Desocultar spec". Concluído à vista: olho aberto "Ocultar spec" (EYE-01, EYE-02, EYE-03)
+- [x] Olho geral fechado com uma concluída à vista: ela na coluna Concluídas, seis etapas, e o número de ocultas cai um (EYE-05, EYE-07)
+- [x] Olho geral fechado sem concluída à vista: cinco etapas, como no PNL-03
+- [x] Olho geral aberto: toda spec oculta tem `is-hidden`, concluída ou não; a concluída à vista não tem (EYE-08)
+- [x] Os testes do HID-09/10 e do HID-14 que diziam "concluída sem olho" e "concluída sem esmaecido" passam à regra nova
+- [x] Gate check passes: `npm run typecheck && npm test`
 
 **Tests**: unit
 **Gate**: quick
