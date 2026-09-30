@@ -43,10 +43,6 @@ export class HiddenSpecs {
     return this.hidden.has(key) ? 'hidden' : this.shown.has(key) ? 'shown' : undefined;
   }
 
-  isMarked(ref: FeatureRef): boolean {
-    return this.choiceOf(ref) === 'hidden';
-  }
-
   /** The specs chosen hidden. */
   keys(): string[] {
     return [...this.hidden];

@@ -32,8 +32,8 @@ export interface Rendered {
 }
 
 export type ToWebview =
-  /** `hidden`: hiddenKey()s of the specs marked as hidden. */
-  | { type: 'state'; projects: Project[]; now: number; hidden: string[] }
+  /** `hidden`: hiddenKey()s of the specs chosen hidden; `shown`: of the completed specs kept in view. */
+  | { type: 'state'; projects: Project[]; now: number; hidden: string[]; shown: string[] }
   | { type: 'select'; target: FeatureRef | null };
 
 export type FromWebview =

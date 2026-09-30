@@ -141,13 +141,13 @@ T3 → T4
 
 **Done when**:
 
-- [ ] Linha concluída: `contextValue` `feature.hidden` e o olho fechado. Pelo `unhideFeature`, ela fica à vista na árvore com o olho do título fechado, com `contextValue` `feature` (EYE-01, EYE-02, EYE-03, EYE-05)
-- [ ] O mesmo `setHidden` vindo do painel deixa a concluída à vista na aba: cards e seis colunas com o olho fechado, e o número de ocultas cai um (EYE-05, EYE-07)
-- [ ] `hideFeature` numa concluída à vista a esconde de novo, na árvore e no painel (EYE-04, EYE-10)
-- [ ] Olho do título aberto: toda linha oculta termina em "· oculta", e a concluída à vista não (EYE-08)
-- [ ] Os botões da linha valem para `feature` e `feature.hidden`
-- [ ] Os testes de integração do HID-09/10 e do HID-14 passam à regra nova
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] Linha concluída: `contextValue` `feature.hidden` e o olho fechado. Pelo `unhideFeature`, ela fica à vista na árvore com o olho do título fechado, com `contextValue` `feature` (EYE-01, EYE-02, EYE-03, EYE-05)
+- [x] O mesmo `setHidden` vindo do painel deixa a concluída à vista na aba: cards e seis colunas com o olho fechado, e o número de ocultas cai um (EYE-05, EYE-07)
+- [x] `hideFeature` numa concluída à vista a esconde de novo, na árvore e no painel (EYE-04, EYE-10)
+- [x] Olho do título aberto: toda linha oculta termina em "· oculta", e a concluída à vista não (EYE-08)
+- [x] Os botões da linha valem para `feature` e `feature.hidden`
+- [x] Os testes de integração do HID-09/10 e do HID-14 passam à regra nova
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
 
 **Tests**: integration
 **Gate**: full

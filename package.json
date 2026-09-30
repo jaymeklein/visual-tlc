@@ -163,17 +163,17 @@
       "view/item/context": [
         {
           "command": "tlcSpecs.previewFeatureMarkdown",
-          "when": "view == tlcSpecs.features && (viewItem == feature || viewItem == feature.hidden || viewItem == feature.done)",
+          "when": "view == tlcSpecs.features && (viewItem == feature || viewItem == feature.hidden)",
           "group": "inline@1"
         },
         {
           "command": "tlcSpecs.revealFeatureFolder",
-          "when": "view == tlcSpecs.features && (viewItem == feature || viewItem == feature.hidden || viewItem == feature.done)",
+          "when": "view == tlcSpecs.features && (viewItem == feature || viewItem == feature.hidden)",
           "group": "inline@2"
         },
         {
           "command": "tlcSpecs.showFeature",
-          "when": "view == tlcSpecs.features && (viewItem == feature || viewItem == feature.hidden || viewItem == feature.done)",
+          "when": "view == tlcSpecs.features && (viewItem == feature || viewItem == feature.hidden)",
           "group": "inline@3"
         },
         {
@@ -198,17 +198,17 @@
         },
         {
           "command": "tlcSpecs.previewFeatureMarkdown",
-          "when": "view == tlcSpecs.features && (viewItem == feature || viewItem == feature.hidden || viewItem == feature.done)",
+          "when": "view == tlcSpecs.features && (viewItem == feature || viewItem == feature.hidden)",
           "group": "navigation@1"
         },
         {
           "command": "tlcSpecs.revealFeatureFolder",
-          "when": "view == tlcSpecs.features && (viewItem == feature || viewItem == feature.hidden || viewItem == feature.done)",
+          "when": "view == tlcSpecs.features && (viewItem == feature || viewItem == feature.hidden)",
           "group": "navigation@2"
         },
         {
           "command": "tlcSpecs.showFeature",
-          "when": "view == tlcSpecs.features && (viewItem == feature || viewItem == feature.hidden || viewItem == feature.done)",
+          "when": "view == tlcSpecs.features && (viewItem == feature || viewItem == feature.hidden)",
           "group": "navigation@3"
         },
         {

@@ -521,9 +521,9 @@ test('SFP-10/HID-16 with every spec hidden Features keeps the folder node withou
 
 const rowOf = async (name) => api.featuresTree.getTreeItem(await featureNode(name));
 /** The buttons every spec row keeps, whatever its eye. */
-const ANY_ROW = 'view == tlcSpecs.features && (viewItem == feature || viewItem == feature.hidden || viewItem == feature.done)';
+const ANY_ROW = 'view == tlcSpecs.features && (viewItem == feature || viewItem == feature.hidden)';
 
-test('HID-09/HID-10 a spec row has the open eye "Ocultar spec", a marked row the closed eye "Desocultar spec", a completed row none', async () => {
+test('HID-09/HID-10/EYE-01/EYE-02/EYE-03 every spec row has its eye: open "Ocultar spec" in view, closed "Desocultar spec" hidden, completed or not', async () => {
   const menus = contributes().menus;
   assert.deepEqual(declared('tlcSpecs.hideFeature'), { command: 'tlcSpecs.hideFeature', title: 'Ocultar spec', category: 'TLC Specs', icon: '$(eye)' });
   assert.deepEqual(declared('tlcSpecs.unhideFeature'), { command: 'tlcSpecs.unhideFeature', title: 'Desocultar spec', category: 'TLC Specs', icon: '$(eye-closed)' });
@@ -542,14 +542,16 @@ test('HID-09/HID-10 a spec row has the open eye "Ocultar spec", a marked row the
     assert.equal((await rowOf('user-auth')).contextValue, 'feature');
     assert.equal((await rowOf('csv-export')).contextValue, 'feature.hidden');
     assert.equal(feature('billing-invoices').health, 'complete');
-    assert.equal((await rowOf('billing-invoices')).contextValue, 'feature.done');
-    // A spec marked while open and completed later still has no eye.
-    await setHidden(api.dashboardMessage, 'billing-invoices', true);
-    assert.equal((await rowOf('billing-invoices')).contextValue, 'feature.done');
+    // Completed without a choice: hidden, so the closed eye.
+    assert.equal((await rowOf('billing-invoices')).contextValue, 'feature.hidden');
+    // Kept in view by its eye: the open eye.
+    await setHidden(api.dashboardMessage, 'billing-invoices', false);
+    assert.equal((await rowOf('billing-invoices')).contextValue, 'feature');
   } finally {
     await vscode.commands.executeCommand('tlcSpecs.hideHidden');
     await setHidden(api.dashboardMessage, 'csv-export', false);
-    await setHidden(api.dashboardMessage, 'billing-invoices', false);
+    // Hiding a completed spec clears its choice: back to hidden as completed.
+    await setHidden(api.dashboardMessage, 'billing-invoices', true);
   }
 });
 
@@ -583,18 +585,68 @@ test('HID-11/HID-12 the eye of a spec row takes it off Features and the panel an
   }
 });
 
-test('HID-14 with the eye of Features open a marked row ends its description with "· oculta", the same row unmarked does not', async () => {
+test('HID-14/EYE-08 with the eye of Features open every hidden row ends its description with "· oculta", completed or not, and a row in view does not', async () => {
   try {
     await vscode.commands.executeCommand('tlcSpecs.showHidden');
     assert.doesNotMatch((await rowOf('csv-export')).description, /oculta/);
     await setHidden(api.dashboardMessage, 'csv-export', true);
     assert.match((await rowOf('csv-export')).description, / · oculta$/);
-    // Hidden but not marked: the completed row has no "· oculta".
+    // Completed without a choice: hidden, so tagged.
+    assert.match((await rowOf('billing-invoices')).description, / · oculta$/);
+    // Completed and kept in view: not tagged.
+    await setHidden(api.dashboardMessage, 'billing-invoices', false);
     assert.doesNotMatch((await rowOf('billing-invoices')).description, /oculta/);
   } finally {
     await vscode.commands.executeCommand('tlcSpecs.hideHidden');
     await setHidden(api.dashboardMessage, 'csv-export', false);
+    await setHidden(api.dashboardMessage, 'billing-invoices', true);
   }
+});
+
+// --- eye-on-every-spec (spec: .specs/features/eye-on-every-spec/spec.md) ---------------------------------------
+
+test('EYE-05/EYE-04/EYE-10 the closed eye of a completed row keeps it in Features with the title eye closed, and its open eye hides it again', async () => {
+  const features = api.getProjects()[0].features;
+  const done = features.filter((f) => f.health === 'complete').length;
+  const base = `${features.length} feature(s) · ${done} concluída(s)`;
+  const message = (out) => (out ? `${base} · ${out} oculta(s)` : base);
+  assert.ok(!treeNames().includes('billing-invoices'), 'billing-invoices is in view before the test');
+  try {
+    // The row is reached with the title eye open, as the user reaches it.
+    await vscode.commands.executeCommand('tlcSpecs.showHidden');
+    await vscode.commands.executeCommand('tlcSpecs.unhideFeature', await featureNode('billing-invoices'));
+    await vscode.commands.executeCommand('tlcSpecs.hideHidden');
+    assert.ok(treeNames().includes('billing-invoices'), 'billing-invoices left Features');
+    assert.equal((await rowOf('billing-invoices')).contextValue, 'feature');
+    assert.equal(api.featuresViewMessage(), message(done - 1));
+
+    await vscode.commands.executeCommand('tlcSpecs.hideFeature', await featureNode('billing-invoices'));
+    assert.ok(!treeNames().includes('billing-invoices'), 'billing-invoices is still in Features');
+    assert.equal(api.featuresViewMessage(), message(done));
+  } finally {
+    await vscode.commands.executeCommand('tlcSpecs.hideHidden');
+    await setHidden(api.dashboardMessage, 'billing-invoices', true);
+  }
+});
+
+test('EYE-05/EYE-07 the eye of a completed card keeps it in the Concluídas column of the tab, with the board eye closed', async () => {
+  const done = api.getProjects()[0].features.filter((f) => f.health === 'complete').length;
+  await vscode.commands.executeCommand('tlcSpecs.openDashboard');
+  const before = await tabReport('the tab on the board', (r) => r.detail === null && r.toggle !== null && !r.cards.includes('billing-invoices'));
+  assert.equal(before.columns, 5);
+  assert.equal(before.toggle.text, ocultas(done));
+  try {
+    await setHidden(api.dashboardMessage, 'billing-invoices', false);
+    const kept = await tabReport('billing-invoices to show in the tab', (r) => r.cards.includes('billing-invoices'));
+    assert.equal(kept.columns, 6);
+    assert.equal(kept.toggle.text, ocultas(done - 1));
+    assert.equal(kept.toggle.title, 'Mostrar as specs ocultas');
+  } finally {
+    await setHidden(api.dashboardMessage, 'billing-invoices', true);
+  }
+  const back = await tabReport('billing-invoices to leave the tab', (r) => !r.cards.includes('billing-invoices'));
+  assert.equal(back.columns, 5);
+  assert.equal(back.toggle.text, ocultas(done));
 });
 
 // --- specs-folders -------------------------------------------------------------------------------------------

@@ -23,8 +23,8 @@ test('HID-13 a spec marked as hidden is still marked for the next instance over 
   const state = memento();
   await new HiddenSpecs(state).set(auth, true, false);
   const reopened = new HiddenSpecs(state);
-  assert.equal(reopened.isMarked(auth), true);
-  assert.equal(reopened.isMarked(billing), false);
+  assert.equal(reopened.choiceOf(auth), 'hidden');
+  assert.equal(reopened.choiceOf(billing), undefined);
   assert.deepEqual(reopened.keys(), [hiddenKey(project, 'user-auth')]);
 });
 
@@ -34,15 +34,15 @@ test('HID-12/HID-13 unhiding a spec takes its mark out of the workspace state', 
   await hidden.set(auth, true, false);
   await hidden.set(billing, true, false);
   await hidden.set(auth, false, false);
-  assert.equal(hidden.isMarked(auth), false);
-  assert.equal(hidden.isMarked(billing), true);
+  assert.equal(hidden.choiceOf(auth), undefined);
+  assert.equal(hidden.choiceOf(billing), 'hidden');
   assert.deepEqual(new HiddenSpecs(state).keys(), [hiddenKey(project, 'billing-invoices')]);
 });
 
 test('HID-13 a mark belongs to the spec of one specs folder, not to the same name in another folder', async () => {
   const hidden = new HiddenSpecs(memento());
   await hidden.set(auth, true, false);
-  assert.equal(hidden.isMarked({ projectId: 'file:///ws/docs/specs', feature: 'user-auth' }), false);
+  assert.equal(hidden.choiceOf({ projectId: 'file:///ws/docs/specs', feature: 'user-auth' }), undefined);
 });
 
 test('HID-11/HID-12 marking and unmarking tell the listeners, a call that changes nothing does not', async () => {

@@ -88,7 +88,7 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 | EYE-08 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Implementing |
 | EYE-09 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Implementing |
 | EYE-10 | Edge case: ocultar uma concluída à vista | Execute | Implementing |
-| EYE-11 | Edge case: detalhe de uma oculta | Execute | In Tasks |
+| EYE-11 | Edge case: detalhe de uma oculta | Execute | Implementing |
 
 **ID format:** `EYE-NN`, na ordem dos critérios acima.
 

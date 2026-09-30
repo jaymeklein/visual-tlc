@@ -29,6 +29,7 @@ window.addEventListener('message', (event: MessageEvent<ToWebview>) => {
     projects = msg.projects;
     now = msg.now;
     hidden = msg.hidden;
+    shown = msg.shown;
     loaded = true;
     render();
   } else if (msg.type === 'select') {

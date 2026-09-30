@@ -114,7 +114,7 @@ class Surface implements vscode.Disposable {
   }
 
   postState(): void {
-    this.post({ type: 'state', projects: this.store.projects.map((p) => p.project), now: Date.now(), hidden: this.hidden.keys() });
+    this.post({ type: 'state', projects: this.store.projects.map((p) => p.project), now: Date.now(), hidden: this.hidden.keys(), shown: this.hidden.shownKeys() });
   }
 
   private flushSelect(): void {
