@@ -718,6 +718,103 @@ test('HFD-01/HFD-06 a completed spec kept in view by its eye keeps its folder in
   assert.deepEqual(treeNames(), open);
 });
 
+// --- collapsed-hidden-folder (spec: .specs/features/collapsed-hidden-folder/spec.md) -------------------------
+
+const { Collapsed, Expanded } = vscode.TreeItemCollapsibleState;
+const openEye = () => vscode.commands.executeCommand('tlcSpecs.showHidden');
+const closeEye = () => vscode.commands.executeCommand('tlcSpecs.hideHidden');
+
+/**
+ * Folders VS Code shows expanded while fn runs and the tree settles: it asks the provider for the children of an
+ * expanded node only. Needs the Features view on screen.
+ */
+async function expandedWhile(fn) {
+  const asked = new Set();
+  const provider = api.featuresTree;
+  const own = provider.getChildren;
+  provider.getChildren = function (node) {
+    if (node && node.kind === 'root') asked.add(node.loaded.project.id);
+    return own.call(this, node);
+  };
+  try {
+    await fn();
+    await treeSettled();
+  } finally {
+    delete provider.getChildren;
+  }
+  return [...asked].sort();
+}
+
+/** The user expands the first row of Features from the keyboard. */
+async function expandFirstRow() {
+  await vscode.commands.executeCommand('tlcSpecs.features.focus');
+  await vscode.commands.executeCommand('list.focusFirst');
+  await vscode.commands.executeCommand('list.expand');
+}
+
+test('CHF-01/CHF-02/CHF-03/CHF-05 the eye of Features brings a folder with every spec hidden back collapsed, each time, even after the user opened it, and it lists them all once expanded', async () => {
+  const open = openNames();
+  const id = projectId();
+  await vscode.commands.executeCommand('tlcSpecs.features.focus');
+  try {
+    // With specs in view the folder is expanded: VS Code asks for its specs when the eye opens.
+    assert.deepEqual(await expandedWhile(openEye), [id]);
+    assert.equal(folderRow().collapsibleState, Expanded);
+    await closeEye();
+
+    for (const name of open) await setHidden(api.dashboardMessage, name, true);
+    assert.deepEqual(api.featuresTree.getChildren(), []);
+    // VS Code takes the folder off the tree before the eye opens again.
+    await treeSettled();
+    assert.deepEqual(await expandedWhile(openEye), []);
+    assert.equal(folderRow().collapsibleState, Collapsed);
+    const specs = api.featuresTree.getChildren(api.featuresTree.getChildren()[0]);
+    assert.deepEqual(specs.map((n) => n.feature.name).sort(), modelNames(() => true));
+    for (const n of specs) assert.match(api.featuresTree.getTreeItem(n).description, / · oculta$/);
+
+    // The user opens it, then closes and opens the eye: it comes back collapsed again.
+    assert.deepEqual(await expandedWhile(expandFirstRow), [id]);
+    await closeEye();
+    await treeSettled();
+    assert.deepEqual(await expandedWhile(openEye), []);
+    assert.equal(folderRow().collapsibleState, Collapsed);
+  } finally {
+    await restoreFolder(open);
+  }
+});
+
+/** Closes the eye and shows the specs again, letting VS Code take the folder off the tree first: it comes back expanded. */
+async function restoreFolder(open) {
+  await closeEye();
+  await treeSettled();
+  for (const name of open) await setHidden(api.dashboardMessage, name, false);
+  await treeSettled();
+}
+
+test('CHF-04 with the eye open, hiding or showing a spec leaves its folder open or closed as it was', async () => {
+  const open = openNames();
+  const id = projectId();
+  await vscode.commands.executeCommand('tlcSpecs.features.focus');
+  try {
+    // In view and expanded: hiding its last spec in view from the eye of the row leaves the folder expanded.
+    assert.deepEqual(await expandedWhile(openEye), [id]);
+    for (const name of open.slice(1)) await vscode.commands.executeCommand('tlcSpecs.hideFeature', await featureNode(name));
+    const last = await featureNode(open[0]);
+    await treeSettled();
+    assert.deepEqual(await expandedWhile(() => vscode.commands.executeCommand('tlcSpecs.hideFeature', last)), [id]);
+    assert.match(folderRow().description, / · oculta$/);
+
+    // Brought back collapsed: showing one of its specs from the card leaves it collapsed.
+    await closeEye();
+    await treeSettled();
+    assert.deepEqual(await expandedWhile(openEye), []);
+    assert.deepEqual(await expandedWhile(() => setHidden(api.dashboardMessage, open[0], false)), []);
+    assert.doesNotMatch(folderRow().description, /oculta/);
+  } finally {
+    await restoreFolder(open);
+  }
+});
+
 // --- specs-folders -------------------------------------------------------------------------------------------
 
 const SPEC_WITHOUT_SHALL =
@@ -1449,6 +1546,35 @@ test('HFD-01/HFD-05/HFD-06 with two folders of specs the one with every spec hid
     );
   } finally {
     await vscode.commands.executeCommand('tlcSpecs.hideHidden');
+    for (const name of open) await setHiddenIn(specsId, name, false);
+    await setFolders(undefined);
+  }
+  await waitForRoots(['.specs']);
+});
+
+test('CHF-01/CHF-02 with two folders the eye of Features brings back collapsed only the one with every spec hidden, and keeps the other expanded', async () => {
+  await write('side/.specs/features/side-one/spec.md', SPEC_WITHOUT_SHALL);
+  let specsId;
+  let open = [];
+  try {
+    await setFolders(['.specs', 'side/.specs']);
+    await waitForRoots(['.specs', 'side/.specs']);
+    specsId = idOf('.specs');
+    const sideId = idOf('side/.specs');
+    open = api.getProjects().find((p) => p.id === specsId).features.filter((f) => f.health !== 'complete').map((f) => f.name);
+    for (const name of open) await setHiddenIn(specsId, name, true);
+    await vscode.commands.executeCommand('tlcSpecs.features.focus');
+    await treeSettled();
+
+    assert.deepEqual(await expandedWhile(openEye), [sideId]);
+    const nodes = api.featuresTree.getChildren();
+    assert.deepEqual(nodes.map((n) => n.loaded.project.id), [specsId, sideId]);
+    assert.deepEqual(
+      nodes.map((n) => api.featuresTree.getTreeItem(n).collapsibleState),
+      [Collapsed, Expanded],
+    );
+  } finally {
+    await closeEye();
     for (const name of open) await setHiddenIn(specsId, name, false);
     await setFolders(undefined);
   }

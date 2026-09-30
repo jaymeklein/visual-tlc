@@ -156,9 +156,13 @@ export class FeaturesTree implements vscode.TreeDataProvider<Node> {
     switch (node.kind) {
       case 'root': {
         const p = node.loaded.project;
-        const item = new vscode.TreeItem(p.label, C.Expanded);
+        const hidden = this.allHidden(node.loaded);
+        // A folder the eye brings back comes collapsed: the user picks which ones to open. VS Code applies this state
+        // only to a node it adds, and the folder left the tree while the eye was closed. A node that stays keeps the
+        // state the user gave it, so hiding or showing a spec with the eye open does not open or close its folder.
+        const item = new vscode.TreeItem(p.label, hidden ? C.Collapsed : C.Expanded);
         item.iconPath = icon('folder-library');
-        item.description = `${p.features.length} feature(s)${this.allHidden(node.loaded) ? ' · oculta' : ''}`;
+        item.description = `${p.features.length} feature(s)${hidden ? ' · oculta' : ''}`;
         item.id = `root:${pid}`;
         return item;
       }

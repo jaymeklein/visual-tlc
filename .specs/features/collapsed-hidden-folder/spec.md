@@ -29,8 +29,9 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 | --------------------- | --------------- | --------- | ---------- |
 | Pasta que volta com o olho aberto | Recolhida, sem listar as specs | Pedido do usuário: "seria melhor que ela viesse fechada" | y (2026-09-30) |
 | Pastas com spec à vista | Continuam expandidas | O pedido é sobre a pasta que o olho traz de volta | n |
-| Cada abertura do olho | A pasta oculta volta recolhida toda vez, mesmo que o usuário a tenha aberto antes | Com o olho fechado, o nó sai da árvore, e o VS Code não guarda o estado de um nó que saiu | n |
-| Pasta à vista que fica toda oculta com o olho aberto | O nó continua na árvore e fica aberto ou fechado como estava | O nó não sai da árvore, e o `id` dele guarda o estado de expansão (API do VS Code, `TreeItem.id`) | n |
+| Cada abertura do olho | A pasta oculta volta recolhida toda vez, mesmo que o usuário a tenha aberto antes | O pedido é que ela venha fechada ao abrir o olho | n |
+| Como a pasta volta recolhida | O nó da pasta oculta é dado como recolhido, com o mesmo `id` de sempre | Medido no VS Code instalado em 2026-09-30: o VS Code usa o estado dado só num nó que ele acrescenta à árvore. Com o olho fechado, a pasta sai da árvore, e o VS Code esquece se estava aberta. Um `id` novo a cada abertura foi testado e não é preciso | n |
+| Ocultar ou desocultar uma spec com o olho aberto | O nó da pasta fica aberto ou fechado como estava (CHF-04) | O nó continua na árvore, e o VS Code mantém o estado que o usuário deu, mesmo que a extensão mude o estado dado. Decidir quais pastas abrir fica com o usuário | n |
 | Dimensões implícitas | Remaining dimensions N/A for this scope | Só muda o estado inicial de um nó da árvore. Sem persistência, chamadas externas ou concorrência | n |
 
 **Open questions:** none - all resolved or logged above.
@@ -50,6 +51,7 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 1. WHEN o usuário abre o olho do título de Features THEN a árvore SHALL mostrar recolhido, sem listar as specs dele, o nó de toda pasta com todas as specs ocultas
 2. WHEN o usuário abre o olho do título de Features THEN a árvore SHALL mostrar expandido, com as specs listadas, o nó de toda pasta com alguma spec à vista
 3. WHEN o usuário expande o nó recolhido de uma pasta oculta THEN a árvore SHALL listar todas as specs da pasta, cada uma com a descrição terminada em "· oculta"
+4. WHILE o olho do título de Features está aberto, WHEN o usuário oculta ou desoculta uma spec, the árvore SHALL manter o nó da pasta dela aberto ou fechado como estava
 
 **Independent Test**: Neste repositório, com todas as specs concluídas, abrir o olho do título de Features. O nó `visual-tlc` aparece recolhido. Expandir o nó mostra as specs, todas com "· oculta".
 
@@ -65,14 +67,15 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Requirement ID | Story       | Phase  | Status  |
 | -------------- | ----------- | ------ | ------- |
-| CHF-01 | P1: Abrir o olho sem expandir as pastas ocultas | Execute | Pending |
-| CHF-02 | P1: Abrir o olho sem expandir as pastas ocultas | Execute | Pending |
-| CHF-03 | P1: Abrir o olho sem expandir as pastas ocultas | Execute | Pending |
-| CHF-04 | Edge case: abrir o olho de novo | Execute | Pending |
+| CHF-01 | P1: Abrir o olho sem expandir as pastas ocultas | Execute | Implementing |
+| CHF-02 | P1: Abrir o olho sem expandir as pastas ocultas | Execute | Implementing |
+| CHF-03 | P1: Abrir o olho sem expandir as pastas ocultas | Execute | Implementing |
+| CHF-04 | P1: Abrir o olho sem expandir as pastas ocultas | Execute | Implementing |
+| CHF-05 | Edge case: abrir o olho de novo | Execute | Implementing |
 
 **ID format:** `CHF-NN`, na ordem dos critérios acima.
 
-**Coverage:** 4 total, 0 verificados.
+**Coverage:** 5 total, 0 verificados.
 
 ---
 
