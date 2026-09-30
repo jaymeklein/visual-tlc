@@ -105,13 +105,13 @@ T3 → T4
 
 **Done when**:
 
-- [ ] Com o padrão, os projetos são só `.specs`, mesmo com `.specs` criadas em subpastas (SFP-01)
-- [ ] `packages/api/docs/specs` listada lê só essa pasta (SFP-02)
-- [ ] Uma spec numa pasta não configurada fica fora das árvores, do painel na aba e na lateral, da barra de status e do painel Problemas (SFP-03)
-- [ ] O `package.json` não declara `tlcSpecs.exclude`, e um valor dele nas configurações não muda a listagem (SFP-04)
-- [ ] Entrada que não existe: sem projeto e sem aviso. Ao criar a pasta, ela aparece sem recarregar a janela (SFP-05, SFP-06)
-- [ ] `parseExclude` e os testes EXC saem com a configuração. O teste de `pendingWarnings` passa a usar só `tlcSpecs.specsFolders`. Os SF de busca em profundidade são reescritos para o caminho exato. `multiroot.cjs` e o fixture `b` passam a usar só `specsFolders`
-- [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
+- [x] Com o padrão, os projetos são só `.specs`, mesmo com `.specs` criadas em subpastas (SFP-01)
+- [x] `packages/api/docs/specs` listada lê só essa pasta (SFP-02)
+- [x] Uma spec numa pasta não configurada fica fora das árvores, do painel na aba e na lateral, da barra de status e do painel Problemas (SFP-03)
+- [x] O `package.json` não declara `tlcSpecs.exclude`, e um valor dele nas configurações não muda a listagem (SFP-04)
+- [x] Entrada que não existe: sem projeto e sem aviso. Ao criar a pasta, ela aparece sem recarregar a janela (SFP-05, SFP-06)
+- [x] `parseExclude` e os testes EXC saem com a configuração. O teste de `pendingWarnings` passa a usar só `tlcSpecs.specsFolders`. Os SF de busca em profundidade são reescritos para o caminho exato. `multiroot.cjs` e o fixture `b` passam a usar só `specsFolders`
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
 
 **Tests**: integration
 **Gate**: full

@@ -596,17 +596,29 @@ test('SF-01 contributes tlcSpecs.specsFolders with [".specs"] as the default', (
   assert.deepEqual(vscode.workspace.getConfiguration('tlcSpecs', folder()).get('specsFolders'), ['.specs']);
 });
 
-test('SF-02 shows every folder that matches an entry, at any depth', async () => {
+test('SFP-01 .specs is read at the workspace folder root only, never in a subfolder', async () => {
+  await write('lib/.specs/features/lib-one/spec.md', SPEC_WITHOUT_SHALL);
+  await write('test/nested/.specs/features/in-test/spec.md', SPEC_WITHOUT_SHALL);
+  await api.refresh();
+  assert.deepEqual(roots(), ['.specs']);
+  const names = api.getProjects().flatMap((p) => p.features.map((f) => f.name));
+  assert.ok(!names.includes('lib-one') && !names.includes('in-test'), `read a .specs in a subfolder: ${names.join(', ')}`);
+});
+
+test('SFP-02 an entry with subfolders is read at that path from the workspace folder root', async () => {
   await write('docs/specs/features/custom-one/spec.md', SPEC_WITHOUT_SHALL);
   await write('packages/api/docs/specs/STATE.md', '# STATE\n\n## Decisions\n\n## Handoff\n');
   await write('packages/api/docs/specs/features/nested-one/spec.md', SPEC_WITHOUT_SHALL);
   await setFolders(['docs/specs']);
-  await waitForRoots(['docs/specs', 'packages/api/docs/specs']);
+  await waitForRoots(['docs/specs']);
   assert.deepEqual(featuresOf('docs/specs'), ['custom-one']);
+
+  await setFolders(['packages/api/docs/specs']);
+  await waitForRoots(['packages/api/docs/specs']);
   assert.deepEqual(featuresOf('packages/api/docs/specs'), ['nested-one']);
 
   await setFolders(['.specs', 'docs/specs']);
-  await waitForRoots(['.specs', 'docs/specs', 'packages/api/docs/specs']);
+  await waitForRoots(['.specs', 'docs/specs']);
 });
 
 test('SF-03 a configuration change reloads trees, panel, status bar and diagnostics without a window reload', async () => {
@@ -621,7 +633,7 @@ test('SF-03 a configuration change reloads trees, panel, status bar and diagnost
   let fired = 0;
   const sub = api.featuresTree.onDidChangeTreeData(() => fired++);
   try {
-    await setFolders(['docs/specs']);
+    await setFolders(['docs/specs', 'packages/api/docs/specs']);
     await waitForRoots(['docs/specs', 'packages/api/docs/specs']);
     assert.ok(fired > 0, 'the Features tree was not told to reload');
     const ids = JSON.stringify(api.getProjects().map((p) => p.id));
@@ -659,7 +671,7 @@ test('SF-03 a configuration change reloads trees, panel, status bar and diagnost
 test('SF-04 a file created, changed or removed inside a configured folder updates its view', async () => {
   const customTwo = () => api.getProjects().flatMap((p) => p.features).find((f) => f.name === 'custom-two');
   const withoutShall = (f) => f.issues.filter((i) => i.message.includes('sem SHALL')).length;
-  await setFolders(['docs/specs']);
+  await setFolders(['docs/specs', 'packages/api/docs/specs']);
   await waitForRoots(['docs/specs', 'packages/api/docs/specs']);
 
   await write('docs/specs/features/custom-two/spec.md', SPEC_WITHOUT_SHALL);
@@ -676,11 +688,11 @@ test('SF-04 a file created, changed or removed inside a configured folder update
   assert.deepEqual(featuresOf('docs/specs'), ['custom-one']);
 });
 
-test('SF-05 a matching folder without skill artifacts is ignored, unless it is named .specs', async () => {
+test('SF-05 a configured folder without skill artifacts is ignored, unless it is named .specs', async () => {
   await write('notes/specs/readme.md', '# Notes\n');
   await write('notes/specs/features/readme.md', '# Not a feature\n');
   await write('tools/.specs/notes.txt', 'nothing from the skill\n');
-  await setFolders(['.specs', 'notes/specs']);
+  await setFolders(['.specs', 'notes/specs', 'tools/.specs']);
   await waitForRoots(['.specs', 'tools/.specs']);
 
   await write('notes/specs/lessons.json', '{"lessons": []}');
@@ -689,7 +701,7 @@ test('SF-05 a matching folder without skill artifacts is ignored, unless it is n
 
 test('SF-10/SF-11 entries that lead to the same folder show it once', async () => {
   await setFolders(['docs/specs', 'docs\\specs\\', 'specs']);
-  await waitForRoots(['docs/specs', 'notes/specs', 'packages/api/docs/specs']);
+  await waitForRoots(['docs/specs']);
   const ids = api.getProjects().map((p) => p.id);
   assert.deepEqual(ids, [...new Set(ids)]);
 });
@@ -703,7 +715,7 @@ test('SF-09 an invalid entry is ignored with a warning that names it', async () 
   };
   try {
     await setFolders(['../fora', 'docs/*', 'docs/specs']);
-    await waitForRoots(['docs/specs', 'packages/api/docs/specs']);
+    await waitForRoots(['docs/specs']);
     await waitFor('two warnings', () => shown.length >= 2);
     assert.equal(shown.filter((m) => m.includes('"../fora"')).length, 1);
     assert.equal(shown.filter((m) => m.includes('"docs/*"')).length, 1);
@@ -716,25 +728,29 @@ test('SF-09 an invalid entry is ignored with a warning that names it', async () 
 
 const groupLabels = () => api.featuresTree.getChildren().map((n) => api.featuresTree.getTreeItem(n).label).sort();
 
-test('SF-07 two specs folders of the same project are labelled with project and folder path', async () => {
+const projectLabels = () => api.projectTree.getChildren().map((n) => api.projectTree.getTreeItem(n).label).sort();
+
+test('SFP-09 the specs folders of one workspace folder are labelled with its name and the entry, in both trees', async () => {
   const ws = vscode.workspace.workspaceFolders[0].name;
   await setFolders(['.specs', 'docs/specs']);
-  await waitForRoots(['.specs', 'docs/specs', 'packages/api/docs/specs', 'tools/.specs']);
-  assert.deepEqual(groupLabels(), [`${ws} · .specs`, `${ws} · docs/specs`, `${ws}/packages/api`, `${ws}/tools`].sort());
+  await waitForRoots(['.specs', 'docs/specs']);
+  assert.deepEqual(groupLabels(), [`${ws} · .specs`, `${ws} · docs/specs`]);
+  assert.deepEqual(projectLabels(), [`${ws} · .specs`, `${ws} · docs/specs`]);
 
-  await setFolders(['docs/specs']);
+  await setFolders(['docs/specs', 'packages/api/docs/specs']);
   await waitForRoots(['docs/specs', 'packages/api/docs/specs']);
-  assert.deepEqual(groupLabels(), [ws, `${ws}/packages/api`].sort());
+  assert.deepEqual(groupLabels(), [`${ws} · docs/specs`, `${ws} · packages/api/docs/specs`]);
+  assert.deepEqual(projectLabels(), [`${ws} · docs/specs`, `${ws} · packages/api/docs/specs`]);
 });
 
 test('SF-08 an empty list uses .specs', async () => {
   await setFolders([]);
-  await waitForRoots(['.specs', 'tools/.specs']);
+  await waitForRoots(['.specs']);
 });
 
 test('specs-folders: restores the default configuration', async () => {
   await setFolders(undefined);
-  await waitForRoots(['.specs', 'tools/.specs']);
+  await waitForRoots(['.specs']);
 });
 
 // --- sidebar-dashboard ---------------------------------------------------------------------------------------
@@ -873,7 +889,7 @@ test('SIDE-11 without a specs folder the side panel says that no spec was found'
     assert.equal(report.columns, 0);
   } finally {
     await setFolders(undefined);
-    await waitForRoots(['.specs', 'tools/.specs']);
+    await waitForRoots(['.specs']);
   }
   const back = await sideReport('the projects to come back', (r) => same(r.projects, projectIds()));
   assert.equal(back.emptyMessage, null);
@@ -1036,7 +1052,7 @@ test('SIDE-06 the side panel comes back with the current projects and the select
   await waitFor('the side panel to hide', () => api.sidePanelReport() === undefined);
   try {
     await setFolders(['.specs', 'docs/specs']);
-    await waitForRoots(['.specs', 'docs/specs', 'packages/api/docs/specs', 'tools/.specs']);
+    await waitForRoots(['.specs', 'docs/specs']);
     assert.equal(api.sidePanelReport(), undefined, 'the hidden side panel rendered something');
 
     await showSidePanel();
@@ -1045,7 +1061,7 @@ test('SIDE-06 the side panel comes back with the current projects and the select
     assert.equal(report.detail, 'user-auth');
   } finally {
     await setFolders(undefined);
-    await waitForRoots(['.specs', 'tools/.specs']);
+    await waitForRoots(['.specs']);
   }
 });
 
@@ -1057,7 +1073,7 @@ test('SIDE-10 the panel in a tab and the side panel are updated together', async
   await sideReport('the side panel to render the projects', (r) => same(r.projects, projectIds()));
   try {
     await setFolders(['docs/specs']);
-    await waitForRoots(['docs/specs', 'packages/api/docs/specs']);
+    await waitForRoots(['docs/specs']);
     const ids = projectIds();
     const tab = await tabReport('the tab to render docs/specs', (r) => same(r.projects, ids));
     const side = await sideReport('the side panel to render docs/specs', (r) => same(r.projects, ids));
@@ -1065,7 +1081,7 @@ test('SIDE-10 the panel in a tab and the side panel are updated together', async
     assert.deepEqual([...side.cards].sort(), boardNames(api.getProjects()));
   } finally {
     await setFolders(undefined);
-    await waitForRoots(['.specs', 'tools/.specs']);
+    await waitForRoots(['.specs']);
   }
 });
 
@@ -1131,102 +1147,73 @@ test('HID-15 a spec marked as hidden opens on its details in the side panel, whe
   }
 });
 
-// --- exclude-folders -----------------------------------------------------------------------------------------
+// --- specs-folder-paths (spec: .specs/features/specs-folder-paths/spec.md) ------------------------------------
 
-const EMPTY_STATE = ['# STATE', '', '## Decisions', '', '## Handoff', ''].join(String.fromCharCode(10));
-const setExclude = (value) => vscode.workspace.getConfiguration('tlcSpecs', folder()).update('exclude', value, vscode.ConfigurationTarget.Workspace);
 const tlcDiagnostics = () => vscode.languages.getDiagnostics().filter(([, list]) => list.some((x) => x.source === 'TLC Specs'));
+/** Names of the specs the Features tree lists, under the folder nodes or at the top. */
+const treeFeatures = () =>
+  api.featuresTree
+    .getChildren()
+    .flatMap((n) => (n.kind === 'root' ? api.featuresTree.getChildren(n) : [n]))
+    .map((n) => n.feature.name);
+const settingsFile = () => path.join(folder().fsPath, '.vscode', 'settings.json');
 
-test('EXC-01 contributes tlcSpecs.exclude as a list of folders with ["node_modules"] as the default', () => {
-  const declared = vscode.extensions.getExtension('visual-tlc.visual-tlc').packageJSON.contributes.configuration.properties['tlcSpecs.exclude'];
-  assert.deepEqual(declared.default, ['node_modules']);
-  assert.deepEqual(declared.type, ['array', 'string']);
-  assert.deepEqual(declared.items, { type: 'string' });
-  assert.equal(declared.scope, 'resource');
-  assert.deepEqual(vscode.workspace.getConfiguration('tlcSpecs', folder()).get('exclude'), ['node_modules']);
-});
-
-test('EXC-02/EXC-03/EXC-08 a listed folder leaves the listing and the panel at any depth, without a window reload', async () => {
+test('SFP-03 a spec outside the configured folders stays out of the trees, the panel, the status bar and Problems', async () => {
   await closeAll();
   await setFolders(undefined);
+  await waitForRoots(['.specs']);
   await write('test/nested/.specs/features/in-test/spec.md', SPEC_WITHOUT_SHALL);
-  await write('packages/api/test/.specs/STATE.md', EMPTY_STATE);
-  await write('tests/.specs/features/in-tests/spec.md', SPEC_WITHOUT_SHALL);
-  await write('node_modules/pkg/.specs/STATE.md', EMPTY_STATE);
-  await waitForRoots(['.specs', 'packages/api/test/.specs', 'test/nested/.specs', 'tests/.specs', 'tools/.specs']);
-  await waitFor('the diagnostics of test/nested', () => tlcDiagnostics().some(([uri]) => uri.path.includes('/test/nested/.specs/')));
+  // A Handoff gives the folder something to show in the Projeto tree.
+  await write('test/nested/.specs/STATE.md', '# STATE\n\n## Decisions\n\n## Handoff\n\n- **Feature**: .specs/features/in-test\n- **Next step**: Write the tasks\n');
   await showSidePanel();
   await vscode.commands.executeCommand('tlcSpecs.openDashboard');
-  await tabReport('the tab to show in-test and in-tests', (r) => r.detail === null && r.cards.includes('in-test') && r.cards.includes('in-tests'));
-  await sideReport('the side panel to render every project', (r) => same(r.projects, projectIds()));
 
-  await setExclude(['node_modules', 'test']);
-  await waitForRoots(['.specs', 'tests/.specs', 'tools/.specs']);
-  assert.deepEqual(featuresOf('tests/.specs'), ['in-tests']);
-  await tabReport('the tab to drop the features of the excluded folders', (r) => !r.cards.includes('in-test') && r.cards.includes('in-tests'));
-  await sideReport('the side panel to drop the excluded projects', (r) => same(r.projects, projectIds()));
-  assert.deepEqual(
-    api.featuresTree.getChildren().map((n) => n.loaded.project.id),
-    projectIds(),
-  );
-  assert.deepEqual(
-    api.projectTree.getChildren().map((n) => n.loaded.project.id),
-    projectIds(),
-  );
-  await waitFor('the diagnostics of the excluded folders to go away', () => !tlcDiagnostics().some(([uri]) => uri.path.includes('/test/')));
-  assert.ok(tlcDiagnostics().some(([uri]) => uri.path.includes('/tests/.specs/')), 'tests/.specs lost its diagnostics');
-
-  await setExclude(undefined);
-  await waitForRoots(['.specs', 'packages/api/test/.specs', 'test/nested/.specs', 'tests/.specs', 'tools/.specs']);
-});
-
-test('EXC-09 a folder listed in specsFolders stays out when it is inside an excluded folder', async () => {
-  await write('test/docs/specs/STATE.md', EMPTY_STATE);
-  await setFolders(['docs/specs']);
-  await waitForRoots(['docs/specs', 'packages/api/docs/specs', 'test/docs/specs']);
-  await setExclude(['node_modules', 'test']);
-  await waitForRoots(['docs/specs', 'packages/api/docs/specs']);
-  await setFolders(undefined);
-  await waitForRoots(['.specs', 'tests/.specs', 'tools/.specs']);
-});
-
-test('EXC-04 a text value is used as the exclusion glob', async () => {
-  await setExclude('{**/node_modules/**,**/tools/**}');
-  await waitForRoots(['.specs', 'packages/api/test/.specs', 'test/nested/.specs', 'tests/.specs']);
-  await setExclude('**/test/**');
-  await waitForRoots(['.specs', 'node_modules/pkg/.specs', 'tests/.specs', 'tools/.specs']);
-});
-
-test('EXC-06 an empty list excludes nothing, not even node_modules', async () => {
-  await setExclude([]);
-  await waitForRoots(['.specs', 'node_modules/pkg/.specs', 'packages/api/test/.specs', 'test/nested/.specs', 'tests/.specs', 'tools/.specs']);
-});
-
-test('EXC-07 an invalid entry is ignored with a warning that names it', async () => {
-  const shown = [];
-  const original = vscode.window.showWarningMessage;
-  vscode.window.showWarningMessage = (message) => {
-    shown.push(message);
-    return Promise.resolve(undefined);
-  };
+  // Listed, the folder shows everywhere the test looks below.
   try {
-    await setExclude(['../fora', '**/tools/**', 'test']);
-    await waitForRoots(['.specs', 'node_modules/pkg/.specs', 'tests/.specs', 'tools/.specs']);
-    await waitFor('two warnings', () => shown.length >= 2);
-    assert.deepEqual(
-      [...shown].sort(),
-      ['TLC Specs: a entrada "**/tools/**" de tlcSpecs.exclude foi ignorada. Use um caminho relativo, sem "..", sem vírgula e sem glob.', 'TLC Specs: a entrada "../fora" de tlcSpecs.exclude foi ignorada. Use um caminho relativo, sem "..", sem vírgula e sem glob.'],
-    );
-    await api.refresh();
-    assert.equal(shown.length, 2, 'the warning was repeated on refresh');
+    await setFolders(['test/nested/.specs']);
+    await waitForRoots(['test/nested/.specs']);
+    assert.deepEqual(treeFeatures(), ['in-test']);
+    assert.deepEqual([...new Set(api.projectTree.getChildren().map((n) => n.loaded.project.id))], projectIds());
+    await tabReport('the tab to show in-test', (r) => r.detail === null && r.cards.includes('in-test'));
+    await sideReport('the side panel to render test/nested', (r) => same(r.projects, projectIds()));
+    assert.match(api.statusBarText(), /in-test/);
+    await waitFor('the diagnostics of test/nested', () => tlcDiagnostics().some(([uri]) => uri.path.includes('/test/nested/.specs/')));
   } finally {
-    vscode.window.showWarningMessage = original;
-    await setExclude(undefined);
+    await setFolders(undefined);
   }
-  await waitForRoots(['.specs', 'packages/api/test/.specs', 'test/nested/.specs', 'tests/.specs', 'tools/.specs']);
+  await waitForRoots(['.specs']);
+  assert.ok(!treeFeatures().includes('in-test'), 'in-test is still in the Features tree');
+  assert.deepEqual([...new Set(api.projectTree.getChildren().map((n) => n.loaded.project.id))], projectIds());
+  await tabReport('the tab to drop in-test', (r) => same(r.projects, projectIds()) && !r.cards.includes('in-test'));
+  await sideReport('the side panel to drop test/nested', (r) => same(r.projects, projectIds()));
+  assert.doesNotMatch(api.statusBarText(), /in-test/);
+  await waitFor('the diagnostics of test/nested to go away', () => !tlcDiagnostics().some(([uri]) => uri.path.includes('/test/nested/')));
 });
 
-test('EXC-10 the same invalid entry in both settings is warned once per setting, with its name', async () => {
+test('SFP-04 tlcSpecs.specsFolders is the only folder setting, and a leftover tlcSpecs.exclude changes nothing', async () => {
+  const properties = vscode.extensions.getExtension('visual-tlc.visual-tlc').packageJSON.contributes.configuration.properties;
+  assert.ok(!('tlcSpecs.exclude' in properties), 'tlcSpecs.exclude is still contributed');
+  assert.deepEqual(
+    Object.keys(properties).filter((key) => /folder|exclude/i.test(key)),
+    ['tlcSpecs.specsFolders'],
+  );
+
+  // A value left from the older versions: an unregistered key, so it goes straight into the settings file.
+  const before = await readFile(settingsFile(), 'utf8').catch(() => '{}');
+  const featuresBefore = featuresOf('.specs');
+  try {
+    await writeFile(settingsFile(), JSON.stringify({ ...JSON.parse(before), 'tlcSpecs.exclude': ['.specs'] }, null, 2));
+    await waitFor('the leftover exclude to be read', () => JSON.stringify(vscode.workspace.getConfiguration('tlcSpecs', folder()).get('exclude')) === '[".specs"]');
+    await api.refresh();
+    assert.deepEqual(roots(), ['.specs']);
+    assert.deepEqual(featuresOf('.specs'), featuresBefore);
+  } finally {
+    await writeFile(settingsFile(), before);
+    await waitFor('the leftover exclude to go', () => vscode.workspace.getConfiguration('tlcSpecs', folder()).get('exclude') === undefined);
+  }
+});
+
+test('SFP-05/SFP-06 an entry without a folder is ignored without a warning, and shows once its folder is created', async () => {
   const shown = [];
   const original = vscode.window.showWarningMessage;
   vscode.window.showWarningMessage = (message) => {
@@ -1234,24 +1221,18 @@ test('EXC-10 the same invalid entry in both settings is warned once per setting,
     return Promise.resolve(undefined);
   };
   try {
-    await setFolders(['../fora', '.specs']);
-    await setExclude(['../fora', 'node_modules']);
-    await waitFor('two warnings', () => shown.length >= 2);
-    assert.deepEqual(
-      [...shown].sort(),
-      [
-        'TLC Specs: a entrada "../fora" de tlcSpecs.exclude foi ignorada. Use um caminho relativo, sem "..", sem vírgula e sem glob.',
-        'TLC Specs: a entrada "../fora" de tlcSpecs.specsFolders foi ignorada. Use um caminho relativo, sem ".." e sem glob.',
-      ],
-    );
+    await setFolders(['.specs', 'later/.specs']);
     await api.refresh();
-    assert.equal(shown.length, 2, 'a warning was repeated on refresh');
+    assert.deepEqual(roots(), ['.specs']);
+    await write('later/.specs/features/late-one/spec.md', SPEC_WITHOUT_SHALL);
+    await waitForRoots(['.specs', 'later/.specs']);
+    assert.deepEqual(featuresOf('later/.specs'), ['late-one']);
+    assert.deepEqual(shown, []);
   } finally {
     vscode.window.showWarningMessage = original;
     await setFolders(undefined);
-    await setExclude(undefined);
   }
-  await waitForRoots(['.specs', 'packages/api/test/.specs', 'test/nested/.specs', 'tests/.specs', 'tools/.specs']);
+  await waitForRoots(['.specs']);
 });
 
 exports.run = async function run() {

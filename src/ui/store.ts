@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { DEFAULT_SPECS_FOLDER, findSpecsRoots, type InvalidEntry, parseExclude, parseSpecsFolders, pendingWarnings, rootLabel } from '../core/folders.ts';
+import { DEFAULT_SPECS_FOLDER, findSpecsRoots, type InvalidEntry, parseSpecsFolders, pendingWarnings, rootLabel } from '../core/folders.ts';
 import { loadProject, type SpecsReader } from '../core/project.ts';
 import type { Feature, Project } from '../core/types.ts';
 
@@ -45,7 +45,7 @@ export class SpecsStore implements vscode.Disposable {
     const schedule = () => this.schedule();
     this.watchers = (vscode.workspace.workspaceFolders ?? []).flatMap((folder) =>
       specsFolders(folder).entries.flatMap((entry) => {
-        const watcher = vscode.workspace.createFileSystemWatcher(new vscode.RelativePattern(folder, `**/${entry}/**`));
+        const watcher = vscode.workspace.createFileSystemWatcher(new vscode.RelativePattern(folder, `${entry}/**`));
         return [watcher, watcher.onDidCreate(schedule), watcher.onDidChange(schedule), watcher.onDidDelete(schedule)];
       }),
     );
@@ -98,10 +98,7 @@ export class SpecsStore implements vscode.Disposable {
   private async load(): Promise<LoadedProject[]> {
     const staleAfterDays = vscode.workspace.getConfiguration('tlcSpecs').get<number>('staleAfterDays', 14);
     const folders = vscode.workspace.workspaceFolders ?? [];
-    this.warn([
-      ...folders.flatMap((folder) => specsFolders(folder).invalid.map((entry) => ({ setting: 'tlcSpecs.specsFolders', entry }))),
-      ...folders.flatMap((folder) => excluded(folder).invalid.map((entry) => ({ setting: 'tlcSpecs.exclude', entry }))),
-    ]);
+    this.warn(folders.flatMap((folder) => specsFolders(folder).invalid.map((entry) => ({ setting: 'tlcSpecs.specsFolders', entry }))));
     const roots = await discoverSpecsRoots();
     const now = Date.now();
     return Promise.all(
@@ -127,33 +124,27 @@ export class SpecsStore implements vscode.Disposable {
   }
 }
 
-/** What each setting accepts, told in the warning of an ignored entry. Only exclude splits its entries on a comma. */
+/** What each setting accepts, told in the warning of an ignored entry. */
 const ADVICE: Record<string, string> = {
   'tlcSpecs.specsFolders': 'Use um caminho relativo, sem ".." e sem glob.',
-  'tlcSpecs.exclude': 'Use um caminho relativo, sem "..", sem vírgula e sem glob.',
 };
 
 function specsFolders(folder: vscode.WorkspaceFolder) {
   return parseSpecsFolders(vscode.workspace.getConfiguration('tlcSpecs', folder.uri).get<unknown>('specsFolders'));
 }
 
-function excluded(folder: vscode.WorkspaceFolder) {
-  return parseExclude(vscode.workspace.getConfiguration('tlcSpecs', folder.uri).get<unknown>('exclude'));
-}
-
-/** Files that can reveal a specs folder: anything under a .specs, only skill artifacts under other names. */
+/** Files that can reveal the folder of an entry, from the workspace folder root: anything under a .specs, only skill artifacts under other names. */
 function searchPattern(entry: string): string {
   const named = entry === DEFAULT_SPECS_FOLDER || entry.endsWith(`/${DEFAULT_SPECS_FOLDER}`);
-  return named ? `**/${entry}/**` : `**/${entry}/{STATE.md,lessons.json,LESSONS.md,features/*/*.md}`;
+  return named ? `${entry}/**` : `${entry}/{STATE.md,lessons.json,LESSONS.md,features/*/*.md}`;
 }
 
 async function discoverSpecsRoots(): Promise<{ specsUri: vscode.Uri; label: string }[]> {
   const roots = new Map<string, { specsUri: vscode.Uri; label: string }>();
   for (const folder of vscode.workspace.workspaceFolders ?? []) {
     const { entries } = specsFolders(folder);
-    const { glob } = excluded(folder);
-    const exclude = glob ? new vscode.RelativePattern(folder, glob) : null;
-    const matches = await Promise.all(entries.map((entry) => vscode.workspace.findFiles(new vscode.RelativePattern(folder, searchPattern(entry)), exclude, 5000)));
+    // null: files.exclude must not hide a folder the user listed.
+    const matches = await Promise.all(entries.map((entry) => vscode.workspace.findFiles(new vscode.RelativePattern(folder, searchPattern(entry)), null, 5000)));
     const base = folder.uri.path.replace(/\/$/, '');
     const files = matches.flat().map((f) => f.path.slice(base.length + 1));
     const found = findSpecsRoots(files, entries);

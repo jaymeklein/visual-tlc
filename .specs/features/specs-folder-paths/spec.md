@@ -95,10 +95,10 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 | -------------- | ----------- | ------ | ------- |
 | SFP-01 | P1: Ler só as pastas configuradas | Execute | Implementing |
 | SFP-02 | P1: Ler só as pastas configuradas | Execute | Implementing |
-| SFP-03 | P1: Ler só as pastas configuradas | Execute | In Tasks |
-| SFP-04 | P1: Ler só as pastas configuradas | Execute | In Tasks |
-| SFP-05 | P1: Ler só as pastas configuradas | Execute | In Tasks |
-| SFP-06 | P1: Ler só as pastas configuradas | Execute | In Tasks |
+| SFP-03 | P1: Ler só as pastas configuradas | Execute | Implementing |
+| SFP-04 | P1: Ler só as pastas configuradas | Execute | Implementing |
+| SFP-05 | P1: Ler só as pastas configuradas | Execute | Implementing |
+| SFP-06 | P1: Ler só as pastas configuradas | Execute | Implementing |
 | SFP-07 | P2: Ver a pasta de cada projeto nas árvores | Execute | In Tasks |
 | SFP-08 | P2: Ver a pasta de cada projeto nas árvores | Execute | In Tasks |
 | SFP-09 | P2: Ver a pasta de cada projeto nas árvores | Execute | Implementing |

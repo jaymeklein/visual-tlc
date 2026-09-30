@@ -56,7 +56,7 @@
     "viewsWelcome": [
       {
         "view": "tlcSpecs.features",
-        "contents": "Nenhuma pasta de specs encontrada neste workspace.\nA extensão procura as pastas da configuração tlcSpecs.specsFolders (.specs por padrão).\nAs features aparecem aqui assim que a skill /tlc-spec-driven gerar .specs/features/<feature>/spec.md.\n[Atualizar](command:tlcSpecs.refresh)",
+        "contents": "Nenhuma pasta de specs encontrada neste workspace.\nA extensão lê as pastas da configuração tlcSpecs.specsFolders, a partir da raiz do workspace (.specs por padrão).\nAs features aparecem aqui assim que a skill /tlc-spec-driven gerar .specs/features/<feature>/spec.md.\n[Atualizar](command:tlcSpecs.refresh)",
         "when": "!tlcSpecs.hasSpecs"
       },
       {
@@ -293,21 +293,7 @@
             ".specs"
           ],
           "scope": "resource",
-          "markdownDescription": "Pastas onde a extensão procura as specs. Cada entrada é um caminho relativo (`.specs`, `docs/specs`), procurado em qualquer profundidade do projeto. Entradas absolutas, com `..` ou com glob são ignoradas. Uma pasta de nome diferente de `.specs` só aparece quando tem artefatos da skill."
-        },
-        "tlcSpecs.exclude": {
-          "type": [
-            "array",
-            "string"
-          ],
-          "items": {
-            "type": "string"
-          },
-          "default": [
-            "node_modules"
-          ],
-          "scope": "resource",
-          "markdownDescription": "Pastas que ficam fora da listagem de specs. Cada entrada é um caminho relativo (`node_modules`, `test`, `packages/legacy`), ignorado em qualquer profundidade do projeto. Entradas absolutas, com `..`, com vírgula ou com glob são ignoradas, com um aviso. Um texto no lugar da lista é usado como glob, como nas versões anteriores."
+          "markdownDescription": "Pastas onde a extensão lê as specs. Cada entrada é o caminho de uma pasta a partir da raiz da pasta do workspace (`.specs`, `docs/specs`, `packages/api/.specs`). Pastas com o mesmo nome em outras subpastas não são lidas. Entradas absolutas, com `..` ou com glob são ignoradas, com um aviso. Uma pasta de nome diferente de `.specs` só aparece quando tem artefatos da skill."
         }
       }
     }

@@ -1,4 +1,4 @@
-// Which folders hold the skill's artifacts and which are left out (settings tlcSpecs.specsFolders and tlcSpecs.exclude). Pure: no vscode, no I/O.
+// Which folders hold the skill's artifacts (setting tlcSpecs.specsFolders). Pure: no vscode, no I/O.
 
 /** Folder searched when the setting lists no usable entry. */
 export const DEFAULT_SPECS_FOLDER = '.specs';
@@ -19,26 +19,10 @@ export interface SpecsRoot {
 
 const ARTIFACT = /^(STATE\.md|lessons\.json|LESSONS\.md|features\/[^/]+\/[^/]+\.md)$/;
 
-export interface Exclude {
-  /** Glob of what the search leaves out, null when nothing is excluded. */
-  glob: string | null;
-  /** Rejected entries, as written in the setting. */
-  invalid: string[];
-}
-
 export function parseSpecsFolders(raw: unknown): SpecsFolders {
   const { entries, invalid } = parseEntries(raw);
   if (entries.length === 0) entries.push(DEFAULT_SPECS_FOLDER);
   return { entries, invalid };
-}
-
-/** Setting tlcSpecs.exclude: a list of folders, left out at any depth, or a glob in a text (the older form). */
-export function parseExclude(raw: unknown): Exclude {
-  if (typeof raw === 'string') return { glob: raw || null, invalid: [] };
-  // A comma would split the group of globs built below.
-  const { entries, invalid } = parseEntries(raw, (entry) => !entry.includes(','));
-  const globs = entries.map((entry) => `**/${entry}/**`);
-  return { glob: globs.length > 1 ? `{${globs.join(',')}}` : (globs[0] ?? null), invalid };
 }
 
 /** An entry a setting rejected, as written in it. */
@@ -62,11 +46,11 @@ export function pendingWarnings(invalid: readonly InvalidEntry[], warned: Readon
   return { show, warned: seen };
 }
 
-function parseEntries(raw: unknown, accepts: (entry: string) => boolean = () => true): SpecsFolders {
+function parseEntries(raw: unknown): SpecsFolders {
   const entries: string[] = [];
   const invalid: string[] = [];
   for (const item of Array.isArray(raw) ? raw : []) {
-    const entry = typeof item === 'string' && accepts(item) ? normalize(item) : undefined;
+    const entry = typeof item === 'string' ? normalize(item) : undefined;
     if (entry === undefined) invalid.push(String(item));
     else if (!entries.includes(entry)) entries.push(entry);
   }
