@@ -93,21 +93,21 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Requirement ID | Story       | Phase  | Status  |
 | -------------- | ----------- | ------ | ------- |
-| SFP-01 | P1: Ler só as pastas configuradas | Design | Pending |
-| SFP-02 | P1: Ler só as pastas configuradas | Design | Pending |
-| SFP-03 | P1: Ler só as pastas configuradas | Design | Pending |
-| SFP-04 | P1: Ler só as pastas configuradas | Design | Pending |
-| SFP-05 | P1: Ler só as pastas configuradas | Design | Pending |
-| SFP-06 | P1: Ler só as pastas configuradas | Design | Pending |
-| SFP-07 | P2: Ver a pasta de cada projeto nas árvores | Design | Pending |
-| SFP-08 | P2: Ver a pasta de cada projeto nas árvores | Design | Pending |
-| SFP-09 | P2: Ver a pasta de cada projeto nas árvores | Design | Pending |
-| SFP-10 | Edge case: projeto com tudo oculto | Design | Pending |
-| SFP-11 | Edge case: entrada inválida | Design | Pending |
+| SFP-01 | P1: Ler só as pastas configuradas | Execute | Implementing |
+| SFP-02 | P1: Ler só as pastas configuradas | Execute | Implementing |
+| SFP-03 | P1: Ler só as pastas configuradas | Execute | In Tasks |
+| SFP-04 | P1: Ler só as pastas configuradas | Execute | In Tasks |
+| SFP-05 | P1: Ler só as pastas configuradas | Execute | In Tasks |
+| SFP-06 | P1: Ler só as pastas configuradas | Execute | In Tasks |
+| SFP-07 | P2: Ver a pasta de cada projeto nas árvores | Execute | In Tasks |
+| SFP-08 | P2: Ver a pasta de cada projeto nas árvores | Execute | In Tasks |
+| SFP-09 | P2: Ver a pasta de cada projeto nas árvores | Execute | Implementing |
+| SFP-10 | Edge case: projeto com tudo oculto | Execute | In Tasks |
+| SFP-11 | Edge case: entrada inválida | Execute | Implementing |
 
 **ID format:** `SFP-NN`, na ordem dos critérios acima.
 
-**Coverage:** 11 total, 0 mapped to tasks, 11 unmapped ⚠️
+**Coverage:** 11 total, 11 mapped to tasks, 0 unmapped
 
 ---
 

@@ -13,10 +13,8 @@ export interface SpecsFolders {
 export interface SpecsRoot {
   /** The specs folder, relative to the workspace folder. */
   path: string;
-  /** Entry that matched it. */
+  /** Entry that names it. */
   entry: string;
-  /** Folder that holds the entry, relative to the workspace folder ("" for the workspace folder itself). */
-  project: string;
 }
 
 const ARTIFACT = /^(STATE\.md|lessons\.json|LESSONS\.md|features\/[^/]+\/[^/]+\.md)$/;
@@ -85,30 +83,24 @@ function normalize(value: string): string | undefined {
 }
 
 /**
- * Specs folders among `files` (paths relative to one workspace folder). A folder not named .specs
- * only counts when it holds a skill artifact, so generic names do not match unrelated folders.
+ * Specs folders among `files` (paths relative to one workspace folder): each entry is the path of a folder
+ * from the workspace folder root, never searched deeper. A folder not named .specs only counts when it
+ * holds a skill artifact, so a folder that happens to exist at that path does not show.
  */
 export function findSpecsRoots(files: readonly string[], entries: readonly string[]): SpecsRoot[] {
   const roots = new Map<string, SpecsRoot>();
   for (const file of files) {
     for (const entry of entries) {
-      const at = `/${file}`.indexOf(`/${entry}/`);
-      if (at < 0) continue;
-      const end = at + entry.length;
+      if (!file.startsWith(`${entry}/`)) continue;
       const named = entry === DEFAULT_SPECS_FOLDER || entry.endsWith(`/${DEFAULT_SPECS_FOLDER}`);
-      if (!named && !ARTIFACT.test(file.slice(end + 1))) continue;
-      const path = file.slice(0, end);
-      const known = roots.get(path);
-      // Two entries can reach the same folder: the most specific one names the project.
-      if (!known || entry.length > known.entry.length) roots.set(path, { path, entry, project: file.slice(0, Math.max(0, at - 1)) });
+      if (!named && !ARTIFACT.test(file.slice(entry.length + 1))) continue;
+      roots.set(entry, { path: entry, entry });
     }
   }
   return [...roots.values()].sort((a, b) => a.path.localeCompare(b.path));
 }
 
-/** "project", or "project · folder" when the project has more than one specs folder among `all`. */
+/** The workspace folder name, or "name · entry" when that workspace folder has more than one specs folder among `all`. */
 export function rootLabel(root: SpecsRoot, all: readonly SpecsRoot[], folderName: string): string {
-  const project = root.project ? `${folderName}/${root.project}` : folderName;
-  const shared = all.some((r) => r.path !== root.path && r.project === root.project);
-  return shared ? `${project} · ${root.entry}` : project;
+  return all.some((r) => r.path !== root.path) ? `${folderName} · ${root.entry}` : folderName;
 }

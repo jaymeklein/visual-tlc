@@ -9,7 +9,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 ---
 
 **Design**: inline (sem `design.md`)
-**Status**: Approved
+**Status**: In Progress
 
 Design inline: `src/core/folders.ts` continua puro. `findSpecsRoots` passa a aceitar só arquivos que começam no caminho da entrada, e `rootLabel` rotula pela pasta do workspace e, quando ela tem mais de uma pasta de specs, pelo caminho da entrada. `parseExclude` sai. `src/ui/store.ts` procura e observa `<entrada>/**` a partir da raiz de cada pasta do workspace, sem exclusão. As árvores Features e Projeto deixam de pular o nó quando há um projeto só.
 
@@ -76,12 +76,12 @@ T3 → T4
 
 **Done when**:
 
-- [ ] `.specs` acha `.specs/...` e não acha `test/fixtures/sample/.specs/...` (SFP-01)
-- [ ] `packages/api/.specs` acha a pasta nesse caminho e não acha `x/packages/api/.specs` (SFP-02)
-- [ ] Rótulo: nome da pasta do workspace com uma pasta de specs; "nome · entrada" com duas (SFP-09)
-- [ ] Entradas inválidas continuam recusadas e citadas (SFP-11)
-- [ ] Os testes de `parseExclude` saem com a função. Os de `pendingWarnings` ficam, agora só para `tlcSpecs.specsFolders`
-- [ ] Gate check passes: `npm run typecheck && npm test`
+- [x] `.specs` acha `.specs/...` e não acha `test/fixtures/sample/.specs/...` (SFP-01)
+- [x] `packages/api/.specs` acha a pasta nesse caminho e não acha `x/packages/api/.specs` (SFP-02)
+- [x] Rótulo: nome da pasta do workspace com uma pasta de specs; "nome · entrada" com duas (SFP-09)
+- [x] Entradas inválidas continuam recusadas e citadas (SFP-11)
+- [x] `parseExclude` e os testes dele ficam até a T2, que os tira junto com o store
+- [x] Gate check passes: `npm run typecheck && npm test`
 
 **Tests**: unit
 **Gate**: quick
@@ -110,7 +110,7 @@ T3 → T4
 - [ ] Uma spec numa pasta não configurada fica fora das árvores, do painel na aba e na lateral, da barra de status e do painel Problemas (SFP-03)
 - [ ] O `package.json` não declara `tlcSpecs.exclude`, e um valor dele nas configurações não muda a listagem (SFP-04)
 - [ ] Entrada que não existe: sem projeto e sem aviso. Ao criar a pasta, ela aparece sem recarregar a janela (SFP-05, SFP-06)
-- [ ] Os testes EXC saem com a configuração. Os SF de busca em profundidade são reescritos para o caminho exato. `multiroot.cjs` e o fixture `b` passam a usar só `specsFolders`
+- [ ] `parseExclude` e os testes EXC saem com a configuração. O teste de `pendingWarnings` passa a usar só `tlcSpecs.specsFolders`. Os SF de busca em profundidade são reescritos para o caminho exato. `multiroot.cjs` e o fixture `b` passam a usar só `specsFolders`
 - [ ] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
 
 **Tests**: integration

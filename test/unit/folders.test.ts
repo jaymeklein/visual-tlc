@@ -26,15 +26,20 @@ test('SF-10 entries that normalize to the same folder are kept once', () => {
   assert.deepEqual(parseSpecsFolders(['docs/specs', 'docs\\specs\\', '.specs', 'docs/specs']), { entries: ['docs/specs', '.specs'], invalid: [] });
 });
 
-test('SF-02 finds an entry at the workspace folder root and at any depth', () => {
-  const files = ['docs/specs/STATE.md', 'packages/api/docs/specs/features/auth/spec.md', 'src/index.ts'];
-  assert.deepEqual(findSpecsRoots(files, ['docs/specs']), [
-    { path: 'docs/specs', entry: 'docs/specs', project: '' },
-    { path: 'packages/api/docs/specs', entry: 'docs/specs', project: 'packages/api' },
+test('SFP-01 .specs is the folder at the workspace folder root, never one in a subfolder', () => {
+  const files = ['.specs/features/auth/spec.md', 'test/fixtures/sample/.specs/features/user-auth/spec.md', 'tools/.specs/STATE.md', 'src/index.ts'];
+  assert.deepEqual(findSpecsRoots(files, ['.specs']), [{ path: '.specs', entry: '.specs' }]);
+});
+
+test('SFP-02 an entry with subfolders is read at that path from the workspace folder root', () => {
+  const files = ['packages/api/.specs/STATE.md', 'x/packages/api/.specs/STATE.md', 'docs/specs/STATE.md', 'packages/api/docs/specs/STATE.md'];
+  assert.deepEqual(findSpecsRoots(files, ['packages/api/.specs', 'docs/specs']), [
+    { path: 'docs/specs', entry: 'docs/specs' },
+    { path: 'packages/api/.specs', entry: 'packages/api/.specs' },
   ]);
 });
 
-test('SF-02 finds the folders of every entry', () => {
+test('SFP-01 finds the folder of every entry', () => {
   const files = ['.specs/features/auth/spec.md', 'docs/specs/lessons.json'];
   assert.deepEqual(
     findSpecsRoots(files, ['.specs', 'docs/specs']).map((r) => r.path),
@@ -53,28 +58,28 @@ test('SF-05 a folder not named .specs needs a skill artifact', () => {
 });
 
 test('SF-05 a folder named .specs is kept without any skill artifact', () => {
-  assert.deepEqual(findSpecsRoots(['.specs/notes.txt'], ['.specs']), [{ path: '.specs', entry: '.specs', project: '' }]);
-  assert.deepEqual(findSpecsRoots(['tools/.specs/notes.txt'], ['tools/.specs']), [{ path: 'tools/.specs', entry: 'tools/.specs', project: '' }]);
+  assert.deepEqual(findSpecsRoots(['.specs/notes.txt'], ['.specs']), [{ path: '.specs', entry: '.specs' }]);
+  assert.deepEqual(findSpecsRoots(['tools/.specs/notes.txt'], ['tools/.specs']), [{ path: 'tools/.specs', entry: 'tools/.specs' }]);
 });
 
-test('SF-10 a folder reached by two entries is listed once', () => {
-  const files = ['api/docs/specs/STATE.md', 'api/docs/specs/features/auth/spec.md'];
-  assert.deepEqual(findSpecsRoots(files, ['specs', 'docs/specs']), [{ path: 'api/docs/specs', entry: 'docs/specs', project: 'api' }]);
+test('SF-10 the files of one folder give it once', () => {
+  const files = ['.specs/STATE.md', '.specs/features/auth/spec.md', '.specs/features/billing/tasks.md'];
+  assert.deepEqual(findSpecsRoots(files, ['.specs']), [{ path: '.specs', entry: '.specs' }]);
 });
 
-test('SF-07 a project with one specs folder is labelled by the project alone', () => {
-  const roots = findSpecsRoots(['docs/specs/STATE.md', 'packages/api/.specs/STATE.md'], ['.specs', 'docs/specs']);
+test('SFP-09 a workspace folder with one specs folder labels it by its name alone', () => {
+  const roots = findSpecsRoots(['docs/specs/STATE.md'], ['.specs', 'docs/specs']);
   assert.deepEqual(
     roots.map((r) => rootLabel(r, roots, 'ws')),
-    ['ws', 'ws/packages/api'],
+    ['ws'],
   );
 });
 
-test('SF-07 two specs folders of the same project are labelled with project and folder path', () => {
-  const roots = findSpecsRoots(['.specs/STATE.md', 'docs/specs/STATE.md', 'packages/api/.specs/STATE.md', 'packages/api/docs/specs/STATE.md', 'packages/web/.specs/STATE.md'], ['.specs', 'docs/specs']);
+test('SFP-09 a workspace folder with more specs folders labels each by its name and the entry', () => {
+  const roots = findSpecsRoots(['.specs/STATE.md', 'docs/specs/STATE.md', 'packages/api/.specs/STATE.md'], ['.specs', 'docs/specs', 'packages/api/.specs']);
   assert.deepEqual(
     roots.map((r) => rootLabel(r, roots, 'api')),
-    ['api · .specs', 'api · docs/specs', 'api/packages/api · .specs', 'api/packages/api · docs/specs', 'api/packages/web'],
+    ['api · .specs', 'api · docs/specs', 'api · packages/api/.specs'],
   );
 });
 
