@@ -85,6 +85,9 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 ## Edge Cases
 
 - WHILE o olho de Features está fechado e todas as specs de um projeto estão ocultas the árvore Features SHALL mostrar o nó do projeto sem filhos, com a mensagem da view contando as ocultas
+
+> Desde `hidden-folder` (HFD-01), o nó de uma pasta com todas as specs ocultas sai da árvore com o olho fechado. A mensagem continua contando as ocultas (HFD-04).
+
 - IF uma entrada é absoluta, tem `..` ou tem glob THEN a extensão SHALL ignorá-la com um aviso que cita a entrada, como no SF-09
 
 ---

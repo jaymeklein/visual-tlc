@@ -102,6 +102,8 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 - IF todas as specs de um projeto único estão ocultas e a árvore esconde as ocultas THEN a view Features SHALL mostrar a lista vazia com a mensagem do HID-08, sem a tela de boas-vindas
 
 > Desde `specs-folder-paths` (SFP-10), a árvore mostra o nó da pasta mesmo com um projeto só. Com tudo oculto, o nó fica sem filhos, e a mensagem continua contando as ocultas.
+>
+> Desde `hidden-folder` (HFD-01 e HFD-04), o nó da pasta com todas as specs ocultas sai da árvore, com um projeto ou com vários. A árvore volta a ficar vazia, com a mensagem do HID-08.
 
 ---
 
