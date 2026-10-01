@@ -5,6 +5,12 @@ Ela lê os artefatos que a skill grava em `.specs/` (ou nas pastas que você con
 
 > **Somente leitura.** A extensão nunca escreve em `.specs/` e não depende da skill instalada — apenas interpreta os arquivos gerados por ela.
 
+O Visual TLC é um projeto independente e **não oficial**, sem vínculo com o Tech Lead's Club, autor da skill. Os créditos estão no fim desta página.
+
+## Instalação
+
+Procure **Visual TLC** na aba Extensões do VS Code e clique em **Instalar**. As atualizações chegam sozinhas, como nas outras extensões.
+
 ## O que aparece
 
 **Barra lateral › TLC Specs**
@@ -100,6 +106,18 @@ npm run package          # gera o .vsix
 
 Instalar o pacote: `code --install-extension visual-tlc-0.1.0.vsix`.
 
+### Publicação
+
+O workflow `.github/workflows/publish.yml` publica a extensão no Visual Studio Marketplace quando uma tag `v*` chega ao GitHub. Ele confere se a tag bate com a versão do `package.json`, roda o typecheck e os testes unitários e publica com `vsce publish --oidc`, sem token guardado no repositório.
+
+Para lançar uma versão:
+
+1. Descreva as mudanças no `CHANGELOG.md`, numa seção com o número novo, e faça o commit.
+2. `npm version patch` (ou `minor`, `major`). Ele atualiza o `package.json` e cria o commit e a tag `vX.Y.Z`.
+3. `git push --follow-tags`.
+
+O Marketplace não aceita publicar de novo uma versão que já existe. Para desfazer uma versão, publique outra, mais nova, com o código anterior.
+
 ### Estrutura
 
 ```
@@ -108,3 +126,9 @@ src/ui/       árvores, painel, status bar, diagnósticos, notificações, store
 src/webview/  script do painel (bundle para o navegador)
 media/        CSS do painel e ícones
 ```
+
+## Créditos
+
+O Visual TLC lê os arquivos gerados pela skill **tlc-spec-driven**, criada por [Felipe Rodrigues](https://github.com/felipfr) para o [Tech Lead's Club](https://github.com/tech-leads-club/agent-skills) e distribuída sob a licença [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). As checagens de spec incompleta seguem as regras dos validadores da skill (`validate_spec.py`, `validate_tasks.py`, `validate_state.py`), reimplementadas em TypeScript, com cruzamentos entre arquivos que a skill não faz. Nenhum arquivo da skill é distribuído com a extensão.
+
+O Visual TLC é um projeto independente e não oficial, sem vínculo com o Tech Lead's Club nem com o autor da skill. A licença de uso da extensão está no arquivo `LICENSE`.

@@ -1,11 +1,16 @@
 {
   "name": "visual-tlc",
   "displayName": "Visual TLC — Spec-Driven Tracker",
-  "description": "Acompanhe visualmente as specs geradas pela skill tlc-spec-driven: fases, tasks, rastreabilidade, verificação e avisos de specs incompletas.",
+  "description": "Acompanhe visualmente as specs geradas pela skill tlc-spec-driven: fases, tasks, rastreabilidade, verificação e avisos de specs incompletas. Projeto independente, não oficial.",
   "version": "0.1.0",
-  "publisher": "visual-tlc",
-  "license": "UNLICENSED",
+  "publisher": "JaymeKlein",
+  "license": "SEE LICENSE IN LICENSE",
   "private": true,
+  "icon": "media/icon.png",
+  "galleryBanner": {
+    "color": "#161b22",
+    "theme": "dark"
+  },
   "type": "module",
   "engines": {
     "vscode": "^1.90.0"
@@ -19,7 +24,8 @@
     "tlc",
     "specs",
     "tasks",
-    "claude"
+    "claude",
+    "SDD"
   ],
   "main": "./dist/extension.cjs",
   "activationEvents": [
@@ -304,7 +310,7 @@
     "typecheck": "tsc -p .",
     "test": "node --test \"test/unit/**/*.test.ts\"",
     "test:integration": "npm run build && node test/integration/run.mjs",
-    "package": "npm run typecheck && npm test && vsce package --no-dependencies --allow-missing-repository --skip-license",
+    "package": "npm run typecheck && npm test && vsce package --no-dependencies --allow-missing-repository",
     "vscode:prepublish": "node esbuild.mjs --production"
   },
   "devDependencies": {
