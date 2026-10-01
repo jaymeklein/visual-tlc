@@ -1,11 +1,16 @@
 {
   "name": "visual-tlc",
   "displayName": "Visual TLC — Spec-Driven Tracker",
-  "description": "Acompanhe visualmente as specs geradas pela skill tlc-spec-driven: fases, tasks, rastreabilidade, verificação e avisos de specs incompletas.",
-  "version": "0.1.0",
-  "publisher": "visual-tlc",
-  "license": "UNLICENSED",
+  "description": "Acompanhe visualmente as specs geradas pela skill tlc-spec-driven: fases, tasks, rastreabilidade, verificação e avisos de specs incompletas. Projeto independente, não oficial.",
+  "version": "0.1.1",
+  "publisher": "JaymeKlein",
+  "license": "SEE LICENSE IN LICENSE",
   "private": true,
+  "icon": "media/icon.png",
+  "galleryBanner": {
+    "color": "#161b22",
+    "theme": "dark"
+  },
   "type": "module",
   "engines": {
     "vscode": "^1.90.0"
@@ -19,11 +24,13 @@
     "tlc",
     "specs",
     "tasks",
-    "claude"
+    "claude",
+    "SDD"
   ],
   "main": "./dist/extension.cjs",
   "activationEvents": [
-    "workspaceContains:**/.specs/**"
+    "workspaceContains:**/.specs/**",
+    "onStartupFinished"
   ],
   "contributes": {
     "viewsContainers": {
@@ -44,13 +51,18 @@
         {
           "id": "tlcSpecs.project",
           "name": "Projeto"
+        },
+        {
+          "type": "webview",
+          "id": "tlcSpecs.panel",
+          "name": "Painel"
         }
       ]
     },
     "viewsWelcome": [
       {
         "view": "tlcSpecs.features",
-        "contents": "Nenhuma pasta .specs encontrada neste workspace.\nAs features aparecem aqui assim que a skill /tlc-spec-driven gerar .specs/features/<feature>/spec.md.\n[Atualizar](command:tlcSpecs.refresh)",
+        "contents": "Nenhuma pasta de specs encontrada neste workspace.\nA extensão lê as pastas da configuração tlcSpecs.specsFolders, a partir da raiz do workspace (.specs por padrão).\nAs features aparecem aqui assim que a skill /tlc-spec-driven gerar .specs/features/<feature>/spec.md.\n[Atualizar](command:tlcSpecs.refresh)",
         "when": "!tlcSpecs.hasSpecs"
       },
       {
@@ -67,10 +79,34 @@
         "icon": "$(refresh)"
       },
       {
-        "command": "tlcSpecs.openDashboard",
-        "title": "Abrir painel",
+        "command": "tlcSpecs.showHidden",
+        "title": "Mostrar specs ocultas",
         "category": "TLC Specs",
-        "icon": "$(dashboard)"
+        "icon": "$(eye-closed)"
+      },
+      {
+        "command": "tlcSpecs.hideHidden",
+        "title": "Esconder specs ocultas",
+        "category": "TLC Specs",
+        "icon": "$(eye)"
+      },
+      {
+        "command": "tlcSpecs.hideFeature",
+        "title": "Ocultar spec",
+        "category": "TLC Specs",
+        "icon": "$(eye)"
+      },
+      {
+        "command": "tlcSpecs.unhideFeature",
+        "title": "Desocultar spec",
+        "category": "TLC Specs",
+        "icon": "$(eye-closed)"
+      },
+      {
+        "command": "tlcSpecs.openDashboard",
+        "title": "Abrir painel em aba",
+        "category": "TLC Specs",
+        "icon": "$(link-external)"
       },
       {
         "command": "tlcSpecs.showFeature",
@@ -110,8 +146,18 @@
     "menus": {
       "view/title": [
         {
+          "command": "tlcSpecs.showHidden",
+          "when": "view == tlcSpecs.features && !tlcSpecs.showHidden",
+          "group": "navigation@0"
+        },
+        {
+          "command": "tlcSpecs.hideHidden",
+          "when": "view == tlcSpecs.features && tlcSpecs.showHidden",
+          "group": "navigation@0"
+        },
+        {
           "command": "tlcSpecs.openDashboard",
-          "when": "view == tlcSpecs.features",
+          "when": "view == tlcSpecs.features || view == tlcSpecs.panel",
           "group": "navigation@1"
         },
         {
@@ -123,18 +169,28 @@
       "view/item/context": [
         {
           "command": "tlcSpecs.previewFeatureMarkdown",
-          "when": "view == tlcSpecs.features && viewItem == feature",
+          "when": "view == tlcSpecs.features && (viewItem == feature || viewItem == feature.hidden)",
           "group": "inline@1"
         },
         {
           "command": "tlcSpecs.revealFeatureFolder",
-          "when": "view == tlcSpecs.features && viewItem == feature",
+          "when": "view == tlcSpecs.features && (viewItem == feature || viewItem == feature.hidden)",
           "group": "inline@2"
         },
         {
           "command": "tlcSpecs.showFeature",
-          "when": "view == tlcSpecs.features && viewItem == feature",
+          "when": "view == tlcSpecs.features && (viewItem == feature || viewItem == feature.hidden)",
           "group": "inline@3"
+        },
+        {
+          "command": "tlcSpecs.hideFeature",
+          "when": "view == tlcSpecs.features && viewItem == feature",
+          "group": "inline@4"
+        },
+        {
+          "command": "tlcSpecs.unhideFeature",
+          "when": "view == tlcSpecs.features && viewItem == feature.hidden",
+          "group": "inline@4"
         },
         {
           "command": "tlcSpecs.openInEditor",
@@ -148,21 +204,39 @@
         },
         {
           "command": "tlcSpecs.previewFeatureMarkdown",
-          "when": "view == tlcSpecs.features && viewItem == feature",
+          "when": "view == tlcSpecs.features && (viewItem == feature || viewItem == feature.hidden)",
           "group": "navigation@1"
         },
         {
           "command": "tlcSpecs.revealFeatureFolder",
-          "when": "view == tlcSpecs.features && viewItem == feature",
+          "when": "view == tlcSpecs.features && (viewItem == feature || viewItem == feature.hidden)",
           "group": "navigation@2"
         },
         {
           "command": "tlcSpecs.showFeature",
-          "when": "view == tlcSpecs.features && viewItem == feature",
+          "when": "view == tlcSpecs.features && (viewItem == feature || viewItem == feature.hidden)",
           "group": "navigation@3"
+        },
+        {
+          "command": "tlcSpecs.hideFeature",
+          "when": "view == tlcSpecs.features && viewItem == feature",
+          "group": "navigation@4"
+        },
+        {
+          "command": "tlcSpecs.unhideFeature",
+          "when": "view == tlcSpecs.features && viewItem == feature.hidden",
+          "group": "navigation@4"
         }
       ],
       "commandPalette": [
+        {
+          "command": "tlcSpecs.showHidden",
+          "when": "tlcSpecs.hasSpecs && !tlcSpecs.showHidden"
+        },
+        {
+          "command": "tlcSpecs.hideHidden",
+          "when": "tlcSpecs.hasSpecs && tlcSpecs.showHidden"
+        },
         {
           "command": "tlcSpecs.showFeature",
           "when": "false"
@@ -173,6 +247,14 @@
         },
         {
           "command": "tlcSpecs.revealFeatureFolder",
+          "when": "false"
+        },
+        {
+          "command": "tlcSpecs.hideFeature",
+          "when": "false"
+        },
+        {
+          "command": "tlcSpecs.unhideFeature",
           "when": "false"
         },
         {
@@ -208,10 +290,16 @@
           "minimum": 0,
           "description": "Marca como parada uma feature não concluída sem alterações há N dias (0 desativa)."
         },
-        "tlcSpecs.exclude": {
-          "type": "string",
-          "default": "**/node_modules/**",
-          "description": "Glob de pastas ignoradas ao procurar diretórios .specs."
+        "tlcSpecs.specsFolders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            ".specs"
+          ],
+          "scope": "resource",
+          "markdownDescription": "Pastas onde a extensão lê as specs. Cada entrada é o caminho de uma pasta a partir da raiz da pasta do workspace (`.specs`, `docs/specs`, `packages/api/.specs`). Pastas com o mesmo nome em outras subpastas não são lidas. Entradas absolutas, com `..` ou com glob são ignoradas, com um aviso. Uma pasta de nome diferente de `.specs` só aparece quando tem artefatos da skill."
         }
       }
     }
@@ -222,7 +310,7 @@
     "typecheck": "tsc -p .",
     "test": "node --test \"test/unit/**/*.test.ts\"",
     "test:integration": "npm run build && node test/integration/run.mjs",
-    "package": "npm run typecheck && npm test && vsce package --no-dependencies --allow-missing-repository --skip-license",
+    "package": "npm run typecheck && npm test && vsce package --no-dependencies --allow-missing-repository",
     "vscode:prepublish": "node esbuild.mjs --production"
   },
   "devDependencies": {

@@ -8,7 +8,35 @@
 
 Corroborated across multiple features. Safe to apply as guidance.
 
-_none_
+### L-002 - Assert a UI acceptance criterion at its user-visible outcome, not at an intermediate message
+- signal: `ac_gap` · recurrence: 2 feature(s) · scope: `webview` · harmful: 0
+- features: readonly-navigation, specs-folders
+- evidence: NAV-10 (webview) (+1 more)
+- last seen: 2026-09-29T13:40:46Z
+
+### L-006 - Name the file events (create, change, delete) that a watcher acceptance criterion covers
+- signal: `spec_precision_gap` · recurrence: 2 feature(s) · scope: `spec` · harmful: 0
+- features: specs-folders, sidebar-dashboard
+- evidence: SF-04 spec.md:55 (spec) (+1 more)
+- last seen: 2026-09-29T15:08:17Z
+
+### L-009 - Drive every trigger the spec lists for an action, including callbacks that bypass the command
+- signal: `surviving_mutant` · recurrence: 2 feature(s) · scope: `extension-host` · harmful: 0
+- features: sidebar-dashboard, panel-in-progress
+- evidence: C2 src/extension.ts:47 (extension-host) (+2 more)
+- last seen: 2026-09-29T19:41:10Z
+
+### L-014 - Give every flag a test hook reports one test that expects true and one that expects false
+- signal: `surviving_mutant` · recurrence: 2 feature(s) · scope: `test-hooks` · harmful: 0
+- features: sidebar-dashboard, panel-in-progress
+- evidence: W2 src/webview/main.ts:65 (test-hooks) (+1 more)
+- last seen: 2026-09-29T19:41:10Z
+
+### L-020 - Test an item that meets both conditions of a rule, not only items that meet one of them
+- signal: `surviving_mutant` · recurrence: 3 feature(s) · scope: `tests` · harmful: 1
+- features: hidden-specs, hidden-folder, collapsed-hidden-folder
+- evidence: M11 src/webview/render.ts:249; H3 src/ui/featuresTree.ts:276 (validation.md, Fix 1) (tests) (+2 more)
+- last seen: 2026-09-30T17:31:14Z
 
 ## Candidates (under observation - do NOT load as guidance yet)
 
@@ -20,11 +48,125 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: src/ui/dashboard.ts:65 (webview)
 - last seen: 2026-09-29T12:11:05Z
 
-### L-002 - Assert a UI acceptance criterion at its user-visible outcome, not at an intermediate message
+### L-003 - Test a resource-scoped setting in a multi-root workspace where each folder holds a different value
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `settings` · harmful: 0
+- features: specs-folders
+- evidence: H12 src/ui/store.ts:129 (settings) (+1 more)
+- last seen: 2026-09-29T13:09:09Z
+
+### L-004 - Test every file watcher event the code subscribes to: create, change and delete
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `watchers` · harmful: 0
+- features: specs-folders
+- evidence: H16 src/ui/store.ts:49 (watchers)
+- last seen: 2026-09-29T13:09:09Z
+
+### L-005 - Assert every surface an acceptance criterion lists, exposing a test hook on the extension API when VS Code cannot read the surface
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `extension-host` · harmful: 0
+- features: specs-folders
+- evidence: SF-03 test/integration/suite.cjs:432 (extension-host)
+- last seen: 2026-09-29T13:09:09Z
+
+### L-007 - Drive a test hook from the real side effect, not from a value recorded beside it
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `test-hooks` · harmful: 0
+- features: specs-folders
+- evidence: N2 src/ui/dashboard.ts:87 (test-hooks) (+2 more)
+- last seen: 2026-09-29T14:04:07Z
+
+### L-008 - Count only displayed elements when a test hook reports what a webview shows
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `webview` · harmful: 0
+- features: sidebar-dashboard
+- evidence: S4 media/dashboard.css:313 (webview)
+- last seen: 2026-09-29T15:08:17Z
+
+### L-010 - Pin a layout threshold with a test on the stylesheet when a webview cannot be measured near the value
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `webview` · harmful: 0
+- features: sidebar-dashboard
+- evidence: S5 media/dashboard.css:305 (webview)
+- last seen: 2026-09-29T15:08:17Z
+
+### L-011 - Assert the effect of every argument a test passes to a command
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: sidebar-dashboard
+- evidence: C3 src/extension.ts:57 (tests)
+- last seen: 2026-09-29T15:08:17Z
+
+### L-012 - Assert every manifest contribution a feature adds or changes
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `manifest` · harmful: 0
+- features: sidebar-dashboard
+- evidence: P4 package.json:120 (manifest)
+- last seen: 2026-09-29T15:08:17Z
+
+### L-013 - Keep a defensive guard only with a test that fails without it
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `extension-host` · harmful: 0
+- features: sidebar-dashboard
+- evidence: H4 src/ui/dashboard.ts:111 (extension-host) (+1 more)
+- last seen: 2026-09-29T17:12:11Z
+
+### L-015 - Measure a narrow layout at the smallest width the spec names, not only at the default width of the test window
 - signal: `ac_gap` · recurrence: 1 feature(s) · scope: `webview` · harmful: 0
-- features: readonly-navigation
-- evidence: NAV-10 (webview)
-- last seen: 2026-09-29T12:11:05Z
+- features: sidebar-dashboard
+- evidence: SIDE-03 test/integration/suite.cjs:685 (webview)
+- last seen: 2026-09-29T15:57:24Z
+
+### L-016 - Test the same invalid value in two settings at once when both settings share one warning routine
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `settings` · harmful: 0
+- features: exclude-folders
+- evidence: H6 src/ui/store.ts:119 (settings)
+- last seen: 2026-09-29T17:51:51Z
+
+### L-017 - Pin the default of a new optional parameter with a test on the caller that keeps the old behavior
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `core` · harmful: 0
+- features: exclude-folders
+- evidence: K7 src/core/folders.ts:67 (core)
+- last seen: 2026-09-29T18:03:28Z
+
+### L-018 - Assert the exact warning text for every setting that shares a warning routine
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `settings` · harmful: 0
+- features: exclude-folders
+- evidence: H7 src/ui/store.ts:102 (settings)
+- last seen: 2026-09-29T18:19:13Z
+
+### L-019 - Map each webview control to its view change in a pure function under unit test, not inline in the DOM listener
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `webview` · harmful: 0
+- features: panel-in-progress
+- evidence: PNL-04 src/webview/main.ts:106-109 (webview)
+- last seen: 2026-09-29T19:24:45Z
+
+### L-021 - Assert that a marker meant for one subset is absent from the other subsets on the same view
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `ui` · harmful: 0
+- features: hidden-specs
+- evidence: M12 src/webview/render.ts:265; H4 src/ui/featuresTree.ts:278 (validation.md, Fix 2) (ui)
+- last seen: 2026-09-29T21:00:46Z
+
+### L-022 - Test the zero value of every count whose wording the spec defines
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `webview` · harmful: 0
+- features: hidden-specs
+- evidence: M8 src/webview/render.ts:158 (validation.md, Fix 3) (webview)
+- last seen: 2026-09-29T21:00:46Z
+
+### L-023 - Let the reloads a setting change schedules finish before a test creates the file a watcher must report
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `watchers` · harmful: 0
+- features: specs-folder-paths
+- evidence: HW src/ui/store.ts:47; SFP-06 test/integration/suite.cjs:1254-1258 (watchers)
+- last seen: 2026-09-30T12:10:28Z
+
+### L-024 - Test an exclusion rule with the excluded item alone, so no other item can produce the same result
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: specs-folder-paths
+- evidence: U1/U2 src/core/folders.ts:78; test/unit/folders.test.ts:31, :36 (tests)
+- last seen: 2026-09-30T12:10:29Z
+
+### L-025 - Test a rule applied to each group with two groups that need opposite outcomes at the same time
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: hidden-folder
+- evidence: M8 src/ui/featuresTree.ts:110; test/integration/suite.cjs:1401-1422 (validation.md, Fix 2) (tests)
+- last seen: 2026-09-30T14:31:13Z
+
+### L-026 - State the expected expand state of a tree node the user already expanded or collapsed by hand
+- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `spec` · harmful: 0
+- features: collapsed-hidden-folder
+- evidence: CHF-02 spec.md:52 (validation.md, nota 5, Fix 2) (spec)
+- last seen: 2026-09-30T17:31:14Z
 
 ## Quarantined (failed when applied - ignore)
 

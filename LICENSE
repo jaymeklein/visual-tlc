@@ -1,0 +1,33 @@
+Licença de Uso — Visual TLC
+
+Copyright (c) 2026 Jayme Klein. Todos os direitos reservados.
+
+1. Concessão de uso. É concedida a qualquer pessoa, gratuitamente, uma licença
+   não exclusiva e intransferível para instalar e usar esta extensão (o
+   "Software") no Visual Studio Code e em editores compatíveis, para qualquer
+   finalidade, inclusive comercial.
+
+2. Restrições. Salvo autorização prévia e por escrito do titular, não é
+   permitido:
+   a) copiar, modificar, adaptar ou criar obras derivadas do Software ou do seu
+      código;
+   b) distribuir, sublicenciar, vender, alugar ou publicar o Software, no todo
+      ou em parte, inclusive em outras lojas ou registros de extensões;
+   c) descompilar, desofuscar ou fazer engenharia reversa do código, exceto nos
+      limites em que a lei aplicável permitir expressamente.
+
+3. Titularidade. O Software e o seu código continuam de propriedade do titular.
+   Esta licença não transfere nenhum direito além dos previstos no item 1.
+
+4. Sem garantia. O Software é fornecido "no estado em que se encontra", sem
+   garantia de qualquer tipo, expressa ou implícita, inclusive de adequação a
+   uma finalidade específica. Na máxima extensão permitida pela lei aplicável,
+   o titular não responde por danos decorrentes do uso ou da impossibilidade de
+   uso do Software.
+
+5. Encerramento. Esta licença termina automaticamente se qualquer destes termos
+   for descumprido.
+
+6. Terceiros. O Software lê arquivos gerados pela skill tlc-spec-driven, do
+   Tech Lead's Club, que tem licença própria (CC BY 4.0) e não é distribuída
+   com o Software. Os nomes de terceiros citados pertencem aos seus titulares.

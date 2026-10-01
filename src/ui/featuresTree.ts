@@ -4,6 +4,7 @@ import { plain } from '../core/markdown.ts';
 import { HEALTH_LABEL, progressBar, REQ_STATUS_LABEL, STAGE_LABEL, STAGE_STATE_LABEL, TASK_STATUS_LABEL } from '../core/labels.ts';
 import type { LoadedProject, SpecsStore } from './store.ts';
 import { issueIcon, openFileCommand, previewFileCommand } from './common.ts';
+import { isHidden, type HiddenSpecs } from '../core/hidden.ts';
 
 type Node =
   | { kind: 'root'; loaded: LoadedProject }
@@ -69,17 +70,44 @@ export class FeaturesTree implements vscode.TreeDataProvider<Node> {
   readonly onDidChangeTreeData = this.emitter.event;
 
   private readonly store: SpecsStore;
+  private readonly hidden: HiddenSpecs;
+  /** Eye of the view title: open lists the hidden specs too. Closed at every start. */
+  private show = false;
 
-  constructor(store: SpecsStore) {
+  constructor(store: SpecsStore, hidden: HiddenSpecs) {
     this.store = store;
+    this.hidden = hidden;
     store.onDidChange(() => this.emitter.fire(undefined));
+    hidden.onDidChange(() => this.emitter.fire(undefined));
+  }
+
+  /** Opens or closes the eye of the view title; the context key picks which of its two buttons shows. */
+  setShowHidden(show: boolean): void {
+    this.show = show;
+    void vscode.commands.executeCommand('setContext', 'tlcSpecs.showHidden', show);
+    this.emitter.fire(undefined);
+  }
+
+  /** Specs left out of the tree: the hidden ones while the eye is closed, none while it is open. */
+  outOfTree(): number {
+    return this.show ? 0 : this.store.projects.reduce((n, loaded) => n + loaded.project.features.filter((f) => this.isHidden(loaded, f)).length, 0);
+  }
+
+  private isHidden(loaded: LoadedProject, f: Feature): boolean {
+    return isHidden(f, this.hidden.choiceOf({ projectId: loaded.project.id, feature: f.name }));
+  }
+
+  /** A specs folder with specs, all of them hidden: nothing left to do there. One without specs is not hidden. */
+  private allHidden(loaded: LoadedProject): boolean {
+    const { features } = loaded.project;
+    return features.length > 0 && features.every((f) => this.isHidden(loaded, f));
   }
 
   getChildren(node?: Node): Node[] {
     if (!node) {
-      const projects = this.store.projects;
-      if (projects.length === 1) return this.featureNodes(projects[0]);
-      return projects.map((loaded) => ({ kind: 'root', loaded }));
+      // One node per specs folder, even when there is only one: the tree always says where the specs come from.
+      // A folder whose specs are all hidden leaves with them while the eye is closed.
+      return this.store.projects.filter((loaded) => this.show || !this.allHidden(loaded)).map((loaded) => ({ kind: 'root', loaded }));
     }
     const { loaded } = node;
     switch (node.kind) {
@@ -128,9 +156,13 @@ export class FeaturesTree implements vscode.TreeDataProvider<Node> {
     switch (node.kind) {
       case 'root': {
         const p = node.loaded.project;
-        const item = new vscode.TreeItem(p.label, C.Expanded);
+        const hidden = this.allHidden(node.loaded);
+        // A folder the eye brings back comes collapsed: the user picks which ones to open. VS Code applies this state
+        // only to a node it adds, and the folder left the tree while the eye was closed. A node that stays keeps the
+        // state the user gave it, so hiding or showing a spec with the eye open does not open or close its folder.
+        const item = new vscode.TreeItem(p.label, hidden ? C.Collapsed : C.Expanded);
         item.iconPath = icon('folder-library');
-        item.description = `${p.features.length} feature(s)`;
+        item.description = `${p.features.length} feature(s)${hidden ? ' · oculta' : ''}`;
         item.id = `root:${pid}`;
         return item;
       }
@@ -242,16 +274,18 @@ export class FeaturesTree implements vscode.TreeDataProvider<Node> {
   }
 
   private featureNodes(loaded: LoadedProject): Node[] {
-    return loaded.project.features.map((feature) => ({ kind: 'feature', loaded, feature }));
+    return loaded.project.features.filter((f) => this.show || !this.isHidden(loaded, f)).map((feature) => ({ kind: 'feature', loaded, feature }));
   }
 
   private featureItem(node: FeatureNode): vscode.TreeItem {
     const f = node.feature;
     const item = new vscode.TreeItem(f.name, f.active ? vscode.TreeItemCollapsibleState.Expanded : vscode.TreeItemCollapsibleState.Collapsed);
     item.id = `feature:${node.loaded.project.id}:${f.name}`;
-    item.contextValue = 'feature';
+    const hidden = this.isHidden(node.loaded, f);
+    // Picks the eye of the row, closed on a hidden spec (package.json, view/item/context).
+    item.contextValue = hidden ? 'feature.hidden' : 'feature';
     const errors = f.issues.filter((i) => i.severity === 'error').length;
-    item.description = `${f.active ? '● ' : ''}${f.phaseLabel} · ${Math.round(f.progress * 100)}%${errors ? ` · ${errors} erro(s)` : ''}`;
+    item.description = `${f.active ? '● ' : ''}${f.phaseLabel} · ${Math.round(f.progress * 100)}%${errors ? ` · ${errors} erro(s)` : ''}${hidden ? ' · oculta' : ''}`;
     item.iconPath =
       f.health === 'complete'
         ? icon('pass-filled', 'testing.iconPassed')
