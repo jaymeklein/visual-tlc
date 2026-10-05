@@ -32,7 +32,7 @@ export async function loadProject(reader: SpecsReader, id: string, label: string
     try {
       lessons = parseLessonsJson(lessonsJson);
     } catch (e) {
-      issues.push({ severity: 'error', message: `lessons.json inválido: ${(e as Error).message}`, file: 'lessons.json' });
+      issues.push({ severity: 'error', message: `Invalid lessons.json: ${(e as Error).message}`, file: 'lessons.json' });
     }
   } else {
     const lessonsMd = await reader.read('LESSONS.md');
@@ -71,7 +71,7 @@ export async function loadProject(reader: SpecsReader, id: string, label: string
   if (state?.handoff?.feature && !activeFeature && names.length > 0) {
     issues.push({
       severity: 'info',
-      message: `Handoff aponta para "${state.handoff.feature}", que não corresponde a nenhuma pasta em features/`,
+      message: `Handoff points to "${state.handoff.feature}", which matches no folder in features/`,
       file: 'STATE.md',
       line: state.handoff.line,
     });

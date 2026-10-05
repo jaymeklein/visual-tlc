@@ -39,7 +39,7 @@ async function detailOf(feature: string, expandedTasks: string[] = []): Promise<
 
 const by = (list: Tag[], attrs: Record<string, string>) => list.filter((t) => Object.entries(attrs).every(([k, v]) => t.attrs[k] === v));
 
-test('NAV-10 stepper steps, "abrir X.md" links, requirement, story and file rows open the preview', async () => {
+test('NAV-10 stepper steps, "open X.md" links, requirement, story and file rows open the preview', async () => {
   const { html, ctx } = await detailOf('user-auth');
   const t = tags(html);
 
@@ -51,19 +51,19 @@ test('NAV-10 stepper steps, "abrir X.md" links, requirement, story and file rows
       ['preview-file', 'features/user-auth/design.md'],
       ['preview-file', 'features/user-auth/tasks.md'],
       ['preview-file', 'features/user-auth/tasks.md'],
-      [null, null], // Verificação: no validation.md yet
+      [null, null], // Verification: no validation.md yet
     ],
   );
 
   for (const file of ['tasks.md', 'spec.md']) {
     const links = by(t, { 'data-action': 'preview-file', 'data-file': `features/user-auth/${file}` }).filter((x) => x.tag === 'button');
-    assert.equal(links.length, 1, `abrir ${file} link`);
+    assert.equal(links.length, 1, `open ${file} link`);
   }
 
   const feature = ctx.projects[0].features.find((f) => f.name === 'user-auth')!;
   const specRows = by(t, { 'data-action': 'preview-file', 'data-file': 'features/user-auth/spec.md' }).filter((x) => x.tag === 'li');
-  const expectedSpecRows = feature.spec!.requirements.length + feature.spec!.stories.length + 2; // + Spec step + Arquivos row
-  assert.equal(specRows.length, expectedSpecRows, 'requirement + story rows (+ Spec step + Arquivos row) preview spec.md');
+  const expectedSpecRows = feature.spec!.requirements.length + feature.spec!.stories.length + 2; // + Spec step + Files row
+  assert.equal(specRows.length, expectedSpecRows, 'requirement + story rows (+ Spec step + Files row) preview spec.md');
 
   for (const f of feature.files) {
     assert.equal(by(t, { 'data-action': 'preview-file', 'data-file': f.path }).filter((x) => x.tag === 'li' && !x.attrs.class?.startsWith('step')).length >= 1, true, f.path);
@@ -79,12 +79,12 @@ test('NAV-10 stepper steps, "abrir X.md" links, requirement, story and file rows
   });
 });
 
-test('NAV-11 Arquivos rows carry an "Abrir no editor" button that opens the text editor', async () => {
+test('NAV-11 Files rows carry an "Open in Editor" button that opens the text editor', async () => {
   const { html, ctx } = await detailOf('user-auth');
   const t = tags(html);
   const feature = ctx.projects[0].features.find((f) => f.name === 'user-auth')!;
   for (const f of feature.files) {
-    const buttons = by(t, { 'data-action': 'open', 'data-file': f.path, title: 'Abrir no editor' }).filter((x) => x.tag === 'button');
+    const buttons = by(t, { 'data-action': 'open', 'data-file': f.path, title: 'Open in Editor' }).filter((x) => x.tag === 'button');
     assert.equal(buttons.length, 1, f.path);
   }
   assert.deepEqual(actionFor({ action: 'open', pid: 'sample', file: 'features/user-auth/context.md' }), {
@@ -94,7 +94,7 @@ test('NAV-11 Arquivos rows carry an "Abrir no editor" button that opens the text
 
 test('NAV-14 dashboard warnings open the text editor at the warning line', async () => {
   const { html, ctx } = await detailOf('user-auth');
-  const issue = ctx.projects[0].features.find((f) => f.name === 'user-auth')!.issues.find((i) => i.message.startsWith('Requisito(s) sem task'))!;
+  const issue = ctx.projects[0].features.find((f) => f.name === 'user-auth')!.issues.find((i) => i.message.startsWith('Requirement(s) without a task'))!;
   const rows = by(tags(html), { class: 'sev-warning', 'data-action': 'open', 'data-file': issue.file!, 'data-line': String(issue.line) });
   assert.equal(rows.length, 1);
   assert.deepEqual(actionFor({ action: 'open', pid: 'sample', file: issue.file, line: String(issue.line) }), {
@@ -121,17 +121,17 @@ test('NAV-12 clicking a collapsed task row expands its details in place, without
 
   const t5 = expanded.ctx.projects[0].features.find((f) => f.name === 'user-auth')!.tasks!.tasks.find((t) => t.id === 'T5')!;
   const details = taskDetailsHtml(t5);
-  for (const text of ['O quê', 'Lock account for 15 minutes after 5 failures', 'Onde', 'src/auth/auth.service.ts (modify)', 'Depende de', 'T4', 'Done when', '6th attempt returns 423', 'Gate check passes: npm run test:unit']) {
+  for (const text of ['What', 'Lock account for 15 minutes after 5 failures', 'Where', 'src/auth/auth.service.ts (modify)', 'Depends on', 'T4', 'Done when', '6th attempt returns 423', 'Gate check passes: npm run test:unit']) {
     assert.ok(details.includes(text), `details show "${text}"`);
   }
   assert.equal(by(tags(details), { class: 'check-item unchecked' }).length, 2, 'two unchecked Done when items');
   assert.ok(!details.includes('data-action'), 'details are read-only');
 
-  // Only warnings and the explicit "Abrir no editor" buttons may open the text editor.
+  // Only warnings and the explicit "Open in Editor" buttons may open the text editor.
   const opens = by(tags(expanded.html), { 'data-action': 'open' });
   assert.ok(opens.length > 0);
   for (const el of opens) {
-    assert.ok(/^sev-/.test(el.attrs.class ?? '') || el.attrs.title === 'Abrir no editor', `unexpected editor opener: ${JSON.stringify(el.attrs)}`);
+    assert.ok(/^sev-/.test(el.attrs.class ?? '') || el.attrs.title === 'Open in Editor', `unexpected editor opener: ${JSON.stringify(el.attrs)}`);
   }
 });
 
@@ -145,7 +145,7 @@ test('NAV-13 clicking an expanded task row collapses its details', async () => {
   assert.equal(by(tags(html), { class: 'task-details', 'data-key': other }).length, 1, 'T1 stays expanded');
 });
 
-test('NAV-10 "abrir validation.md" and "abrir STATE.md" links open the preview', async () => {
+test('NAV-10 "open validation.md" and "open STATE.md" links open the preview', async () => {
   const billing = tags((await detailOf('billing-invoices')).html);
   assert.equal(by(billing, { 'data-action': 'preview-file', 'data-file': 'features/billing-invoices/validation.md' }).filter((x) => x.tag === 'button').length, 1);
 
@@ -162,7 +162,7 @@ test('SIDE-04 board stages without features are marked is-empty, the others are 
   const columns = [...html.matchAll(/<div class="column([^"]*)" role="listitem" aria-label="([^"]+)">([\s\S]*?)(?=<div class="column[ "]|$)/g)];
   assert.equal(columns.length, 6);
   const withCards = columns.filter((c) => c[3].includes('class="card '));
-  assert.deepEqual(withCards.map((c) => c[2]), ['Execução']);
+  assert.deepEqual(withCards.map((c) => c[2]), ['Execution']);
   for (const [, cls, label, body] of columns) {
     assert.equal(cls.split(' ').includes('is-empty'), !body.includes('class="card '), label);
   }
@@ -186,7 +186,7 @@ test('SIDE-03/SIDE-04 the stylesheet stacks the board and hides the empty stages
 
 
 // Panel in progress (spec: .specs/features/panel-in-progress/spec.md) and hidden specs (spec: .specs/features/hidden-specs/spec.md).
-// The "Ocultar concluídas" option became the eye of hidden-specs: closed is the old option checked.
+// The "Hide Completed" option became the eye of hidden-specs: closed is the old option checked.
 
 const sampleProject = () => loadProject(nodeReader(SAMPLE_SPECS), 'sample', 'sample', { now: Date.now(), staleAfterDays: 14 });
 const mark = (...names: string[]) => names.map((name) => hiddenKey('sample', name));
@@ -225,18 +225,18 @@ async function board(showHidden: boolean, hidden: string[] = [], shown: string[]
     boardClass: tags(html).find((t) => t.attrs.role === 'list')!.attrs.class,
     labels: columns.map((c) => c[1]),
     cards: columns.flatMap((c) => cards(c[2])).sort(),
-    doneCards: cards(columns.find((c) => c[1] === 'Concluídas')?.[2] ?? ''),
+    doneCards: cards(columns.find((c) => c[1] === 'Completed')?.[2] ?? ''),
     stage: (label: string) => cards(columns.find((c) => c[1] === label)?.[2] ?? ''),
     complete: project.features.filter((f) => f.health === 'complete').map((f) => f.name).sort(),
     open: project.features.filter((f) => f.health !== 'complete').map((f) => f.name).sort(),
   };
 }
 
-test('PNL-02/PNL-03/HID-02 with the eye closed the board leaves out the completed cards and the Concluídas column, in five stages', async () => {
+test('PNL-02/PNL-03/HID-02 with the eye closed the board leaves out the completed cards and the Completed column, in five stages', async () => {
   const b = await board(false);
   assert.ok(b.complete.length > 0, 'the sample has no completed feature');
   assert.deepEqual(b.cards, b.open);
-  assert.deepEqual(b.labels, ['Spec', 'Design', 'Tasks', 'Execução', 'Verificação']);
+  assert.deepEqual(b.labels, ['Spec', 'Design', 'Tasks', 'Execution', 'Verification']);
   assert.equal(b.boardClass, 'board five-stages');
 });
 
@@ -244,32 +244,32 @@ test('HID-02 with the eye closed a spec marked as hidden is off the board too', 
   const b = await board(false, mark('csv-export'));
   assert.ok(b.open.includes('csv-export'), 'csv-export is completed in the sample');
   assert.deepEqual(b.cards, b.open.filter((n) => n !== 'csv-export'));
-  assert.deepEqual(b.labels, ['Spec', 'Design', 'Tasks', 'Execução', 'Verificação']);
+  assert.deepEqual(b.labels, ['Spec', 'Design', 'Tasks', 'Execution', 'Verification']);
 });
 
-test('PNL-04/HID-03 with the eye open the Concluídas column holds the completed cards, in six stages', async () => {
+test('PNL-04/HID-03 with the eye open the Completed column holds the completed cards, in six stages', async () => {
   const b = await board(true);
   assert.deepEqual(b.doneCards, b.complete);
   assert.deepEqual(b.cards, [...b.open, ...b.complete].sort());
   assert.equal(b.labels.length, 6);
-  assert.equal(b.labels[5], 'Concluídas');
+  assert.equal(b.labels[5], 'Completed');
   assert.equal(b.boardClass, 'board');
 });
 
 test('HID-03 with the eye open the marked spec is back in its stage and the top bar shows the open eye', async () => {
   const b = await board(true, mark('csv-export'));
   assert.deepEqual(b.cards, [...b.open, ...b.complete].sort());
-  assert.ok(b.stage('Execução').includes('csv-export'), 'csv-export is not in Execução');
+  assert.ok(b.stage('Execution').includes('csv-export'), 'csv-export is not in Execution');
   assert.equal(b.labels.length, 6);
   const eye = eyeToggle(b.html);
   assert.equal(eye.glyph, 'eye-open');
-  assert.equal(eye.attrs.title, 'Esconder as specs ocultas');
+  assert.equal(eye.attrs.title, 'Hide Hidden Specs');
   assert.equal(eye.attrs['aria-pressed'], 'true');
   assert.equal(eye.attrs['data-show'], 'false');
-  assert.equal(eye.text, '2 ocultas');
+  assert.equal(eye.text, '2 hidden');
 });
 
-test('PNL-03/PNL-04 the stylesheet lays five stages side by side for the board without Concluídas, and one stage under 700px', () => {
+test('PNL-03/PNL-04 the stylesheet lays five stages side by side for the board without Completed, and one stage under 700px', () => {
   const css = readFileSync(join(import.meta.dirname, '..', '..', 'media', 'dashboard.css'), 'utf8').replace(/\r\n/g, '\n');
   const six = css.indexOf('.board { display: grid; grid-template-columns: repeat(6, minmax(200px, 1fr));');
   const five = css.indexOf('.board:where(.five-stages) { grid-template-columns: repeat(5, minmax(200px, 1fr)); }');
@@ -282,28 +282,28 @@ test('PNL-03/PNL-04 the stylesheet lays five stages side by side for the board w
 test('PNL-01/HID-01 the panel opens with the closed eye, its count of hidden specs, and the completed features off the board', async () => {
   const project = await sampleProject();
   const html = renderApp({ projects: [project], now: Date.now(), loaded: true, hidden: [], shown: [], view: DEFAULT_VIEW });
-  assert.ok(!html.includes('type="checkbox"'), 'the "Ocultar concluídas" box is still there');
+  assert.ok(!html.includes('type="checkbox"'), 'the "Hide Completed" box is still there');
   const eye = eyeToggle(html);
   assert.equal(eye.glyph, 'eye-closed');
-  assert.equal(eye.attrs.title, 'Mostrar as specs ocultas');
+  assert.equal(eye.attrs.title, 'Show Hidden Specs');
   assert.equal(eye.attrs['aria-pressed'], 'false');
   assert.equal(eye.attrs['data-show'], 'true');
   assert.equal(project.features.filter((f) => f.health === 'complete').length, 1);
-  assert.equal(eye.text, '1 oculta');
+  assert.equal(eye.text, '1 hidden');
   const open = project.features.filter((f) => f.health !== 'complete').map((f) => f.name).sort();
   assert.deepEqual([...html.matchAll(/<span class="card-name">([^<]+)<\/span>/g)].map((m) => m[1]).sort(), open);
-  assert.ok(!html.includes('aria-label="Concluídas"'), 'the Concluídas column is on the board');
+  assert.ok(!html.includes('aria-label="Completed"'), 'the Completed column is on the board');
 });
 
 test('HID-01/HID-11 the count of hidden specs adds the marked ones, a completed one marked too counts once', async () => {
-  assert.equal(eyeToggle((await board(false, mark('csv-export'))).html).text, '2 ocultas');
-  assert.equal(eyeToggle((await board(false, mark('csv-export', 'billing-invoices'))).html).text, '2 ocultas');
-  assert.equal(eyeToggle((await board(false, mark('csv-export', 'user-auth'))).html).text, '3 ocultas');
-  // Nothing completed and nothing marked: zero is written in the plural.
+  assert.equal(eyeToggle((await board(false, mark('csv-export'))).html).text, '2 hidden');
+  assert.equal(eyeToggle((await board(false, mark('csv-export', 'billing-invoices'))).html).text, '2 hidden');
+  assert.equal(eyeToggle((await board(false, mark('csv-export', 'user-auth'))).html).text, '3 hidden');
+  // Nothing completed and nothing marked: the count still reads "0 hidden".
   const project = await sampleProject();
   const open = { ...project, features: project.features.filter((f) => f.health !== 'complete') };
   const none = renderApp({ projects: [open], now: Date.now(), loaded: true, hidden: [], shown: [], view: DEFAULT_VIEW });
-  assert.equal(eyeToggle(none).text, '0 ocultas');
+  assert.equal(eyeToggle(none).text, '0 hidden');
 });
 
 test('PNL-05 a completed feature opened in the panel shows its details with the eye closed', async () => {
@@ -324,22 +324,22 @@ test('PNL-04/HID-03/HID-04 the closed eye shows the hidden specs, the open eye h
   assert.deepEqual(actionFor({ action: 'toggle-hidden', show: 'false' }), { view: { showHidden: false } });
 });
 
-test('HID-09/HID-10/EYE-01/EYE-02/EYE-03 every card has its eye: open "Ocultar spec" in view, closed "Desocultar spec" hidden, completed or not', async () => {
+test('HID-09/HID-10/EYE-01/EYE-02/EYE-03 every card has its eye: open "Hide Spec" in view, closed "Unhide Spec" hidden, completed or not', async () => {
   const cards = cardsOf((await board(true, mark('csv-export'))).html);
-  assert.deepEqual(cardEyes(cards.get('user-auth')!.body), [{ action: 'hide', title: 'Ocultar spec', glyph: 'eye-open' }]);
-  assert.deepEqual(cardEyes(cards.get('csv-export')!.body), [{ action: 'unhide', title: 'Desocultar spec', glyph: 'eye-closed' }]);
+  assert.deepEqual(cardEyes(cards.get('user-auth')!.body), [{ action: 'hide', title: 'Hide Spec', glyph: 'eye-open' }]);
+  assert.deepEqual(cardEyes(cards.get('csv-export')!.body), [{ action: 'unhide', title: 'Unhide Spec', glyph: 'eye-closed' }]);
   // Completed without a choice: hidden, so the closed eye.
-  assert.deepEqual(cardEyes(cards.get('billing-invoices')!.body), [{ action: 'unhide', title: 'Desocultar spec', glyph: 'eye-closed' }]);
+  assert.deepEqual(cardEyes(cards.get('billing-invoices')!.body), [{ action: 'unhide', title: 'Unhide Spec', glyph: 'eye-closed' }]);
   // Marked while open and completed later: still hidden.
   const both = cardsOf((await board(true, mark('csv-export', 'billing-invoices'))).html);
-  assert.deepEqual(cardEyes(both.get('billing-invoices')!.body), [{ action: 'unhide', title: 'Desocultar spec', glyph: 'eye-closed' }]);
+  assert.deepEqual(cardEyes(both.get('billing-invoices')!.body), [{ action: 'unhide', title: 'Unhide Spec', glyph: 'eye-closed' }]);
   // Completed and kept in view: the open eye.
   const kept = cardsOf((await board(true, [], show('billing-invoices'))).html);
-  assert.deepEqual(cardEyes(kept.get('billing-invoices')!.body), [{ action: 'hide', title: 'Ocultar spec', glyph: 'eye-open' }]);
-  // The eye means hiding now: "Visualizar" draws another glyph.
+  assert.deepEqual(cardEyes(kept.get('billing-invoices')!.body), [{ action: 'hide', title: 'Hide Spec', glyph: 'eye-open' }]);
+  // The eye means hiding now: "Preview" draws another glyph.
   const preview = cards.get('user-auth')!.body.match(/data-action="preview"[^>]*>(<svg class="ic ([\w-]*)")/);
-  assert.ok(preview, 'user-auth has no "Visualizar" button');
-  assert.ok(!['eye-open', 'eye-closed'].includes(preview[2]), `"Visualizar" draws ${preview[2]}`);
+  assert.ok(preview, 'user-auth has no "Preview" button');
+  assert.ok(!['eye-open', 'eye-closed'].includes(preview[2]), `"Preview" draws ${preview[2]}`);
 });
 
 test('HID-11/HID-12 the eye of a card asks the extension to mark or unmark that spec', () => {
@@ -361,14 +361,14 @@ test('HID-14/EYE-08 with the eye open every hidden card is faded, completed or n
   assert.equal(cardsOf((await board(true, [], show('billing-invoices'))).html).get('billing-invoices')!.cls, 'card h-complete');
 });
 
-test('EYE-05/EYE-07 with the eye closed a completed spec kept in view is in the Concluídas column, in six stages, and out of the count', async () => {
+test('EYE-05/EYE-07 with the eye closed a completed spec kept in view is in the Completed column, in six stages, and out of the count', async () => {
   const b = await board(false, [], show('billing-invoices'));
-  assert.deepEqual(b.labels, ['Spec', 'Design', 'Tasks', 'Execução', 'Verificação', 'Concluídas']);
+  assert.deepEqual(b.labels, ['Spec', 'Design', 'Tasks', 'Execution', 'Verification', 'Completed']);
   assert.deepEqual(b.doneCards, ['billing-invoices']);
   assert.deepEqual(b.cards, [...b.open, 'billing-invoices'].sort());
   assert.equal(b.boardClass, 'board');
-  assert.equal(eyeToggle(b.html).text, '0 ocultas');
-  assert.equal(eyeToggle((await board(false, mark('csv-export'), show('billing-invoices'))).html).text, '1 oculta');
+  assert.equal(eyeToggle(b.html).text, '0 hidden');
+  assert.equal(eyeToggle((await board(false, mark('csv-export'), show('billing-invoices'))).html).text, '1 hidden');
 });
 
 test('HID-14 the stylesheet fades a marked card at every width', () => {

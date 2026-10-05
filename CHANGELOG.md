@@ -1,15 +1,20 @@
 # Changelog
 
-As mudanças de cada versão publicada do Visual TLC. A versão mais nova fica no topo.
+Changes in each published version of Visual TLC. The newest version is at the top.
+
+## 0.2.0
+
+- **English throughout.** Every label, command, tooltip, notification, warning message and setting description is now in English, as are the Marketplace description, the README and the project docs.
+- Specs written in Portuguese are still read as before: status words such as `concluído`, `pendente` or `nenhum` are still recognized.
 
 ## 0.1.0
 
-Primeira versão publicada.
+First published version.
 
-- **Barra lateral TLC Specs.** A árvore **Features** mostra cada feature com a fase atual e o progresso, o pipeline Spec → Design → Tasks → Execução → Verificação, as tasks por fase com os detalhes, os requisitos, os arquivos e os avisos. A árvore **Projeto** mostra o Handoff do `STATE.md`, as decisões `AD-NNN` e as lições do `lessons.json`.
-- **Painel** na barra lateral ou numa aba do editor, com o resumo do projeto, um quadro por fase e o detalhe de cada feature: stepper, próximo passo, tasks, histórias EARS, requisitos, veredito do Verifier e avisos.
-- **Navegação somente leitura.** Clicar num item abre o markdown no preview. O lápis abre o arquivo no editor, na linha do item.
-- **Specs ocultas.** O olho de cada spec a oculta ou desoculta, e o olho do topo de cada superfície mostra ou esconde as ocultas. As concluídas começam ocultas. Uma pasta com todas as specs ocultas volta recolhida quando o olho abre.
-- **Avisos de spec incompleta** no painel Problemas, com as regras dos validadores da skill e cruzamentos entre `spec.md`, `tasks.md` e `validation.md`.
-- **Barra de status** com a feature em foco e **notificações** de spec nova, mudança de fase, conclusão e falha na verificação.
-- **Pastas de specs configuráveis** (`tlcSpecs.specsFolders`), com suporte a monorepo e workspaces multi-root.
+- **TLC Specs side bar.** The **Features** tree shows each feature with its current phase and progress, the Spec → Design → Tasks → Execution → Verification pipeline, the tasks by phase with their details, the requirements, the files and the issues. The **Project** tree shows the Handoff from `STATE.md`, the `AD-NNN` decisions and the lessons from `lessons.json`.
+- **Dashboard** in the side bar or in an editor tab, with the project summary, a board per phase and each feature's details: stepper, next step, tasks, EARS stories, requirements, the Verifier's verdict and issues.
+- **Read-only navigation.** Clicking an item opens the markdown in the preview. The pencil opens the file in the editor, at the item's line.
+- **Hidden specs.** Each spec's eye hides or unhides it, and the top eye of each surface shows or hides the hidden ones. Completed specs start hidden. A folder whose specs are all hidden comes back collapsed when the eye opens.
+- **Incomplete-spec warnings** in the Problems panel, using the rules of the skill's validators plus cross-checks between `spec.md`, `tasks.md` and `validation.md`.
+- **Status bar** with the feature in focus, and **notifications** for a new spec, a phase change, completion and a failed verification.
+- **Configurable specs folders** (`tlcSpecs.specsFolders`), with support for monorepos and multi-root workspaces.

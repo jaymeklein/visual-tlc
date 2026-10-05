@@ -2,12 +2,12 @@
 
 ## Problem Statement
 
-O painel esconde as features concluídas com uma caixa de texto, "Ocultar concluídas", que não mostra de relance se há algo escondido nem quanto. A árvore Features não esconde nada: lista todas as specs, inclusive as entregues, e não tem como listar só o que falta. Também não há como tirar da frente uma spec que não está concluída, mas saiu do foco, como uma pausada ou abandonada.
+The dashboard hides completed features with a labeled checkbox, "Hide Completed", which does not show at a glance whether anything is hidden or how much. The Features tree hides nothing: it lists every spec, including the delivered ones, and has no way to list only what is left. There is also no way to move aside a spec that is not completed but has fallen out of focus, such as a paused or abandoned one.
 
 ## Goals
 
-- [x] Um botão de olho, no painel e na árvore Features, mostra pelo ícone se as specs ocultas estão escondidas ou à vista, e alterna entre os dois estados com um clique
-- [x] Qualquer spec não concluída pode ser ocultada e desocultada à mão, pelo olho dela, e continua oculta ao reabrir o VS Code
+- [x] An eye button, in the dashboard and in the Features tree, shows by its icon whether the hidden specs are out of view or in view, and switches between the two states with one click
+- [x] Any spec that is not completed can be hidden and unhidden by hand, with its own eye, and stays hidden when VS Code reopens
 
 ## Out of Scope
 
@@ -15,11 +15,11 @@ Explicitly excluded. Documented to prevent scope creep.
 
 | Feature     | Reason         |
 | ----------- | -------------- |
-| Desocultar uma concluída para ela ficar sempre à vista | O usuário escolheu: as concluídas ficam ocultas sozinhas, e o olho por spec vale para as outras |
-| Esconder specs na árvore Projeto | O pedido é sobre Features e o painel |
-| Tirar as ocultas do resumo, da barra de status e das notificações | O resumo mostra que elas existem. A barra de status e as notificações não mudam |
-| Guardar as marcas num arquivo do repositório, para a equipe | A extensão não escreve nas pastas de specs (readonly-navigation) |
-| Olho por spec no detalhe da feature | O card e a linha da árvore bastam. O detalhe continua como está |
+| Unhiding a completed spec so it always stays in view | The user chose: completed specs hide on their own, and the per-spec eye is for the others |
+| Hiding specs in the Project tree | The request is about Features and the dashboard |
+| Removing hidden specs from the summary, the status bar, and notifications | The summary shows that they exist. The status bar and notifications do not change |
+| Storing the marks in a repository file, for the team | The extension does not write to the specs folders (readonly-navigation) |
+| Per-spec eye in the feature detail | The card and the tree row are enough. The detail stays as it is |
 
 ---
 
@@ -29,21 +29,21 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Assumption / decision | Chosen default  | Rationale | Confirmed? |
 | --------------------- | --------------- | --------- | ---------- |
-| O que é uma spec oculta | Uma feature verificada com PASS ou uma feature marcada à mão | Resposta do usuário: "Concluídas e as marcadas" | y (2026-09-29) |
-| Controle de ocultar e mostrar | Botão de olho que alterna, no painel e no título da view Features. O ícone mostra o estado: olho fechado com as ocultas escondidas, olho aberto com elas à vista | Resposta do usuário: "Olho que alterna" | y (2026-09-29) |
-| Onde as ocultas aparecem quando o olho abre | No lugar delas: a coluna Concluídas e as colunas das etapas no painel, as linhas na árvore | Resposta do usuário | y (2026-09-29) |
-| Texto do botão do painel | O número de ocultas: "1 oculta", "3 ocultas", "0 ocultas". O título diz a ação: "Mostrar as specs ocultas" ou "Esconder as specs ocultas" | O número mostra de relance que há algo escondido. O título explica o clique | n |
-| Olho por spec | Olho aberto, "Ocultar spec", numa spec à vista. Olho fechado, "Desocultar spec", numa spec marcada. Concluídas não têm olho | Mesmo sentido do botão geral: o ícone mostra o estado da spec | n |
-| Ícone de "Visualizar" no card | Troca o olho pelo ícone de pré-visualização, o mesmo da árvore | O olho passa a significar ocultar | n |
-| Spec marcada à vista | Card esmaecido no painel. Na árvore, a descrição termina em "· oculta" | Distingue a marcada das outras quando o olho está aberto | n |
-| Onde ficam as marcas | No estado do workspace no VS Code (`workspaceState`), fora do repositório | A extensão não escreve nas pastas de specs | n |
-| Estado do olho geral | Cada superfície tem o seu: a árvore, a aba e a barra lateral. A árvore começa com as ocultas escondidas a cada abertura do VS Code. O painel guarda o estado como já guarda o "Ocultar concluídas" | O pedido é um botão em cada lugar. Mantém o padrão do painel | n |
-| Spec marcada que depois é concluída | Conta uma vez entre as ocultas | Continua oculta pelas duas regras | n |
-| Marca de uma spec apagada ou renomeada | Fica guardada. Volta a valer se uma spec com o mesmo nome voltar à mesma pasta | Não há como distinguir uma spec apagada de uma pasta de specs fora da configuração por um tempo | n |
-| Projeto com todas as specs ocultas, em workspace com vários projetos | A linha do projeto continua na árvore, sem filhos à vista | Mostra que o projeto existe | n |
-| Busca do painel | Com as ocultas escondidas, a busca não encontra as ocultas | A busca filtra o que está no quadro, como hoje | n |
-| Duas janelas do mesmo workspace | Cada janela lê as marcas ao abrir. Uma marca feita numa janela só aparece na outra quando ela reabre | O `workspaceState` não avisa as outras janelas | n |
-| Dimensões implícitas | Persistência coberta pelo HID-13 e pela linha acima. Remaining dimensions N/A for this scope | Sem chamadas externas, auth ou transições além de oculta e à vista | n |
+| What a hidden spec is | A feature verified with PASS or a feature marked by hand | User's answer: "Completed and the marked ones" | y (2026-09-29) |
+| Hide and show control | A toggle eye button, in the dashboard and in the Features view title. The icon shows the state: closed eye with the hidden specs out of view, open eye with them in view | User's answer: "An eye that toggles" | y (2026-09-29) |
+| Where hidden specs appear when the eye opens | In their own place: the Completed column and the stage columns on the dashboard, the rows in the tree | User's answer | y (2026-09-29) |
+| Dashboard button text | The number of hidden specs: "1 hidden", "3 hidden", "0 hidden". The title states the action: "Show Hidden Specs" or "Hide Hidden Specs" | The number shows at a glance that something is hidden. The title explains the click | n |
+| Per-spec eye | Open eye, "Hide Spec", on a spec in view. Closed eye, "Unhide Spec", on a marked spec. Completed specs have no eye | Same meaning as the general button: the icon shows the spec's state | n |
+| "Preview" icon on the card | Replaces the eye with the preview icon, the same one the tree uses | The eye now means hide | n |
+| Marked spec in view | Dimmed card on the dashboard. In the tree, the description ends in "· hidden" | Sets the marked spec apart from the others when the eye is open | n |
+| Where the marks live | In the VS Code workspace state (`workspaceState`), outside the repository | The extension does not write to the specs folders | n |
+| General eye state | Each surface has its own: the tree, the editor tab, and the side bar. The tree starts with the hidden specs out of view every time VS Code opens. The dashboard keeps the state the way it already keeps "Hide Completed" | The request is a button in each place. Keeps the dashboard's pattern | n |
+| Marked spec that is later completed | Counts once among the hidden specs | Stays hidden under both rules | n |
+| Mark of a deleted or renamed spec | Stays stored. Applies again if a spec with the same name returns to the same folder | There is no way to tell a deleted spec from a specs folder left out of the configuration for a while | n |
+| Project with all specs hidden, in a workspace with several projects | The project row stays in the tree, with no children in view | Shows that the project exists | n |
+| Dashboard search | With the hidden specs out of view, search does not find them | Search filters what is on the board, as it does today | n |
+| Two windows of the same workspace | Each window reads the marks when it opens. A mark made in one window only shows in the other when that one reopens | `workspaceState` does not notify other windows | n |
+| Implicit dimensions | Persistence covered by HID-13 and the row above. Remaining dimensions N/A for this scope | No external calls, auth, or transitions beyond hidden and in view | n |
 
 **Open questions:** none - all resolved or logged above.
 
@@ -51,59 +51,59 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 ## User Stories
 
-### P1: Ver e esconder as ocultas pelo olho ⭐ MVP
+### P1: Show and hide the hidden specs with the eye ⭐ MVP
 
-**User Story**: Como quem acompanha as specs, quero um olho no painel e na árvore Features que mostre se há specs escondidas e as traga à vista com um clique, para ver o que falta sem perder o acesso ao que saiu da frente.
+**User Story**: As someone tracking the specs, I want an eye in the dashboard and in the Features tree that shows whether specs are hidden and brings them into view with one click, so I can see what is left without losing access to what was moved aside.
 
-**Why P1**: É o pedido: o controle visual e o botão também em Features.
+**Why P1**: It is the request: the visual control, and the button in Features too.
 
 **Acceptance Criteria**:
 
-1. WHEN o painel abre, na aba ou na barra lateral, THEN a extensão SHALL mostrar na barra do topo, no lugar da caixa "Ocultar concluídas", um botão com o olho fechado, o título "Mostrar as specs ocultas" e o texto com o número de specs ocultas ("3 ocultas")
-2. WHILE o olho do painel está fechado the extensão SHALL deixar fora do quadro as specs ocultas, concluídas e marcadas, e a coluna Concluídas
-3. WHEN o usuário clica no olho fechado do painel THEN a extensão SHALL mostrar no quadro as specs ocultas, cada uma na sua coluna, com a coluna Concluídas, e trocar o botão pelo olho aberto com o título "Esconder as specs ocultas"
-4. WHEN o usuário clica no olho aberto do painel THEN a extensão SHALL tirar de novo as specs ocultas do quadro e voltar ao olho fechado
-5. WHEN o VS Code abre um workspace com specs THEN a árvore Features SHALL listar só as specs que não estão ocultas e mostrar no título da view o botão "Mostrar specs ocultas", com o ícone `eye-closed`
-6. WHEN o usuário clica em "Mostrar specs ocultas" na view Features THEN a árvore SHALL listar todas as specs e o título da view SHALL mostrar o botão "Esconder specs ocultas", com o ícone `eye`
-7. WHEN o usuário clica em "Esconder specs ocultas" na view Features THEN a árvore SHALL voltar a listar só as specs que não estão ocultas
-8. WHILE a árvore Features esconde as ocultas e há ao menos uma the view SHALL mostrar a mensagem "T feature(s) · D concluída(s) · H oculta(s)", com o total de features, as concluídas e as ocultas
+1. WHEN the dashboard opens, in the editor tab or in the side bar, THEN the extension SHALL show in the top bar, in place of the "Hide Completed" checkbox, a button with the closed eye, the title "Show Hidden Specs", and text with the number of hidden specs ("3 hidden")
+2. WHILE the dashboard eye is closed the extension SHALL keep the hidden specs, completed and marked, and the Completed column off the board
+3. WHEN the user clicks the dashboard's closed eye THEN the extension SHALL show the hidden specs on the board, each in its column, with the Completed column, and switch the button to the open eye with the title "Hide Hidden Specs"
+4. WHEN the user clicks the dashboard's open eye THEN the extension SHALL take the hidden specs off the board again and return to the closed eye
+5. WHEN VS Code opens a workspace with specs THEN the Features tree SHALL list only the specs that are not hidden and show the "Show Hidden Specs" button in the view title, with the `eye-closed` icon
+6. WHEN the user clicks "Show Hidden Specs" in the Features view THEN the tree SHALL list all specs and the view title SHALL show the "Hide Hidden Specs" button, with the `eye` icon
+7. WHEN the user clicks "Hide Hidden Specs" in the Features view THEN the tree SHALL go back to listing only the specs that are not hidden
+8. WHILE the Features tree hides the hidden specs and there is at least one the view SHALL show the message "T feature(s) · D completed · H hidden", with the total number of features, the completed ones, and the hidden ones
 
-**Independent Test**: Abrir este repositório. A árvore Features lista só as features sem `validation.md` em PASS, e o painel mostra "N ocultas" com o olho fechado. Clicar no olho de cada lugar traz as concluídas de volta, e clicar de novo as esconde.
+**Independent Test**: Open this repository. The Features tree lists only the features without a `validation.md` at PASS, and the dashboard shows "N hidden" with the closed eye. Clicking the eye in each place brings the completed specs back, and clicking again hides them.
 
 ---
 
-### P2: Ocultar uma spec à mão
+### P2: Hide a spec by hand
 
-**User Story**: Como quem acompanha as specs, quero ocultar uma spec que saiu do foco, mesmo sem estar concluída, para que ela não dispute espaço com as que estão andando.
+**User Story**: As someone tracking the specs, I want to hide a spec that has fallen out of focus, even if it is not completed, so it does not compete for space with the ones in progress.
 
-**Why P2**: Completa o pedido, mas o olho geral já resolve as concluídas sem ela.
+**Why P2**: Completes the request, but the general eye already handles completed specs without it.
 
 **Acceptance Criteria**:
 
-9. WHILE uma spec não concluída está à vista e sem marca the extensão SHALL mostrar na linha dela na árvore Features e no card dela no painel um botão com o olho aberto e o título "Ocultar spec"
-10. WHILE uma spec não concluída está marcada como oculta the extensão SHALL mostrar na linha dela na árvore Features e no card dela no painel um botão com o olho fechado e o título "Desocultar spec"
+9. WHILE a spec that is not completed is in view and unmarked the extension SHALL show on its row in the Features tree and on its card in the dashboard a button with the open eye and the title "Hide Spec"
+10. WHILE a spec that is not completed is marked as hidden the extension SHALL show on its row in the Features tree and on its card in the dashboard a button with the closed eye and the title "Unhide Spec"
 
-> Desde `eye-on-every-spec` (EYE-01 a EYE-03), toda spec tem o olho, concluída ou não. A concluída começa oculta, com o olho fechado.
+> Since `eye-on-every-spec` (EYE-01 to EYE-03), every spec has the eye, completed or not. A completed spec starts hidden, with the eye closed.
 
-11. WHEN o usuário clica em "Ocultar spec", na árvore ou no painel, THEN a extensão SHALL tirar a spec da árvore Features e dos quadros do painel com o olho fechado, e somá-la ao número de ocultas
-12. WHEN o usuário clica em "Desocultar spec", na árvore ou no painel, THEN a extensão SHALL devolver a spec à árvore Features e aos quadros do painel, e tirá-la do número de ocultas
-13. WHEN o VS Code reabre o mesmo workspace THEN a extensão SHALL manter ocultas as specs marcadas antes
-14. WHILE o olho geral está aberto the extensão SHALL mostrar a spec marcada com o card esmaecido no painel e com a descrição terminada em "· oculta" na árvore Features
+11. WHEN the user clicks "Hide Spec", in the tree or in the dashboard, THEN the extension SHALL remove the spec from the Features tree and from the dashboard boards with the eye closed, and add it to the hidden count
+12. WHEN the user clicks "Unhide Spec", in the tree or in the dashboard, THEN the extension SHALL return the spec to the Features tree and to the dashboard boards, and remove it from the hidden count
+13. WHEN VS Code reopens the same workspace THEN the extension SHALL keep the previously marked specs hidden
+14. WHILE the general eye is open the extension SHALL show the marked spec with a dimmed card on the dashboard and with its description ending in "· hidden" in the Features tree
 
-> Desde `eye-on-every-spec` (EYE-08), o esmaecido e o "· oculta" valem para toda spec oculta, inclusive a concluída sem escolha do usuário.
+> Since `eye-on-every-spec` (EYE-08), the dimming and the "· hidden" apply to every hidden spec, including a completed one the user did not choose to hide.
 
-**Independent Test**: Na árvore Features, clicar no olho de uma spec em andamento. Ela some da árvore e do painel, e o número de ocultas sobe. Abrir o olho geral mostra o card esmaecido com o olho fechado. Clicar nele devolve a spec.
+**Independent Test**: In the Features tree, click the eye of an in-progress spec. It disappears from the tree and the dashboard, and the hidden count goes up. Opening the general eye shows the dimmed card with the closed eye. Clicking it brings the spec back.
 
 ---
 
 ## Edge Cases
 
-- WHEN uma spec marcada é aberta no painel pela árvore Features ou por uma notificação THEN a extensão SHALL mostrar o detalhe dela, mesmo com o olho fechado
-- IF todas as specs de um projeto único estão ocultas e a árvore esconde as ocultas THEN a view Features SHALL mostrar a lista vazia com a mensagem do HID-08, sem a tela de boas-vindas
+- WHEN a marked spec is opened in the dashboard from the Features tree or from a notification THEN the extension SHALL show its detail, even with the eye closed
+- IF all specs of a single project are hidden and the tree hides the hidden specs THEN the Features view SHALL show the empty list with the HID-08 message, without the welcome view
 
-> Desde `specs-folder-paths` (SFP-10), a árvore mostra o nó da pasta mesmo com um projeto só. Com tudo oculto, o nó fica sem filhos, e a mensagem continua contando as ocultas.
+> Since `specs-folder-paths` (SFP-10), the tree shows the folder node even with a single project. With everything hidden, the node has no children, and the message still counts the hidden specs.
 >
-> Desde `hidden-folder` (HFD-01 e HFD-04), o nó da pasta com todas as specs ocultas sai da árvore, com um projeto ou com vários. A árvore volta a ficar vazia, com a mensagem do HID-08.
+> Since `hidden-folder` (HFD-01 and HFD-04), the folder node whose specs are all hidden leaves the tree, with one project or several. The tree is empty again, with the HID-08 message.
 
 ---
 
@@ -111,31 +111,31 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Requirement ID | Story       | Phase  | Status  |
 | -------------- | ----------- | ------ | ------- |
-| HID-01 | P1: Ver e esconder as ocultas pelo olho | Execute | Verified |
-| HID-02 | P1: Ver e esconder as ocultas pelo olho | Execute | Verified |
-| HID-03 | P1: Ver e esconder as ocultas pelo olho | Execute | Verified |
-| HID-04 | P1: Ver e esconder as ocultas pelo olho | Execute | Verified |
-| HID-05 | P1: Ver e esconder as ocultas pelo olho | Execute | Verified |
-| HID-06 | P1: Ver e esconder as ocultas pelo olho | Execute | Verified |
-| HID-07 | P1: Ver e esconder as ocultas pelo olho | Execute | Verified |
-| HID-08 | P1: Ver e esconder as ocultas pelo olho | Execute | Verified |
-| HID-09 | P2: Ocultar uma spec à mão | Execute | Verified |
-| HID-10 | P2: Ocultar uma spec à mão | Execute | Verified |
-| HID-11 | P2: Ocultar uma spec à mão | Execute | Verified |
-| HID-12 | P2: Ocultar uma spec à mão | Execute | Verified |
-| HID-13 | P2: Ocultar uma spec à mão | Execute | Verified |
-| HID-14 | P2: Ocultar uma spec à mão | Execute | Verified |
-| HID-15 | Edge case: detalhe de uma marcada | Execute | Verified |
-| HID-16 | Edge case: todas ocultas | Execute | Verified |
+| HID-01 | P1: Show and hide the hidden specs with the eye | Execute | Verified |
+| HID-02 | P1: Show and hide the hidden specs with the eye | Execute | Verified |
+| HID-03 | P1: Show and hide the hidden specs with the eye | Execute | Verified |
+| HID-04 | P1: Show and hide the hidden specs with the eye | Execute | Verified |
+| HID-05 | P1: Show and hide the hidden specs with the eye | Execute | Verified |
+| HID-06 | P1: Show and hide the hidden specs with the eye | Execute | Verified |
+| HID-07 | P1: Show and hide the hidden specs with the eye | Execute | Verified |
+| HID-08 | P1: Show and hide the hidden specs with the eye | Execute | Verified |
+| HID-09 | P2: Hide a spec by hand | Execute | Verified |
+| HID-10 | P2: Hide a spec by hand | Execute | Verified |
+| HID-11 | P2: Hide a spec by hand | Execute | Verified |
+| HID-12 | P2: Hide a spec by hand | Execute | Verified |
+| HID-13 | P2: Hide a spec by hand | Execute | Verified |
+| HID-14 | P2: Hide a spec by hand | Execute | Verified |
+| HID-15 | Edge case: detail of a marked spec | Execute | Verified |
+| HID-16 | Edge case: all hidden | Execute | Verified |
 
-**ID format:** `HID-NN`, na ordem dos critérios acima.
+**ID format:** `HID-NN`, in the order of the criteria above.
 
-**Coverage:** 16 total, 16 verificados.
+**Coverage:** 16 total, 16 verified.
 
 ---
 
 ## Success Criteria
 
-- [x] Ao abrir o VS Code, nem a árvore Features nem o painel mostram specs ocultas, e os dois mostram um olho fechado
-- [x] Uma spec ocultada à mão continua oculta depois de recarregar a janela. Provado com um `Memento` falso lido por uma instância nova. A ligação ao `workspaceState` real não tem teste que reabra o VS Code (Follow-up 1 da validação, opcional)
-- [x] Os testes unitários e de integração atuais continuam passando, com os do "Ocultar concluídas" e os que leem concluídas na árvore ajustados ao olho
+- [x] When VS Code opens, neither the Features tree nor the dashboard shows hidden specs, and both show a closed eye
+- [x] A spec hidden by hand stays hidden after the window reloads. Proven with a fake `Memento` read by a new instance. The wiring to the real `workspaceState` has no test that reopens VS Code (validation Follow-up 1, optional)
+- [x] The current unit and integration tests still pass, with the "Hide Completed" tests and the ones that read completed specs in the tree adjusted to the eye

@@ -7,17 +7,17 @@
 
 ## Architecture Overview
 
-As marcas moram num objeto do host, `HiddenSpecs`, gravado no `workspaceState`. A regra "oculta = concluída ou marcada" fica numa função pura, usada pela árvore e pelo painel. A árvore guarda o próprio olho aberto ou fechado. O painel guarda o dele no estado da webview, como o `hideDone` de hoje. Uma marca nova avisa a árvore e as duas superfícies do painel, que redesenham.
+The marks live in a host object, `HiddenSpecs`, saved to `workspaceState`. The rule "hidden = completed or marked" lives in a pure function, used by the tree and the dashboard. The tree keeps its own eye, open or closed. The dashboard keeps its eye in the webview state, like today's `hideDone`. A new mark notifies the tree and both dashboard surfaces, which redraw.
 
 ```mermaid
 graph TD
-    T[Olho na linha da árvore] -->|tlcSpecs.hideFeature / unhideFeature| H[HiddenSpecs]
-    C[Olho no card do painel] -->|mensagem setHidden| S[Surface do painel] --> H
+    T[Eye on the tree row] -->|tlcSpecs.hideFeature / unhideFeature| H[HiddenSpecs]
+    C[Eye on the dashboard card] -->|setHidden message| S[Dashboard Surface] --> H
     H -->|workspaceState| M[(Memento)]
     H -->|onDidChange| F[FeaturesTree]
-    H -->|onDidChange| D[Dashboard: tab e side postState]
+    H -->|onDidChange| D[Dashboard: tab and side postState]
     D -->|state + hidden| W[Webview: renderApp]
-    G[Olho no título de Features] -->|tlcSpecs.showHidden / hideHidden| F
+    G[Eye in the Features title] -->|tlcSpecs.showHidden / hideHidden| F
     F -->|setContext tlcSpecs.showHidden| G
 ```
 
@@ -29,22 +29,22 @@ graph TD
 
 | Component            | Location            | How to Use                |
 | -------------------- | ------------------- | ------------------------- |
-| Filtro e coluna Concluídas | `src/webview/render.ts:163-176` | Troca o teste `f.health !== 'complete'` pelo `isHidden`. O `five-stages` e a coluna continuam iguais |
-| `DEFAULT_VIEW` | `src/webview/render.ts:24` | Troca `hideDone: true` por `showHidden: false` |
-| `actionFor` | `src/webview/render.ts:582` | Casos novos `toggle-hidden`, `hide` e `unhide`, no lugar de `toggle-done` |
-| `featureActions` | `src/webview/render.ts:224` | Recebe o olho da spec no card. O ícone de "Visualizar" vira o de pré-visualização |
-| `toRef` | `src/extension.ts:15` | Os comandos por spec aceitam a linha da árvore ou um `FeatureRef`, como `showFeature` |
-| `Surface.onMessage` | `src/ui/dashboard.ts:67` | Caso novo `setHidden` |
-| `Rendered` e `report()` | `src/core/protocol.ts:9`, `src/webview/main.ts:56` | Campo novo `toggle` com o título e o texto do olho do painel |
-| Padrão de evento puro | — | `HiddenSpecs` não importa `vscode`, para rodar em `node --test`, como os módulos de `src/core` |
+| Filter and Completed column | `src/webview/render.ts:163-176` | Replaces the `f.health !== 'complete'` test with `isHidden`. `five-stages` and the column stay the same |
+| `DEFAULT_VIEW` | `src/webview/render.ts:24` | Replaces `hideDone: true` with `showHidden: false` |
+| `actionFor` | `src/webview/render.ts:582` | New cases `toggle-hidden`, `hide`, and `unhide`, in place of `toggle-done` |
+| `featureActions` | `src/webview/render.ts:224` | Takes the spec's eye on the card. The "Preview" icon becomes the preview one |
+| `toRef` | `src/extension.ts:15` | Per-spec commands accept the tree row or a `FeatureRef`, like `showFeature` |
+| `Surface.onMessage` | `src/ui/dashboard.ts:67` | New `setHidden` case |
+| `Rendered` and `report()` | `src/core/protocol.ts:9`, `src/webview/main.ts:56` | New `toggle` field with the title and text of the dashboard eye |
+| Pure event pattern | — | `HiddenSpecs` does not import `vscode`, so it runs under `node --test`, like the `src/core` modules |
 
 ### Integration Points
 
 | System         | Integration Method                      |
 | -------------- | --------------------------------------- |
-| `workspaceState` | Chave `tlcSpecs.hidden`, lista de chaves `projectId|feature`. O `projectId` é a URI da pasta de specs (`src/ui/store.ts:108`) |
-| Context key | `tlcSpecs.showHidden`, lido pelos `when` dos botões do título de Features |
-| Menus | `viewItem == feature` passa a `viewItem =~ /^feature/`, para as linhas `feature`, `feature.hidden` e `feature.done` |
+| `workspaceState` | Key `tlcSpecs.hidden`, a list of `projectId|feature` keys. The `projectId` is the specs folder URI (`src/ui/store.ts:108`) |
+| Context key | `tlcSpecs.showHidden`, read by the `when` clauses of the Features title buttons |
+| Menus | `viewItem == feature` becomes `viewItem =~ /^feature/`, for the `feature`, `feature.hidden`, and `feature.done` rows |
 
 ---
 
@@ -52,38 +52,38 @@ graph TD
 
 ### HiddenSpecs
 
-- **Purpose**: Guarda as specs marcadas e avisa quem desenha quando elas mudam.
+- **Purpose**: Stores the marked specs and notifies whoever draws them when they change.
 - **Location**: `src/core/hidden.ts`
 - **Interfaces**:
-  - `hiddenKey(projectId: string, feature: string): string` - chave `projectId|feature`, usada no host e na webview
-  - `isHidden(feature: Feature, marked: boolean): boolean` - concluída ou marcada
-  - `new HiddenSpecs(memento: Memento)` - lê as marcas gravadas
+  - `hiddenKey(projectId: string, feature: string): string` - key `projectId|feature`, used in the host and in the webview
+  - `isHidden(feature: Feature, marked: boolean): boolean` - completed or marked
+  - `new HiddenSpecs(memento: Memento)` - reads the saved marks
   - `isMarked(ref: FeatureRef): boolean`
-  - `keys(): string[]` - as marcas, para a mensagem `state`
-  - `set(ref: FeatureRef, hidden: boolean): Promise<void>` - grava e avisa; não avisa quando nada muda
+  - `keys(): string[]` - the marks, for the `state` message
+  - `set(ref: FeatureRef, hidden: boolean): Promise<void>` - saves and notifies; does not notify when nothing changes
   - `onDidChange(listener: () => void): { dispose(): void }`
-- **Dependencies**: um `Memento` mínimo (`get`, `update`), que o `workspaceState` satisfaz
-- **Reuses**: tipos `Feature` e `FeatureRef`
+- **Dependencies**: a minimal `Memento` (`get`, `update`), which `workspaceState` satisfies
+- **Reuses**: `Feature` and `FeatureRef` types
 
-### FeaturesTree (alterado)
+### FeaturesTree (changed)
 
-- **Purpose**: Filtra as ocultas enquanto o olho da árvore está fechado e marca as linhas.
+- **Purpose**: Filters out the hidden specs while the tree eye is closed, and marks the rows.
 - **Location**: `src/ui/featuresTree.ts`
 - **Interfaces**:
   - `constructor(store: SpecsStore, hidden: HiddenSpecs)`
-  - `showHidden: boolean` (leitura) e `setShowHidden(show: boolean): void` - redesenha e grava o context key
-  - `hiddenCount(): number` - specs fora da árvore, para a mensagem da view
+  - `showHidden: boolean` (read-only) and `setShowHidden(show: boolean): void` - redraws and writes the context key
+  - `hiddenCount(): number` - specs left out of the tree, for the view message
 - **Reuses**: `featureNodes`, `featureItem`
 
-### Painel (alterado)
+### Dashboard (changed)
 
-- **Purpose**: Olho que alterna no topo, olho por card, card esmaecido.
+- **Purpose**: Toggle eye at the top, per-card eye, dimmed card.
 - **Location**: `src/webview/render.ts`, `src/webview/main.ts`, `src/ui/dashboard.ts`, `media/dashboard.css`
 - **Interfaces**:
-  - `ViewState.showHidden: boolean` no lugar de `hideDone`
-  - `RenderCtx.hidden: readonly string[]` - chaves das marcadas
-  - `ToWebview` `state` ganha `hidden: string[]`
-  - `FromWebview` ganha `{ type: 'setHidden'; target: FeatureRef; hidden: boolean }`
+  - `ViewState.showHidden: boolean` in place of `hideDone`
+  - `RenderCtx.hidden: readonly string[]` - keys of the marked specs
+  - `ToWebview` `state` gains `hidden: string[]`
+  - `FromWebview` gains `{ type: 'setHidden'; target: FeatureRef; hidden: boolean }`
   - `Rendered.toggle: { title: string; text: string } | null`
 
 ---
@@ -97,7 +97,7 @@ type HiddenMarks = string[]; // hiddenKey(projectId, feature)
 interface ViewState {
   selected: FeatureRef | null;
   query: string;
-  /** Olho do painel aberto: as ocultas aparecem no quadro. */
+  /** Dashboard eye open: the hidden specs show on the board. */
   showHidden: boolean;
   expandedTasks: string[];
 }
@@ -109,9 +109,9 @@ interface ViewState {
 
 | Error Scenario | Handling      | User Impact      |
 | -------------- | ------------- | ---------------- |
-| `workspaceState` com valor que não é lista de textos | Lê como lista vazia | Nenhuma spec marcada |
-| Comando por spec sem argumento (paleta) | Os comandos por spec ficam fora da paleta | — |
-| Marca de spec que não existe mais | Ignorada ao desenhar | — |
+| `workspaceState` holding a value that is not a list of strings | Read as an empty list | No spec marked |
+| Per-spec command without an argument (palette) | Per-spec commands are left out of the palette | — |
+| Mark for a spec that no longer exists | Ignored when drawing | — |
 
 ---
 
@@ -119,10 +119,10 @@ interface ViewState {
 
 | Concern | Location (file:line) | Impact | Mitigation |
 | ------- | -------------------- | ------ | ---------- |
-| Testes que leem a concluída `billing-invoices` na árvore | `test/integration/suite.cjs:153-158` | Falham quando a árvore esconde as concluídas | A task da árvore abre o olho antes desses testes e o fecha depois |
-| A integração não clica dentro da webview | `src/core/protocol.ts:32-34` | O clique no olho do painel só se prova pelo `actionFor` | Mesmo limite aceito no panel-in-progress. `actionFor` testado nos dois sentidos, e o `Rendered.toggle` mostra o olho real ao abrir |
-| O context key não é legível pelos testes | `src/extension.ts` | Um `setContext` invertido passaria | O teste espia `vscode.commands.executeCommand('setContext', ...)` e confere os `when` do `package.json` |
-| Marcas feitas num teste vazam para os seguintes | `test/integration/suite.cjs` | Cards somem de testes que contam o quadro | Cada teste desmarca o que marcou num `finally` |
+| Tests that read the completed `billing-invoices` in the tree | `test/integration/suite.cjs:153-158` | They fail once the tree hides completed specs | The tree task opens the eye before these tests and closes it after |
+| Integration does not click inside the webview | `src/core/protocol.ts:32-34` | The click on the dashboard eye is proven only through `actionFor` | Same limit accepted in panel-in-progress. `actionFor` tested both ways, and `Rendered.toggle` shows the real eye on open |
+| The context key is not readable by tests | `src/extension.ts` | An inverted `setContext` would pass | The test spies on `vscode.commands.executeCommand('setContext', ...)` and checks the `when` clauses in `package.json` |
+| Marks made in one test leak into the next | `test/integration/suite.cjs` | Cards vanish from tests that count the board | Each test unmarks what it marked in a `finally` |
 
 ---
 
@@ -130,6 +130,6 @@ interface ViewState {
 
 | Decision          | Choice          | Rationale     |
 | ----------------- | --------------- | ------------- |
-| Onde fica `HiddenSpecs` | `src/core`, sem `vscode` | Roda em `node --test`, e o HID-13 se prova com um `Memento` falso lido por uma instância nova |
-| Botão do painel | `<button>` com `data-show`, no lugar da caixa | O clique passa pelo mesmo `activate` dos outros botões. O `change` da caixa sai de `main.ts` |
-| Nome do estado | `showHidden` no lugar de `hideDone` | O olho agora esconde as marcadas também. Um `hideDone` antigo guardado pela webview é ignorado |
+| Where `HiddenSpecs` lives | `src/core`, without `vscode` | Runs under `node --test`, and HID-13 is proven with a fake `Memento` read by a new instance |
+| Dashboard button | `<button>` with `data-show`, in place of the checkbox | The click goes through the same `activate` as the other buttons. The checkbox `change` handler leaves `main.ts` |
+| State name | `showHidden` in place of `hideDone` | The eye now hides the marked specs too. An old `hideDone` saved by the webview is ignored |

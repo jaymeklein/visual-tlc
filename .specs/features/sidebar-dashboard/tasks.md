@@ -8,14 +8,14 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 ---
 
-**Design**: inline (sem `design.md`)
+**Design**: inline (no `design.md`)
 **Status**: Done
 
-Design inline:
+Inline design:
 
-- O painel passa a ter duas superfícies com o mesmo HTML, script e CSS: a aba do editor (`WebviewPanel`, já existe) e a view lateral (`WebviewView`, nova, id `tlcSpecs.panel`). `src/ui/dashboard.ts` concentra as duas; cada superfície tem a sua webview, a sua seleção pendente e o seu último relatório.
-- O layout estreito é só CSS (`@media (max-width: 699px)`), então vale para qualquer superfície estreita.
-- Depois de cada `render()`, a webview lê o DOM e manda um relatório (`rendered`): projetos, cartões, feature em detalhe, colunas do quadro, etapas vazias visíveis, largura e rolagem horizontal. Os testes de integração leem esse relatório pela API da extensão. Lição L-002: o critério é conferido no que a tela mostra, não numa mensagem intermediária.
+- The dashboard now has two surfaces with the same HTML, script, and CSS: the editor tab (`WebviewPanel`, already exists) and the side bar view (`WebviewView`, new, id `tlcSpecs.panel`). `src/ui/dashboard.ts` handles both; each surface has its own webview, its own pending selection, and its own last report.
+- The narrow layout is CSS only (`@media (max-width: 699px)`), so it applies to any narrow surface.
+- After each `render()`, the webview reads the DOM and sends a report (`rendered`): projects, cards, feature in detail, board columns, visible empty stages, width, and horizontal scrolling. The integration tests read this report through the extension API. Lesson L-002: the criterion is checked against what the screen shows, not against an intermediate message.
 
 ---
 
@@ -25,8 +25,8 @@ Design inline:
 
 | Code Layer | Required Test Type | Coverage Expectation | Location Pattern | Run Command |
 | ---------- | ------------------ | -------------------- | ---------------- | ----------- |
-| Renderer (`src/webview/render.ts`) | unit | Todos os ramos novos; 1:1 com os ACs | `test/unit/*.test.ts` | `npm test` |
-| Webview script, host e manifesto (`src/webview/main.ts`, `src/ui`, `src/extension.ts`, `package.json`, `media/*.css`) | integration | Cada AC verificado no que a webview renderizou (relatório lido do DOM) e nas abas do editor | `test/integration/*.cjs` | `npm run test:integration` |
+| Renderer (`src/webview/render.ts`) | unit | Every new branch; 1:1 with the ACs | `test/unit/*.test.ts` | `npm test` |
+| Webview script, host, and manifest (`src/webview/main.ts`, `src/ui`, `src/extension.ts`, `package.json`, `media/*.css`) | integration | Each AC verified against what the webview rendered (report read from the DOM) and against the editor tabs | `test/integration/*.cjs` | `npm run test:integration` |
 | Docs (`README.md`) | none | - (build gate only) | - | build gate only |
 
 ## Gate Check Commands
@@ -49,7 +49,7 @@ Design inline:
 T1 → T2
 ```
 
-### Phase 2: View lateral
+### Phase 2: Side bar view
 
 ```
 T2 → T3 → T4 → T5 → T6 → T7
@@ -61,13 +61,13 @@ T2 → T3 → T4 → T5 → T6 → T7
 T7 → T8
 ```
 
-### Phase 4: Correções do Verifier (iteração 1)
+### Phase 4: Verifier fixes (iteration 1)
 
 ```
 T8 → T9 → T10 → T11 → T12 → T13 → T14 → T15
 ```
 
-### Phase 5: Correções do Verifier (iteração 2)
+### Phase 5: Verifier fixes (iteration 2)
 
 ```
 T15 → T16 → T17
@@ -77,12 +77,12 @@ T15 → T16 → T17
 
 ## Task Breakdown
 
-### T1: Marcar as etapas vazias do quadro
+### T1: Mark the empty board stages
 
-**What**: o renderer marca com `is-empty` as colunas do quadro que não têm features
+**What**: the renderer marks the board columns that have no features with `is-empty`
 **Where**: `src/webview/render.ts` (modify)
 **Depends on**: None
-**Reuses**: helpers de `test/unit/webview.test.ts`
+**Reuses**: helpers from `test/unit/webview.test.ts`
 **Requirement**: SIDE-04
 
 **Tools**:
@@ -92,9 +92,9 @@ T15 → T16 → T17
 
 **Done when**:
 
-- [x] Coluna sem features tem a classe `is-empty`; coluna com features não tem
+- [x] A column without features has the `is-empty` class; a column with features does not
 - [x] Gate check passes: `npm run typecheck && npm test`
-- [x] Test count: 37 existentes + novos passam
+- [x] Test count: 37 existing + new pass
 
 **Tests**: unit
 **Gate**: quick
@@ -103,12 +103,12 @@ T15 → T16 → T17
 
 ---
 
-### T2: Relatar o que a webview renderizou
+### T2: Report what the webview rendered
 
-**What**: depois de cada `render()`, a webview manda um relatório lido do DOM, exposto na API de teste
+**What**: after each `render()`, the webview sends a report read from the DOM, exposed in the test API
 **Where**: `src/webview/main.ts` (modify)
 **Depends on**: T1
-**Reuses**: mensagem `rendered` de `src/core/protocol.ts`
+**Reuses**: `rendered` message from `src/core/protocol.ts`
 **Requirement**: SIDE-09
 
 **Tools**:
@@ -118,10 +118,10 @@ T15 → T16 → T17
 
 **Done when**:
 
-- [x] O relatório traz projetos, cartões, feature em detalhe, colunas do quadro, etapas vazias visíveis, largura e rolagem horizontal
-- [x] Com o painel em aba a 700px ou mais, o relatório mostra 6 colunas e as etapas vazias visíveis
+- [x] The report includes projects, cards, feature in detail, board columns, visible empty stages, width, and horizontal scrolling
+- [x] With the editor-tab dashboard at 700px or more, the report shows 6 columns and the empty stages visible
 - [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [x] Test count: 36 de integração existentes + novos passam
+- [x] Test count: 36 existing integration + new pass
 
 **Tests**: integration
 **Gate**: full
@@ -130,12 +130,12 @@ T15 → T16 → T17
 
 ---
 
-### T3: Criar a view Painel na barra lateral
+### T3: Create the Dashboard view in the side bar
 
-**What**: view `tlcSpecs.panel` do tipo webview no contêiner TLC Specs, servida pelo `Dashboard`
+**What**: webview view `tlcSpecs.panel` in the TLC Specs container, served by `Dashboard`
 **Where**: `src/ui/dashboard.ts` (modify)
 **Depends on**: T2
-**Reuses**: HTML, script e tratamento de mensagens do painel em aba
+**Reuses**: HTML, script, and message handling from the editor-tab dashboard
 **Requirement**: SIDE-01, SIDE-05, SIDE-11
 
 **Tools**:
@@ -145,12 +145,12 @@ T15 → T16 → T17
 
 **Done when**:
 
-- [x] `package.json` declara a view "Painel" (`tlcSpecs.panel`, tipo webview) no contêiner `tlcSpecs`, depois de Projeto
-- [x] A view renderiza os mesmos projetos de `getProjects()`
-- [x] Feature nova gravada numa pasta de specs aparece nos cartões da view
-- [x] Sem pasta de specs, a view mostra "Nenhuma spec encontrada"
+- [x] `package.json` declares the "Dashboard" view (`tlcSpecs.panel`, webview type) in the `tlcSpecs` container, after Project
+- [x] The view renders the same projects as `getProjects()`
+- [x] A new feature written to a specs folder appears in the view's cards
+- [x] Without a specs folder, the view shows "No specs found"
 - [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [x] Test count: nenhum teste removido
+- [x] Test count: no tests removed
 
 **Tests**: integration
 **Gate**: full
@@ -159,12 +159,12 @@ T15 → T16 → T17
 
 ---
 
-### T4: Abrir a feature na view lateral
+### T4: Open the feature in the side bar view
 
-**What**: `tlcSpecs.showFeature` mostra a view Painel na feature; `tlcSpecs.openDashboard` vira "Abrir painel em aba" e aceita uma feature
+**What**: `tlcSpecs.showFeature` shows the Dashboard view on the feature; `tlcSpecs.openDashboard` becomes "Open Dashboard in Editor Tab" and accepts a feature
 **Where**: `src/extension.ts` (modify)
 **Depends on**: T3
-**Reuses**: `toRef` em `src/extension.ts`
+**Reuses**: `toRef` in `src/extension.ts`
 **Requirement**: SIDE-02, SIDE-08
 
 **Tools**:
@@ -174,11 +174,11 @@ T15 → T16 → T17
 
 **Done when**:
 
-- [x] Com um arquivo aberto, `tlcSpecs.showFeature` mostra os detalhes da feature na view lateral; as abas e o editor ativo não mudam
-- [x] `tlcSpecs.openDashboard` abre a aba "TLC Specs"
-- [x] O teste existente "opens the dashboard webview" passa a abrir a aba por `tlcSpecs.openDashboard`, com as mesmas asserções
+- [x] With a file open, `tlcSpecs.showFeature` shows the feature's details in the side bar view; the tabs and the active editor do not change
+- [x] `tlcSpecs.openDashboard` opens the "TLC Specs" tab
+- [x] The existing test "opens the dashboard webview" now opens the tab through `tlcSpecs.openDashboard`, with the same assertions
 - [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [x] Test count: nenhum teste removido
+- [x] Test count: no tests removed
 
 **Tests**: integration
 **Gate**: full
@@ -187,12 +187,12 @@ T15 → T16 → T17
 
 ---
 
-### T5: Layout estreito
+### T5: Narrow layout
 
-**What**: abaixo de 700px o quadro fica em uma coluna, as etapas vazias somem e nada rola na horizontal
+**What**: below 700px the board is a single column, empty stages disappear, and nothing scrolls horizontally
 **Where**: `media/dashboard.css` (modify)
 **Depends on**: T4
-**Reuses**: media queries existentes em `media/dashboard.css`
+**Reuses**: existing media queries in `media/dashboard.css`
 **Requirement**: SIDE-03, SIDE-04
 
 **Tools**:
@@ -202,9 +202,9 @@ T15 → T16 → T17
 
 **Done when**:
 
-- [x] Na view lateral (menos de 700px) o relatório mostra 1 coluna, 0 etapas vazias visíveis e nenhuma rolagem horizontal, no quadro e nos detalhes da feature
+- [x] In the side bar view (under 700px) the report shows 1 column, 0 visible empty stages, and no horizontal scrolling, on the board and on the feature details
 - [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [x] Test count: nenhum teste removido
+- [x] Test count: no tests removed
 
 **Tests**: integration
 **Gate**: full
@@ -213,12 +213,12 @@ T15 → T16 → T17
 
 ---
 
-### T6: Voltar da view oculta e atualizar as duas superfícies
+### T6: Come back from the hidden view and update both surfaces
 
-**What**: a view oculta limpa o relatório; ao voltar mostra os projetos atuais e a feature selecionada; aba e view atualizam juntas
+**What**: the hidden view clears the report; when it comes back it shows the current projects and the selected feature; tab and view update together
 **Where**: `src/ui/dashboard.ts` (modify)
 **Depends on**: T5
-**Reuses**: `vscode.setState` em `src/webview/main.ts`
+**Reuses**: `vscode.setState` in `src/webview/main.ts`
 **Requirement**: SIDE-06, SIDE-10
 
 **Tools**:
@@ -228,10 +228,10 @@ T15 → T16 → T17
 
 **Done when**:
 
-- [x] Depois de fechar a barra lateral, mudar as pastas de specs e reabrir a view, o relatório tem os projetos novos e a mesma feature em detalhe
-- [x] Com a aba e a view abertas, uma mudança nas pastas de specs chega ao relatório das duas
+- [x] After closing the side bar, changing the specs folders, and reopening the view, the report has the new projects and the same feature in detail
+- [x] With the tab and the view open, a change in the specs folders reaches the reports of both
 - [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [x] Test count: nenhum teste removido
+- [x] Test count: no tests removed
 
 **Tests**: integration
 **Gate**: full
@@ -240,12 +240,12 @@ T15 → T16 → T17
 
 ---
 
-### T7: Cliques dentro da view lateral
+### T7: Clicks inside the side bar view
 
-**What**: a API de teste entrega uma mensagem ao tratador da view lateral
+**What**: the test API delivers a message to the side bar view's handler
 **Where**: `src/extension.ts` (modify)
 **Depends on**: T6
-**Reuses**: `dashboardMessage` em `src/extension.ts`
+**Reuses**: `dashboardMessage` in `src/extension.ts`
 **Requirement**: SIDE-07
 
 **Tools**:
@@ -255,9 +255,9 @@ T15 → T16 → T17
 
 **Done when**:
 
-- [x] Uma mensagem `previewFile` vinda da view lateral abre o preview do markdown
+- [x] A `previewFile` message from the side bar view opens the markdown preview
 - [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [x] Test count: nenhum teste removido
+- [x] Test count: no tests removed
 
 **Tests**: integration
 **Gate**: full
@@ -266,12 +266,12 @@ T15 → T16 → T17
 
 ---
 
-### T8: Documentar o painel lateral
+### T8: Document the side bar dashboard
 
-**What**: README descreve a view Painel e o comando "Abrir painel em aba"
+**What**: README describes the Dashboard view and the "Open Dashboard in Editor Tab" command
 **Where**: `README.md` (modify)
 **Depends on**: T7
-**Reuses**: seção "O que aparece"
+**Reuses**: "What you get" section
 **Requirement**: SIDE-01
 
 **Tools**:
@@ -281,7 +281,7 @@ T15 → T16 → T17
 
 **Done when**:
 
-- [x] README descreve onde o painel abre e como abrir a visão em aba
+- [x] README describes where the dashboard opens and how to open the editor-tab view
 - [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
 
 **Tests**: none
@@ -291,12 +291,12 @@ T15 → T16 → T17
 
 ---
 
-### T9: Relatar só os cartões visíveis
+### T9: Report only the visible cards
 
-**What**: o relatório da webview conta só os cartões que estão na tela
+**What**: the webview report counts only the cards that are on screen
 **Where**: `src/webview/main.ts` (modify)
 **Depends on**: T8
-**Reuses**: testes da seção sidebar-dashboard
+**Reuses**: tests in the sidebar-dashboard section
 **Requirement**: SIDE-03, SIDE-04
 
 **Tools**:
@@ -306,10 +306,10 @@ T15 → T16 → T17
 
 **Done when**:
 
-- [x] Cartão dentro de uma fase escondida não entra no relatório
-- [x] Mutante S4 do Verifier morre (layout estreito que esconde todas as fases)
+- [x] A card inside a hidden phase is left out of the report
+- [x] Verifier mutant S4 dies (narrow layout that hides every phase)
 - [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [x] Test count: nenhum teste removido
+- [x] Test count: no tests removed
 
 **Tests**: integration
 **Gate**: full
@@ -318,12 +318,12 @@ T15 → T16 → T17
 
 ---
 
-### T10: Provar o botão da notificação
+### T10: Prove the notification button
 
-**What**: teste do botão "Abrir painel" da notificação de spec nova
+**What**: test for the "Open Dashboard" button on the new-spec notification
 **Where**: `test/integration/suite.cjs` (modify)
 **Depends on**: T9
-**Reuses**: testes da seção sidebar-dashboard
+**Reuses**: tests in the sidebar-dashboard section
 **Requirement**: SIDE-02
 
 **Tools**:
@@ -333,10 +333,10 @@ T15 → T16 → T17
 
 **Done when**:
 
-- [x] O botão da notificação mostra a feature na view lateral e não abre a aba
-- [x] Mutante C2 do Verifier morre
+- [x] The notification button shows the feature in the side bar view and does not open the tab
+- [x] Verifier mutant C2 dies
 - [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [x] Test count: nenhum teste removido
+- [x] Test count: no tests removed
 
 **Tests**: integration
 **Gate**: full
@@ -345,12 +345,12 @@ T15 → T16 → T17
 
 ---
 
-### T11: Fixar o limite de 700px
+### T11: Pin the 700px threshold
 
-**What**: teste unitário lê o CSS e confere o bloco `@media (max-width: 699px)`; o SIDE-09 mede a aba com a barra lateral aberta
+**What**: a unit test reads the CSS and checks the `@media (max-width: 699px)` block; SIDE-09 measures the tab with the side bar open
 **Where**: `test/unit/webview.test.ts` (modify)
 **Depends on**: T10
-**Reuses**: testes da seção sidebar-dashboard
+**Reuses**: tests in the sidebar-dashboard section
 **Requirement**: SIDE-03, SIDE-09
 
 **Tools**:
@@ -360,11 +360,11 @@ T15 → T16 → T17
 
 **Done when**:
 
-- [x] O bloco de 699px contém a regra de uma coluna e a que esconde as fases vazias
-- [x] A aba com a barra lateral aberta (700px ou mais) mostra 6 colunas
-- [x] Mutantes S5 e S6 do Verifier morrem
+- [x] The 699px block contains the single-column rule and the rule that hides empty phases
+- [x] The tab with the side bar open (700px or more) shows 6 columns
+- [x] Verifier mutants S5 and S6 die
 - [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [x] Test count: nenhum teste removido
+- [x] Test count: no tests removed
 
 **Tests**: integration
 **Gate**: full
@@ -373,12 +373,12 @@ T15 → T16 → T17
 
 ---
 
-### T12: Provar a feature aberta na aba e a rolagem medida
+### T12: Prove the feature opened in the tab and the measured scrolling
 
-**What**: testes conferem o detalhe renderizado quando a aba abre com uma feature e a rolagem horizontal do quadro largo
+**What**: tests check the rendered detail when the tab opens on a feature, and the horizontal scrolling of the wide board
 **Where**: `test/integration/suite.cjs` (modify)
 **Depends on**: T11
-**Reuses**: testes da seção sidebar-dashboard
+**Reuses**: tests in the sidebar-dashboard section
 **Requirement**: SIDE-08, SIDE-09
 
 **Tools**:
@@ -388,11 +388,11 @@ T15 → T16 → T17
 
 **Done when**:
 
-- [x] `tlcSpecs.openDashboard` com uma feature mostra os detalhes dela, em aba nova e em aba já aberta
-- [x] O quadro de 6 colunas numa aba com menos de 1298px relata rolagem horizontal
-- [x] Mutantes C3 e W2 do Verifier morrem
+- [x] `tlcSpecs.openDashboard` with a feature shows its details, in a new tab and in a tab that is already open
+- [x] The 6-column board in a tab narrower than 1298px reports horizontal scrolling
+- [x] Verifier mutants C3 and W2 die
 - [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [x] Test count: nenhum teste removido
+- [x] Test count: no tests removed
 
 **Tests**: integration
 **Gate**: full
@@ -401,12 +401,12 @@ T15 → T16 → T17
 
 ---
 
-### T13: Provar as entradas do manifesto
+### T13: Prove the manifest entries
 
-**What**: testes conferem o botão "abrir em aba" no título da view Painel e o título de `tlcSpecs.showFeature`
+**What**: tests check the "open in editor tab" button in the Dashboard view title and the title of `tlcSpecs.showFeature`
 **Where**: `test/integration/suite.cjs` (modify)
 **Depends on**: T12
-**Reuses**: testes da seção sidebar-dashboard
+**Reuses**: tests in the sidebar-dashboard section
 **Requirement**: SIDE-02, SIDE-08
 
 **Tools**:
@@ -416,11 +416,11 @@ T15 → T16 → T17
 
 **Done when**:
 
-- [x] `view/title` de `tlcSpecs.openDashboard` vale para `tlcSpecs.panel`
-- [x] `tlcSpecs.showFeature` se chama "Abrir feature no painel"
-- [x] Mutantes P3 e P4 do Verifier morrem
+- [x] The `view/title` entry for `tlcSpecs.openDashboard` applies to `tlcSpecs.panel`
+- [x] `tlcSpecs.showFeature` is titled "Open Feature in Dashboard"
+- [x] Verifier mutants P3 and P4 die
 - [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [x] Test count: nenhum teste removido
+- [x] Test count: no tests removed
 
 **Tests**: integration
 **Gate**: full
@@ -429,12 +429,12 @@ T15 → T16 → T17
 
 ---
 
-### T14: Provar o clique com a barra lateral fechada
+### T14: Prove the click with the side bar closed
 
-**What**: teste aciona `tlcSpecs.showFeature` com a barra lateral fechada; o comentário da guarda `live` diz o que foi verificado
+**What**: a test runs `tlcSpecs.showFeature` with the side bar closed; the comment on the `live` guard states what was verified
 **Where**: `src/ui/dashboard.ts` (modify)
 **Depends on**: T13
-**Reuses**: testes da seção sidebar-dashboard
+**Reuses**: tests in the sidebar-dashboard section
 **Requirement**: SIDE-02
 
 **Tools**:
@@ -444,10 +444,10 @@ T15 → T16 → T17
 
 **Done when**:
 
-- [x] Com a barra lateral fechada, o clique reabre a view nos detalhes da feature, sem mexer nas abas
-- [x] O comentário de `live` registra que o VS Code 1.120 entrega a mensagem sem a guarda e que as versões anteriores não foram verificadas
+- [x] With the side bar closed, the click reopens the view on the feature's details, without touching the tabs
+- [x] The `live` comment records that VS Code 1.120 delivers the message without the guard and that earlier versions were not verified
 - [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [x] Test count: nenhum teste removido
+- [x] Test count: no tests removed
 
 **Tests**: integration
 **Gate**: full
@@ -456,12 +456,12 @@ T15 → T16 → T17
 
 ---
 
-### T15: Nomear os eventos do SIDE-05
+### T15: Name the SIDE-05 events
 
-**What**: a spec nomeia criar, alterar e remover; o relatório traz a fase de cada cartão; o teste cobre os três eventos
+**What**: the spec names create, change, and remove; the report includes each card's phase; the test covers all three events
 **Where**: `src/webview/main.ts` (modify)
 **Depends on**: T14
-**Reuses**: testes da seção sidebar-dashboard
+**Reuses**: tests in the sidebar-dashboard section
 **Requirement**: SIDE-05
 
 **Tools**:
@@ -471,11 +471,11 @@ T15 → T16 → T17
 
 **Done when**:
 
-- [x] Artefato criado: o cartão aparece com a fase do modelo
-- [x] Artefato alterado: a fase do cartão muda
-- [x] Artefato removido: o cartão some
+- [x] Artifact created: the card appears with the model's phase
+- [x] Artifact changed: the card's phase changes
+- [x] Artifact removed: the card disappears
 - [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [x] Test count: nenhum teste removido
+- [x] Test count: no tests removed
 
 **Tests**: integration
 **Gate**: full
@@ -484,12 +484,12 @@ T15 → T16 → T17
 
 ---
 
-### T16: Caber até 250px
+### T16: Fit down to 250px
 
-**What**: no layout estreito os títulos das seções quebram linha; o teste estreita a barra lateral passo a passo até 250px
+**What**: in the narrow layout the section titles wrap; the test narrows the side bar step by step down to 250px
 **Where**: `media/dashboard.css` (modify)
 **Depends on**: T15
-**Reuses**: testes da seção sidebar-dashboard
+**Reuses**: tests in the sidebar-dashboard section
 **Requirement**: SIDE-03
 
 **Tools**:
@@ -499,11 +499,11 @@ T15 → T16 → T17
 
 **Done when**:
 
-- [x] O quadro fica em uma coluna e sem rolagem horizontal em cada largura medida, do padrão até 250px ou menos
-- [x] Os detalhes das features não rolam na horizontal na menor largura medida
-- [x] A barra lateral volta à largura inicial no fim do teste
+- [x] The board stays in one column with no horizontal scrolling at every measured width, from the default down to 250px or less
+- [x] The feature details do not scroll horizontally at the smallest measured width
+- [x] The side bar goes back to its initial width at the end of the test
 - [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [x] Test count: nenhum teste removido
+- [x] Test count: no tests removed
 
 **Tests**: integration
 **Gate**: full
@@ -512,12 +512,12 @@ T15 → T16 → T17
 
 ---
 
-### T17: Firmar os testes novos
+### T17: Harden the new tests
 
-**What**: os testes usam o limite real de rolagem (1298px), esperam pelo detalhe certo e conferem a fase de todos os cartões
+**What**: the tests use the real scrolling threshold (1298px), wait for the right detail, and check the phase of every card
 **Where**: `test/integration/suite.cjs` (modify)
 **Depends on**: T16
-**Reuses**: testes da seção sidebar-dashboard
+**Reuses**: tests in the sidebar-dashboard section
 **Requirement**: SIDE-02, SIDE-05, SIDE-09
 
 **Tools**:
@@ -527,11 +527,11 @@ T15 → T16 → T17
 
 **Done when**:
 
-- [x] A rolagem do quadro largo é esperada abaixo de 1298px
-- [x] O teste da barra lateral fechada espera o detalhe da feature pedida
-- [x] O SIDE-05 compara a fase de cada cartão com o modelo
+- [x] Scrolling on the wide board is expected below 1298px
+- [x] The closed-side-bar test waits for the requested feature's detail
+- [x] SIDE-05 compares each card's phase with the model
 - [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [x] Test count: nenhum teste removido
+- [x] Test count: no tests removed
 
 **Tests**: integration
 **Gate**: full
@@ -558,23 +558,23 @@ Phase 5:  T16 ------→ T17
 
 | Task | Scope | Status |
 | ---- | ----- | ------ |
-| T1: Marcar as etapas vazias do quadro | 1 classe no renderer | ✅ Granular |
-| T2: Relatar o que a webview renderizou | 1 mensagem | ✅ Granular |
-| T3: Criar a view Painel na barra lateral | 1 view + contribuição no manifesto | ✅ Coeso |
-| T4: Abrir a feature na view lateral | 2 comandos | ✅ Coeso |
-| T5: Layout estreito | 1 bloco de CSS | ✅ Granular |
-| T6: Voltar da view oculta e atualizar as duas superfícies | 1 evento de visibilidade | ✅ Granular |
-| T7: Cliques dentro da view lateral | 1 leitura de teste | ✅ Granular |
-| T8: Documentar o painel lateral | 1 arquivo | ✅ Granular |
-| T9: Relatar só os cartões visíveis | 1 teste ou leitura | ✅ Granular |
-| T10: Provar o botão da notificação | 1 teste ou leitura | ✅ Granular |
-| T11: Fixar o limite de 700px | 1 teste ou leitura | ✅ Granular |
-| T12: Provar a feature aberta na aba e a rolagem medida | 1 teste ou leitura | ✅ Granular |
-| T13: Provar as entradas do manifesto | 1 teste ou leitura | ✅ Granular |
-| T14: Provar o clique com a barra lateral fechada | 1 teste ou leitura | ✅ Granular |
-| T15: Nomear os eventos do SIDE-05 | 1 teste ou leitura | ✅ Granular |
-| T16: Caber até 250px | 1 regra de CSS | ✅ Granular |
-| T17: Firmar os testes novos | 3 asserções | ✅ Coeso |
+| T1: Mark the empty board stages | 1 class in the renderer | ✅ Granular |
+| T2: Report what the webview rendered | 1 message | ✅ Granular |
+| T3: Create the Dashboard view in the side bar | 1 view + manifest contribution | ✅ Cohesive |
+| T4: Open the feature in the side bar view | 2 commands | ✅ Cohesive |
+| T5: Narrow layout | 1 CSS block | ✅ Granular |
+| T6: Come back from the hidden view and update both surfaces | 1 visibility event | ✅ Granular |
+| T7: Clicks inside the side bar view | 1 test read | ✅ Granular |
+| T8: Document the side bar dashboard | 1 file | ✅ Granular |
+| T9: Report only the visible cards | 1 test or read | ✅ Granular |
+| T10: Prove the notification button | 1 test or read | ✅ Granular |
+| T11: Pin the 700px threshold | 1 test or read | ✅ Granular |
+| T12: Prove the feature opened in the tab and the measured scrolling | 1 test or read | ✅ Granular |
+| T13: Prove the manifest entries | 1 test or read | ✅ Granular |
+| T14: Prove the click with the side bar closed | 1 test or read | ✅ Granular |
+| T15: Name the SIDE-05 events | 1 test or read | ✅ Granular |
+| T16: Fit down to 250px | 1 CSS rule | ✅ Granular |
+| T17: Harden the new tests | 3 assertions | ✅ Cohesive |
 
 ## Diagram-Definition Cross-Check
 
@@ -604,18 +604,18 @@ Phase 5:  T16 ------→ T17
 | ---- | --------------------------- | --------------- | --------- | ------ |
 | T1 | Renderer | unit | unit | ✅ OK |
 | T2 | Webview script | integration | integration | ✅ OK |
-| T3 | Host e manifesto | integration | integration | ✅ OK |
-| T4 | Host e manifesto | integration | integration | ✅ OK |
+| T3 | Host and manifest | integration | integration | ✅ OK |
+| T4 | Host and manifest | integration | integration | ✅ OK |
 | T5 | CSS | integration | integration | ✅ OK |
 | T6 | Host | integration | integration | ✅ OK |
 | T7 | Host | integration | integration | ✅ OK |
 | T8 | Docs | none | none | ✅ OK |
-| T9 | Webview script, host e manifesto | integration | integration | ✅ OK |
-| T10 | Webview script, host e manifesto | integration | integration | ✅ OK |
-| T11 | Webview script, host e manifesto | integration | integration | ✅ OK |
-| T12 | Webview script, host e manifesto | integration | integration | ✅ OK |
-| T13 | Webview script, host e manifesto | integration | integration | ✅ OK |
-| T14 | Webview script, host e manifesto | integration | integration | ✅ OK |
-| T15 | Webview script, host e manifesto | integration | integration | ✅ OK |
+| T9 | Webview script, host, and manifest | integration | integration | ✅ OK |
+| T10 | Webview script, host, and manifest | integration | integration | ✅ OK |
+| T11 | Webview script, host, and manifest | integration | integration | ✅ OK |
+| T12 | Webview script, host, and manifest | integration | integration | ✅ OK |
+| T13 | Webview script, host, and manifest | integration | integration | ✅ OK |
+| T14 | Webview script, host, and manifest | integration | integration | ✅ OK |
+| T15 | Webview script, host, and manifest | integration | integration | ✅ OK |
 | T16 | CSS | integration | integration | ✅ OK |
-| T17 | Webview script, host e manifesto | integration | integration | ✅ OK |
+| T17 | Webview script, host, and manifest | integration | integration | ✅ OK |

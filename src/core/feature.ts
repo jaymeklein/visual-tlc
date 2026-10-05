@@ -35,7 +35,7 @@ export function analyzeFeature(input: FeatureInput, opts: AnalyzeOptions): Featu
     if (t.trim() === '') {
       issues.push({
         severity: 'warning',
-        message: `${k}.md está vazio — a skill só cria artefatos quando a fase produz conteúdo`,
+        message: `${k}.md is empty — the skill only creates artifacts when the phase produces content`,
         file: pathOf(k),
       });
       return undefined;
@@ -56,7 +56,7 @@ export function analyzeFeature(input: FeatureInput, opts: AnalyzeOptions): Featu
 
   for (const doc of [spec, context, design, tasks, validation]) if (doc) issues.push(...doc.issues);
   if (!spec && input.texts.spec === undefined) {
-    issues.push({ severity: 'error', message: 'spec.md ausente — toda feature começa pela fase Specify', file: input.dir });
+    issues.push({ severity: 'error', message: 'spec.md missing — every feature starts with the Specify phase', file: input.dir });
   }
 
   const stats: TaskStats = tasks ? taskStats(tasks.tasks) : { total: 0, done: 0, inProgress: 0, blocked: 0, pending: 0 };
@@ -94,8 +94,8 @@ export function analyzeFeature(input: FeatureInput, opts: AnalyzeOptions): Featu
           id,
           state: !spec ? (phase === 'spec' ? 'active' : 'pending') : phase === 'spec' ? 'active' : 'done',
           detail: spec
-            ? `${spec.stories.length} história(s) · ${reqs.length} requisito(s)${context ? ' · discuss' : ''}`
-            : 'spec.md ausente',
+            ? `${spec.stories.length} story(ies) · ${reqs.length} requirement(s)${context ? ' · discuss' : ''}`
+            : 'spec.md missing',
           file: spec ? pathOf('spec') : undefined,
         };
       case 'design':
@@ -103,9 +103,9 @@ export function analyzeFeature(input: FeatureInput, opts: AnalyzeOptions): Featu
           id,
           state: design ? (phase === 'design' ? 'active' : 'done') : idx < phaseIdx ? 'skipped' : 'pending',
           detail: design
-            ? `${design.components.length} componente(s)${design.status ? ` · ${design.status === 'approved' ? 'aprovado' : 'rascunho'}` : ''}`
+            ? `${design.components.length} component(s)${design.status ? ` · ${design.status === 'approved' ? 'approved' : 'draft'}` : ''}`
             : idx < phaseIdx
-              ? 'pulada (escopo não exigiu)'
+              ? 'skipped (not required by scope)'
               : '—',
           file: design ? pathOf('design') : undefined,
         };
@@ -114,9 +114,9 @@ export function analyzeFeature(input: FeatureInput, opts: AnalyzeOptions): Featu
           id,
           state: tasks ? (phase === 'tasks' ? 'active' : 'done') : idx < phaseIdx ? 'skipped' : 'pending',
           detail: tasks
-            ? `${stats.total} task(s) · ${tasks.phases.length} fase(s)${tasks.status ? ` · ${docStatusLabel(tasks.status)}` : ''}`
+            ? `${stats.total} task(s) · ${tasks.phases.length} phase(s)${tasks.status ? ` · ${docStatusLabel(tasks.status)}` : ''}`
             : idx < phaseIdx
-              ? 'pulada (tasks implícitas)'
+              ? 'skipped (implicit tasks)'
               : '—',
           file: tasks ? pathOf('tasks') : undefined,
         };
@@ -124,7 +124,7 @@ export function analyzeFeature(input: FeatureInput, opts: AnalyzeOptions): Featu
         return {
           id,
           state: phase === 'execute' ? 'active' : idx < phaseIdx ? 'done' : 'pending',
-          detail: tasks && stats.total > 0 ? `${stats.done}/${stats.total} concluída(s)` : phase === 'execute' ? 'em andamento' : idx < phaseIdx ? 'concluída' : '—',
+          detail: tasks && stats.total > 0 ? `${stats.done}/${stats.total} done` : phase === 'execute' ? 'in progress' : idx < phaseIdx ? 'done' : '—',
           file,
         };
       case 'verify':
@@ -137,10 +137,10 @@ export function analyzeFeature(input: FeatureInput, opts: AnalyzeOptions): Featu
               : verifyFailed
                 ? 'FAIL'
                 : validation.verdict === 'pass'
-                  ? 'PASS sem evidência'
-                  : 'veredito incompleto'
+                  ? 'PASS without evidence'
+                  : 'incomplete verdict'
             : phase === 'verify'
-              ? 'aguardando Verifier'
+              ? 'awaiting Verifier'
               : '—',
           file,
         };
@@ -155,18 +155,18 @@ export function analyzeFeature(input: FeatureInput, opts: AnalyzeOptions): Featu
     if (specIds.size > 0) {
       for (const t of tasks.tasks) {
         for (const r of t.requirements) {
-          if (!specIds.has(r)) issues.push({ severity: 'warning', message: `${t.id} cita ${r}, que não existe na spec`, file: pathOf('tasks'), line: t.line });
+          if (!specIds.has(r)) issues.push({ severity: 'warning', message: `${t.id} cites ${r}, which does not exist in the spec`, file: pathOf('tasks'), line: t.line });
         }
       }
     }
     const unmapped = reqs.filter((r) => !referenced.has(r.id));
     mapped = reqs.length - unmapped.length;
     if (referenced.size === 0 && reqs.length > 0 && tasks.tasks.length > 0) {
-      issues.push({ severity: 'info', message: 'Nenhuma task cita requisitos (campo "Requirement") — rastreabilidade incompleta', file: pathOf('tasks') });
+      issues.push({ severity: 'info', message: 'No task cites requirements ("Requirement" field) — traceability incomplete', file: pathOf('tasks') });
     } else if (unmapped.length > 0) {
       issues.push({
         severity: 'warning',
-        message: `Requisito(s) sem task: ${unmapped.map((r) => r.id).join(', ')}`,
+        message: `Requirement(s) without a task: ${unmapped.map((r) => r.id).join(', ')}`,
         file: pathOf('spec'),
         line: unmapped[0].line,
       });
@@ -175,38 +175,38 @@ export function analyzeFeature(input: FeatureInput, opts: AnalyzeOptions): Featu
   if (execComplete && !validation && spec) {
     issues.push({
       severity: 'error',
-      message: 'Execução concluída, mas validation.md não existe — o Verifier ainda não rodou (feature não está pronta)',
+      message: 'Execution done, but validation.md does not exist — the Verifier has not run yet (feature is not ready)',
       file: input.dir,
     });
   }
   if (verifyPassed && tasks && stats.done < stats.total) {
-    issues.push({ severity: 'warning', message: `validation.md é PASS, mas ${stats.total - stats.done} task(s) não estão marcadas como concluídas`, file: pathOf('tasks') });
+    issues.push({ severity: 'warning', message: `validation.md is PASS, but ${stats.total - stats.done} task(s) are not marked as done`, file: pathOf('tasks') });
   }
   if (verifyPassed && reqs.length > 0) {
     const notVerified = reqs.filter((r) => r.statusKind !== 'verified');
     if (notVerified.length > 0) {
       issues.push({
         severity: 'info',
-        message: `Rastreabilidade não atualizada: ${notVerified.length} requisito(s) ainda não estão como Verified`,
+        message: `Traceability not updated: ${notVerified.length} requirement(s) are not Verified yet`,
         file: pathOf('spec'),
         line: notVerified[0].line,
       });
     }
   }
   if (tasks?.status === 'draft' && execStarted) {
-    issues.push({ severity: 'info', message: 'tasks.md continua como Draft, mas a execução já começou', file: pathOf('tasks') });
+    issues.push({ severity: 'info', message: 'tasks.md is still Draft, but execution has already started', file: pathOf('tasks') });
   }
   for (const t of tasks?.tasks ?? []) {
-    if (t.status === 'blocked') issues.push({ severity: 'warning', message: `${t.id} está bloqueada: ${t.title}`, file: pathOf('tasks'), line: t.line });
+    if (t.status === 'blocked') issues.push({ severity: 'warning', message: `${t.id} is blocked: ${t.title}`, file: pathOf('tasks'), line: t.line });
   }
 
   const lastModified = input.files.reduce<number | null>((m, f) => (f.mtime !== null && (m === null || f.mtime > m) ? f.mtime : m), null);
   if (!verifyPassed && opts.staleAfterDays > 0 && lastModified !== null) {
     const days = Math.floor((opts.now - lastModified) / DAY);
-    if (days >= opts.staleAfterDays) issues.push({ severity: 'info', message: `Feature parada: sem alterações há ${days} dia(s)` });
+    if (days >= opts.staleAfterDays) issues.push({ severity: 'info', message: `Stale feature: no changes for ${days} day(s)` });
   }
   if (opts.active && opts.handoff?.blockers && !/^(none|nenhum|-|n\/a)\.?$/i.test(opts.handoff.blockers)) {
-    issues.push({ severity: 'warning', message: `Handoff registra bloqueio: ${opts.handoff.blockers}`, file: 'STATE.md', line: opts.handoff.line });
+    issues.push({ severity: 'warning', message: `Handoff records a blocker: ${opts.handoff.blockers}`, file: 'STATE.md', line: opts.handoff.line });
   }
 
   // ---- summary ----
@@ -256,7 +256,7 @@ export function analyzeFeature(input: FeatureInput, opts: AnalyzeOptions): Featu
 }
 
 function docStatusLabel(s: string): string {
-  return ({ draft: 'rascunho', approved: 'aprovadas', 'in-progress': 'em andamento', done: 'concluídas' } as Record<string, string>)[s] ?? s;
+  return ({ draft: 'draft', approved: 'approved', 'in-progress': 'in progress', done: 'done' } as Record<string, string>)[s] ?? s;
 }
 
 function phaseLabel(
@@ -274,16 +274,16 @@ function phaseLabel(
 ): string {
   switch (phase) {
     case 'verify':
-      if (c.verifyPassed) return 'Concluída';
-      if (c.verifyFailed) return 'Verificação falhou';
-      if (c.validationPassNoEvidence) return 'Verificação sem evidência';
-      return c.hasValidation ? 'Verificação incompleta' : 'Aguardando verificação';
+      if (c.verifyPassed) return 'Completed';
+      if (c.verifyFailed) return 'Verification failed';
+      if (c.validationPassNoEvidence) return 'Verification without evidence';
+      return c.hasValidation ? 'Verification incomplete' : 'Awaiting verification';
     case 'execute':
-      return c.stats.total > 0 ? `Execução ${c.stats.done}/${c.stats.total}` : 'Execução';
+      return c.stats.total > 0 ? `Execution ${c.stats.done}/${c.stats.total}` : 'Execution';
     case 'tasks':
-      return c.tasksStatus === 'draft' ? 'Tasks (rascunho)' : c.tasksStatus === 'approved' ? 'Tasks aprovadas' : 'Tasks';
+      return c.tasksStatus === 'draft' ? 'Tasks (draft)' : c.tasksStatus === 'approved' ? 'Tasks approved' : 'Tasks';
     case 'design':
-      return c.designStatus === 'draft' ? 'Design (rascunho)' : c.designStatus === 'approved' ? 'Design aprovado' : 'Design';
+      return c.designStatus === 'draft' ? 'Design (draft)' : c.designStatus === 'approved' ? 'Design approved' : 'Design';
     case 'spec':
       return c.discuss ? 'Spec · discuss' : 'Spec';
   }
@@ -310,26 +310,26 @@ function nextStep(
   },
 ): string {
   if (c.handoff?.nextStep && !c.verifyPassed) return c.handoff.nextStep;
-  if (phase === 'spec' && c.specErrors) return `Corrigir o spec.md: ${c.specErrors} erro(s) no closure gate`;
-  if (phase === 'tasks' && c.tasksErrors) return `Corrigir o tasks.md: ${c.tasksErrors} erro(s) estrutural(is)`;
+  if (phase === 'spec' && c.specErrors) return `Fix spec.md: ${c.specErrors} error(s) at the closure gate`;
+  if (phase === 'tasks' && c.tasksErrors) return `Fix tasks.md: ${c.tasksErrors} structural error(s)`;
   switch (phase) {
     case 'verify':
-      if (c.verifyPassed) return 'Nada pendente — feature verificada';
-      if (c.verifyFailed) return 'Corrigir os gaps do Verifier (fix tasks) e verificar de novo';
-      return c.hasValidation ? 'Completar o validation.md (veredito PASS/FAIL + evidência file:line)' : 'Rodar o Verifier para gerar o validation.md';
+      if (c.verifyPassed) return 'Nothing pending — feature verified';
+      if (c.verifyFailed) return 'Fix the Verifier gaps (fix tasks) and verify again';
+      return c.hasValidation ? 'Complete validation.md (PASS/FAIL verdict + file:line evidence)' : 'Run the Verifier to produce validation.md';
     case 'execute': {
       const t = nextTask(c.tasks);
-      if (!t) return 'Implementar os passos atômicos e marcar a rastreabilidade';
-      return t.status === 'blocked' ? `Desbloquear ${t.id}: ${t.title}` : `${t.status === 'in-progress' ? 'Continuar' : 'Implementar'} ${t.id}: ${t.title}`;
+      if (!t) return 'Implement the atomic steps and update traceability';
+      return t.status === 'blocked' ? `Unblock ${t.id}: ${t.title}` : `${t.status === 'in-progress' ? 'Continue' : 'Implement'} ${t.id}: ${t.title}`;
     }
     case 'tasks': {
-      if (c.tasksStatus !== 'approved') return 'Revisar e aprovar o tasks.md';
+      if (c.tasksStatus !== 'approved') return 'Review and approve tasks.md';
       const t = nextTask(c.tasks);
-      return t ? `Implementar ${t.id}: ${t.title}` : 'Iniciar a execução';
+      return t ? `Implement ${t.id}: ${t.title}` : 'Start execution';
     }
     case 'design':
-      return 'Aprovar o design e quebrar em tasks';
+      return 'Approve the design and break it into tasks';
     case 'spec':
-      return c.spec ? 'Confirmar a spec e seguir para Design / Tasks / Execute' : 'Criar o spec.md da feature';
+      return c.spec ? 'Confirm the spec and move on to Design / Tasks / Execute' : 'Create the feature spec.md';
   }
 }

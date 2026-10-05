@@ -1,33 +1,34 @@
-Licença de Uso — Visual TLC
+License of Use — Visual TLC
 
-Copyright (c) 2026 Jayme Klein. Todos os direitos reservados.
+Copyright (c) 2026 Jayme Klein. All rights reserved.
 
-1. Concessão de uso. É concedida a qualquer pessoa, gratuitamente, uma licença
-   não exclusiva e intransferível para instalar e usar esta extensão (o
-   "Software") no Visual Studio Code e em editores compatíveis, para qualquer
-   finalidade, inclusive comercial.
+1. Grant of use. Anyone is granted, free of charge, a non-exclusive,
+   non-transferable license to install and use this extension (the
+   "Software") in Visual Studio Code and compatible editors, for any purpose,
+   including commercial use.
 
-2. Restrições. Salvo autorização prévia e por escrito do titular, não é
-   permitido:
-   a) copiar, modificar, adaptar ou criar obras derivadas do Software ou do seu
-      código;
-   b) distribuir, sublicenciar, vender, alugar ou publicar o Software, no todo
-      ou em parte, inclusive em outras lojas ou registros de extensões;
-   c) descompilar, desofuscar ou fazer engenharia reversa do código, exceto nos
-      limites em que a lei aplicável permitir expressamente.
+2. Restrictions. Unless the copyright holder gives prior written permission,
+   you may not:
+   a) copy, modify, adapt or create derivative works of the Software or its
+      code;
+   b) distribute, sublicense, sell, rent or publish the Software, in whole or
+      in part, including in other extension stores or registries;
+   c) decompile, deobfuscate or reverse engineer the code, except to the
+      extent that applicable law expressly permits it.
 
-3. Titularidade. O Software e o seu código continuam de propriedade do titular.
-   Esta licença não transfere nenhum direito além dos previstos no item 1.
+3. Ownership. The Software and its code remain the property of the copyright
+   holder. This license transfers no rights beyond those granted in item 1.
 
-4. Sem garantia. O Software é fornecido "no estado em que se encontra", sem
-   garantia de qualquer tipo, expressa ou implícita, inclusive de adequação a
-   uma finalidade específica. Na máxima extensão permitida pela lei aplicável,
-   o titular não responde por danos decorrentes do uso ou da impossibilidade de
-   uso do Software.
+4. No warranty. The Software is provided "as is", without warranty of any
+   kind, express or implied, including fitness for a particular purpose. To
+   the maximum extent permitted by applicable law, the copyright holder is not
+   liable for damages arising from the use of, or the inability to use, the
+   Software.
 
-5. Encerramento. Esta licença termina automaticamente se qualquer destes termos
-   for descumprido.
+5. Termination. This license ends automatically if any of these terms is
+   breached.
 
-6. Terceiros. O Software lê arquivos gerados pela skill tlc-spec-driven, do
-   Tech Lead's Club, que tem licença própria (CC BY 4.0) e não é distribuída
-   com o Software. Os nomes de terceiros citados pertencem aos seus titulares.
+6. Third parties. The Software reads files produced by the tlc-spec-driven
+   skill, by Tech Lead's Club, which has its own license (CC BY 4.0) and is
+   not distributed with the Software. Third-party names mentioned belong to
+   their respective owners.

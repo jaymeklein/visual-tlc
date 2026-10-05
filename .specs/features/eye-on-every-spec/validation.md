@@ -2,11 +2,11 @@
 
 ## Validation: eye-on-every-spec - PASS ✅
 
-Aprovada na iteração 1. Os 11 requisitos batem com a spec, e a evidência de cada um discrimina. Não há gap de precisão. O sensor rodou 24 mutações e matou as 23 que mudam comportamento. A outra, C9, é equivalente: troca o nome da lista nova, que nenhuma versão anterior gravou. Os testes do hidden-specs que diziam "concluída sem olho" e "concluída sem esmaecido" viraram a regra nova, e nenhuma outra asserção saiu. O gate em b438661 está verde: typecheck ok, 68 unit, 63 + 1 + 1 integration.
+Approved in iteration 1. All 11 requirements match the spec, and the evidence for each one discriminates. There is no precision gap. The sensor ran 24 mutations and killed the 23 that change behavior. The other one, C9, is equivalent: it renames the new list, which no earlier version saved. The hidden-specs tests that said "completed has no eye" and "completed is not dimmed" now follow the new rule, and no other assertion was removed. The gate at b438661 is green: typecheck ok, 68 unit, 63 + 1 + 1 integration.
 
 **Date**: 2026-09-30
 **Spec**: `.specs/features/eye-on-every-spec/spec.md`
-**Diff range**: branch `feat/hidden-specs`, commits do olho: T1 abcd78b, T2 1aa9934, T3 5767f3c, T4 0de28fe. Spec em 41821b4. Os commits c7f3046, 81406a3, 87b3b5a, 6901713 e b438661 são do specs-folder-paths, fora do escopo. Linhas citadas em b438661
+**Diff range**: branch `feat/hidden-specs`, eye commits: T1 abcd78b, T2 1aa9934, T3 5767f3c, T4 0de28fe. Spec at 41821b4. Commits c7f3046, 81406a3, 87b3b5a, 6901713, and b438661 belong to specs-folder-paths and are out of scope. Lines cited at b438661
 **Verifier**: independent sub-agent (author ≠ verifier)
 **Iteration**: 1 of max 3
 
@@ -16,7 +16,7 @@ Aprovada na iteração 1. Os 11 requisitos batem com a spec, e a evidência de c
 
 | Iteration | HEAD | Outcome | Notes |
 | --------- | ---- | ------- | ----- |
-| 1 | b438661 | Aprovada | 11/11 requisitos batem e discriminam. 0 gaps de precisão. 23/23 mortas, mais C9 equivalente. 4 execuções do VS Code |
+| 1 | b438661 | Approved | 11/11 requirements match and discriminate. 0 precision gaps. 23/23 killed, plus the equivalent C9. 4 VS Code runs |
 
 ---
 
@@ -24,10 +24,10 @@ Aprovada na iteração 1. Os 11 requisitos batem com a spec, e a evidência de c
 
 | Task | Status | Notes |
 | ---- | ------ | ----- |
-| T1 Escolha por spec: oculta, à vista ou nenhuma | ✅ Done | abcd78b. `src/core/hidden.ts:13-19` (duas chaves e `Choice`), `:25` (`isHidden`), `:41-44` (`choiceOf`), `:60-71` (`set` com a regra do padrão). As quatro chamadas passam `complete` |
-| T2 Olho em todo card | ✅ Done | 1aa9934. `src/webview/render.ts:94-98` (`choiceOf`, `hiddenOf`), `:187` (`withDone`), `:255-260` (`eyeButton` sem o retorno vazio), `:271` (`is-hidden` por `hiddenOf`) |
-| T3 Host e árvore com a escolha | ✅ Done | 5767f3c. `src/core/protocol.ts:36`, `src/ui/dashboard.ts:97`, `:117`, `src/ui/featuresTree.ts:96-97`, `:273-277`, `src/extension.ts:46`, `:65-66`, `src/webview/main.ts:17`, `:32`, `package.json:166-221` sem `feature.done`. `isMarked` saiu |
-| T4 Documentar o olho em toda spec | ✅ Done | 0de28fe. `README.md:12`, `:25-27`. Notas em `.specs/features/hidden-specs/spec.md:86` e `:92` (nota 6) |
+| T1 Per-spec choice: hidden, in view, or none | ✅ Done | abcd78b. `src/core/hidden.ts:13-19` (two keys and `Choice`), `:25` (`isHidden`), `:41-44` (`choiceOf`), `:60-71` (`set` with the default rule). The four calls pass `complete` |
+| T2 Eye on every card | ✅ Done | 1aa9934. `src/webview/render.ts:94-98` (`choiceOf`, `hiddenOf`), `:187` (`withDone`), `:255-260` (`eyeButton` without the empty return), `:271` (`is-hidden` from `hiddenOf`) |
+| T3 Host and tree with the choice | ✅ Done | 5767f3c. `src/core/protocol.ts:36`, `src/ui/dashboard.ts:97`, `:117`, `src/ui/featuresTree.ts:96-97`, `:273-277`, `src/extension.ts:46`, `:65-66`, `src/webview/main.ts:17`, `:32`, `package.json:166-221` without `feature.done`. `isMarked` was removed |
+| T4 Document the eye on every spec | ✅ Done | 0de28fe. `README.md:12`, `:25-27`. Notes in `.specs/features/hidden-specs/spec.md:86` and `:92` (note 6) |
 
 ---
 
@@ -35,87 +35,87 @@ Aprovada na iteração 1. Os 11 requisitos batem com a spec, e a evidência de c
 
 | Criterion (WHEN X THEN Y) | Spec-defined outcome | `file:line` + assertion | Result |
 | ------------------------- | -------------------- | ----------------------- | ------ |
-| EYE-01 The extensão mostra um olho em toda spec, na linha e no card, concluída ou não | linha com `contextValue` `feature` ou `feature.hidden`, cada um com o seu olho inline; card com um botão `hide` ou `unhide` | **Linha:** `test/integration/suite.cjs:531-532` - `hideFeature` inline em `viewItem == feature`, `unhideFeature` em `viewItem == feature.hidden`. `:542` - em andamento `'feature'`. `:543` - marcada `'feature.hidden'`. `:546` - concluída sem escolha `'feature.hidden'`. `:549` - concluída à vista `'feature'`. **Card:** `test/unit/webview.test.ts:329`, `:330`, `:332`, `:335`, `:338` - um olho em cada um dos cinco casos | ✅ PASS |
-| EYE-02 WHILE à vista, olho aberto "Ocultar spec" | comando `hideFeature` com `$(eye)` e "Ocultar spec"; card `{ action: 'hide', title: 'Ocultar spec', glyph: 'eye-open' }` | `suite.cjs:528` - `deepEqual(declared('tlcSpecs.hideFeature'), { ..., title: 'Ocultar spec', ..., icon: '$(eye)' })`. `:542`, `:549`, `:620` - `'feature'`. `webview.test.ts:329` (em andamento) e `:338` (concluída à vista) - `[{ action: 'hide', title: 'Ocultar spec', glyph: 'eye-open' }]` | ✅ PASS |
-| EYE-03 WHILE oculta, olho fechado "Desocultar spec" | comando `unhideFeature` com `$(eye-closed)` e "Desocultar spec"; card `{ action: 'unhide', title: 'Desocultar spec', glyph: 'eye-closed' }` | `suite.cjs:529` - `title: 'Desocultar spec'`, `icon: '$(eye-closed)'`. `:543`, `:546` - `'feature.hidden'`. `webview.test.ts:330` (marcada), `:332` (concluída sem escolha), `:335` (marcada e concluída) - `[{ action: 'unhide', title: 'Desocultar spec', glyph: 'eye-closed' }]` | ✅ PASS |
-| EYE-04 WHEN "Ocultar spec", na árvore ou no card, THEN sai da árvore e do quadro com o olho geral fechado e soma às ocultas, concluída ou não | fora da árvore e do quadro; número +1 | **Em andamento, linha:** `suite.cjs:566-571` - fora de Features, mensagem `done + 1`, fora da aba, `ocultas(done + 1)`. **Em andamento, card:** `:1004-1011` - fora da aba e da lateral, `ocultas(before + 1)`; `:490-491` - mensagem `done + 1`. **Concluída à vista, linha:** `:623-625` - `ok(!treeNames().includes('billing-invoices'))`, `message(done)`. **Concluída à vista, card:** `:645-649` - fora da aba, 5 colunas, `ocultas(done)`. **Core:** `test/unit/hidden.test.ts:100-101` - `set(billing, true, false)` grava `'hidden'` | ✅ PASS (nota 1) |
-| EYE-05 WHEN "Desocultar spec" numa concluída THEN aparece na árvore e na coluna Concluídas com o olho geral fechado, e sai do número | na árvore, no Concluídas, número -1 | **Linha:** `suite.cjs:617-621` - `unhideFeature` com o nó, olho do título fechado, `ok(treeNames().includes('billing-invoices'))`, `'feature'`, `message(done - 1)`. **Card:** `:639-643` - na aba, `kept.columns === 6`, `ocultas(done - 1)`, título `'Mostrar as specs ocultas'` (olho fechado). **Coluna:** `webview.test.ts:366-370` - seis rótulos até `'Concluídas'`, `doneCards` = `['billing-invoices']`, `'0 ocultas'`. **Core:** `hidden.test.ts:84`, `:90-94` | ✅ PASS (nota 1) |
-| EYE-06 WHILE concluída sem escolha, é tratada como oculta | oculta | `hidden.test.ts:74` - `equal(isHidden(f('complete'), undefined), true)`. `webview.test.ts:238-240` - quadro sem as concluídas, cinco etapas. `suite.cjs:546` - `'feature.hidden'`. `:595` - `' · oculta'`. `:613` - fora de Features. `:636-637` - 5 colunas, `ocultas(done)` | ✅ PASS |
-| EYE-07 WHILE olho geral fechado e há concluída à vista, coluna Concluídas com ela, seis etapas | seis colunas, a última Concluídas com a concluída à vista | `webview.test.ts:366` - `['Spec', 'Design', 'Tasks', 'Execução', 'Verificação', 'Concluídas']`. `:367` - `doneCards` = `['billing-invoices']`. `:369` - `boardClass === 'board'`. `suite.cjs:641` - `kept.columns === 6`. Sem concluída à vista: `webview.test.ts:239-240`, `suite.cjs:636`, `:648` - cinco | ✅ PASS |
-| EYE-08 WHILE olho geral aberto, toda oculta esmaecida no painel e com "· oculta" na árvore, concluída ou não | `is-hidden` com opacidade menor e " · oculta" em toda oculta; ausente na spec à vista | **Card:** `webview.test.ts:356` - `'card h-ok is-hidden'`. `:359` - `'card h-complete is-hidden'`. `:357` e `:361` - sem `is-hidden` à vista. `:376-378` - uma regra `.card.is-hidden` com opacidade < 1. **Linha:** `suite.cjs:593` e `:595` - `match(/ · oculta$/)`. `:591` e `:598` - `doesNotMatch(/oculta/)` à vista | ✅ PASS |
-| EYE-09 WHEN o VS Code reabre o workspace THEN as escolhas continuam | uma instância nova sobre o mesmo estado lê as duas listas | `hidden.test.ts:92` - `equal(reopened.choiceOf(billing), 'shown')`. `:93-94` - `shownKeys` e `keys`. `:99` - uma marca antiga de `tlcSpecs.hidden` segue `'hidden'`. `:101-102` - `'hidden'` numa instância nova. Ligação ao `workspaceState`: `src/extension.ts:44`, sem mudança | ✅ PASS (nota 2) |
-| EYE-10 WHEN oculta uma concluída à vista THEN apaga a escolha, e ela volta a ser oculta por ser concluída | escolha `undefined`, as duas listas vazias, oculta | `hidden.test.ts:111` - `equal(reopened.choiceOf(billing), undefined)`. `:112-113` - `keys` e `shownKeys` vazias. `:122-124` - escolha igual ao padrão não grava nem avisa. `suite.cjs:623-625` e `:647-649` - oculta de novo | ✅ PASS |
-| EYE-11 WHEN uma oculta à mão é aberta pela árvore ou por notificação THEN mostra o detalhe, como no HID-15 | detalhe da spec com o olho fechado | `webview.test.ts:318-319` - `DEFAULT_VIEW` com csv-export marcada e selecionada mostra o título do detalhe. `suite.cjs:1223-1226` - marca, `showFeature`, `r.detail === 'csv-export'`, `toggle === null` | ✅ PASS (nota 3) |
+| EYE-01 The extension shows an eye on every spec, on the row and on the card, completed or not | row with `contextValue` `feature` or `feature.hidden`, each with its own inline eye; card with a `hide` or `unhide` button | **Row:** `test/integration/suite.cjs:531-532` - `hideFeature` inline on `viewItem == feature`, `unhideFeature` on `viewItem == feature.hidden`. `:542` - in progress `'feature'`. `:543` - marked `'feature.hidden'`. `:546` - completed with no choice `'feature.hidden'`. `:549` - completed in view `'feature'`. **Card:** `test/unit/webview.test.ts:329`, `:330`, `:332`, `:335`, `:338` - one eye in each of the five cases | ✅ PASS |
+| EYE-02 WHILE in view, open eye "Hide Spec" | `hideFeature` command with `$(eye)` and "Hide Spec"; card `{ action: 'hide', title: 'Hide Spec', glyph: 'eye-open' }` | `suite.cjs:528` - `deepEqual(declared('tlcSpecs.hideFeature'), { ..., title: 'Hide Spec', ..., icon: '$(eye)' })`. `:542`, `:549`, `:620` - `'feature'`. `webview.test.ts:329` (in progress) and `:338` (completed in view) - `[{ action: 'hide', title: 'Hide Spec', glyph: 'eye-open' }]` | ✅ PASS |
+| EYE-03 WHILE hidden, closed eye "Unhide Spec" | `unhideFeature` command with `$(eye-closed)` and "Unhide Spec"; card `{ action: 'unhide', title: 'Unhide Spec', glyph: 'eye-closed' }` | `suite.cjs:529` - `title: 'Unhide Spec'`, `icon: '$(eye-closed)'`. `:543`, `:546` - `'feature.hidden'`. `webview.test.ts:330` (marked), `:332` (completed with no choice), `:335` (marked and completed) - `[{ action: 'unhide', title: 'Unhide Spec', glyph: 'eye-closed' }]` | ✅ PASS |
+| EYE-04 WHEN "Hide Spec", in the tree or on the card, THEN it leaves the tree and the board with the top eye closed and adds to the hidden count, completed or not | out of the tree and the board; count +1 | **In progress, row:** `suite.cjs:566-571` - out of Features, message `done + 1`, out of the editor tab, `hiddenLabel(done + 1)`. **In progress, card:** `:1004-1011` - out of the editor tab and the side bar, `hiddenLabel(before + 1)`; `:490-491` - message `done + 1`. **Completed in view, row:** `:623-625` - `ok(!treeNames().includes('billing-invoices'))`, `message(done)`. **Completed in view, card:** `:645-649` - out of the editor tab, 5 columns, `hiddenLabel(done)`. **Core:** `test/unit/hidden.test.ts:100-101` - `set(billing, true, false)` saves `'hidden'` | ✅ PASS (note 1) |
+| EYE-05 WHEN "Unhide Spec" on a completed spec THEN it appears in the tree and in the Completed column with the top eye closed, and leaves the count | in the tree, in Completed, count -1 | **Row:** `suite.cjs:617-621` - `unhideFeature` with the node, title eye closed, `ok(treeNames().includes('billing-invoices'))`, `'feature'`, `message(done - 1)`. **Card:** `:639-643` - in the editor tab, `kept.columns === 6`, `hiddenLabel(done - 1)`, title `'Show Hidden Specs'` (closed eye). **Column:** `webview.test.ts:366-370` - six labels up to `'Completed'`, `doneCards` = `['billing-invoices']`, `'0 hidden'`. **Core:** `hidden.test.ts:84`, `:90-94` | ✅ PASS (note 1) |
+| EYE-06 WHILE completed with no choice, it is treated as hidden | hidden | `hidden.test.ts:74` - `equal(isHidden(f('complete'), undefined), true)`. `webview.test.ts:238-240` - board without the completed specs, five stages. `suite.cjs:546` - `'feature.hidden'`. `:595` - `' · hidden'`. `:613` - out of Features. `:636-637` - 5 columns, `hiddenLabel(done)` | ✅ PASS |
+| EYE-07 WHILE the top eye is closed and some completed spec is in view, Completed column with it, six stages | six columns, the last one Completed with the completed spec in view | `webview.test.ts:366` - `['Spec', 'Design', 'Tasks', 'Execution', 'Verification', 'Completed']`. `:367` - `doneCards` = `['billing-invoices']`. `:369` - `boardClass === 'board'`. `suite.cjs:641` - `kept.columns === 6`. With no completed spec in view: `webview.test.ts:239-240`, `suite.cjs:636`, `:648` - five | ✅ PASS |
+| EYE-08 WHILE the top eye is open, every hidden spec dimmed on the Dashboard and with "· hidden" in the tree, completed or not | `is-hidden` with lower opacity and " · hidden" on every hidden spec; absent on the spec in view | **Card:** `webview.test.ts:356` - `'card h-ok is-hidden'`. `:359` - `'card h-complete is-hidden'`. `:357` and `:361` - no `is-hidden` in view. `:376-378` - one `.card.is-hidden` rule with opacity < 1. **Row:** `suite.cjs:593` and `:595` - `match(/ · hidden$/)`. `:591` and `:598` - `doesNotMatch(/hidden/)` in view | ✅ PASS |
+| EYE-09 WHEN VS Code reopens the workspace THEN the choices persist | a new instance over the same state reads both lists | `hidden.test.ts:92` - `equal(reopened.choiceOf(billing), 'shown')`. `:93-94` - `shownKeys` and `keys`. `:99` - an old mark in `tlcSpecs.hidden` stays `'hidden'`. `:101-102` - `'hidden'` in a new instance. Link to `workspaceState`: `src/extension.ts:44`, unchanged | ✅ PASS (note 2) |
+| EYE-10 WHEN a completed spec in view is hidden THEN the choice is cleared, and it is hidden again because it is completed | choice `undefined`, both lists empty, hidden | `hidden.test.ts:111` - `equal(reopened.choiceOf(billing), undefined)`. `:112-113` - `keys` and `shownKeys` empty. `:122-124` - a choice equal to the default neither saves nor notifies. `suite.cjs:623-625` and `:647-649` - hidden again | ✅ PASS |
+| EYE-11 WHEN a manually hidden spec is opened from the tree or from a notification THEN its detail is shown, as in HID-15 | spec detail with the closed eye | `webview.test.ts:318-319` - `DEFAULT_VIEW` with csv-export marked and selected shows the detail title. `suite.cjs:1223-1226` - marks it, `showFeature`, `r.detail === 'csv-export'`, `toggle === null` | ✅ PASS (note 3) |
 
-**Status**: ✅ All ACs covered. 11/11 batem com a spec e discriminam. 0 gaps de precisão.
+**Status**: ✅ All ACs covered. 11/11 match the spec and discriminate. 0 precision gaps.
 
-### Notas
+### Notes
 
-1. **EYE-04/EYE-05, os dois gatilhos.** Cada gatilho da concluída é afirmado nas suas superfícies: a linha na árvore e na mensagem (`suite.cjs:617-625`), o card na aba e no número (`:639-649`). O cruzamento (linha → painel, card → árvore) passa pelo mesmo `HiddenSpecs` e pelo `onDidChange`, que o HID-11/12 prova nos dois sentidos para a spec em andamento (`:566-571`, `:1004-1011`, `:490-491`). O que é próprio da concluída é o `complete` vindo do store, e ele morre nos dois lados: H6 em `:619` (linha), H4 em `:598` e `:640` (card). Aceito. O teste na aba conta colunas e cards, não a coluna de cada card. A coluna vem de `columnOf` (`render.ts:108`), que não mudou, e o unit a fixa (`webview.test.ts:367`).
-2. **EYE-09, a ligação ao `workspaceState`.** Mesmo caso do HID-13 no hidden-specs (nota 3 de lá): o unit prova as duas listas com um `Memento` falso lido por uma instância nova. C8, que não grava `tlcSpecs.shown`, morre em `:92`. C7, que troca a chave antiga, morre em `:99`. A ligação é a linha `new HiddenSpecs(context.workspaceState)` (`src/extension.ts:44`), que este feature não mudou. Nenhum teste recarrega o VS Code. Aceito pela mesma razão. O critério de sucesso "continua à vista depois de recarregar a janela" fica para o UAT.
-3. **EYE-11.** O caso é o do HID-15, sem código novo aqui: `detail()` não olha a escolha. As provas do hidden-specs seguem valendo, e a notificação usa o mesmo `dashboard.showSide`. Nenhum mutante novo rodou nele.
-4. **Premissas "n" da spec.** Concluída à vista que volta a falhar segue à vista: `hidden.test.ts:85`. Oculta à mão e depois concluída segue oculta: `hidden.test.ts:76`, `webview.test.ts:335`. Número de ocultas conta uma vez: `webview.test.ts:300`, `:371`. Escolha igual ao padrão não é gravada: `hidden.test.ts:116-125`. Sem concluída à vista, cinco etapas: `webview.test.ts:239-240`.
-5. **Lições conferidas.** L-002: o painel é afirmado nos cards, colunas e no botão do topo; a árvore nos filhos, no `TreeItem` e na mensagem. L-009: esconder e mostrar a concluída passam pela linha (comando com o nó, `suite.cjs:617`, `:623`) e pelo card (mensagem do host, `:548`, `:639`, `:645`). L-006 e L-014 não se aplicam. As candidatas valem: L-020 na concluída marcada (`webview.test.ts:335`) e na conta com uma marcada e uma à vista (`:371`); L-021 na ausência de `is-hidden` e de "· oculta" à vista (`:357`, `:361`, `suite.cjs:591`, `:598`); L-022 no zero (`webview.test.ts:370`); L-024 na escolha igual ao padrão sozinha (`hidden.test.ts:116-125`). Nenhuma lição confirmada se repetiu.
-6. **Nota no hidden-specs.** A nota do HID-09/10 (`.specs/features/hidden-specs/spec.md:86`) fica entre os itens 10 e 11, sem linha em branco antes do 11. O parser da extensão lê os itens por linha (`src/core/spec.ts:27`) e não se afeta. O `marked` 18 do projeto separa a citação da lista. No CommonMark, um item que não começa em 1 não interrompe parágrafo, então no preview do VS Code os itens 11 a 14 podem cair dentro da citação. Cosmético. Correção: uma linha em branco depois da nota, ou a nota depois do item 14, como a do HID-14 (`:92`).
-7. **A precondição do EYE-05/07 na aba.** `suite.cjs:635` aceita o primeiro relatório sem billing-invoices, sem esperar o número. Na execução 2 do sensor, os dois testes anteriores caíram cedo, e o teste leu um relatório velho, com csv-export ainda oculta: `'2 ocultas'` em `:637`. Sem mutante, o teste anterior demora o bastante, e o gate passa. Sugestão, não gap: pôr `r.toggle?.text === ocultas(done)` no predicado de `:635`.
+1. **EYE-04/EYE-05, both triggers.** Each trigger for the completed spec is asserted on its own surfaces: the row in the tree and in the message (`suite.cjs:617-625`), the card in the editor tab and in the count (`:639-649`). The cross paths (row → Dashboard, card → tree) go through the same `HiddenSpecs` and `onDidChange`, which HID-11/12 proves in both directions for the in-progress spec (`:566-571`, `:1004-1011`, `:490-491`). What is specific to the completed spec is the `complete` that comes from the store, and mutating it is caught on both sides: H6 at `:619` (row), H4 at `:598` and `:640` (card). Accepted. The editor tab test counts columns and cards, not the column of each card. The column comes from `columnOf` (`render.ts:108`), which did not change, and the unit test pins it (`webview.test.ts:367`).
+2. **EYE-09, the link to `workspaceState`.** Same case as HID-13 in hidden-specs (note 3 there): the unit test proves both lists with a fake `Memento` read by a new instance. C8, which does not save `tlcSpecs.shown`, is killed at `:92`. C7, which changes the old key, is killed at `:99`. The link is the line `new HiddenSpecs(context.workspaceState)` (`src/extension.ts:44`), which this feature did not change. No test reloads VS Code. Accepted for the same reason. The success criterion "stays in view after reloading the window" is left for UAT.
+3. **EYE-11.** This is the HID-15 case, with no new code here: `detail()` does not look at the choice. The hidden-specs proofs still hold, and the notification uses the same `dashboard.showSide`. No new mutant ran on it.
+4. **The spec's "n" assumptions.** A completed spec in view that fails again stays in view: `hidden.test.ts:85`. A manually hidden spec that is later completed stays hidden: `hidden.test.ts:76`, `webview.test.ts:335`. The hidden count counts each spec once: `webview.test.ts:300`, `:371`. A choice equal to the default is not saved: `hidden.test.ts:116-125`. With no completed spec in view, five stages: `webview.test.ts:239-240`.
+5. **Lessons checked.** L-002: the Dashboard is asserted on the cards, the columns, and the top button; the tree on the children, the `TreeItem`, and the message. L-009: hiding and showing the completed spec go through the row (command with the node, `suite.cjs:617`, `:623`) and through the card (host message, `:548`, `:639`, `:645`). L-006 and L-014 do not apply. The candidates hold: L-020 on the marked completed spec (`webview.test.ts:335`) and on the count with one marked spec and one in view (`:371`); L-021 on the absence of `is-hidden` and "· hidden" in view (`:357`, `:361`, `suite.cjs:591`, `:598`); L-022 on zero (`webview.test.ts:370`); L-024 on a choice equal to the default by itself (`hidden.test.ts:116-125`). No confirmed lesson recurred.
+6. **Note in hidden-specs.** The HID-09/10 note (`.specs/features/hidden-specs/spec.md:86`) sits between items 10 and 11, with no blank line before 11. The extension's parser reads items line by line (`src/core/spec.ts:27`) and is not affected. The project's `marked` 18 separates the quote from the list. In CommonMark, an item that does not start at 1 does not interrupt a paragraph, so in the VS Code preview items 11 to 14 may fall inside the quote. Cosmetic. Fix: a blank line after the note, or the note after item 14, like the HID-14 note (`:92`).
+7. **The EYE-05/07 precondition in the editor tab.** `suite.cjs:635` accepts the first report without billing-invoices, without waiting for the count. In sensor run 2, the two previous tests failed early, and the test read a stale report, with csv-export still hidden: `'2 hidden'` at `:637`. Without a mutant, the previous test takes long enough, and the gate passes. Suggestion, not a gap: add `r.toggle?.text === hiddenLabel(done)` to the predicate at `:635`.
 
 ---
 
 ## Discrimination Sensor
 
-Scratch: `git worktree add --detach <scratchpad>/wt-eye b438661`, com junction de `node_modules` para o real. Cada mutante é uma troca de texto com uma ocorrência exigida, aplicada por script e desfeita com `git checkout -- .` no scratch. `git status --porcelain` do scratch vazio depois de cada reversão. Sem `git stash`. O unit rodou uma mutação por vez, com `npm run typecheck` e `npm test`: todas compilam. A integração rodou em três lotes, e cada mutante do lote falha num ponto só dele.
+Scratch: `git worktree add --detach <scratchpad>/wt-eye b438661`, with a `node_modules` junction to the real one. Each mutant is a text replacement that requires exactly one occurrence, applied by script and reverted with `git checkout -- .` in the scratch tree. The scratch `git status --porcelain` was empty after each revert. No `git stash`. Unit ran one mutation at a time, with `npm run typecheck` and `npm test`: all compile. Integration ran in three batches, and each mutant in a batch fails at a point of its own.
 
 | Mutation | File:line | Description | Killed? |
 | -------- | --------- | ----------- | ------- |
-| C1 | `src/core/hidden.ts:25` | `isHidden` sem `choice !== 'shown'`: concluída sempre oculta | ✅ Killed (`test/unit/hidden.test.ts:84`; `webview.test.ts:338`, `:361`, `:366`) |
-| C2 | `src/core/hidden.ts:25` | `isHidden` sem `choice === 'hidden'`: a marcada em andamento fica à vista | ✅ Killed (`hidden.test.ts:75`; 6 testes do webview, a começar por `:246`) |
-| C3 | `src/core/hidden.ts:43` | `choiceOf` ignora a lista das à vista | ✅ Killed (`hidden.test.ts:92`, `:113`) |
-| C4 | `src/core/hidden.ts:61` | `set` grava sempre a escolha, sem a regra do padrão | ✅ Killed (`hidden.test.ts:37`, `:111`, `:122`) |
-| C5 | `src/core/hidden.ts:64` | `set` não tira a spec da lista das ocultas | ✅ Killed (`hidden.test.ts:37`, `:59`) |
-| C6 | `src/core/hidden.ts:65` | `set` não tira a spec da lista das à vista | ✅ Killed (`hidden.test.ts:111`) |
-| C7 | `src/core/hidden.ts:14` | Chave antiga `tlcSpecs.hidden` trocada: as marcas gravadas se perdem | ✅ Killed (`hidden.test.ts:99`) |
-| C8 | `src/core/hidden.ts:69` | `set` não grava `tlcSpecs.shown` | ✅ Killed (`hidden.test.ts:92`) |
-| C10 | `src/core/hidden.ts:62` | `set` sem o retorno quando nada muda: avisa sempre | ✅ Killed (`hidden.test.ts:55`, `:122`) |
-| R1 | `src/webview/render.ts:96` | `choiceOf` do painel ignora `ctx.shown` | ✅ Killed (`webview.test.ts:338`, `:361`, `:366`) |
-| R2 | `src/webview/render.ts:187` | `withDone` volta a ser só o olho geral | ✅ Killed (`webview.test.ts:366`) |
-| R3 | `src/webview/render.ts:187` | `withDone` sem o olho geral: com o filtro sem concluída, cinco etapas com o olho aberto | ✅ Killed (`webview.test.ts:163`, SIDE-04) |
-| R4 | `src/webview/render.ts:257` | O olho do card volta a olhar só a marca | ✅ Killed (`webview.test.ts:332`) |
-| R5 | `src/webview/render.ts:255` | Volta `if (f.health === 'complete') return ''` | ✅ Killed (`webview.test.ts:332`) |
-| R6 | `src/webview/render.ts:271` | `is-hidden` só na marcada | ✅ Killed (`webview.test.ts:359`) |
-| R7 | `src/webview/render.ts:271` | `is-hidden` em toda concluída | ✅ Killed (`webview.test.ts:361`) |
-| H1 | `src/ui/featuresTree.ts:275` | Volta `feature.done` na concluída | ✅ Killed (`test/integration/suite.cjs:546`, `'feature.done'` no lugar de `'feature.hidden'`) |
-| H2 | `src/ui/featuresTree.ts:277` | "· oculta" só na marcada | ✅ Killed (`suite.cjs:595`, `'Concluída · 100%'`) |
-| H3 | `src/ui/featuresTree.ts:97` | `isHidden` da árvore ignora a escolha à vista | ✅ Killed (`suite.cjs:549`, `:598`, `:619`) |
-| H4 | `src/ui/dashboard.ts:97` | `setHidden` do painel sempre com `complete = false` | ✅ Killed (`suite.cjs:598`; `:640`, "timed out waiting for: billing-invoices to show in the tab") |
-| H5 | `src/ui/dashboard.ts:117` | Mensagem `state` com `shown: []` | ✅ Killed na execução 4 (`suite.cjs:640`, timeout). Na execução 2 caiu antes, em `:637`, por relatório velho (nota 7): não contou |
-| H6 | `src/extension.ts:46` | `setHidden` dos comandos da linha sempre com `complete = false` | ✅ Killed (`suite.cjs:619`, "billing-invoices left Features") |
-| M1 | `package.json:186` | Olho fechado inline em `viewItem == feature.done`: a linha oculta perde o olho | ✅ Killed (`suite.cjs:532`) |
+| C1 | `src/core/hidden.ts:25` | `isHidden` without `choice !== 'shown'`: a completed spec is always hidden | ✅ Killed (`test/unit/hidden.test.ts:84`; `webview.test.ts:338`, `:361`, `:366`) |
+| C2 | `src/core/hidden.ts:25` | `isHidden` without `choice === 'hidden'`: the marked in-progress spec stays in view | ✅ Killed (`hidden.test.ts:75`; 6 webview tests, starting at `:246`) |
+| C3 | `src/core/hidden.ts:43` | `choiceOf` ignores the in-view list | ✅ Killed (`hidden.test.ts:92`, `:113`) |
+| C4 | `src/core/hidden.ts:61` | `set` always saves the choice, without the default rule | ✅ Killed (`hidden.test.ts:37`, `:111`, `:122`) |
+| C5 | `src/core/hidden.ts:64` | `set` does not remove the spec from the hidden list | ✅ Killed (`hidden.test.ts:37`, `:59`) |
+| C6 | `src/core/hidden.ts:65` | `set` does not remove the spec from the in-view list | ✅ Killed (`hidden.test.ts:111`) |
+| C7 | `src/core/hidden.ts:14` | Old key `tlcSpecs.hidden` changed: saved marks are lost | ✅ Killed (`hidden.test.ts:99`) |
+| C8 | `src/core/hidden.ts:69` | `set` does not save `tlcSpecs.shown` | ✅ Killed (`hidden.test.ts:92`) |
+| C10 | `src/core/hidden.ts:62` | `set` without the early return when nothing changes: always notifies | ✅ Killed (`hidden.test.ts:55`, `:122`) |
+| R1 | `src/webview/render.ts:96` | The Dashboard's `choiceOf` ignores `ctx.shown` | ✅ Killed (`webview.test.ts:338`, `:361`, `:366`) |
+| R2 | `src/webview/render.ts:187` | `withDone` goes back to depending only on the top eye | ✅ Killed (`webview.test.ts:366`) |
+| R3 | `src/webview/render.ts:187` | `withDone` without the top eye: with a filter and no completed spec, five stages with the eye open | ✅ Killed (`webview.test.ts:163`, SIDE-04) |
+| R4 | `src/webview/render.ts:257` | The card eye goes back to looking only at the mark | ✅ Killed (`webview.test.ts:332`) |
+| R5 | `src/webview/render.ts:255` | `if (f.health === 'complete') return ''` comes back | ✅ Killed (`webview.test.ts:332`) |
+| R6 | `src/webview/render.ts:271` | `is-hidden` only on the marked spec | ✅ Killed (`webview.test.ts:359`) |
+| R7 | `src/webview/render.ts:271` | `is-hidden` on every completed spec | ✅ Killed (`webview.test.ts:361`) |
+| H1 | `src/ui/featuresTree.ts:275` | `feature.done` comes back on the completed spec | ✅ Killed (`test/integration/suite.cjs:546`, `'feature.done'` instead of `'feature.hidden'`) |
+| H2 | `src/ui/featuresTree.ts:277` | "· hidden" only on the marked spec | ✅ Killed (`suite.cjs:595`, `'Completed · 100%'`) |
+| H3 | `src/ui/featuresTree.ts:97` | The tree's `isHidden` ignores the in-view choice | ✅ Killed (`suite.cjs:549`, `:598`, `:619`) |
+| H4 | `src/ui/dashboard.ts:97` | The Dashboard's `setHidden` always with `complete = false` | ✅ Killed (`suite.cjs:598`; `:640`, "timed out waiting for: billing-invoices to show in the tab") |
+| H5 | `src/ui/dashboard.ts:117` | `state` message with `shown: []` | ✅ Killed in run 4 (`suite.cjs:640`, timeout). In run 2 it failed earlier, at `:637`, from a stale report (note 7): not counted |
+| H6 | `src/extension.ts:46` | The row commands' `setHidden` always with `complete = false` | ✅ Killed (`suite.cjs:619`, "billing-invoices left Features") |
+| M1 | `package.json:186` | Inline closed eye on `viewItem == feature.done`: the hidden row loses its eye | ✅ Killed (`suite.cjs:532`) |
 
-Mutante equivalente, rodado e fora da contagem: C9, `src/core/hidden.ts:16`, a chave nova `tlcSpecs.shown` com outro nome. Sobreviveu no `npm test`, como esperado. Nenhuma versão anterior gravou essa chave, e a spec só pede "uma segunda lista" (`spec.md:33`). Com outro nome, o teste de valor inválido em `hidden.test.ts:68` lê uma chave que ninguém usa, mas `texts()` é o mesmo das duas chaves, e a metade de `tlcSpecs.hidden` segue afirmada (`:67`). Sem fix.
+Equivalent mutant, run and not counted: C9, `src/core/hidden.ts:16`, the new key `tlcSpecs.shown` under another name. It survived `npm test`, as expected. No earlier version saved that key, and the spec only asks for "a second list" (`spec.md:33`). Under another name, the invalid-value test at `hidden.test.ts:68` reads a key nobody uses, but `texts()` is the same for both keys, and the `tlcSpecs.hidden` half is still asserted (`:67`). No fix.
 
-Mutante não rodado: H7, `src/webview/main.ts:32` sem `shown = msg.shown`. É o mesmo cano de H5, do lado da página, e o único ponto que o vê é `suite.cjs:640`, que mata H5. Ele não cabia em nenhum lote sem dividir esse ponto com H4 ou H5.
+Mutant not run: H7, `src/webview/main.ts:32` without `shown = msg.shown`. It is the same pipe as H5, on the page side, and the only point that sees it is `suite.cjs:640`, which kills H5. It did not fit in any batch without sharing that point with H4 or H5.
 
-**Sensor depth**: lightweight ampliado (padrão, sem caminho P0). 24 mutações rodadas: 17 no unit (C9 entre elas), 7 no host e no manifesto.
-**Result**: 23/23 mortas, fora a equivalente C9. PASS ✅.
+**Sensor depth**: extended lightweight (default, no P0 path). 24 mutations run: 17 in unit (C9 among them), 7 in the host and the manifest.
+**Result**: 23/23 killed, excluding the equivalent C9. PASS ✅.
 
-**Execuções que abriram o VS Code**, 4 das 4 permitidas, todas pelo desktop oculto, em primeiro plano, uma por vez:
+**Runs that opened VS Code**, 4 of the 4 allowed, all on the hidden desktop, in the foreground, one at a time:
 
-| # | Execução | Árvore | Resultado |
+| # | Run | Tree | Result |
 | - | -------- | ------ | --------- |
-| 1 | Gate, sem mutação | scratch (b438661) | 63/63 + 1/1 + 1/1 |
-| 2 | H1 + H2 + H5 + H6 | scratch | 59/63 + 1/1 + 1/1. HID-09/10 (`:546`) por H1, HID-14/EYE-08 (`:595`) por H2, EYE-05/04/10 (`:619`) por H6. EYE-05/07 em `:637` por relatório velho (nota 7) |
-| 3 | H4 + M1 | scratch | 60/63 + 1/1 + 1/1. HID-09/10 (`:532`) por M1, HID-14/EYE-08 (`:598`) e EYE-05/07 (`:640`) por H4. EYE-05/04/10 passou |
-| 4 | H5 + H3 | scratch | 59/63 + 1/1 + 1/1. HID-09/10 (`:549`), HID-14/EYE-08 (`:598`) e EYE-05/04/10 (`:619`) por H3, EYE-05/07 (`:640`) por H5 |
+| 1 | Gate, no mutation | scratch (b438661) | 63/63 + 1/1 + 1/1 |
+| 2 | H1 + H2 + H5 + H6 | scratch | 59/63 + 1/1 + 1/1. HID-09/10 (`:546`) by H1, HID-14/EYE-08 (`:595`) by H2, EYE-05/04/10 (`:619`) by H6. EYE-05/07 at `:637` from a stale report (note 7) |
+| 3 | H4 + M1 | scratch | 60/63 + 1/1 + 1/1. HID-09/10 (`:532`) by M1, HID-14/EYE-08 (`:598`) and EYE-05/07 (`:640`) by H4. EYE-05/04/10 passed |
+| 4 | H5 + H3 | scratch | 59/63 + 1/1 + 1/1. HID-09/10 (`:549`), HID-14/EYE-08 (`:598`), and EYE-05/04/10 (`:619`) by H3, EYE-05/07 (`:640`) by H5 |
 
-Os logs mostram a extensão carregada do scratch nas três suítes de cada execução. Conferi H5 e H3 no `dist/extension.cjs` do scratch.
+The logs show the extension loaded from the scratch tree in all three suites of each run. I checked H5 and H3 in the scratch `dist/extension.cjs`.
 
-**Isolamento**: `git status --porcelain` da árvore real vazio antes e depois. HEAD seguiu em b438661. Junction removida sem recursão (`[System.IO.Directory]::Delete(..., $false)`), depois `git worktree remove --force` e `git worktree prune`. `git worktree list` mostra só a árvore real. `node_modules` real com 129 entradas visíveis (131 com as ocultas) antes e depois, `npm ls --depth=0` exit 0.
+**Isolation**: the real tree's `git status --porcelain` was empty before and after. HEAD stayed at b438661. Junction removed without recursion (`[System.IO.Directory]::Delete(..., $false)`), then `git worktree remove --force` and `git worktree prune`. `git worktree list` shows only the real tree. The real `node_modules` had 129 visible entries (131 including hidden ones) before and after, `npm ls --depth=0` exit 0.
 
 ---
 
 ## Interactive UAT Results (if performed)
 
-Não executado. O Verifier roda sem usuário. O teste independente da spec (`spec.md:66`) e os dois primeiros critérios de sucesso (`spec.md:101-102`) rodam neste repositório e ficam para o orquestrador: o olho em cada linha ao passar o mouse, a concluída desocultada que fica na árvore e no painel, e ela à vista depois de recarregar a janela.
+Not run. The Verifier runs without a user. The spec's independent test (`spec.md:66`) and the first two success criteria (`spec.md:101-102`) run in this repository and are left to the orchestrator: the eye on each row on hover, the unhidden completed spec staying in the tree and on the Dashboard, and that spec staying in view after reloading the window.
 
 ---
 
@@ -123,70 +123,70 @@ Não executado. O Verifier roda sem usuário. O teste independente da spec (`spe
 
 | Principle | Status |
 | --------- | ------ |
-| Minimum code | ✅ Uma escolha de três valores, uma lista nova e a regra do padrão em uma linha (`hidden.ts:61`). `texts()` serve às duas chaves. `isMarked` saiu quando `choiceOf` o cobriu |
-| Surgical changes | ✅ Só os arquivos das tasks. `feature.done` saiu do manifesto e dos testes porque nenhuma linha o usa mais |
-| No scope creep | ✅ Nada além da spec. O detalhe continua sem olho |
-| Matches patterns | ✅ Core sem vscode, render puro, host pelo store. A consulta "está concluída" se repete em `src/extension.ts:46` e `src/ui/dashboard.ts:97`. São dois lugares, aceito |
-| Spec-anchored outcome check (asserted values match spec) | ✅ Títulos, ícones, `contextValue`, classes, colunas, rótulos e números afirmados com o valor exato |
-| Per-layer Coverage Expectation met (domain 1:1 ACs; routes happy+edge+error) | ✅ Core: um teste por AC e por edge case. Webview: cada AC do painel no HTML. Host: os dois gatilhos, linha e card, no resultado visível |
-| Every test maps to a spec requirement - no unclaimed tests | ✅ Todo teste novo tem EYE no título |
+| Minimum code | ✅ One three-valued choice, one new list, and the default rule in one line (`hidden.ts:61`). `texts()` serves both keys. `isMarked` was removed once `choiceOf` covered it |
+| Surgical changes | ✅ Only the task files. `feature.done` left the manifest and the tests because no row uses it anymore |
+| No scope creep | ✅ Nothing beyond the spec. The detail still has no eye |
+| Matches patterns | ✅ Core without vscode, pure render, host through the store. The "is it completed" lookup repeats in `src/extension.ts:46` and `src/ui/dashboard.ts:97`. Two places, accepted |
+| Spec-anchored outcome check (asserted values match spec) | ✅ Titles, icons, `contextValue`, classes, columns, labels, and counts asserted with the exact value |
+| Per-layer Coverage Expectation met (domain 1:1 ACs; routes happy+edge+error) | ✅ Core: one test per AC and per edge case. Webview: each Dashboard AC in the HTML. Host: both triggers, row and card, in the visible result |
+| Every test maps to a spec requirement - no unclaimed tests | ✅ Every new test has EYE in its title |
 | Documented guidelines followed: none - strong defaults applied (`tasks.md:20`) | ✅ |
 
-Detalhes de leitura, sem efeito: o comentário de `src/core/protocol.ts:49` ainda diz "marks or unmarks". Em `src/webview/main.ts:61` a função local `shown` de `report()` esconde a variável nova `shown` de `:17`. A nota do HID-09/10 no hidden-specs pode quebrar a lista no preview (nota 6).
+Readability details, no effect: the comment at `src/core/protocol.ts:49` still says "marks or unmarks". In `src/webview/main.ts:61` the local function `shown` in `report()` shadows the new `shown` variable from `:17`. The HID-09/10 note in hidden-specs may break the list in the preview (note 6).
 
-**Integridade dos testes (1cec99c..b438661, escopo EYE)**: `hidden.test.ts` foi de 6 para 11 testes e de 17 para 32 asserções. `webview.test.ts` de 22 para 23 testes e de 91 para 99. `suite.cjs` de 61 para 63 testes e de 242 para 256, tudo em 5767f3c (+16 -2). Saíram cinco asserções da regra antiga, todas trocadas pela nova no mesmo lugar: no card, `cardEyes(billing-invoices) = []` duas vezes virou o olho fechado (`webview.test.ts:332`, `:335`), e `'card h-complete'` virou `'card h-complete is-hidden'` (`:359`); na linha, `'feature.done'` duas vezes virou `'feature.hidden'` (`suite.cjs:546`) e `'feature'` (`:549`). O `doesNotMatch(/oculta/)` da concluída ficou e agora vale para a concluída à vista (`:598`). `ANY_ROW` perdeu `feature.done` e segue comparado por igualdade (`:534`). `isMarked` virou `choiceOf` com o mesmo valor. O caso "marcada e concluída depois" saiu da integração: pela UI, ocultar uma concluída apaga a escolha (EYE-10). Ele segue no unit (`webview.test.ts:335`, `hidden.test.ts:76`). Nenhuma asserção ficou mais fraca.
+**Test integrity (1cec99c..b438661, EYE scope)**: `hidden.test.ts` went from 6 to 11 tests and from 17 to 32 assertions. `webview.test.ts` from 22 to 23 tests and from 91 to 99. `suite.cjs` from 61 to 63 tests and from 242 to 256, all in 5767f3c (+16 -2). Five assertions of the old rule were removed, each replaced by the new one in the same place: on the card, `cardEyes(billing-invoices) = []` twice became the closed eye (`webview.test.ts:332`, `:335`), and `'card h-complete'` became `'card h-complete is-hidden'` (`:359`); on the row, `'feature.done'` twice became `'feature.hidden'` (`suite.cjs:546`) and `'feature'` (`:549`). The completed spec's `doesNotMatch(/hidden/)` stayed and now applies to the completed spec in view (`:598`). `ANY_ROW` lost `feature.done` and is still compared by equality (`:534`). `isMarked` became `choiceOf` with the same value. The "marked and later completed" case left the integration suite: through the UI, hiding a completed spec clears the choice (EYE-10). It remains in unit (`webview.test.ts:335`, `hidden.test.ts:76`). No assertion got weaker.
 
 ---
 
 ## Edge Cases
 
-- [x] EYE-10 Ocultar uma concluída à vista apaga a escolha, e ela volta a ser oculta por ser concluída: `test/unit/hidden.test.ts:105-125`, `test/integration/suite.cjs:623-625`, `:645-649`
-- [x] EYE-11 Oculta à mão aberta pela árvore ou por notificação mostra o detalhe: `test/unit/webview.test.ts:316-320`, `test/integration/suite.cjs:1221-1230` (nota 3)
+- [x] EYE-10 Hiding a completed spec in view clears the choice, and the spec is hidden again because it is completed: `test/unit/hidden.test.ts:105-125`, `test/integration/suite.cjs:623-625`, `:645-649`
+- [x] EYE-11 A manually hidden spec opened from the tree or from a notification shows its detail: `test/unit/webview.test.ts:316-320`, `test/integration/suite.cjs:1221-1230` (note 3)
 
 ---
 
 ## Gate Check
 
-- **Gate command**: `npm run typecheck && npm test && npm run test:integration` (a integração pelo desktop oculto)
-- **Typecheck**: exit 0 (scratch em b438661)
-- **Unit**: 68 aprovados, 0 reprovados, 0 pulados
-- **Integration**: 63/63 em `suite.cjs`, 1/1 em `startup.cjs`, 1/1 em `multiroot.cjs` (exit 0, execução 1)
-- **Test count before feature**: 62 unit e 61 + 1 + 1 integration (1cec99c)
-- **Test count after feature**: 68 unit e 63 + 1 + 1 integration (b438661)
-- **Delta**: +6 unit (5 em `hidden.test.ts`, 1 em `webview.test.ts`) e +2 integration (`suite.cjs:608`, `:632`). Os commits do specs-folder-paths no meio não mudaram o número de testes
-- **Skipped tests**: nenhum
-- **Failures**: nenhuma
+- **Gate command**: `npm run typecheck && npm test && npm run test:integration` (integration on the hidden desktop)
+- **Typecheck**: exit 0 (scratch at b438661)
+- **Unit**: 68 passed, 0 failed, 0 skipped
+- **Integration**: 63/63 in `suite.cjs`, 1/1 in `startup.cjs`, 1/1 in `multiroot.cjs` (exit 0, run 1)
+- **Test count before feature**: 62 unit and 61 + 1 + 1 integration (1cec99c)
+- **Test count after feature**: 68 unit and 63 + 1 + 1 integration (b438661)
+- **Delta**: +6 unit (5 in `hidden.test.ts`, 1 in `webview.test.ts`) and +2 integration (`suite.cjs:608`, `:632`). The specs-folder-paths commits in between did not change the test count
+- **Skipped tests**: none
+- **Failures**: none
 
-Os números do autor conferem.
+The author's numbers check out.
 
 ---
 
 ## Fix Plans (if issues found)
 
-Nenhum. Duas sugestões sem bloqueio:
+None. Two non-blocking suggestions:
 
-- **Nota no hidden-specs** (cosmético): linha em branco depois de `.specs/features/hidden-specs/spec.md:86`, ou a nota depois do item 14 (nota 6).
-- **Precondição do EYE-05/07** (robustez do teste): `test/integration/suite.cjs:635` com `r.toggle?.text === ocultas(done)` no predicado, para esperar o estado assentar (nota 7).
+- **Note in hidden-specs** (cosmetic): a blank line after `.specs/features/hidden-specs/spec.md:86`, or the note after item 14 (note 6).
+- **EYE-05/07 precondition** (test robustness): `test/integration/suite.cjs:635` with `r.toggle?.text === hiddenLabel(done)` in the predicate, to wait for the state to settle (note 7).
 
 ---
 
 ## Requirement Traceability Update
 
-O Verifier não altera `spec.md`. Status propostos:
+The Verifier does not change `spec.md`. Proposed statuses:
 
 | Requirement | Previous Status | New Status |
 | ----------- | --------------- | ---------- |
 | EYE-01 | Implementing | ✅ Verified |
 | EYE-02 | Implementing | ✅ Verified |
 | EYE-03 | Implementing | ✅ Verified |
-| EYE-04 | Implementing | ✅ Verified (nota 1) |
-| EYE-05 | Implementing | ✅ Verified (nota 1) |
+| EYE-04 | Implementing | ✅ Verified (note 1) |
+| EYE-05 | Implementing | ✅ Verified (note 1) |
 | EYE-06 | Implementing | ✅ Verified |
 | EYE-07 | Implementing | ✅ Verified |
 | EYE-08 | Implementing | ✅ Verified |
-| EYE-09 | Implementing | ✅ Verified (nota 2) |
+| EYE-09 | Implementing | ✅ Verified (note 2) |
 | EYE-10 | Implementing | ✅ Verified |
-| EYE-11 | Implementing | ✅ Verified (nota 3) |
+| EYE-11 | Implementing | ✅ Verified (note 3) |
 
 ---
 
@@ -194,12 +194,12 @@ O Verifier não altera `spec.md`. Status propostos:
 
 **Overall**: ✅ Ready
 
-**Spec-anchored check**: 11/11 requisitos batem com a spec e discriminam. 0 gaps de precisão
-**Sensor**: 23/23 mortas, mais C9 equivalente (sobreviveu, sem fix)
-**Gate**: typecheck ok, 68 unit, 63 + 1 + 1 integration, 0 falhas
+**Spec-anchored check**: 11/11 requirements match the spec and discriminate. 0 precision gaps
+**Sensor**: 23/23 killed, plus the equivalent C9 (survived, no fix)
+**Gate**: typecheck ok, 68 unit, 63 + 1 + 1 integration, 0 failures
 
-**What works**: toda spec tem o olho, na linha de Features e no card, concluída ou não. Aberto "Ocultar spec" à vista, fechado "Desocultar spec" oculta. A concluída começa oculta. Desocultada pela linha ou pelo card, ela fica na árvore e na coluna Concluídas com o olho geral fechado, e o número de ocultas cai um. Ocultá-la de novo apaga a escolha. Com o olho geral aberto, toda oculta fica esmaecida e com "· oculta". As marcas antigas de `tlcSpecs.hidden` seguem valendo, e as concluídas à vista ficam em `tlcSpecs.shown`.
+**What works**: every spec has the eye, on the Features row and on the card, completed or not. Open "Hide Spec" when in view, closed "Unhide Spec" when hidden. A completed spec starts hidden. Unhidden from the row or the card, it stays in the tree and in the Completed column with the top eye closed, and the hidden count drops by one. Hiding it again clears the choice. With the top eye open, every hidden spec is dimmed and has "· hidden". Old marks in `tlcSpecs.hidden` still apply, and completed specs in view are stored in `tlcSpecs.shown`.
 
-**Issues found**: nenhum que bloqueie. A nota do HID-09/10 no hidden-specs pode quebrar a lista no preview (nota 6). A precondição do EYE-05/07 não espera o número (nota 7).
+**Issues found**: none blocking. The HID-09/10 note in hidden-specs may break the list in the preview (note 6). The EYE-05/07 precondition does not wait for the count (note 7).
 
-**Next steps**: atualizar os status do `spec.md` para Verified. Rodar o teste independente da spec com o usuário (UAT).
+**Next steps**: update the `spec.md` statuses to Verified. Run the spec's independent test with the user (UAT).

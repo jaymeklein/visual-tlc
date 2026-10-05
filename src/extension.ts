@@ -85,14 +85,14 @@ export async function activate(context: vscode.ExtensionContext): Promise<TlcSpe
       const features = store.projects.flatMap((p) => p.project.features);
       void vscode.commands.executeCommand('setContext', 'tlcSpecs.hasSpecs', store.projects.length > 0);
       const needAttention = features.filter((f) => f.health === 'failed' || f.issues.some((i) => i.severity === 'error')).length;
-      featuresView.badge = needAttention ? { value: needAttention, tooltip: `${needAttention} feature(s) precisam de atenção` } : undefined;
+      featuresView.badge = needAttention ? { value: needAttention, tooltip: `${needAttention} feature(s) need attention` } : undefined;
     }),
     // The tree changes with the specs, the marks and its eye: the message counts what it leaves out.
     featuresTree.onDidChangeTreeData(() => {
       const features = store.projects.flatMap((p) => p.project.features);
       const done = features.filter((f) => f.health === 'complete').length;
       const out = featuresTree.outOfTree();
-      featuresView.message = features.length ? `${features.length} feature(s) · ${done} concluída(s)${out ? ` · ${out} oculta(s)` : ''}` : undefined;
+      featuresView.message = features.length ? `${features.length} feature(s) · ${done} completed${out ? ` · ${out} hidden` : ''}` : undefined;
     }),
   );
 

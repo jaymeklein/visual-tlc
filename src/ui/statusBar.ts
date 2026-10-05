@@ -31,7 +31,7 @@ export class StatusBar implements vscode.Disposable {
     this.item.text = `${icon} ${f.name} · ${f.phaseLabel}${errors ? ` $(warning) ${errors}` : ''}`;
     this.item.tooltip = featureTooltip(f);
     this.item.backgroundColor = f.health === 'failed' ? new vscode.ThemeColor('statusBarItem.errorBackground') : undefined;
-    this.item.command = { command: 'tlcSpecs.showFeature', title: 'Abrir no painel', arguments: [ref] };
+    this.item.command = { command: 'tlcSpecs.showFeature', title: 'Open in Dashboard', arguments: [ref] };
     this.item.show();
     this.text = this.item.text;
   }

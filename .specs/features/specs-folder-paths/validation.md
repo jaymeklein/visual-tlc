@@ -2,11 +2,11 @@
 
 ## Validation: specs-folder-paths - PASS ✅
 
-Aprovada na iteração 2. Os 11 requisitos batem com a spec, e a evidência de cada um discrimina. Não há gap de precisão. As duas correções da iteração 1 fecharam, só com testes. HW agora morre no SFP-05/06: o teste espera a árvore parar antes de criar a pasta, e sem watcher a pasta não aparece (`test/integration/suite.cjs:1322`). U1 morre em `test/unit/folders.test.ts:33` e `:44`, e U2 em `:35`. O sensor mata 15 de 15. O código de produção do escopo não mudou desde a iteração 1 (`src/ui/store.ts`, `src/core/folders.ts`, `src/ui/projectTree.ts` e o `getChildren` de `src/ui/featuresTree.ts`). O gate em 0de28fe está verde: 68 unit, 63 + 1 + 1 integration.
+Passed on iteration 2. All 11 requirements match the spec, and the evidence for each one discriminates. There is no precision gap. Both iteration-1 fixes are closed, with test changes only. HW now dies in SFP-05/06: the test waits for the tree to settle before creating the folder, and without the watcher the folder does not appear (`test/integration/suite.cjs:1322`). U1 dies at `test/unit/folders.test.ts:33` and `:44`, and U2 at `:35`. The sensor kills 15 of 15. The in-scope production code has not changed since iteration 1 (`src/ui/store.ts`, `src/core/folders.ts`, `src/ui/projectTree.ts` and the `getChildren` of `src/ui/featuresTree.ts`). The gate at 0de28fe is green: 68 unit, 63 + 1 + 1 integration.
 
 **Date**: 2026-09-30
 **Spec**: `.specs/features/specs-folder-paths/spec.md`
-**Diff range**: 41821b4..1cec99c (branch `feat/hidden-specs`): T1 75a3432, T2 e1290a1, T3 2618d18, T4 1cec99c. Correções em 81406a3 (T5, `suite.cjs`) e 87b3b5a (T6, `folders.test.ts`). Notas da spec em 6901713. Linhas citadas em 0de28fe, que também traz o eye-on-every-spec (fora do escopo)
+**Diff range**: 41821b4..1cec99c (branch `feat/hidden-specs`): T1 75a3432, T2 e1290a1, T3 2618d18, T4 1cec99c. Fixes in 81406a3 (T5, `suite.cjs`) and 87b3b5a (T6, `folders.test.ts`). Spec notes in 6901713. Lines cited at 0de28fe, which also contains eye-on-every-spec (out of scope)
 **Verifier**: independent sub-agent (author ≠ verifier)
 **Iteration**: 2 of max 3
 
@@ -16,8 +16,8 @@ Aprovada na iteração 2. Os 11 requisitos batem com a spec, e a evidência de c
 
 | Iteration | HEAD | Outcome | Notes |
 | --------- | ---- | ------- | ----- |
-| 1 | 1cec99c | Reprovada | 10/11 requisitos com evidência que discrimina. SFP-06 sem (HW vive). 0 gaps de precisão. 12/15 mortas. Vivas: HW (Fix 1), U1 e U2 (Fix 2). 4 execuções do VS Code |
-| 2 | 0de28fe | Aprovada | 11/11 requisitos batem e discriminam. 0 gaps de precisão. Fix 1 fechado: HW morre em `suite.cjs:1322`. Fix 2 fechado: U1 em `folders.test.ts:33` e `:44`, U2 em `:35`. 15/15 mortas. 3 execuções do VS Code |
+| 1 | 1cec99c | Failed | 10/11 requirements with discriminating evidence. SFP-06 without (HW survives). 0 precision gaps. 12/15 killed. Survivors: HW (Fix 1), U1 and U2 (Fix 2). 4 VS Code runs |
+| 2 | 0de28fe | Passed | 11/11 requirements match and discriminate. 0 precision gaps. Fix 1 closed: HW dies at `suite.cjs:1322`. Fix 2 closed: U1 at `folders.test.ts:33` and `:44`, U2 at `:35`. 15/15 killed. 3 VS Code runs |
 
 ---
 
@@ -25,12 +25,12 @@ Aprovada na iteração 2. Os 11 requisitos batem com a spec, e a evidência de c
 
 | Task | Status | Notes |
 | ---- | ------ | ----- |
-| T1 Achar as pastas pelo caminho exato | ✅ Done | 75a3432. `src/core/folders.ts:74-90`. `parseExclude` e `Exclude` saíram. O Done when "não acha `test/fixtures/sample/.specs`" agora tem prova isolada (T6) |
-| T2 Ler só as pastas configuradas e tirar o exclude | ✅ Done | e1290a1. `src/ui/store.ts:48`, `:101`, `:128-130`, `:137-140`, `:147`. `package.json:59`, `:287-297`. Saiu `test/fixtures/multi-root/b/.vscode/settings.json` |
-| T3 Nó da pasta com um projeto só | ✅ Done | 2618d18. `src/ui/featuresTree.ts:101-104`, `src/ui/projectTree.ts:36-39` |
-| T4 Documentar o caminho exato | ✅ Done | 1cec99c. README sem `tlcSpecs.exclude`. Notas em `.specs/features/specs-folders/spec.md:59`, `:75`, `.specs/features/exclude-folders/spec.md:3` e `.specs/features/hidden-specs/spec.md:103` |
-| T5 Fix 1: o SFP-06 prova o watcher | ✅ Done | 81406a3. `treeSettled()` em `test/integration/suite.cjs:1299-1307`, chamado em `:1319` no lugar de `api.refresh()` |
-| T6 Fix 2: a regra do começo do caminho sozinha | ✅ Done | 87b3b5a. `test/unit/folders.test.ts:33`, `:35`, `:44` |
+| T1 Find the folders by exact path | ✅ Done | 75a3432. `src/core/folders.ts:74-90`. `parseExclude` and `Exclude` are gone. The Done when "does not find `test/fixtures/sample/.specs`" now has isolated proof (T6) |
+| T2 Read only the configured folders and remove exclude | ✅ Done | e1290a1. `src/ui/store.ts:48`, `:101`, `:128-130`, `:137-140`, `:147`. `package.json:59`, `:287-297`. Removed `test/fixtures/multi-root/b/.vscode/settings.json` |
+| T3 Folder node with a single project | ✅ Done | 2618d18. `src/ui/featuresTree.ts:101-104`, `src/ui/projectTree.ts:36-39` |
+| T4 Document the exact path | ✅ Done | 1cec99c. README without `tlcSpecs.exclude`. Notes at `.specs/features/specs-folders/spec.md:59`, `:75`, `.specs/features/exclude-folders/spec.md:3` and `.specs/features/hidden-specs/spec.md:103` |
+| T5 Fix 1: SFP-06 proves the watcher | ✅ Done | 81406a3. `treeSettled()` at `test/integration/suite.cjs:1299-1307`, called at `:1319` in place of `api.refresh()` |
+| T6 Fix 2: the start-of-path rule on its own | ✅ Done | 87b3b5a. `test/unit/folders.test.ts:33`, `:35`, `:44` |
 
 ---
 
@@ -38,75 +38,75 @@ Aprovada na iteração 2. Os 11 requisitos batem com a spec, e a evidência de c
 
 | Criterion (WHEN X THEN Y) | Spec-defined outcome | `file:line` + assertion | Result |
 | ------------------------- | -------------------- | ----------------------- | ------ |
-| SFP-01 WHEN `specsFolders` lista `.specs` THEN lê a `.specs` da raiz e ignora as de subpastas | projetos = só `.specs`. Fora: `lib/.specs`, `test/nested/.specs`, `b/legacy/.specs` | **Unit:** `test/unit/folders.test.ts:31` - `[{ path: '.specs', entry: '.specs' }]` com as aninhadas na lista. `:33` - `deepEqual(findSpecsRoots(['test/fixtures/sample/.specs/features/user-auth/spec.md', 'tools/.specs/STATE.md'], ['.specs']), [])`. `:35` - `.specs-old/STATE.md` dá `[]`. **VS Code:** `test/integration/suite.cjs:685` - `deepEqual(roots(), ['.specs'])` com `lib/.specs` e `test/nested/.specs` no disco. `:687` - nenhuma feature delas. `test/integration/multiroot.cjs:20` - `deepEqual(listed('b'), [{ path: 'b/.specs', features: ['b-default'] }])` | ✅ PASS (nota 2) |
-| SFP-02 WHEN lista um caminho com subpastas THEN lê a pasta nesse caminho, a partir da raiz | só a pasta do caminho. Fora: `packages/api/docs/specs` com `docs/specs`, `x/packages/api/.specs` com `packages/api/.specs` | **Unit:** `folders.test.ts:40-43` - `[docs/specs, packages/api/.specs]`. `:44` - `deepEqual(findSpecsRoots(['x/packages/api/.specs/STATE.md'], ['packages/api/.specs']), [])`. **VS Code:** `suite.cjs:695-696` - `waitForRoots(['docs/specs'])` e `featuresOf('docs/specs')` = `['custom-one']`, com `packages/api/docs/specs` no disco. `:699-700` - `['packages/api/docs/specs']` com `['nested-one']`. `multiroot.cjs:18` - `deepEqual(listed('a'), [{ path: 'a/docs/specs', features: ['a-custom'] }])` | ✅ PASS (nota 2) |
-| SFP-03 WHILE a spec está fora das pastas configuradas, fica fora das árvores, do painel na aba e na lateral, da barra de status e do painel Problemas | ausente das seis superfícies | **Controle positivo:** `suite.cjs:1257-1262` - listada, in-test aparece nas seis. **Ausência:** `:1267` - `ok(!treeFeatures().includes('in-test'))`. `:1268` - raízes do Projeto = `projectIds()`, só `.specs`. `:1269` - aba com `same(r.projects, projectIds()) && !r.cards.includes('in-test')`. `:1270` - lateral com `same(r.projects, projectIds())`. `:1271` - `doesNotMatch(api.statusBarText(), /in-test/)`. `:1272` - os diagnósticos de `/test/nested/` somem | ✅ PASS (nota 3) |
-| SFP-04 The extensão oferece `specsFolders` como única configuração de pastas, sem `tlcSpecs.exclude` | manifesto sem `tlcSpecs.exclude`; um valor antigo não muda a listagem | `suite.cjs:1277` - `ok(!('tlcSpecs.exclude' in properties))`. `:1278-1281` - chaves com folder ou exclude = `['tlcSpecs.specsFolders']`. `:1287-1290` - com `"tlcSpecs.exclude": [".specs"]` no `settings.json`, `deepEqual(roots(), ['.specs'])`. `:1291` - mesmas features de antes | ✅ PASS |
-| SFP-05 IF a entrada aponta para uma pasta que não existe THEN ignora sem aviso | sem projeto; nenhum aviso | `suite.cjs:1320` - `deepEqual(roots(), ['.specs'])` com `later/.specs` configurada, depois do recarregamento da configuração. `:1324` - `deepEqual(shown, [])` | ✅ PASS (nota 1) |
-| SFP-06 WHEN a pasta de uma entrada é criada depois THEN aparece sem recarregar a janela | a criação da pasta, sozinha, faz o projeto aparecer | `suite.cjs:1319` - `treeSettled()`: 1500 ms sem recarregar a árvore antes de criar a pasta. `:1321-1323` - cria `later/.specs/features/late-one/spec.md`, `waitForRoots(['.specs', 'later/.specs'])` e `featuresOf` = `['late-one']`. Sem watcher para a pasta nova (HW), `:1322` estoura: "got .specs" | ✅ PASS (nota 1) |
-| SFP-07 WHILE há uma única pasta de specs, Features mostra um nó com o nome da pasta do workspace e as specs dentro | `['root']`, rótulo = nome do workspace, filhos = specs não ocultas | `suite.cjs:442` - `deepEqual(features.map((n) => n.kind), ['root'])`. `:443` - `equal(getTreeItem(features[0]).label, ws)`. `:444-450` - filhos = `modelNames((f) => f.health !== 'complete')` | ✅ PASS |
-| SFP-08 WHILE há uma única pasta de specs, Projeto mostra um nó com o nome e Handoff, decisões e lições dentro | `['root']`, rótulo `ws`, `handoff`, `decisions`, `lessons` | `suite.cjs:452` - `deepEqual(project.map((n) => n.kind), ['root'])`. `:453` - rótulo `ws`. `:455` - `handoff`, `decisions` e `lessons` entre os filhos. NAV-03 abre o Handoff de dentro do nó (`:200`) | ✅ PASS |
-| SFP-09 WHEN uma pasta do workspace tem mais de uma pasta de specs encontrada THEN rótulo "nome · caminho" | `ws · .specs` e `ws · docs/specs` nas duas árvores; `ws` com uma só | **Unit:** `folders.test.ts:77-80` - `['ws']` com duas entradas e uma pasta. `:85-88` - `['api · .specs', 'api · docs/specs', 'api · packages/api/.specs']`. **VS Code:** `suite.cjs:819-820` - Features e Projeto com `ws · .specs` e `ws · docs/specs`. `:824-825` - `ws · docs/specs` e `ws · packages/api/docs/specs` | ✅ PASS (nota 4) |
-| SFP-10 WHILE o olho está fechado e todas as specs estão ocultas, o nó fica sem filhos e a mensagem conta as ocultas | `['root']`, filhos `[]`, mensagem com H = T | `suite.cjs:508` - `deepEqual(roots.map((n) => n.kind), ['root'])`. `:509` - `deepEqual(getChildren(roots[0]), [])`. `:510` - `` `${T} feature(s) · ${D} concluída(s) · ${T} oculta(s)` ``. `:512-515` - boas-vindas só com `!tlcSpecs.hasSpecs` | ✅ PASS |
-| SFP-11 IF a entrada é absoluta, tem `..` ou glob THEN ignora com um aviso que cita a entrada | fora da lista; um aviso com a entrada entre aspas; sem repetir | **Unit:** `folders.test.ts:12` - nove formas inválidas em `invalid`, só `docs/specs` em `entries`. `:98-106` - um aviso por entrada, de novo só quando ela volta. **VS Code:** `suite.cjs:800` - `waitForRoots(['docs/specs'])` com `../fora` e `docs/*`. `:802-803` - uma mensagem com `"../fora"` e uma com `"docs/*"`. `:805` - `equal(shown.length, 2)` depois de `refresh` | ✅ PASS (nota 5) |
+| SFP-01 WHEN `specsFolders` lists `.specs` THEN reads the root `.specs` and ignores those in subfolders | projects = only `.specs`. Excluded: `lib/.specs`, `test/nested/.specs`, `b/legacy/.specs` | **Unit:** `test/unit/folders.test.ts:31` - `[{ path: '.specs', entry: '.specs' }]` with the nested ones in the list. `:33` - `deepEqual(findSpecsRoots(['test/fixtures/sample/.specs/features/user-auth/spec.md', 'tools/.specs/STATE.md'], ['.specs']), [])`. `:35` - `.specs-old/STATE.md` gives `[]`. **VS Code:** `test/integration/suite.cjs:685` - `deepEqual(roots(), ['.specs'])` with `lib/.specs` and `test/nested/.specs` on disk. `:687` - none of their features. `test/integration/multiroot.cjs:20` - `deepEqual(listed('b'), [{ path: 'b/.specs', features: ['b-default'] }])` | ✅ PASS (note 2) |
+| SFP-02 WHEN it lists a path with subfolders THEN reads the folder at that path, from the root | only the folder at the path. Excluded: `packages/api/docs/specs` with `docs/specs`, `x/packages/api/.specs` with `packages/api/.specs` | **Unit:** `folders.test.ts:40-43` - `[docs/specs, packages/api/.specs]`. `:44` - `deepEqual(findSpecsRoots(['x/packages/api/.specs/STATE.md'], ['packages/api/.specs']), [])`. **VS Code:** `suite.cjs:695-696` - `waitForRoots(['docs/specs'])` and `featuresOf('docs/specs')` = `['custom-one']`, with `packages/api/docs/specs` on disk. `:699-700` - `['packages/api/docs/specs']` with `['nested-one']`. `multiroot.cjs:18` - `deepEqual(listed('a'), [{ path: 'a/docs/specs', features: ['a-custom'] }])` | ✅ PASS (note 2) |
+| SFP-03 WHILE the spec is outside the configured folders, it stays out of the trees, the dashboard in the editor tab and in the side bar, the status bar and the Problems panel | absent from all six surfaces | **Positive control:** `suite.cjs:1257-1262` - listed, in-test appears in all six. **Absence:** `:1267` - `ok(!treeFeatures().includes('in-test'))`. `:1268` - Project roots = `projectIds()`, only `.specs`. `:1269` - editor tab with `same(r.projects, projectIds()) && !r.cards.includes('in-test')`. `:1270` - side bar with `same(r.projects, projectIds())`. `:1271` - `doesNotMatch(api.statusBarText(), /in-test/)`. `:1272` - the `/test/nested/` diagnostics go away | ✅ PASS (note 3) |
+| SFP-04 The extension offers `specsFolders` as the only folder setting, without `tlcSpecs.exclude` | manifest without `tlcSpecs.exclude`; an old value does not change the listing | `suite.cjs:1277` - `ok(!('tlcSpecs.exclude' in properties))`. `:1278-1281` - keys containing folder or exclude = `['tlcSpecs.specsFolders']`. `:1287-1290` - with `"tlcSpecs.exclude": [".specs"]` in `settings.json`, `deepEqual(roots(), ['.specs'])`. `:1291` - same features as before | ✅ PASS |
+| SFP-05 IF the entry points to a folder that does not exist THEN ignores it without a warning | no project; no warning | `suite.cjs:1320` - `deepEqual(roots(), ['.specs'])` with `later/.specs` configured, after the configuration reload. `:1324` - `deepEqual(shown, [])` | ✅ PASS (note 1) |
+| SFP-06 WHEN an entry's folder is created later THEN it appears without reloading the window | creating the folder, on its own, makes the project appear | `suite.cjs:1319` - `treeSettled()`: 1500 ms without a tree reload before creating the folder. `:1321-1323` - creates `later/.specs/features/late-one/spec.md`, `waitForRoots(['.specs', 'later/.specs'])` and `featuresOf` = `['late-one']`. With no watcher for the new folder (HW), `:1322` times out: "got .specs" | ✅ PASS (note 1) |
+| SFP-07 WHILE there is a single specs folder, Features shows a node with the workspace folder name and the specs inside | `['root']`, label = workspace name, children = non-hidden specs | `suite.cjs:442` - `deepEqual(features.map((n) => n.kind), ['root'])`. `:443` - `equal(getTreeItem(features[0]).label, ws)`. `:444-450` - children = `modelNames((f) => f.health !== 'complete')` | ✅ PASS |
+| SFP-08 WHILE there is a single specs folder, Project shows a node with the name and Handoff, decisions and lessons inside | `['root']`, label `ws`, `handoff`, `decisions`, `lessons` | `suite.cjs:452` - `deepEqual(project.map((n) => n.kind), ['root'])`. `:453` - label `ws`. `:455` - `handoff`, `decisions` and `lessons` among the children. NAV-03 opens the Handoff from inside the node (`:200`) | ✅ PASS |
+| SFP-09 WHEN a workspace folder has more than one specs folder found THEN label "name · path" | `ws · .specs` and `ws · docs/specs` in both trees; `ws` with only one | **Unit:** `folders.test.ts:77-80` - `['ws']` with two entries and one folder. `:85-88` - `['api · .specs', 'api · docs/specs', 'api · packages/api/.specs']`. **VS Code:** `suite.cjs:819-820` - Features and Project with `ws · .specs` and `ws · docs/specs`. `:824-825` - `ws · docs/specs` and `ws · packages/api/docs/specs` | ✅ PASS (note 4) |
+| SFP-10 WHILE the eye is closed and all specs are hidden, the node has no children and the message counts the hidden ones | `['root']`, children `[]`, message with H = T | `suite.cjs:508` - `deepEqual(roots.map((n) => n.kind), ['root'])`. `:509` - `deepEqual(getChildren(roots[0]), [])`. `:510` - `` `${T} feature(s) · ${D} completed · ${T} hidden` ``. `:512-515` - welcome only with `!tlcSpecs.hasSpecs` | ✅ PASS |
+| SFP-11 IF the entry is absolute, has `..` or a glob THEN ignores it with a warning that quotes the entry | left out of the list; one warning with the entry in quotes; no repeats | **Unit:** `folders.test.ts:12` - nine invalid forms in `invalid`, only `docs/specs` in `entries`. `:98-106` - one warning per entry, repeated only when the entry comes back. **VS Code:** `suite.cjs:800` - `waitForRoots(['docs/specs'])` with `../outside` and `docs/*`. `:802-803` - one message with `"../outside"` and one with `"docs/*"`. `:805` - `equal(shown.length, 2)` after `refresh` | ✅ PASS (note 5) |
 
-**Status**: ✅ All ACs covered. 11/11 batem com a spec e discriminam. 0 gaps de precisão. G1 e G2 da iteração 1 fechados.
+**Status**: ✅ All ACs covered. 11/11 match the spec and discriminate. 0 precision gaps. G1 and G2 from iteration 1 closed.
 
-### Notas
+### Notes
 
-1. **SFP-05/SFP-06, o tempo.** Na iteração 1 o teste passava pelo recarregamento que a mudança da configuração agenda (`src/ui/store.ts:28-31`, `:35-37`, `:73-76`), não pelo watcher. Agora `treeSettled()` (`suite.cjs:1299-1307`) espera 1500 ms sem nenhum `onDidChangeTreeData` antes de criar a pasta, bem acima do debounce de 300 ms. Depois disso, só o watcher traz a pasta. HW, com watchers só para as entradas cuja pasta já existe (`store.ts:47`), estoura em `:1322`: "timed out waiting for: projects .specs, later/.specs (got .specs)". O código real mostra a pasta: o gate está verde, então o watcher de `later/.specs/**`, criado antes da pasta existir, dispara. A troca de `api.refresh()` por `treeSettled()` não esvazia o SFP-05. HN deixou uma mensagem só em `:1324`. Logo, um recarregamento com `later/.specs` na lista rodou antes da escrita, e a asserção de `:1320` vale para a configuração nova.
-2. **SFP-01/SFP-02, as duas camadas.** A regra do caminho exato está no glob enraizado da busca (`store.ts:137-140`) e no `startsWith` do core (`src/core/folders.ts:78`). A integração mata a volta das duas juntas (HR, iteração 1: SFP-01, SFP-02 e `multiroot.cjs:18`). O unit agora isola o core. Os negativos vêm sozinhos, sem pasta da raiz que dê a mesma resposta: `folders.test.ts:33` e `:44` matam U1, e `:35` mata U2.
-3. **SFP-03, a lateral.** A aba é afirmada nos cards (`:1269`), a lateral nos projetos (`:1270`). Os cards da lateral saem do mesmo estado que os projetos. Aceito. O controle positivo (`:1257-1262`) prova que cada sonda enxerga a spec quando ela está listada.
-4. **SFP-09, "encontrada".** A spec agora diz "encontrada" (`spec.md:79`), e bate com o código (`folders.ts:89`, com `found` em `store.ts:153`) e com o unit (`folders.test.ts:77-80`). A dúvida da iteração 1 fechou.
-5. **SFP-11, o texto.** O teste afirma a entrada entre aspas, que é o que SF-09 e SFP-11 pedem. O texto inteiro do aviso (`store.ts:116`, `:129`) só era afirmado pelo EXC-10, que saiu com o exclude. Não é requisito. Fica registrado.
-6. **Lições conferidas.** L-002, L-006: seguem valendo, agora com o evento de criação isolado. L-009 e L-014: não se aplicam. As candidatas da iteração 1 valem nos testes: L-023 em `treeSettled()` (`suite.cjs:1319`), L-024 nos negativos sozinhos (`folders.test.ts:33`, `:35`, `:44`). Nenhuma lição confirmada se repetiu.
+1. **SFP-05/SFP-06, the timing.** In iteration 1 the test passed through the reload that the setting change schedules (`src/ui/store.ts:28-31`, `:35-37`, `:73-76`), not through the watcher. Now `treeSettled()` (`suite.cjs:1299-1307`) waits 1500 ms with no `onDidChangeTreeData` before creating the folder, well above the 300 ms debounce. After that, only the watcher can bring in the folder. HW, with watchers only for entries whose folder already exists (`store.ts:47`), times out at `:1322`: "timed out waiting for: projects .specs, later/.specs (got .specs)". The real code shows the folder: the gate is green, so the `later/.specs/**` watcher, created before the folder existed, fires. Replacing `api.refresh()` with `treeSettled()` does not hollow out SFP-05. HN left a single message at `:1324`. So a reload with `later/.specs` in the list ran before the write, and the `:1320` assertion holds for the new setting.
+2. **SFP-01/SFP-02, the two layers.** The exact-path rule lives in the rooted glob of the search (`store.ts:137-140`) and in the core's `startsWith` (`src/core/folders.ts:78`). Integration kills reverting both together (HR, iteration 1: SFP-01, SFP-02 and `multiroot.cjs:18`). The unit tests now isolate the core. The negatives stand alone, with no root folder that would give the same answer: `folders.test.ts:33` and `:44` kill U1, and `:35` kills U2.
+3. **SFP-03, the side bar.** The editor tab is asserted on the cards (`:1269`), the side bar on the projects (`:1270`). The side bar cards come from the same state as the projects. Accepted. The positive control (`:1257-1262`) proves that each probe sees the spec when it is listed.
+4. **SFP-09, "found".** The spec now says "found" (`spec.md:79`), matching the code (`folders.ts:89`, with `found` at `store.ts:153`) and the unit test (`folders.test.ts:77-80`). The iteration-1 question is closed.
+5. **SFP-11, the text.** The test asserts the entry in quotes, which is what SF-09 and SFP-11 require. The full warning text (`store.ts:116`, `:129`) was only asserted by EXC-10, which went away with exclude. It is not a requirement. Recorded here.
+6. **Lessons checked.** L-002, L-006: still apply, now with the creation event isolated. L-009 and L-014: do not apply. The iteration-1 candidates hold in the tests: L-023 in `treeSettled()` (`suite.cjs:1319`), L-024 in the standalone negatives (`folders.test.ts:33`, `:35`, `:44`). No confirmed lesson recurred.
 
 ---
 
 ## Discrimination Sensor
 
-Scratch novo na iteração 2: `git worktree add --detach <scratchpad>/wt-sfp2 0de28fe`, com junction de `node_modules` para o real. As mesmas trocas de texto da iteração 1, com uma ocorrência exigida, aplicadas por script e desfeitas com `git checkout -- .` no scratch. `git status --porcelain` do scratch vazio depois de cada reversão. Sem `git stash`. O código de produção do escopo não mudou, então as trocas valem sem ajuste. No unit rodei de novo as 7 mutações, uma por vez. Na integração rodei HW, HM, HN, HX, HL e HP, em dois lotes de testes separados. HF e HR ficam da iteração 1: o código e as asserções que as matam não mudaram, só a linha de HR.
+Fresh scratch in iteration 2: `git worktree add --detach <scratchpad>/wt-sfp2 0de28fe`, with a `node_modules` junction to the real one. The same text swaps as in iteration 1, each required to match exactly once, applied by script and undone with `git checkout -- .` in the scratch. The scratch's `git status --porcelain` was empty after each revert. No `git stash`. The in-scope production code did not change, so the swaps apply without adjustment. In unit I re-ran the 7 mutations, one at a time. In integration I ran HW, HM, HN, HX, HL and HP, in two separate test batches. HF and HR carry over from iteration 1: the code and the assertions that kill them have not changed, only HR's line.
 
 | Mutation | File:line | Description | Killed? |
 | -------- | --------- | ----------- | ------- |
-| U1 | `src/core/folders.ts:78` | `file.includes(`${entry}/`)` no lugar de `startsWith`: aceita a pasta em qualquer profundidade e a mapeia para a entrada | ✅ Killed na iteração 2 (`test/unit/folders.test.ts:33`, `:44`). Vivia na iteração 1 (Fix 2) |
-| U2 | `src/core/folders.ts:78` | `file.startsWith(entry)` sem a barra: `.specs-old` vira `.specs` | ✅ Killed na iteração 2 (`:35`). Vivia na iteração 1 (Fix 2) |
-| U3 | `src/core/folders.ts:78-81` | Volta a regra antiga do core: `indexOf` em qualquer profundidade, caminho aninhado | ✅ Killed (`:31`, `:40`) |
-| U4 | `src/core/folders.ts:80` | Regra de artefato lê `file.slice(entry.length)`: sobra a barra | ✅ Killed (5 testes, a começar por `:40`, `:49`, `:58`) |
-| U5 | `src/core/folders.ts:89` | `rootLabel` sempre só com o nome | ✅ Killed (`:85`) |
-| U6 | `src/core/folders.ts:89` | `rootLabel` sempre "nome · entrada" | ✅ Killed (`:77`) |
-| U7 | `src/core/folders.ts:53` | Entrada com vírgula volta a ser inválida, como no exclude | ✅ Killed (`:92`) |
-| HP | `src/ui/projectTree.ts:38` | Projeto pula o nó com um projeto só | ✅ Killed (`test/integration/suite.cjs:452`, `['handoff', 'decisions', 'lessons']` no lugar de `['root']`; NAV-03 em `:212`) |
-| HF | `src/ui/featuresTree.ts:103` | Features pula o nó com um projeto só | ✅ Killed na iteração 1 (`suite.cjs:442`, a mesma linha hoje) |
-| HL | `src/ui/store.ts:153` | Rótulo calculado só com a própria pasta: nunca "nome · caminho" | ✅ Killed (`suite.cjs:819`, `['ws', 'ws']`) |
-| HX | `src/ui/store.ts:147` | A busca volta a ler `tlcSpecs.exclude` | ✅ Killed (`suite.cjs:1290`, `[]` no lugar de `['.specs']`) |
-| HM | `package.json:287` | `tlcSpecs.exclude` volta ao manifesto | ✅ Killed (`suite.cjs:1277`, "tlcSpecs.exclude is still contributed") |
-| HN | `src/ui/store.ts:151` | Aviso para a entrada sem pasta | ✅ Killed (`suite.cjs:1324`, `['TLC Specs: later/.specs não existe']` no lugar de `[]`) |
-| HW | `src/ui/store.ts:47` | Watchers só para as entradas cuja pasta já existe | ✅ Killed na iteração 2 (`suite.cjs:1322`, "got .specs"). Vivia na iteração 1 (Fix 1) |
-| HR | `src/ui/store.ts:139` + `src/core/folders.ts:78-81` | As duas camadas buscam em qualquer profundidade de novo | ✅ Killed na iteração 1 (`suite.cjs:633` em 1cec99c, hoje `:685`; `:643`, hoje `:695`; `test/integration/multiroot.cjs:18`) |
+| U1 | `src/core/folders.ts:78` | `file.includes(`${entry}/`)` in place of `startsWith`: accepts the folder at any depth and maps it to the entry | ✅ Killed in iteration 2 (`test/unit/folders.test.ts:33`, `:44`). Alive in iteration 1 (Fix 2) |
+| U2 | `src/core/folders.ts:78` | `file.startsWith(entry)` without the slash: `.specs-old` becomes `.specs` | ✅ Killed in iteration 2 (`:35`). Alive in iteration 1 (Fix 2) |
+| U3 | `src/core/folders.ts:78-81` | Restores the old core rule: `indexOf` at any depth, nested path | ✅ Killed (`:31`, `:40`) |
+| U4 | `src/core/folders.ts:80` | Artifact rule reads `file.slice(entry.length)`: the slash is left over | ✅ Killed (5 tests, starting with `:40`, `:49`, `:58`) |
+| U5 | `src/core/folders.ts:89` | `rootLabel` always with just the name | ✅ Killed (`:85`) |
+| U6 | `src/core/folders.ts:89` | `rootLabel` always "name · entry" | ✅ Killed (`:77`) |
+| U7 | `src/core/folders.ts:53` | An entry with a comma becomes invalid again, as in exclude | ✅ Killed (`:92`) |
+| HP | `src/ui/projectTree.ts:38` | Project skips the node with a single project | ✅ Killed (`test/integration/suite.cjs:452`, `['handoff', 'decisions', 'lessons']` in place of `['root']`; NAV-03 at `:212`) |
+| HF | `src/ui/featuresTree.ts:103` | Features skips the node with a single project | ✅ Killed in iteration 1 (`suite.cjs:442`, the same line today) |
+| HL | `src/ui/store.ts:153` | Label computed from its own folder only: never "name · path" | ✅ Killed (`suite.cjs:819`, `['ws', 'ws']`) |
+| HX | `src/ui/store.ts:147` | The search reads `tlcSpecs.exclude` again | ✅ Killed (`suite.cjs:1290`, `[]` in place of `['.specs']`) |
+| HM | `package.json:287` | `tlcSpecs.exclude` back in the manifest | ✅ Killed (`suite.cjs:1277`, "tlcSpecs.exclude is still contributed") |
+| HN | `src/ui/store.ts:151` | Warning for the entry with no folder | ✅ Killed (`suite.cjs:1324`, `['TLC Specs: later/.specs does not exist']` in place of `[]`) |
+| HW | `src/ui/store.ts:47` | Watchers only for entries whose folder already exists | ✅ Killed in iteration 2 (`suite.cjs:1322`, "got .specs"). Alive in iteration 1 (Fix 1) |
+| HR | `src/ui/store.ts:139` + `src/core/folders.ts:78-81` | Both layers search at any depth again | ✅ Killed in iteration 1 (`suite.cjs:633` at 1cec99c, today `:685`; `:643`, today `:695`; `test/integration/multiroot.cjs:18`) |
 
-Mutantes equivalentes, não rodados: o glob da busca sozinho em `**/${entry}/**` (`store.ts:139`) e o do watcher (`store.ts:48`). `rootLabel` com `all.length > 1` (`folders.ts:89`).
+Equivalent mutants, not run: the search glob alone as `**/${entry}/**` (`store.ts:139`), and the watcher glob (`store.ts:48`). `rootLabel` with `all.length > 1` (`folders.ts:89`).
 
-**Sensor depth**: lightweight ampliado (padrão, sem caminho P0). 7 mutações no unit, todas de novo em 0de28fe. 8 no host: 6 de novo, 2 mantidas da iteração 1.
-**Result**: 15/15 mortas. PASS ✅.
+**Sensor depth**: extended lightweight (default, no P0 path). 7 unit mutations, all re-run at 0de28fe. 8 in the host: 6 re-run, 2 kept from iteration 1.
+**Result**: 15/15 killed. PASS ✅.
 
-**Execuções que abriram o VS Code** na iteração 2, 3 das 3 permitidas, todas pelo desktop oculto, em primeiro plano, uma por vez:
+**Runs that opened VS Code** in iteration 2: 3 of the 3 allowed, all on the hidden desktop, in the foreground, one at a time:
 
-| # | Execução | Árvore | Resultado |
+| # | Run | Tree | Result |
 | - | -------- | ------ | --------- |
-| 1 | Gate, sem mutação | scratch (0de28fe) | 63/63 + 1/1 + 1/1 |
-| 2 | HW + HM | scratch | 61/63 + 1/1 + 1/1. Só SFP-04 (`:1277`) por HM e SFP-05/06 (`:1322`) por HW |
-| 3 | HN + HX + HL + HP | scratch | 58/63 + 1/1 + 1/1. NAV-03 (`:212`) e SFP-07/08 (`:452`) por HP, SFP-09 (`:819`) por HL, SFP-04 (`:1290`) por HX, SFP-05/06 (`:1324`) por HN |
+| 1 | Gate, no mutation | scratch (0de28fe) | 63/63 + 1/1 + 1/1 |
+| 2 | HW + HM | scratch | 61/63 + 1/1 + 1/1. Only SFP-04 (`:1277`) from HM and SFP-05/06 (`:1322`) from HW |
+| 3 | HN + HX + HL + HP | scratch | 58/63 + 1/1 + 1/1. NAV-03 (`:212`) and SFP-07/08 (`:452`) from HP, SFP-09 (`:819`) from HL, SFP-04 (`:1290`) from HX, SFP-05/06 (`:1324`) from HN |
 
-Cada mutante falhou só no seu teste. Os logs mostram a extensão carregada do scratch, e conferi HW no `dist/extension.cjs` dele. A iteração 1 usou 4 execuções.
+Each mutant failed only its own test. The logs show the extension loaded from the scratch, and I checked HW in the scratch's `dist/extension.cjs`. Iteration 1 used 4 runs.
 
-**Isolamento**: `git status --porcelain` da árvore real vazio antes e depois. HEAD seguiu em 0de28fe. Junction removida sem recursão (`[System.IO.Directory]::Delete(..., $false)`), depois `git worktree remove --force` e `git worktree prune`. `git worktree list` mostra só a árvore real. `node_modules` real com 129 entradas visíveis (131 com as ocultas) antes e depois, `npm ls --depth=0` exit 0.
+**Isolation**: `git status --porcelain` of the real tree empty before and after. HEAD stayed at 0de28fe. Junction removed without recursion (`[System.IO.Directory]::Delete(..., $false)`), then `git worktree remove --force` and `git worktree prune`. `git worktree list` shows only the real tree. Real `node_modules` with 129 visible entries (131 including hidden ones) before and after, `npm ls --depth=0` exit 0.
 
 ---
 
 ## Interactive UAT Results (if performed)
 
-Não executado. O Verifier roda sem usuário. O teste independente da spec (`spec.md:65`, `:81`) roda neste repositório e fica para o orquestrador: com o padrão, nada de `test/fixtures` na barra lateral e no painel; com `["test/fixtures/sample/.specs"]`, só as specs do fixture.
+Not performed. The Verifier runs without a user. The spec's independent test (`spec.md:65`, `:81`) runs in this repository and is left to the orchestrator: with the default, nothing from `test/fixtures` in the side bar or the dashboard; with `["test/fixtures/sample/.specs"]`, only the fixture's specs.
 
 ---
 
@@ -114,73 +114,73 @@ Não executado. O Verifier roda sem usuário. O teste independente da spec (`spe
 
 | Principle | Status |
 | --------- | ------ |
-| Minimum code | ✅ `findSpecsRoots` ficou mais simples, e `parseExclude` saiu. Sobra de forma, aceita pelo orquestrador: `SpecsRoot.path` e `.entry` são sempre iguais (`folders.ts:81`), e `InvalidEntry.setting` com o mapa `ADVICE` (`store.ts:128-130`) servem a uma configuração só |
-| Surgical changes | ✅ Só saiu o que o exclude deixou órfão. As correções da iteração 2 só mexem em testes. O comentário de `suite.cjs:406` foi corrigido |
-| No scope creep | ✅ `findFiles(..., null, ...)` (`store.ts:146-147`) mantém o `files.exclude` fora, com o mesmo efeito de antes. Não é requisito e não tem teste |
-| Matches patterns | ✅ O core segue puro. `treeSettled()` reusa `waitFor` e o evento da árvore, como os outros testes |
-| Spec-anchored outcome check (asserted values match spec) | ✅ Rótulos, raízes, features, aviso vazio e manifesto afirmados com o valor exato |
-| Per-layer Coverage Expectation met (domain 1:1 ACs; routes happy+edge+error) | ✅ Core: a regra do início do caminho tem casos isolados. Host: o watcher da pasta criada depois é discriminado |
-| Every test maps to a spec requirement - no unclaimed tests | ✅ Todo teste tem SF ou SFP no título |
+| Minimum code | ✅ `findSpecsRoots` got simpler, and `parseExclude` is gone. Leftover shape, accepted by the orchestrator: `SpecsRoot.path` and `.entry` are always equal (`folders.ts:81`), and `InvalidEntry.setting` with the `ADVICE` map (`store.ts:128-130`) serve a single setting |
+| Surgical changes | ✅ Only what exclude left orphaned was removed. The iteration-2 fixes only touch tests. The comment at `suite.cjs:406` was corrected |
+| No scope creep | ✅ `findFiles(..., null, ...)` (`store.ts:146-147`) keeps `files.exclude` out, with the same effect as before. Not a requirement and not tested |
+| Matches patterns | ✅ The core stays pure. `treeSettled()` reuses `waitFor` and the tree event, like the other tests |
+| Spec-anchored outcome check (asserted values match spec) | ✅ Labels, roots, features, empty warning list and manifest asserted with the exact value |
+| Per-layer Coverage Expectation met (domain 1:1 ACs; routes happy+edge+error) | ✅ Core: the start-of-path rule has isolated cases. Host: the watcher for the folder created later is discriminated |
+| Every test maps to a spec requirement - no unclaimed tests | ✅ Every test has an SF or SFP ID in its title |
 | Documented guidelines followed: none - strong defaults applied (`tasks.md:20`) | ✅ |
 
-A nota do SF-02 saiu do meio da lista numerada (`.specs/features/specs-folders/spec.md:59`).
+The SF-02 note was moved out of the middle of the numbered list (`.specs/features/specs-folders/spec.md:59`).
 
-**Integridade dos testes (41821b4..1cec99c)**: `test/unit/folders.test.ts` foi de 20 para 15 testes. Saíram os 6 testes de `parseExclude`. O teste da vírgula e o de `pendingWarnings` ficaram, só com `tlcSpecs.specsFolders`. SF-02 em qualquer profundidade virou SFP-01 e SFP-02. `test/integration/suite.cjs` foi de 63 para 61: saíram 7 EXC, SF-02 virou dois, e entraram SFP-07/08, SFP-03, SFP-04 e SFP-05/06. `multiroot.cjs` foi de 2 para 1: saiu EXC-05. A remoção é o SFP-04, aprovada pelo usuário. Nenhuma asserção ficou mais fraca, e nenhum comportamento restante perdeu cobertura de requisito. Só o texto inteiro do aviso ficou sem teste (nota 5).
+**Test integrity (41821b4..1cec99c)**: `test/unit/folders.test.ts` went from 20 to 15 tests. The 6 `parseExclude` tests were removed. The comma test and the `pendingWarnings` test stayed, with only `tlcSpecs.specsFolders`. SF-02 at any depth became SFP-01 and SFP-02. `test/integration/suite.cjs` went from 63 to 61: 7 EXC removed, SF-02 split in two, and SFP-07/08, SFP-03, SFP-04 and SFP-05/06 added. `multiroot.cjs` went from 2 to 1: EXC-05 removed. The removal is SFP-04, approved by the user. No assertion got weaker, and no remaining behavior lost requirement coverage. Only the full warning text is left untested (note 5).
 
-**Integridade dos testes (1cec99c..0de28fe, escopo SFP)**: nenhum teste novo nem removido do SFP. `folders.test.ts` foi de 23 para 26 asserções. Em `suite.cjs`, o SFP-05/06 trocou `api.refresh()` por `treeSettled()` e manteve as quatro asserções. A troca não enfraquece o `:1320` (nota 1). Os dois testes EYE e as mudanças nos HID são do eye-on-every-spec.
+**Test integrity (1cec99c..0de28fe, SFP scope)**: no SFP test added or removed. `folders.test.ts` went from 23 to 26 assertions. In `suite.cjs`, SFP-05/06 replaced `api.refresh()` with `treeSettled()` and kept its four assertions. The swap does not weaken `:1320` (note 1). The two EYE tests and the HID changes belong to eye-on-every-spec.
 
 ---
 
 ## Edge Cases
 
-- [x] SFP-10 Projeto com tudo oculto: nó sem filhos e mensagem com as ocultas: `test/integration/suite.cjs:508-510`
-- [x] SFP-11 Entrada absoluta, com `..` ou glob: ignorada com aviso que a cita: `test/unit/folders.test.ts:12`, `test/integration/suite.cjs:802-805`
-- [x] Premissa "Entrada que não existe: aparece quando a pasta for criada" (`spec.md:37`, SFP-06): `suite.cjs:1319-1323`, HW morre em `:1322`
+- [x] SFP-10 Project with everything hidden: node with no children and a message with the hidden count: `test/integration/suite.cjs:508-510`
+- [x] SFP-11 Absolute entry, with `..` or a glob: ignored with a warning that quotes it: `test/unit/folders.test.ts:12`, `test/integration/suite.cjs:802-805`
+- [x] Assumption "Entry that does not exist: shows up when the folder is created" (`spec.md:37`, SFP-06): `suite.cjs:1319-1323`, HW dies at `:1322`
 
 ---
 
 ## Gate Check
 
-- **Gate command**: `npm run typecheck && npm test && npm run test:integration` (a integração pelo desktop oculto)
-- **Typecheck**: exit 0 (scratch em 0de28fe)
-- **Unit**: 68 aprovados, 0 reprovados, 0 pulados
-- **Integration**: 63/63 em `suite.cjs`, 1/1 em `startup.cjs`, 1/1 em `multiroot.cjs` (exit 0, execução 1 da iteração 2)
-- **Test count before feature**: 67 unit + 66 integration (63 + 1 + 2, em 2c7b475)
-- **Test count after feature**: 62 unit + 63 integration (61 + 1 + 1) do SFP, em 1cec99c. Em 0de28fe: 68 unit e 63 + 1 + 1, com 6 unit e 2 integration do eye-on-every-spec
-- **Delta do SFP**: -5 unit, -3 integration. No unit saíram 6 testes de `parseExclude`, e o SF-02 em qualquer profundidade virou dois. Na integração saíram 7 EXC em `suite.cjs` e o EXC-05 em `multiroot.cjs`. O SF-02 virou dois, e entraram 4 testes SFP novos. Tudo o que saiu é do `tlcSpecs.exclude` (SFP-04). As correções só somaram asserções
-- **Skipped tests**: nenhum
-- **Failures**: nenhuma
+- **Gate command**: `npm run typecheck && npm test && npm run test:integration` (integration on the hidden desktop)
+- **Typecheck**: exit 0 (scratch at 0de28fe)
+- **Unit**: 68 passed, 0 failed, 0 skipped
+- **Integration**: 63/63 in `suite.cjs`, 1/1 in `startup.cjs`, 1/1 in `multiroot.cjs` (exit 0, run 1 of iteration 2)
+- **Test count before feature**: 67 unit + 66 integration (63 + 1 + 2, at 2c7b475)
+- **Test count after feature**: 62 unit + 63 integration (61 + 1 + 1) for SFP, at 1cec99c. At 0de28fe: 68 unit and 63 + 1 + 1, including 6 unit and 2 integration from eye-on-every-spec
+- **SFP delta**: -5 unit, -3 integration. In unit, the 6 `parseExclude` tests were removed, and SF-02 at any depth split in two. In integration, 7 EXC in `suite.cjs` and EXC-05 in `multiroot.cjs` were removed. SF-02 split in two, and 4 new SFP tests were added. Everything removed belongs to `tlcSpecs.exclude` (SFP-04). The fixes only added assertions
+- **Skipped tests**: none
+- **Failures**: none
 
-Os números do autor conferem.
+The author's numbers check out.
 
 ---
 
 ## Fix Plans (if issues found)
 
-### Fix 1: isolar o watcher da pasta criada depois (SFP-06, HW) - fechado
+### Fix 1: isolate the watcher for the folder created later (SFP-06, HW) - closed
 
-- **Resolução**: 81406a3 (T5). `treeSettled()` (`test/integration/suite.cjs:1299-1307`) espera 1500 ms sem recarregar a árvore. O SFP-05/06 o chama logo depois de `setFolders` (`:1319`), antes de afirmar `['.specs']` e criar a pasta.
-- **Done when conferido**: HW falha no SFP-05/06, no `waitForRoots` depois da escrita (`:1322`). O gate segue verde, então o watcher real mostra a pasta.
+- **Resolution**: 81406a3 (T5). `treeSettled()` (`test/integration/suite.cjs:1299-1307`) waits 1500 ms without a tree reload. SFP-05/06 calls it right after `setFolders` (`:1319`), before asserting `['.specs']` and creating the folder.
+- **Done when checked**: HW fails in SFP-05/06, at the `waitForRoots` after the write (`:1322`). The gate stays green, so the real watcher shows the folder.
 
-### Fix 2: isolar a regra do início do caminho no core (U1, U2) - fechado
+### Fix 2: isolate the start-of-path rule in the core (U1, U2) - closed
 
-- **Resolução**: 87b3b5a (T6). `test/unit/folders.test.ts:33` e `:44` afirmam `[]` só com pastas aninhadas. `:35` afirma `[]` para `.specs-old`.
-- **Done when conferido**: U1 falha em `:33` e `:44`, U2 em `:35`, no `npm test`. O gate segue verde.
+- **Resolution**: 87b3b5a (T6). `test/unit/folders.test.ts:33` and `:44` assert `[]` with only nested folders. `:35` asserts `[]` for `.specs-old`.
+- **Done when checked**: U1 fails at `:33` and `:44`, U2 at `:35`, in `npm test`. The gate stays green.
 
 ---
 
 ## Requirement Traceability Update
 
-O Verifier não altera `spec.md`. Status propostos:
+The Verifier does not change `spec.md`. Proposed statuses:
 
 | Requirement | Previous Status | New Status |
 | ----------- | --------------- | ---------- |
-| SFP-01 | Implementing (a iteração 1 propôs Needs Fix) | ✅ Verified |
-| SFP-02 | Implementing (a iteração 1 propôs Needs Fix) | ✅ Verified |
+| SFP-01 | Implementing (iteration 1 proposed Needs Fix) | ✅ Verified |
+| SFP-02 | Implementing (iteration 1 proposed Needs Fix) | ✅ Verified |
 | SFP-03 | Implementing | ✅ Verified |
 | SFP-04 | Implementing | ✅ Verified |
 | SFP-05 | Implementing | ✅ Verified |
-| SFP-06 | Implementing (a iteração 1 propôs Needs Fix) | ✅ Verified |
+| SFP-06 | Implementing (iteration 1 proposed Needs Fix) | ✅ Verified |
 | SFP-07 | Implementing | ✅ Verified |
 | SFP-08 | Implementing | ✅ Verified |
 | SFP-09 | Implementing | ✅ Verified |
@@ -193,12 +193,12 @@ O Verifier não altera `spec.md`. Status propostos:
 
 **Overall**: ✅ Ready
 
-**Spec-anchored check**: 11/11 requisitos batem com a spec e discriminam. 0 gaps de precisão
-**Sensor**: 15/15 mortas
-**Gate**: typecheck ok, 68 unit, 63 + 1 + 1 integration, 0 falhas
+**Spec-anchored check**: 11/11 requirements match the spec and discriminate. 0 precision gaps
+**Sensor**: 15/15 killed
+**Gate**: typecheck ok, 68 unit, 63 + 1 + 1 integration, 0 failures
 
-**What works**: a extensão lê só as pastas listadas, a partir da raiz de cada pasta do workspace. `.specs` em subpastas fica fora das árvores, da aba, da lateral, da barra de status e do painel Problemas. Um caminho com subpastas lê só aquela pasta, também no multi-root. `tlcSpecs.exclude` saiu do manifesto, e um valor antigo não muda nada. Uma entrada sem pasta não gera projeto nem aviso. Quando a pasta nasce depois, o watcher a mostra sem recarregar a janela. As duas árvores mostram o nó da pasta com um projeto só, com o nome do workspace, e "nome · caminho" com duas pastas. Com tudo oculto o nó fica sem filhos. Entradas inválidas seguem recusadas com um aviso cada.
+**What works**: the extension reads only the listed folders, from the root of each workspace folder. `.specs` in subfolders stays out of the trees, the editor tab, the side bar, the status bar and the Problems panel. A path with subfolders reads only that folder, in multi-root too. `tlcSpecs.exclude` is gone from the manifest, and an old value changes nothing. An entry without a folder produces no project and no warning. When the folder appears later, the watcher shows it without reloading the window. Both trees show the folder node with a single project, named after the workspace, and "name · path" with two folders. With everything hidden the node has no children. Invalid entries are still rejected, with one warning each.
 
-**Issues found**: nenhum que bloqueie. O texto inteiro do aviso segue sem teste, e não é requisito (nota 5).
+**Issues found**: none blocking. The full warning text is still untested, and it is not a requirement (note 5).
 
-**Next steps**: atualizar os status do `spec.md` para Verified. Rodar o teste independente da spec com o usuário (UAT).
+**Next steps**: update the statuses in `spec.md` to Verified. Run the spec's independent test with the user (UAT).

@@ -16,9 +16,9 @@ type Node =
   | { kind: 'issue'; loaded: LoadedProject; issue: Issue };
 
 const LESSON_GROUP: Record<LessonStatus, { label: string; icon: string; hint: string }> = {
-  confirmed: { label: 'Confirmadas', icon: 'verified', hint: 'Carregadas como guia em Specify/Design' },
-  candidate: { label: 'Candidatas', icon: 'eye', hint: 'Em observação — ainda não usadas como guia' },
-  quarantined: { label: 'Em quarentena', icon: 'circle-slash', hint: 'Falharam quando aplicadas — ignoradas' },
+  confirmed: { label: 'Confirmed', icon: 'verified', hint: 'Loaded as guidance in Specify/Design' },
+  candidate: { label: 'Candidates', icon: 'eye', hint: 'Under observation — not used as guidance yet' },
+  quarantined: { label: 'Quarantined', icon: 'circle-slash', hint: 'Failed when applied — ignored' },
 };
 
 export class ProjectTree implements vscode.TreeDataProvider<Node> {
@@ -47,12 +47,12 @@ export class ProjectTree implements vscode.TreeDataProvider<Node> {
         if (!h) return [];
         const fields: [string, string, string][] = [
           ['Feature', h.feature, 'symbol-folder'],
-          ['Fase / Task', h.phaseTask, 'location'],
-          ['Concluídas', h.completed, 'pass'],
-          ['Em progresso', h.inProgress, 'edit'],
-          ['Próximo passo', h.nextStep, 'arrow-right'],
-          ['Bloqueios', h.blockers, 'circle-slash'],
-          ['Não commitados', h.uncommitted, 'diff'],
+          ['Phase / Task', h.phaseTask, 'location'],
+          ['Completed', h.completed, 'pass'],
+          ['In progress', h.inProgress, 'edit'],
+          ['Next step', h.nextStep, 'arrow-right'],
+          ['Blockers', h.blockers, 'circle-slash'],
+          ['Uncommitted', h.uncommitted, 'diff'],
           ['Branch', h.branch, 'git-branch'],
         ];
         return fields.filter(([, v]) => v).map(([label, value, icon]) => ({ kind: 'field', loaded, label, value, line: h.line, icon }));
@@ -89,7 +89,7 @@ export class ProjectTree implements vscode.TreeDataProvider<Node> {
         const item = new vscode.TreeItem('Handoff', C.Expanded);
         item.iconPath = new vscode.ThemeIcon('debug-pause');
         item.description = [h.feature, h.phaseTask].filter(Boolean).join(' · ');
-        item.tooltip = 'Snapshot da última pausa (STATE.md › ## Handoff). É uma hipótese — a skill reconcilia com o git ao retomar.';
+        item.tooltip = 'Snapshot of the last pause (STATE.md › ## Handoff). It is a hypothesis — the skill reconciles it with git on resume.';
         item.command = previewFileCommand(pid, 'STATE.md');
         return item;
       }
@@ -97,16 +97,16 @@ export class ProjectTree implements vscode.TreeDataProvider<Node> {
         const item = new vscode.TreeItem(node.label, C.None);
         item.description = node.value;
         item.tooltip = `${node.label}: ${node.value}`;
-        const blocked = node.label === 'Bloqueios' && !/^(none|nenhum|-|n\/a)\.?$/i.test(node.value);
+        const blocked = node.label === 'Blockers' && !/^(none|nenhum|-|n\/a)\.?$/i.test(node.value);
         item.iconPath = new vscode.ThemeIcon(node.icon, blocked ? new vscode.ThemeColor('list.warningForeground') : undefined);
         item.command = previewFileCommand(pid, 'STATE.md');
         return item;
       }
       case 'decisions': {
         const all = p.state?.decisions ?? [];
-        const item = new vscode.TreeItem('Decisões (AD-NNN)', C.Collapsed);
+        const item = new vscode.TreeItem('Decisions (AD-NNN)', C.Collapsed);
         item.iconPath = new vscode.ThemeIcon('law');
-        item.description = `${all.filter((d) => d.active).length} ativa(s) · ${all.length} no total`;
+        item.description = `${all.filter((d) => d.active).length} active · ${all.length} total`;
         return item;
       }
       case 'decision': {
@@ -118,10 +118,10 @@ export class ProjectTree implements vscode.TreeDataProvider<Node> {
         md.appendMarkdown(`**${d.id}** ${d.active ? '' : `_(${d.status})_`}\n\n`);
         md.appendText(d.decision + '\n\n');
         for (const [k, v] of [
-          ['Motivo', d.reason],
+          ['Reason', d.reason],
           ['Trade-off', d.tradeoff],
-          ['Escopo', d.scope],
-          ['Data', d.date],
+          ['Scope', d.scope],
+          ['Date', d.date],
           ['Status', d.status],
         ]) {
           if (v) md.appendMarkdown(`- **${k}:** `).appendText(v + '\n');
@@ -132,10 +132,10 @@ export class ProjectTree implements vscode.TreeDataProvider<Node> {
       }
       case 'lessons': {
         const c = (s: LessonStatus) => p.lessons.filter((l) => l.status === s).length;
-        const item = new vscode.TreeItem('Lições', C.Collapsed);
+        const item = new vscode.TreeItem('Lessons', C.Collapsed);
         item.iconPath = new vscode.ThemeIcon('mortar-board');
-        item.description = `${c('confirmed')} confirmada(s) · ${c('candidate')} candidata(s)`;
-        item.tooltip = 'Camada de lições da skill (.specs/lessons.json) — gerada a partir de falhas do Verifier.';
+        item.description = `${c('confirmed')} confirmed · ${c('candidate')} candidate(s)`;
+        item.tooltip = 'The skill\'s lessons layer (.specs/lessons.json) — built from Verifier failures.';
         item.command = previewFileCommand(pid, 'LESSONS.md');
         return item;
       }
@@ -151,12 +151,12 @@ export class ProjectTree implements vscode.TreeDataProvider<Node> {
         const l = node.lesson;
         const item = new vscode.TreeItem(`${l.id}: ${l.text}`, C.None);
         item.description = [l.scope, `×${l.recurrence}`].filter(Boolean).join(' · ');
-        item.tooltip = `${l.text}\n\nSinal: ${l.signal}\nFeatures: ${l.features.join(', ') || '-'}\nRecorrência: ${l.recurrence} · Prejudicial: ${l.harmful}\nÚltima vez: ${l.lastSeen || '-'}`;
+        item.tooltip = `${l.text}\n\nSignal: ${l.signal}\nFeatures: ${l.features.join(', ') || '-'}\nRecurrence: ${l.recurrence} · Harmful: ${l.harmful}\nLast seen: ${l.lastSeen || '-'}`;
         item.command = previewFileCommand(pid, 'LESSONS.md');
         return item;
       }
       case 'issues': {
-        const item = new vscode.TreeItem('Avisos do projeto', C.Expanded);
+        const item = new vscode.TreeItem('Project issues', C.Expanded);
         item.iconPath = new vscode.ThemeIcon('warning', new vscode.ThemeColor('list.warningForeground'));
         item.description = `${p.issues.length}`;
         return item;

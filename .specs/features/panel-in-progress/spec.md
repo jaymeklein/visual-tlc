@@ -2,12 +2,12 @@
 
 ## Problem Statement
 
-O painel mostra todas as features, inclusive as concluídas, que ficam na coluna Concluídas. Num projeto com várias features entregues, esses cards ocupam o quadro e disputam espaço com o que ainda está em andamento. Na barra lateral estreita, o quadro vira uma lista longa. A opção "Ocultar concluídas" já existe, mas começa desmarcada. Quando é marcada, a coluna some e deixa uma faixa vazia à direita do quadro.
+The Dashboard shows every feature, including the completed ones, which sit in the Completed column. In a project with many delivered features, those cards fill the board and compete for space with what is still in progress. In the narrow side bar, the board turns into a long list. The "Hide Completed" option already exists, but it starts unchecked. When it is checked, the column disappears and leaves an empty strip on the right of the board.
 
 ## Goals
 
-- [x] O painel abre mostrando só as features que não estão concluídas
-- [x] As concluídas continuam a um clique, na opção "Ocultar concluídas"
+- [x] The Dashboard opens showing only the features that are not completed
+- [x] The completed features stay one click away, in the "Hide Completed" option
 
 ## Out of Scope
 
@@ -15,10 +15,10 @@ Explicitly excluded. Documented to prevent scope creep.
 
 | Feature     | Reason         |
 | ----------- | -------------- |
-| Configuração para escolher o padrão | O pedido é mudar o padrão. A opção no painel continua mostrando as concluídas |
-| Esconder concluídas nas árvores Features e Projeto | O pedido é sobre o painel |
-| Esconder tasks concluídas no detalhe de uma feature | Descartado pelo usuário em 2026-09-29 |
-| Lembrar a escolha entre uma aba e a próxima | A opção guarda a escolha como já guarda hoje. Uma aba nova começa com o padrão |
+| Setting to choose the default | The request is to change the default. The option in the Dashboard still shows the completed features |
+| Hide completed features in the Features and Project trees | The request is about the Dashboard |
+| Hide completed tasks in a feature's detail | Dropped by the user on 2026-09-29 |
+| Remember the choice from one editor tab to the next | The option keeps the choice as it already does today. A new editor tab starts with the default |
 
 ---
 
@@ -28,15 +28,15 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Assumption / decision | Chosen default  | Rationale | Confirmed? |
 | --------------------- | --------------- | --------- | ---------- |
-| O que é "concluída" | Feature verificada com PASS, a mesma regra da coluna Concluídas e do bloco Concluídas do resumo | É a regra que o painel já usa | y (2026-09-29) |
-| O que some | Os cards das concluídas e a coluna Concluídas | O usuário escolheu esconder as features concluídas e a coluna | y (2026-09-29) |
-| Superfícies | Painel na aba e na barra lateral | As duas desenham a mesma página | n |
-| Largura do quadro sem a coluna Concluídas | As cinco etapas dividem a largura, com 200px no mínimo cada | A faixa vazia de hoje desperdiça um sexto do quadro | n |
-| Resumo | O bloco "Concluídas" continua contando as concluídas | Mostra que elas existem sem mostrar os cards | n |
-| SIDE-09 (sidebar-dashboard) | As seis etapas lado a lado passam a valer com a opção desmarcada. Com a opção marcada, que é o padrão, são cinco | Esta feature muda o padrão que o SIDE-09 supunha | n |
-| Medida em VS Code real | Os testes de integração medem o quadro de cinco etapas. As seis etapas ficam cobertas pelos testes do render e da folha de estilo | Os testes de integração não conseguem clicar na opção dentro da webview | n |
-| Busca | Com a opção marcada, a busca não encontra features concluídas | A busca filtra o que está no quadro, como hoje | n |
-| Dimensões implícitas | Remaining dimensions N/A for this scope | Estado de tela local à webview: sem persistência nova, chamadas externas, auth ou concorrência | n |
+| What "completed" means | A feature verified with PASS, the same rule as the Completed column and the Completed tile in the summary | It is the rule the Dashboard already uses | y (2026-09-29) |
+| What disappears | The cards of the completed features and the Completed column | The user chose to hide the completed features and the column | y (2026-09-29) |
+| Surfaces | Dashboard in the editor tab and in the side bar | Both render the same page | n |
+| Board width without the Completed column | The five stages share the width, with at least 200px each | Today's empty strip wastes a sixth of the board | n |
+| Summary | The "Completed" tile still counts the completed features | It shows they exist without showing the cards | n |
+| SIDE-09 (sidebar-dashboard) | The six stages side by side now apply with the option unchecked. With the option checked, which is the default, there are five | This feature changes the default that SIDE-09 assumed | n |
+| Measured in real VS Code | The integration tests measure the five-stage board. The six stages are covered by the render and stylesheet tests | The integration tests cannot click the option inside the webview | n |
+| Search | With the option checked, search does not find completed features | Search filters what is on the board, as today | n |
+| Implicit dimensions | Remaining dimensions N/A for this scope | Screen state local to the webview: no new persistence, external calls, auth or concurrency | n |
 
 **Open questions:** none - all resolved or logged above.
 
@@ -44,28 +44,28 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 ## User Stories
 
-### P1: Ver só o que está em andamento ⭐ MVP
+### P1: See only what is in progress ⭐ MVP
 
-**User Story**: Como quem acompanha as specs pelo painel, quero que ele abra só com as features em andamento, para ver o que falta sem passar pelas entregues.
+**User Story**: As someone who follows the specs in the Dashboard, I want it to open with only the features in progress, so I can see what is left without going through the delivered ones.
 
-**Why P1**: É o pedido.
+**Why P1**: It is the request.
 
 **Acceptance Criteria**:
 
-1. WHEN o painel abre, na aba ou na barra lateral, THEN a extensão SHALL mostrar a opção "Ocultar concluídas" marcada
-2. WHILE a opção "Ocultar concluídas" está marcada the extensão SHALL deixar fora do quadro os cards das features verificadas com PASS e a coluna Concluídas
-3. WHILE a opção "Ocultar concluídas" está marcada e o painel tem 700px ou mais the extensão SHALL mostrar as cinco etapas lado a lado, sem espaço reservado à coluna Concluídas
-4. WHEN o usuário desmarca a opção "Ocultar concluídas" THEN a extensão SHALL mostrar a coluna Concluídas com os cards das features verificadas com PASS, e as seis etapas lado a lado
+1. WHEN the Dashboard opens, in the editor tab or in the side bar, THEN the extension SHALL show the "Hide Completed" option checked
+2. WHILE the "Hide Completed" option is checked the extension SHALL leave off the board the cards of the features verified with PASS and the Completed column
+3. WHILE the "Hide Completed" option is checked and the Dashboard is 700px wide or more the extension SHALL show the five stages side by side, with no space reserved for the Completed column
+4. WHEN the user unchecks the "Hide Completed" option THEN the extension SHALL show the Completed column with the cards of the features verified with PASS, and the six stages side by side
 
-> Desde `hidden-specs` (HID-01 a HID-04), a caixa "Ocultar concluídas" é um olho no topo do painel. A caixa marcada é o olho fechado, que também esconde as specs ocultadas à mão. Desmarcar a caixa é abrir o olho.
+> Since `hidden-specs` (HID-01 to HID-04), the "Hide Completed" checkbox is an eye at the top of the Dashboard. The checked box is the closed eye, which also hides the specs hidden by hand. Unchecking the box is opening the eye.
 
-**Independent Test**: Abrir o painel em aba neste repositório. As features com `validation.md` em PASS não aparecem no quadro, e não há coluna Concluídas. Desmarcar "Ocultar concluídas" traz a coluna e os cards.
+**Independent Test**: Open the Dashboard in an editor tab in this repository. The features with `validation.md` at PASS do not appear on the board, and there is no Completed column. Unchecking "Hide Completed" brings back the column and the cards.
 
 ---
 
 ## Edge Cases
 
-- WHEN uma feature concluída é aberta no painel pela árvore Features ou por uma notificação THEN a extensão SHALL mostrar o detalhe dela, mesmo com a opção marcada
+- WHEN a completed feature is opened in the Dashboard from the Features tree or from a notification THEN the extension SHALL show its detail, even with the option checked
 
 ---
 
@@ -73,19 +73,19 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Requirement ID | Story       | Phase  | Status  |
 | -------------- | ----------- | ------ | ------- |
-| PNL-01 | P1: Ver só o que está em andamento | Execute | Verified |
-| PNL-02 | P1: Ver só o que está em andamento | Execute | Verified |
-| PNL-03 | P1: Ver só o que está em andamento | Execute | Verified |
-| PNL-04 | P1: Ver só o que está em andamento | Execute | Verified |
-| PNL-05 | Edge case: detalhe de uma concluída | Execute | Verified |
+| PNL-01 | P1: See only what is in progress | Execute | Verified |
+| PNL-02 | P1: See only what is in progress | Execute | Verified |
+| PNL-03 | P1: See only what is in progress | Execute | Verified |
+| PNL-04 | P1: See only what is in progress | Execute | Verified |
+| PNL-05 | Edge case: detail of a completed feature | Execute | Verified |
 
-**ID format:** `PNL-NN`, na ordem dos critérios acima.
+**ID format:** `PNL-NN`, in the order of the criteria above.
 
-**Coverage:** 5 total, 5 verificados; escopo Medium (passos listados na execução, sem `tasks.md`).
+**Coverage:** 5 total, 5 verified; Medium scope (steps listed during execution, no `tasks.md`).
 
 ---
 
 ## Success Criteria
 
-- [x] Ao abrir o painel, nenhuma feature verificada com PASS aparece no quadro
-- [x] Os testes unitários e de integração atuais continuam passando, com os do SIDE-09 ajustados ao novo padrão
+- [x] When the Dashboard opens, no feature verified with PASS appears on the board
+- [x] The current unit and integration tests keep passing, with the SIDE-09 ones adjusted to the new default

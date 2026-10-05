@@ -2,11 +2,11 @@ import * as vscode from 'vscode';
 import type { Severity } from '../core/types.ts';
 
 export function openFileCommand(projectId: string, file: string, line?: number): vscode.Command {
-  return { command: 'tlcSpecs.openFile', title: 'Abrir arquivo', arguments: [projectId, file, line] };
+  return { command: 'tlcSpecs.openFile', title: 'Open File', arguments: [projectId, file, line] };
 }
 
 export function previewFileCommand(projectId: string, file: string): vscode.Command {
-  return { command: 'tlcSpecs.previewFile', title: 'Visualizar', arguments: [projectId, file] };
+  return { command: 'tlcSpecs.previewFile', title: 'Preview Markdown', arguments: [projectId, file] };
 }
 
 export function issueIcon(severity: Severity): vscode.ThemeIcon {
@@ -33,7 +33,7 @@ export async function openUri(uri: vscode.Uri, line?: number): Promise<void> {
       return;
     }
   } catch {
-    void vscode.window.showWarningMessage(`Arquivo não encontrado: ${vscode.workspace.asRelativePath(uri)}`);
+    void vscode.window.showWarningMessage(`File not found: ${vscode.workspace.asRelativePath(uri)}`);
     return;
   }
   const pos = new vscode.Position(Math.max(0, (line ?? 1) - 1), 0);

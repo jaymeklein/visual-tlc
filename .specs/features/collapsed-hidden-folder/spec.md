@@ -2,12 +2,12 @@
 
 ## Problem Statement
 
-Quando o usuário abre o olho do título de Features, a pasta com todas as specs ocultas volta expandida, com todas as specs listadas. Numa pasta com muitas specs concluídas, a árvore enche de linhas que o usuário não pediu para ver. Ele quer decidir quais pastas abrir.
+When the user opens the Features title eye, the folder whose specs are all hidden comes back expanded, with every spec listed. In a folder with many completed specs, the tree fills with rows the user did not ask to see. The user wants to decide which folders to open.
 
 ## Goals
 
-- [x] Ao abrir o olho de Features, a pasta com todas as specs ocultas volta recolhida
-- [x] As pastas com spec à vista continuam como estavam, expandidas por padrão
+- [x] When the Features eye opens, the folder whose specs are all hidden comes back collapsed
+- [x] Folders with a spec in view stay as they were, expanded by default
 
 ## Out of Scope
 
@@ -15,9 +15,9 @@ Explicitly excluded. Documented to prevent scope creep.
 
 | Feature     | Reason         |
 | ----------- | -------------- |
-| Lembrar, entre uma abertura do olho e a próxima, quais pastas ocultas o usuário abriu | O pedido é que a pasta volte fechada. Com o olho fechado, ela sai da árvore |
-| Recolher as pastas com spec à vista | O pedido é sobre a pasta que volta com o olho |
-| Mudar a árvore Projeto ou o painel | Continuam fora, como no hidden-folder |
+| Remember, from one eye opening to the next, which hidden folders the user opened | The request is for the folder to come back closed. With the eye closed, it leaves the tree |
+| Collapse the folders with a spec in view | The request is about the folder the eye brings back |
+| Change the Project tree or the Dashboard | Still out of scope, as in hidden-folder |
 
 ---
 
@@ -27,12 +27,12 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Assumption / decision | Chosen default  | Rationale | Confirmed? |
 | --------------------- | --------------- | --------- | ---------- |
-| Pasta que volta com o olho aberto | Recolhida, sem listar as specs | Pedido do usuário: "seria melhor que ela viesse fechada" | y (2026-09-30) |
-| Pastas com spec à vista | Continuam como estavam: expandidas, ou recolhidas, se estavam recolhidas (pelo usuário, ou porque o olho as trouxe recolhidas). Vale também para a pasta à vista só por uma concluída mantida à vista pelo olho dela | O pedido é sobre a pasta que o olho traz de volta, e decidir quais pastas abrir fica com o usuário. O nó continua na árvore, e o VS Code mantém o estado que o usuário deu | n |
-| Cada abertura do olho | A pasta oculta volta recolhida toda vez, mesmo que o usuário a tenha aberto antes | O pedido é que ela venha fechada ao abrir o olho | n |
-| Como a pasta volta recolhida | O nó da pasta oculta é dado como recolhido, com o mesmo `id` de sempre | Medido no VS Code instalado em 2026-09-30: o VS Code usa o estado dado só num nó que ele acrescenta à árvore. Com o olho fechado, a pasta sai da árvore, e o VS Code esquece se estava aberta. Um `id` novo a cada abertura foi testado e não é preciso | n |
-| Ocultar ou desocultar uma spec com o olho aberto | O nó da pasta fica aberto ou fechado como estava (CHF-04) | O nó continua na árvore, e o VS Code mantém o estado que o usuário deu, mesmo que a extensão mude o estado dado. Decidir quais pastas abrir fica com o usuário | n |
-| Dimensões implícitas | Remaining dimensions N/A for this scope | Só muda o estado inicial de um nó da árvore. Sem persistência, chamadas externas ou concorrência | n |
+| Folder that comes back with the eye open | Collapsed, without listing the specs | User request: "it would be better if it came back closed" | y (2026-09-30) |
+| Folders with a spec in view | Stay as they were: expanded, or collapsed if they were collapsed (by the user, or because the eye brought them back collapsed). Also applies to a folder in view only through a completed spec kept in view by its eye | The request is about the folder the eye brings back, and deciding which folders to open is up to the user. The node stays in the tree, and VS Code keeps the state the user gave it | n |
+| Each eye opening | The hidden folder comes back collapsed every time, even if the user opened it before | The request is for it to come back closed when the eye opens | n |
+| How the folder comes back collapsed | The hidden folder's node is given as collapsed, with the same `id` as always | Measured in the installed VS Code on 2026-09-30: VS Code uses the given state only on a node it adds to the tree. With the eye closed, the folder leaves the tree, and VS Code forgets whether it was open. A new `id` on each opening was tested and is not needed | n |
+| Hiding or unhiding a spec with the eye open | The folder's node stays open or closed as it was (CHF-04) | The node stays in the tree, and VS Code keeps the state the user gave it, even if the extension changes the given state. Deciding which folders to open is up to the user | n |
+| Implicit dimensions | Remaining dimensions N/A for this scope | Only the initial state of a tree node changes. No persistence, external calls or concurrency | n |
 
 **Open questions:** none - all resolved or logged above.
 
@@ -40,26 +40,26 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 ## User Stories
 
-### P1: Abrir o olho sem expandir as pastas ocultas ⭐ MVP
+### P1: Open the eye without expanding the hidden folders ⭐ MVP
 
-**User Story**: Como quem acompanha as specs pela árvore Features, quero que o olho do título traga as pastas ocultas recolhidas, para abrir só as que me interessam.
+**User Story**: As someone who follows the specs in the Features tree, I want the title eye to bring hidden folders back collapsed, so I can open only the ones I care about.
 
-**Why P1**: É o pedido.
+**Why P1**: It is the request.
 
 **Acceptance Criteria**:
 
-1. WHEN o usuário abre o olho do título de Features THEN a árvore SHALL mostrar recolhido, sem listar as specs dele, o nó de toda pasta com todas as specs ocultas
-2. WHEN o usuário abre o olho do título de Features THEN a árvore SHALL manter o nó de toda pasta com alguma spec à vista como estava: expandido, com as specs listadas, ou recolhido, se estava recolhido
-3. WHEN o usuário expande o nó recolhido de uma pasta oculta THEN a árvore SHALL listar todas as specs da pasta, cada uma com a descrição terminada em "· oculta"
-4. WHILE o olho do título de Features está aberto, WHEN o usuário oculta ou desoculta uma spec, the árvore SHALL manter o nó da pasta dela aberto ou fechado como estava
+1. WHEN the user opens the Features title eye THEN the tree SHALL show collapsed, without listing its specs, the node of every folder whose specs are all hidden
+2. WHEN the user opens the Features title eye THEN the tree SHALL keep the node of every folder with some spec in view as it was: expanded, with the specs listed, or collapsed, if it was collapsed
+3. WHEN the user expands the collapsed node of a hidden folder THEN the tree SHALL list all of the folder's specs, each with a description ending in "· hidden"
+4. WHILE the Features title eye is open, WHEN the user hides or unhides a spec, the tree SHALL keep its folder's node open or closed as it was
 
-**Independent Test**: Neste repositório, com todas as specs concluídas, abrir o olho do título de Features. O nó `visual-tlc` aparece recolhido. Expandir o nó mostra as specs, todas com "· oculta".
+**Independent Test**: In this repository, with every spec completed, open the Features title eye. The `visual-tlc` node appears collapsed. Expanding the node shows the specs, all with "· hidden".
 
 ---
 
 ## Edge Cases
 
-- WHEN o usuário fecha e abre de novo o olho do título THEN a árvore SHALL mostrar recolhido outra vez o nó da pasta com todas as specs ocultas
+- WHEN the user closes and reopens the title eye THEN the tree SHALL again show collapsed the node of the folder whose specs are all hidden
 
 ---
 
@@ -67,19 +67,19 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Requirement ID | Story       | Phase  | Status  |
 | -------------- | ----------- | ------ | ------- |
-| CHF-01 | P1: Abrir o olho sem expandir as pastas ocultas | Execute | Verified |
-| CHF-02 | P1: Abrir o olho sem expandir as pastas ocultas | Execute | Verified |
-| CHF-03 | P1: Abrir o olho sem expandir as pastas ocultas | Execute | Verified |
-| CHF-04 | P1: Abrir o olho sem expandir as pastas ocultas | Execute | Verified |
-| CHF-05 | Edge case: abrir o olho de novo | Execute | Verified |
+| CHF-01 | P1: Open the eye without expanding the hidden folders | Execute | Verified |
+| CHF-02 | P1: Open the eye without expanding the hidden folders | Execute | Verified |
+| CHF-03 | P1: Open the eye without expanding the hidden folders | Execute | Verified |
+| CHF-04 | P1: Open the eye without expanding the hidden folders | Execute | Verified |
+| CHF-05 | Edge case: reopening the eye | Execute | Verified |
 
-**ID format:** `CHF-NN`, na ordem dos critérios acima.
+**ID format:** `CHF-NN`, in the order of the criteria above.
 
-**Coverage:** 5 total, 5 verificados.
+**Coverage:** 5 total, 5 verified.
 
 ---
 
 ## Success Criteria
 
-- [x] Um teste no VS Code real mostra que, ao abrir o olho, o VS Code não pede as specs da pasta oculta, e pede as da pasta à vista
-- [ ] Neste repositório, depois de reinstalar a extensão e recarregar a janela, o olho do título traz o nó `visual-tlc` recolhido
+- [x] A test in real VS Code shows that, when the eye opens, VS Code does not request the hidden folder's specs, but does request those of the folder in view
+- [ ] In this repository, after reinstalling the extension and reloading the window, the title eye brings the `visual-tlc` node back collapsed

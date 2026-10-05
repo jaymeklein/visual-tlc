@@ -2,12 +2,12 @@
 
 ## Problem Statement
 
-Com o olho de Features fechado, uma pasta de specs com todas as specs ocultas continua na árvore, como um nó sem filhos (SFP-10). Neste repositório todas as specs estão concluídas e ocultas, e a árvore mostra só o nó `visual-tlc`, vazio. O nó não leva a nada e sugere que há trabalho ali. Uma pasta sem spec à vista deve sair da árvore, como as specs dela.
+With the Features eye closed, a specs folder whose specs are all hidden stays in the tree as a node with no children (SFP-10). In this repository every spec is completed and hidden, and the tree shows only the empty `visual-tlc` node. The node leads nowhere and suggests there is work there. A folder with no spec in view should leave the tree, like its specs.
 
 ## Goals
 
-- [x] Com o olho de Features fechado, a árvore mostra só as pastas com alguma spec à vista
-- [x] Com o olho aberto, a pasta com todas as specs ocultas volta, marcada como oculta
+- [x] With the Features eye closed, the tree shows only the folders that have some spec in view
+- [x] With the eye open, the folder whose specs are all hidden comes back, marked as hidden
 
 ## Out of Scope
 
@@ -15,9 +15,9 @@ Explicitly excluded. Documented to prevent scope creep.
 
 | Feature     | Reason         |
 | ----------- | -------------- |
-| Esconder a pasta na árvore Projeto | Resposta do usuário: "Só na árvore Features". Handoff, decisões e lições não são specs |
-| Esconder a seção do projeto no painel | Resposta do usuário. Com um projeto só, o painel nem mostra o nome da pasta |
-| Olho próprio na linha da pasta | A pasta segue as specs dela. O pedido não é ocultar uma pasta à mão |
+| Hide the folder in the Project tree | User answer: "Only in the Features tree". Handoff, decisions and lessons are not specs |
+| Hide the project section in the Dashboard | User answer. With a single project, the Dashboard does not even show the folder name |
+| A separate eye on the folder row | The folder follows its specs. The request is not to hide a folder by hand |
 
 ---
 
@@ -27,13 +27,13 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Assumption / decision | Chosen default  | Rationale | Confirmed? |
 | --------------------- | --------------- | --------- | ---------- |
-| Onde a pasta some | Só na árvore Features, com o olho do título fechado | Resposta do usuário: "Só na árvore Features" | y (2026-09-30) |
-| Pasta com o olho aberto | Aparece, com a descrição "N feature(s) · oculta" | Resposta do usuário: "Com '· oculta'". Segue o EYE-08 | y (2026-09-30) |
-| SFP-10 e a linha de vários projetos do hidden-specs | Substituídos: com o olho fechado, a pasta com todas as specs ocultas sai da árvore, com um projeto ou com vários | É o pedido: "a pasta principal deveria também estar oculta" | y (2026-09-30) |
-| Quando uma pasta está oculta | Quando tem ao menos uma spec e todas estão ocultas, por qualquer regra do EYE-06 | "Não há mais trabalho a ser feito" | n |
-| Pasta sem spec nenhuma, só com `STATE.md` ou lições | Continua na árvore, com "0 feature(s)" | Não tem nada oculto. Sem ela, a árvore ficaria vazia e sem mensagem, porque a mensagem só aparece com alguma feature | n |
-| Todas as pastas ocultas | Lista vazia, com a mensagem do HID-08 e sem a tela de boas-vindas, como no HID-16 antes do SFP-10 | A mensagem conta as ocultas e mostra que elas existem | n |
-| Dimensões implícitas | Remaining dimensions N/A for this scope | Regra de exibição sobre as escolhas que o hidden-specs e o eye-on-every-spec já guardam. Sem persistência nova | n |
+| Where the folder disappears | Only in the Features tree, with the title eye closed | User answer: "Only in the Features tree" | y (2026-09-30) |
+| Folder with the eye open | Shown, with the description "N feature(s) · hidden" | User answer: "With '· hidden'". Follows EYE-08 | y (2026-09-30) |
+| SFP-10 and the multi-project row of hidden-specs | Superseded: with the eye closed, the folder whose specs are all hidden leaves the tree, with one project or several | It is the request: "the main folder should also be hidden" | y (2026-09-30) |
+| When a folder is hidden | When it has at least one spec and all of them are hidden, by any EYE-06 rule | "There is no more work to be done" | n |
+| Folder with no spec at all, only `STATE.md` or lessons | Stays in the tree, with "0 feature(s)" | Nothing in it is hidden. Without it, the tree would be empty with no message, because the message only appears when there is some feature | n |
+| All folders hidden | Empty list, with the HID-08 message and no welcome view, as in HID-16 before SFP-10 | The message counts the hidden specs and shows that they exist | n |
+| Implicit dimensions | Remaining dimensions N/A for this scope | A display rule over the choices that hidden-specs and eye-on-every-spec already store. No new persistence | n |
 
 **Open questions:** none - all resolved or logged above.
 
@@ -41,29 +41,29 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 ## User Stories
 
-### P1: Tirar da árvore a pasta sem spec à vista ⭐ MVP
+### P1: Remove folders with no spec in view from the tree ⭐ MVP
 
-**User Story**: Como quem acompanha as specs pela árvore Features, quero que uma pasta com todas as specs ocultas saia da árvore com o olho fechado, para ver só as pastas que têm trabalho.
+**User Story**: As someone who follows the specs in the Features tree, I want a folder whose specs are all hidden to leave the tree when the eye is closed, so I see only the folders that have work.
 
-**Why P1**: É o pedido.
+**Why P1**: It is the request.
 
 **Acceptance Criteria**:
 
-1. WHILE o olho de Features está fechado the árvore Features SHALL deixar fora o nó de toda pasta de specs que tem ao menos uma spec e todas ocultas
-2. WHEN o usuário oculta, pelo olho da linha dela, a última spec à vista de uma pasta THEN a árvore Features SHALL tirar o nó da pasta
-3. WHEN o usuário desoculta, pelo card no painel, uma spec de uma pasta que está fora da árvore THEN a árvore Features SHALL mostrar de novo o nó da pasta, com essa spec dentro
-4. WHILE o olho de Features está fechado e nenhuma pasta tem spec à vista the view Features SHALL mostrar a lista vazia com a mensagem "T feature(s) · D concluída(s) · H oculta(s)", sem a tela de boas-vindas
-5. WHILE o olho de Features está aberto the nó de uma pasta com todas as specs ocultas SHALL ter a descrição "N feature(s) · oculta", com N o total de specs da pasta
-6. WHILE uma pasta tem ao menos uma spec à vista the nó dela SHALL ter a descrição "N feature(s)", sem "· oculta", com o olho de Features aberto ou fechado
-7. WHILE todas as specs de uma pasta estão ocultas the árvore Projeto SHALL mostrar o nó dessa pasta, com Handoff, decisões e lições dentro
+1. WHILE the Features eye is closed the Features tree SHALL leave out the node of every specs folder that has at least one spec and all of them hidden
+2. WHEN the user hides, through its row's eye, the last spec in view in a folder THEN the Features tree SHALL remove the folder's node
+3. WHEN the user unhides, through the card in the Dashboard, a spec of a folder that is out of the tree THEN the Features tree SHALL show the folder's node again, with that spec inside
+4. WHILE the Features eye is closed and no folder has a spec in view the Features view SHALL show the empty list with the message "T feature(s) · D completed · H hidden", without the welcome view
+5. WHILE the Features eye is open the node of a folder whose specs are all hidden SHALL have the description "N feature(s) · hidden", with N the folder's total number of specs
+6. WHILE a folder has at least one spec in view its node SHALL have the description "N feature(s)", without "· hidden", with the Features eye open or closed
+7. WHILE all specs of a folder are hidden the Project tree SHALL show that folder's node, with Handoff, decisions and lessons inside
 
-**Independent Test**: Neste repositório, com todas as specs concluídas e o olho de Features fechado, a árvore fica vazia e a mensagem diz "T feature(s) · T concluída(s) · T oculta(s)". Abrir o olho mostra o nó `visual-tlc` com "T feature(s) · oculta".
+**Independent Test**: In this repository, with every spec completed and the Features eye closed, the tree is empty and the message says "T feature(s) · T completed · T hidden". Opening the eye shows the `visual-tlc` node with "T feature(s) · hidden".
 
 ---
 
 ## Edge Cases
 
-- IF uma pasta de specs não tem spec nenhuma THEN a árvore Features SHALL mostrar o nó dela com a descrição "0 feature(s)", com o olho fechado
+- IF a specs folder has no spec at all THEN the Features tree SHALL show its node with the description "0 feature(s)", with the eye closed
 
 ---
 
@@ -71,22 +71,22 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Requirement ID | Story       | Phase  | Status  |
 | -------------- | ----------- | ------ | ------- |
-| HFD-01 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Verified |
-| HFD-02 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Verified |
-| HFD-03 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Verified |
-| HFD-04 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Verified |
-| HFD-05 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Verified |
-| HFD-06 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Verified |
-| HFD-07 | P1: Tirar da árvore a pasta sem spec à vista | Execute | Verified |
-| HFD-08 | Edge case: pasta sem spec | Execute | Verified |
+| HFD-01 | P1: Remove folders with no spec in view from the tree | Execute | Verified |
+| HFD-02 | P1: Remove folders with no spec in view from the tree | Execute | Verified |
+| HFD-03 | P1: Remove folders with no spec in view from the tree | Execute | Verified |
+| HFD-04 | P1: Remove folders with no spec in view from the tree | Execute | Verified |
+| HFD-05 | P1: Remove folders with no spec in view from the tree | Execute | Verified |
+| HFD-06 | P1: Remove folders with no spec in view from the tree | Execute | Verified |
+| HFD-07 | P1: Remove folders with no spec in view from the tree | Execute | Verified |
+| HFD-08 | Edge case: folder with no spec | Execute | Verified |
 
-**ID format:** `HFD-NN`, na ordem dos critérios acima.
+**ID format:** `HFD-NN`, in the order of the criteria above.
 
-**Coverage:** 8 total, 8 verificados.
+**Coverage:** 8 total, 8 verified.
 
 ---
 
 ## Success Criteria
 
-- [ ] Neste repositório, com todas as specs concluídas, a árvore Features abre vazia, só com a mensagem das ocultas
-- [x] O teste do SFP-10/HID-16, que exigia o nó sem filhos, é reescrito para a regra nova, sem perder as asserções da mensagem e da tela de boas-vindas
+- [ ] In this repository, with every spec completed, the Features tree opens empty, with only the hidden-specs message
+- [x] The SFP-10/HID-16 test, which required the node with no children, is rewritten for the new rule, without losing the assertions on the message and the welcome view

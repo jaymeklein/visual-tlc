@@ -2,11 +2,11 @@
 
 ## Validation: panel-in-progress - PASS ✅
 
-Aprovada. Os cinco requisitos batem com a spec. O Fix 1 fechou o gatilho do PNL-04. O mapeamento de "Ocultar concluídas" para `hideDone` agora fica em `actionFor` (`src/webview/render.ts:598-599`), e `test/unit/webview.test.ts:247-248` fixa os dois sentidos. As cinco formas novas do U10 (V1-V5) morrem ali. O Follow-up 1 também fechou. O SIDE-09 agora mede o lado sem rolagem, e o mutante I4 (quadro 40px mais largo) morre só na medida nova (`test/integration/suite.cjs:616`). A suíte da iteração 1 não o pegaria. Restam vivos cinco mutantes na cola de DOM de `src/webview/main.ts`, que nenhum teste do projeto alcança. Não bloqueiam: o Fix 1 aceitou esse limite, e a cola tem o mesmo formato já aceito para os outros controles da página. Ficam no Follow-up 3, opcional, e no teste manual da spec.
+Passed. All five requirements match the spec. Fix 1 closed the PNL-04 trigger. The mapping from "Hide Completed" to `hideDone` now lives in `actionFor` (`src/webview/render.ts:598-599`), and `test/unit/webview.test.ts:247-248` pins both directions. The five new forms of U10 (V1-V5) die there. Follow-up 1 is closed too. SIDE-09 now measures the no-scroll side, and mutant I4 (board 40px wider) dies only on the new measurement (`test/integration/suite.cjs:616`). The iteration 1 suite would not catch it. Five mutants remain alive in the DOM glue of `src/webview/main.ts`, which no test in the project reaches. They do not block: Fix 1 accepted that limit, and the glue has the same shape already accepted for the page's other controls. They are left to Follow-up 3, optional, and to the spec's manual test.
 
 **Date**: 2026-09-29
 **Spec**: `.specs/features/panel-in-progress/spec.md`
-**Diff range**: c7cb8dc..c76e51f (branch `feat/panel-in-progress`). Sensor focado em 67b57da..c76e51f
+**Diff range**: c7cb8dc..c76e51f (branch `feat/panel-in-progress`). Sensor focused on 67b57da..c76e51f
 **Verifier**: independent sub-agent (author ≠ verifier)
 **Iteration**: 2 of max 3
 
@@ -16,24 +16,24 @@ Aprovada. Os cinco requisitos batem com a spec. O Fix 1 fechou o gatilho do PNL-
 
 | Iteration | HEAD | Outcome | Notes |
 | --------- | ---- | ------- | ----- |
-| 1 | af81a85 | Reprovada | 4/5 requisitos batem. PNL-04 sem evidência do gatilho: U10 vivo em `src/webview/main.ts:108`. 12/13 mortas. Overflow do SIDE-09 medido só do lado com rolagem (Follow-up 1). 5 execuções do VS Code |
-| 2 | c76e51f | Aprovada | 5/5 requisitos batem. Fix 1 fechado: V1-V5 mortas em `test/unit/webview.test.ts:247-248`. Follow-up 1 fechado: I4 morre só em `test/integration/suite.cjs:616`. Follow-up 2 fechado. 18/24 mortas. As 6 vivas são U7 (equivalente) e 5 na cola de DOM, aceitas (Follow-up 3). 3 execuções do VS Code |
+| 1 | af81a85 | Failed | 4/5 requirements match. PNL-04 without evidence for the trigger: U10 alive at `src/webview/main.ts:108`. 12/13 killed. SIDE-09 overflow measured only on the scrolling side (Follow-up 1). 5 VS Code runs |
+| 2 | c76e51f | Passed | 5/5 requirements match. Fix 1 closed: V1-V5 killed at `test/unit/webview.test.ts:247-248`. Follow-up 1 closed: I4 dies only at `test/integration/suite.cjs:616`. Follow-up 2 closed. 18/24 killed. The 6 alive are U7 (equivalent) and 5 in the DOM glue, accepted (Follow-up 3). 3 VS Code runs |
 
 ---
 
 ## Task Completion
 
-Escopo Medium, sem `tasks.md`. Os passos são os commits do diff.
+Medium scope, without `tasks.md`. The steps are the commits in the diff.
 
 | Task | Status | Notes |
 | ---- | ------ | ----- |
-| Especificar panel-in-progress | ✅ Done | c05b7b5. Nota no SIDE-09 em `.specs/features/sidebar-dashboard/spec.md:79` |
-| Dividir o quadro em cinco etapas sem Concluídas | ✅ Done | 8b4c2ef. Classe `five-stages` em `src/webview/render.ts:173`, regra em `media/dashboard.css:131` |
-| Ocultar as concluídas por padrão | ✅ Done | 398f29c. `DEFAULT_VIEW` em `src/webview/render.ts:24`, usado em `src/webview/main.ts:16`. `boardWidth` em `src/core/protocol.ts:27` e `src/webview/main.ts:68` |
-| Descrever o painel no README | ✅ Done | af81a85. `README.md:26` |
-| Fix 1: gatilho do PNL-04 em `actionFor` | ✅ Done | 13276d0. Caso `toggle-done` em `src/webview/render.ts:598-599`. Listener em `src/webview/main.ts:108`. Teste em `test/unit/webview.test.ts:246-249` |
-| Follow-up 1: lado sem rolagem do SIDE-09 | ✅ Done | bf1386c. `test/integration/suite.cjs:604-620` |
-| Follow-up 2: Independent Test do SIDE-09 | ✅ Done | c76e51f. `.specs/features/sidebar-dashboard/spec.md:81` diz cinco colunas com a opção marcada e seis com ela desmarcada |
+| Specify panel-in-progress | ✅ Done | c05b7b5. Note on SIDE-09 at `.specs/features/sidebar-dashboard/spec.md:79` |
+| Split the board into five stages without Completed | ✅ Done | 8b4c2ef. `five-stages` class at `src/webview/render.ts:173`, rule at `media/dashboard.css:131` |
+| Hide completed features by default | ✅ Done | 398f29c. `DEFAULT_VIEW` at `src/webview/render.ts:24`, used at `src/webview/main.ts:16`. `boardWidth` at `src/core/protocol.ts:27` and `src/webview/main.ts:68` |
+| Describe the Dashboard in the README | ✅ Done | af81a85. `README.md:26` |
+| Fix 1: PNL-04 trigger in `actionFor` | ✅ Done | 13276d0. `toggle-done` case at `src/webview/render.ts:598-599`. Listener at `src/webview/main.ts:108`. Test at `test/unit/webview.test.ts:246-249` |
+| Follow-up 1: SIDE-09 no-scroll side | ✅ Done | bf1386c. `test/integration/suite.cjs:604-620` |
+| Follow-up 2: SIDE-09 Independent Test | ✅ Done | c76e51f. `.specs/features/sidebar-dashboard/spec.md:81` says five columns with the option checked and six with it unchecked |
 
 ---
 
@@ -41,97 +41,97 @@ Escopo Medium, sem `tasks.md`. Os passos são os commits do diff.
 
 | Criterion (WHEN X THEN Y) | Spec-defined outcome | `file:line` + assertion | Result |
 | ------------------------- | -------------------- | ----------------------- | ------ |
-| PNL-01 WHEN o painel abre, na aba ou na barra lateral, THEN mostra "Ocultar concluídas" marcada | caixa marcada ao abrir, com o efeito dela no quadro | **Render:** `test/unit/webview.test.ts:230` renderiza `DEFAULT_VIEW`. `:232` - `assert.equal(toggle.length, 1)`. `:233` - `assert.ok('checked' in toggle[0].attrs)`. `:235` - cards iguais às abertas. `:236` - `assert.ok(!html.includes('aria-label="Concluídas"'))`. **Aba no VS Code:** `test/integration/suite.cjs:584` - `assert.equal(report.columns, 5)`. `:589` - `deepEqual([...report.cards].sort(), boardNames(...))`, com `:583` exigindo uma concluída no fixture. **Barra lateral:** `:648` (SIDE-01) e `:716` (SIDE-03/04), cards iguais a `boardNames` | ✅ PASS (nota 1) |
-| PNL-02 WHILE a opção está marcada, fora do quadro os cards das verificadas com PASS e a coluna Concluídas | cards = features não concluídas, sem coluna Concluídas | **Render:** `test/unit/webview.test.ts:203` exige concluída no sample. `:204` - `deepEqual(b.cards, b.open)`. `:205` - `deepEqual(b.labels, ['Spec', 'Design', 'Tasks', 'Execução', 'Verificação'])`. **VS Code:** `test/integration/suite.cjs:589`. `:588` - `assert.equal(report.emptyStages, emptyStagesOf(...))`, contado em cinco etapas. Barra lateral: `:648`, `:668`, `:670` - `deepEqual(onCards(created), inModel())`, `:674`, `:681`, `:686-687`, `:716`, `:749`. Aba e barra lateral em `docs/specs`: `:847-848` | ✅ PASS |
-| PNL-03 WHILE a opção está marcada e o painel tem 700px ou mais, cinco etapas lado a lado, sem espaço reservado à Concluídas | grid de 5 trilhas a partir de 700px | **VS Code:** `test/integration/suite.cjs:582` - `report.width >= 700`. `:584` - `assert.equal(report.columns, 5)` a 1092px. `:600` - 5 a 792px. Novo: `:614` - `assert.ok(wide.boardWidth >= 1040)`, `:615` - `assert.equal(wide.columns, 5)`, `:616` - `assert.equal(wide.overflow, false)`, a 1140px com o quadro de 1077px. As cinco trilhas cabem sem rolagem lateral. **Render:** `test/unit/webview.test.ts:206` - `assert.equal(b.boardClass, 'board five-stages')`. **Folha de estilo:** `:221-223` - `repeat(5, minmax(200px, 1fr))` depois da regra base. `:225` - antes da regra estreita | ✅ PASS (nota 3) |
-| PNL-04 WHEN o usuário desmarca a opção THEN mostra a coluna Concluídas com os cards PASS, e as seis etapas lado a lado | 6 colunas, Concluídas com as concluídas | **Gatilho:** `test/unit/webview.test.ts:247` - `assert.deepEqual(actionFor({ action: 'toggle-done', checked: 'false' }), { view: { hideDone: false } })`. `:248` - marcar de novo dá `{ view: { hideDone: true } }`. Os dois sem mensagem para o host. **Resultado:** `:211` - `deepEqual(b.doneCards, b.complete)`. `:212` - todos os cards. `:213` - `assert.equal(b.labels.length, 6)`. `:214` - `assert.equal(b.labels[5], 'Concluídas')`. `:215` - `assert.equal(b.boardClass, 'board')`. Regra base de 6 trilhas: `:180` e `:220` | ✅ PASS (nota 2) |
-| PNL-05 WHEN uma feature concluída é aberta pela árvore Features ou por uma notificação THEN mostra o detalhe dela, mesmo com a opção marcada | detalhe da concluída com `hideDone: true` | **Render:** `test/unit/webview.test.ts:242` - `DEFAULT_VIEW` com a concluída selecionada. `:243` - `assert.ok(html.includes('<div class="detail-title">…<span class="mono">${done.name}</span>'))`. **VS Code:** `test/integration/suite.cjs:894` - `assert.equal(feature('billing-invoices').health, 'complete')`. `:895-896` - `showFeature` e `r.detail === 'billing-invoices'` na barra lateral | ✅ PASS (nota 4) |
+| PNL-01 WHEN the Dashboard opens, in the editor tab or in the side bar, THEN shows "Hide Completed" checked | box checked on open, with its effect on the board | **Render:** `test/unit/webview.test.ts:230` renders `DEFAULT_VIEW`. `:232` - `assert.equal(toggle.length, 1)`. `:233` - `assert.ok('checked' in toggle[0].attrs)`. `:235` - cards equal to the open features. `:236` - `assert.ok(!html.includes('aria-label="Completed"'))`. **Editor tab in VS Code:** `test/integration/suite.cjs:584` - `assert.equal(report.columns, 5)`. `:589` - `deepEqual([...report.cards].sort(), boardNames(...))`, with `:583` requiring a completed feature in the fixture. **Side bar:** `:648` (SIDE-01) and `:716` (SIDE-03/04), cards equal to `boardNames` | ✅ PASS (note 1) |
+| PNL-02 WHILE the option is checked, the cards of the features verified with PASS and the Completed column stay off the board | cards = non-completed features, no Completed column | **Render:** `test/unit/webview.test.ts:203` requires a completed feature in the sample. `:204` - `deepEqual(b.cards, b.open)`. `:205` - `deepEqual(b.labels, ['Spec', 'Design', 'Tasks', 'Execution', 'Verification'])`. **VS Code:** `test/integration/suite.cjs:589`. `:588` - `assert.equal(report.emptyStages, emptyStagesOf(...))`, counted over five stages. Side bar: `:648`, `:668`, `:670` - `deepEqual(onCards(created), inModel())`, `:674`, `:681`, `:686-687`, `:716`, `:749`. Editor tab and side bar in `docs/specs`: `:847-848` | ✅ PASS |
+| PNL-03 WHILE the option is checked and the Dashboard is 700px or wider, five stages side by side, with no space reserved for Completed | 5-track grid from 700px | **VS Code:** `test/integration/suite.cjs:582` - `report.width >= 700`. `:584` - `assert.equal(report.columns, 5)` at 1092px. `:600` - 5 at 792px. New: `:614` - `assert.ok(wide.boardWidth >= 1040)`, `:615` - `assert.equal(wide.columns, 5)`, `:616` - `assert.equal(wide.overflow, false)`, at 1140px with a 1077px board. The five tracks fit without horizontal scrolling. **Render:** `test/unit/webview.test.ts:206` - `assert.equal(b.boardClass, 'board five-stages')`. **Stylesheet:** `:221-223` - `repeat(5, minmax(200px, 1fr))` after the base rule. `:225` - before the narrow rule | ✅ PASS (note 3) |
+| PNL-04 WHEN the user unchecks the option THEN shows the Completed column with the PASS cards, and the six stages side by side | 6 columns, Completed with the completed features | **Trigger:** `test/unit/webview.test.ts:247` - `assert.deepEqual(actionFor({ action: 'toggle-done', checked: 'false' }), { view: { hideDone: false } })`. `:248` - checking again gives `{ view: { hideDone: true } }`. Both without a message to the host. **Result:** `:211` - `deepEqual(b.doneCards, b.complete)`. `:212` - all cards. `:213` - `assert.equal(b.labels.length, 6)`. `:214` - `assert.equal(b.labels[5], 'Completed')`. `:215` - `assert.equal(b.boardClass, 'board')`. 6-track base rule: `:180` and `:220` | ✅ PASS (note 2) |
+| PNL-05 WHEN a completed feature is opened from the Features tree or from a notification THEN shows its detail, even with the option checked | detail of the completed feature with `hideDone: true` | **Render:** `test/unit/webview.test.ts:242` - `DEFAULT_VIEW` with the completed feature selected. `:243` - `assert.ok(html.includes('<div class="detail-title">…<span class="mono">${done.name}</span>'))`. **VS Code:** `test/integration/suite.cjs:894` - `assert.equal(feature('billing-invoices').health, 'complete')`. `:895-896` - `showFeature` and `r.detail === 'billing-invoices'` in the side bar | ✅ PASS (note 4) |
 
-**Status**: ✅ All ACs covered. 5 de 5 batem com a spec. Nenhum gap de precisão.
+**Status**: ✅ All ACs covered. 5 of 5 match the spec. No precision gap.
 
-### Notas
+### Notes
 
-1. **PNL-01, a caixa marcada.** Igual à iteração 1. A integração não lê a caixa. Na aba e na barra lateral, o quadro real abre com 5 colunas e sem concluídas, e só `hideDone: true` produz esses dois efeitos (`src/webview/render.ts:166`, `:173`, `:176`). O mesmo `hideDone` escreve `checked` na caixa (`render.ts:146`), e o unit fixa isso em `test/unit/webview.test.ts:233` (U9 morre). I1 prova que `src/webview/main.ts:16` usa o padrão nas duas superfícies. Aceito.
-2. **PNL-04, o gatilho.** A cadeia agora tem três elos. O listener de `change` repassa o estado da caixa: `activate(el, { ...el.dataset, checked: String(el.checked) })` (`src/webview/main.ts:108`). `activate` passa esses dados a `actionFor` e aplica o `view` devolvido (`:75-78`). `actionFor` decide: `hideDone: d.checked === 'true'` (`src/webview/render.ts:598-599`). A decisão, que era o risco da iteração 1, está sob teste nos dois sentidos, e V1-V5 morrem. A cola que sobra só lê o DOM e chama `activate`. Tem o formato do clique, que também chega a `activate(el)` sem teste (`src/webview/main.ts:82-86`), com `actionFor` testado no lugar (NAV-12, `test/unit/webview.test.ts:112-113`). A spec registra que a integração não clica dentro da webview (`spec.md:37`). G1, G2, G3a, G4 e G5 vivem nessa cola, e G3b morre no typecheck. Aceito, como previa o Fix 1. O teste manual da spec (`spec.md:60`) cobre essa cola à mão, e o Follow-up 3 registra a opção mais forte.
-3. **SIDE-09/PNL-03, overflow dos dois lados.** A iteração 1 mediu a aba só com o quadro abaixo de 1040px. Agora há três medidas. Aba sozinha: quadro de 1029px, overflow esperado true (`test/integration/suite.cjs:587`). Ao lado da barra lateral: 729px, true (`:601`). Sem a barra lateral e a barra de atividades: aba de 1140px, quadro de 1077px, overflow esperado false (`:614-616`). As medidas vêm das mensagens de falha das execuções 2 e 3. I4 muda o `gap` do quadro de 10px para 20px (`media/dashboard.css:129`). Cinco trilhas passam a pedir 1080px, e o quadro de 1077px rola de lado. `:587` e `:601` passam com I4, e só `:616` falha. O unit também deixa I4 passar, porque `test/unit/webview.test.ts:180` e `:220` fixam só o começo da regra base. Sem a medida nova, I4 sobreviveria. I5, um overflow sempre ligado, falha primeiro em `:616` e depois no SIDE-03/04 (`:715`).
-4. **PNL-05, a notificação.** Igual à iteração 1. A integração abre uma concluída pela árvore (`showFeature`, `test/integration/suite.cjs:895`). O aviso "foi verificada e concluída" (`src/ui/notifier.ts:31`) chama o mesmo `dashboard.showSide` que a árvore (`src/extension.ts:47`, `:58`). O botão da notificação está provado no SIDE-02 (`suite.cjs:873`). Aceito.
-5. **Premissas sem teste com a opção marcada.** Igual à iteração 1. O bloco Concluídas do resumo conta todas as concluídas (`src/webview/render.ts:129`, `:155`), e a busca não acha concluídas (`:166`). Nenhuma das duas é critério.
+1. **PNL-01, the checked box.** Same as iteration 1. The integration tests do not read the box. In the editor tab and the side bar, the real board opens with 5 columns and no completed features, and only `hideDone: true` produces those two effects (`src/webview/render.ts:166`, `:173`, `:176`). The same `hideDone` writes `checked` on the box (`render.ts:146`), and the unit test pins that at `test/unit/webview.test.ts:233` (U9 dies). I1 proves that `src/webview/main.ts:16` uses the default on both surfaces. Accepted.
+2. **PNL-04, the trigger.** The chain now has three links. The `change` listener forwards the box state: `activate(el, { ...el.dataset, checked: String(el.checked) })` (`src/webview/main.ts:108`). `activate` passes that data to `actionFor` and applies the returned `view` (`:75-78`). `actionFor` decides: `hideDone: d.checked === 'true'` (`src/webview/render.ts:598-599`). The decision, which was the iteration 1 risk, is under test in both directions, and V1-V5 die. The remaining glue only reads the DOM and calls `activate`. It has the shape of the click, which also reaches `activate(el)` without a test (`src/webview/main.ts:82-86`), with `actionFor` tested instead (NAV-12, `test/unit/webview.test.ts:112-113`). The spec records that the integration tests do not click inside the webview (`spec.md:37`). G1, G2, G3a, G4 and G5 live in that glue, and G3b dies at typecheck. Accepted, as Fix 1 anticipated. The spec's manual test (`spec.md:60`) covers that glue by hand, and Follow-up 3 records the stronger option.
+3. **SIDE-09/PNL-03, overflow on both sides.** Iteration 1 measured the editor tab only with the board below 1040px. Now there are three measurements. Editor tab alone: 1029px board, overflow expected true (`test/integration/suite.cjs:587`). Next to the side bar: 729px, true (`:601`). Without the side bar and the activity bar: 1140px editor tab, 1077px board, overflow expected false (`:614-616`). The measurements come from the failure messages of runs 2 and 3. I4 changes the board `gap` from 10px to 20px (`media/dashboard.css:129`). Five tracks then need 1080px, and the 1077px board scrolls sideways. `:587` and `:601` pass with I4, and only `:616` fails. The unit tests also let I4 through, because `test/unit/webview.test.ts:180` and `:220` pin only the start of the base rule. Without the new measurement, I4 would survive. I5, an always-on overflow, fails first at `:616` and then in SIDE-03/04 (`:715`).
+4. **PNL-05, the notification.** Same as iteration 1. The integration test opens a completed feature from the tree (`showFeature`, `test/integration/suite.cjs:895`). The "was verified and completed" notification (`src/ui/notifier.ts:31`) calls the same `dashboard.showSide` as the tree (`src/extension.ts:47`, `:58`). The notification button is proven in SIDE-02 (`suite.cjs:873`). Accepted.
+5. **Assumptions without a test with the option checked.** Same as iteration 1. The Completed tile in the summary counts all completed features (`src/webview/render.ts:129`, `:155`), and search does not find completed features (`:166`). Neither is a criterion.
 
 ---
 
 ## Discrimination Sensor
 
-Scratch: `git worktree add --detach <scratchpad>/wt-pnl2 HEAD` (c76e51f), com junction de `node_modules` para o real. Uma mutação por vez, aplicada por troca de texto exata e desfeita com `git checkout` no scratch antes da seguinte. `git status --porcelain` do scratch vazio depois de cada reversão. Sem `git stash`. Cada mutação rodou com `npm run typecheck` e `npm test`. I4 e I5 passaram nos dois e foram para a integração, pelo desktop oculto, uma por vez, em primeiro plano.
+Scratch: `git worktree add --detach <scratchpad>/wt-pnl2 HEAD` (c76e51f), with a `node_modules` junction to the real one. One mutation at a time, applied by exact text replacement and undone with `git checkout` in the scratch before the next. The scratch's `git status --porcelain` empty after each revert. No `git stash`. Each mutation ran with `npm run typecheck` and `npm test`. I4 and I5 passed both and went on to integration, on the hidden desktop, one at a time, in the foreground.
 
-### Mutações novas (67b57da..c76e51f)
-
-| Mutation | File:line | Description | Killed? |
-| -------- | --------- | ----------- | ------- |
-| V1 | `src/webview/render.ts:599` | U10 na forma nova: `hideDone: d.checked !== 'true'` | ✅ Killed (`test/unit/webview.test.ts:247`) |
-| V2 | `src/webview/render.ts:599` | `hideDone: true` fixo: desmarcar não traz as concluídas | ✅ Killed (`:247`) |
-| V3 | `src/webview/render.ts:599` | `hideDone: false` fixo: marcar não esconde de novo | ✅ Killed (`:248`) |
-| V4 | `src/webview/render.ts:599` | `hideDone: Boolean(d.checked)`: a string `'false'` conta como verdadeira | ✅ Killed (`:247`) |
-| V5 | `src/webview/render.ts:598-599` | Caso `toggle-done` removido: cai no `default` e devolve `{}` | ✅ Killed (`:247`) |
-| G3b | `src/webview/main.ts:75-76` | `activate` perde o parâmetro `data` e usa `el.dataset` | ✅ Killed (typecheck: `main.ts(108,57): error TS2554: Expected 1 arguments, but got 2`) |
-| I4 | `media/dashboard.css:129` | `gap` do quadro de 10px para 20px: cinco trilhas pedem 1080px | ✅ Killed (`test/integration/suite.cjs:616`, "overflow with a 1077px board in a 1140px tab". 52/53 + 1/1 + 2/2) |
-| I5 | `src/webview/main.ts:69` | Overflow sempre ligado: `root.scrollWidth >= root.clientWidth` | ✅ Killed (`suite.cjs:616`, a mesma mensagem, e `:715` no SIDE-03/04. 51/53 + 1/1 + 2/2) |
-| G1 | `src/webview/main.ts:108` | `checked: String(!el.checked)`: a cola inverte a caixa | ⚠️ Survived, aceita (nota 2, Follow-up 3) |
-| G2 | `src/webview/main.ts:106-109` | Listener de `change` removido: a caixa não faz nada | ⚠️ Survived, aceita |
-| G3a | `src/webview/main.ts:76` | `activate` ignora `data` e lê `el.dataset`: `checked` some, e a opção nunca volta a esconder | ⚠️ Survived, aceita |
-| G4 | `src/webview/main.ts:108` | O listener chama `activate(el)` sem `checked`: mesmo efeito de G3a | ⚠️ Survived, aceita |
-| G5 | `src/webview/main.ts:84` | O clique deixa de ignorar `toggle-done` | ⚠️ Survived, aceita. Linha anterior à feature (c7cb8dc:83) |
-
-### Mutações da iteração 1, rodadas de novo em c76e51f
+### New mutations (67b57da..c76e51f)
 
 | Mutation | File:line | Description | Killed? |
 | -------- | --------- | ----------- | ------- |
-| U1 | `src/webview/render.ts:24` | `DEFAULT_VIEW.hideDone` volta a `false` | ✅ Killed (`test/unit/webview.test.ts:233`) |
-| U2 | `src/webview/render.ts:173` | Classe `five-stages` nunca aplicada | ✅ Killed (`:206`) |
-| U3 | `src/webview/render.ts:173` | Classe `five-stages` sempre aplicada | ✅ Killed (`:215`) |
-| U4 | `media/dashboard.css:131` | Regra de cinco etapas removida | ✅ Killed (`:223`) |
-| U5 | `media/dashboard.css:131` | `.board.five-stages`, com especificidade maior que a regra estreita | ✅ Killed (`:223`) |
-| U6 | `src/webview/render.ts:176` | Coluna Concluídas vazia volta ao quadro com a opção marcada | ✅ Killed (`:205`, `:236`) |
-| U7b | `src/webview/render.ts:166`, `:176` | Cards concluídos vazam para o quadro com a opção marcada | ✅ Killed (`:204`, `:235`) |
-| U8 | `src/webview/render.ts:105` | Detalhe recusa uma concluída com a opção marcada | ✅ Killed (`:243`) |
-| U9 | `src/webview/render.ts:146` | Caixa nunca marcada | ✅ Killed (`:233`) |
-| U11 | `src/webview/main.ts:16` | `main.ts` ignora `DEFAULT_VIEW` | ✅ Killed (typecheck: import órfão, TS6133). Efeito da forma da mutação. A morte que conta é I1 |
-| U7 | `src/webview/render.ts:166` | Tira o termo `hideDone` do filtro | ⚠️ Survived. Equivalente, como na iteração 1: `:176` já pula a coluna `done` |
+| V1 | `src/webview/render.ts:599` | U10 in the new form: `hideDone: d.checked !== 'true'` | ✅ Killed (`test/unit/webview.test.ts:247`) |
+| V2 | `src/webview/render.ts:599` | `hideDone: true` hardcoded: unchecking does not bring the completed features back | ✅ Killed (`:247`) |
+| V3 | `src/webview/render.ts:599` | `hideDone: false` hardcoded: checking does not hide them again | ✅ Killed (`:248`) |
+| V4 | `src/webview/render.ts:599` | `hideDone: Boolean(d.checked)`: the string `'false'` counts as true | ✅ Killed (`:247`) |
+| V5 | `src/webview/render.ts:598-599` | `toggle-done` case removed: falls through to `default` and returns `{}` | ✅ Killed (`:247`) |
+| G3b | `src/webview/main.ts:75-76` | `activate` loses the `data` parameter and uses `el.dataset` | ✅ Killed (typecheck: `main.ts(108,57): error TS2554: Expected 1 arguments, but got 2`) |
+| I4 | `media/dashboard.css:129` | Board `gap` from 10px to 20px: five tracks need 1080px | ✅ Killed (`test/integration/suite.cjs:616`, "overflow with a 1077px board in a 1140px tab". 52/53 + 1/1 + 2/2) |
+| I5 | `src/webview/main.ts:69` | Overflow always on: `root.scrollWidth >= root.clientWidth` | ✅ Killed (`suite.cjs:616`, the same message, and `:715` in SIDE-03/04. 51/53 + 1/1 + 2/2) |
+| G1 | `src/webview/main.ts:108` | `checked: String(!el.checked)`: the glue inverts the box | ⚠️ Survived, accepted (note 2, Follow-up 3) |
+| G2 | `src/webview/main.ts:106-109` | `change` listener removed: the box does nothing | ⚠️ Survived, accepted |
+| G3a | `src/webview/main.ts:76` | `activate` ignores `data` and reads `el.dataset`: `checked` is lost, and the option never hides again | ⚠️ Survived, accepted |
+| G4 | `src/webview/main.ts:108` | The listener calls `activate(el)` without `checked`: same effect as G3a | ⚠️ Survived, accepted |
+| G5 | `src/webview/main.ts:84` | The click stops ignoring `toggle-done` | ⚠️ Survived, accepted. The line predates the feature (c7cb8dc:83) |
 
-### Mutações da iteração 1 mantidas sem nova execução
+### Iteration 1 mutations, rerun at c76e51f
 
-O código e as asserções que as matam não mudaram. Só o número de algumas linhas do `suite.cjs`.
+| Mutation | File:line | Description | Killed? |
+| -------- | --------- | ----------- | ------- |
+| U1 | `src/webview/render.ts:24` | `DEFAULT_VIEW.hideDone` back to `false` | ✅ Killed (`test/unit/webview.test.ts:233`) |
+| U2 | `src/webview/render.ts:173` | `five-stages` class never applied | ✅ Killed (`:206`) |
+| U3 | `src/webview/render.ts:173` | `five-stages` class always applied | ✅ Killed (`:215`) |
+| U4 | `media/dashboard.css:131` | Five-stage rule removed | ✅ Killed (`:223`) |
+| U5 | `media/dashboard.css:131` | `.board.five-stages`, with higher specificity than the narrow rule | ✅ Killed (`:223`) |
+| U6 | `src/webview/render.ts:176` | Empty Completed column back on the board with the option checked | ✅ Killed (`:205`, `:236`) |
+| U7b | `src/webview/render.ts:166`, `:176` | Completed cards leak onto the board with the option checked | ✅ Killed (`:204`, `:235`) |
+| U8 | `src/webview/render.ts:105` | Detail rejects a completed feature with the option checked | ✅ Killed (`:243`) |
+| U9 | `src/webview/render.ts:146` | Box never checked | ✅ Killed (`:233`) |
+| U11 | `src/webview/main.ts:16` | `main.ts` ignores `DEFAULT_VIEW` | ✅ Killed (typecheck: orphan import, TS6133). A side effect of how the mutation was written. The kill that counts is I1 |
+| U7 | `src/webview/render.ts:166` | Removes the `hideDone` term from the filter | ⚠️ Survived. Equivalent, as in iteration 1: `:176` already skips the `done` column |
+
+### Iteration 1 mutations kept without a new run
+
+The code and the assertions that kill them did not change. Only the line numbers of some `suite.cjs` lines did.
 
 | Mutation | File:line | Killed? |
 | -------- | --------- | ------- |
-| I1 | `src/webview/main.ts:16` | ✅ Killed na iteração 1 (`test/integration/suite.cjs:584`, "6 !== 5". Também `:648`, `:668`, `:716`) |
-| I2 | `src/webview/main.ts:16` | ✅ Killed na iteração 1 (`suite.cjs:828`, SIDE-06) |
-| I3 | `src/webview/main.ts:68` | ✅ Killed na iteração 1 (`suite.cjs:587`) |
-| U10 | `src/webview/main.ts:108` (af81a85) | Substituída. A linha mudou. As formas novas são V1-V5, em `actionFor`, e G1, na cola |
+| I1 | `src/webview/main.ts:16` | ✅ Killed in iteration 1 (`test/integration/suite.cjs:584`, "6 !== 5". Also `:648`, `:668`, `:716`) |
+| I2 | `src/webview/main.ts:16` | ✅ Killed in iteration 1 (`suite.cjs:828`, SIDE-06) |
+| I3 | `src/webview/main.ts:68` | ✅ Killed in iteration 1 (`suite.cjs:587`) |
+| U10 | `src/webview/main.ts:108` (af81a85) | Replaced. The line changed. The new forms are V1-V5, in `actionFor`, and G1, in the glue |
 
-**Sensor depth**: lightweight, ampliado. 13 mutações novas no diff do fix, 11 da iteração 1 de novo, 3 da iteração 1 mantidas
-**Result**: 18/24 mortas nesta iteração. As 6 vivas são U7, equivalente, e 5 na cola de DOM, aceitas pela nota 2 - PASS ✅
+**Sensor depth**: lightweight, extended. 13 new mutations in the fix diff, 11 from iteration 1 rerun, 3 from iteration 1 kept
+**Result**: 18/24 killed in this iteration. The 6 alive are U7, equivalent, and 5 in the DOM glue, accepted by note 2 - PASS ✅
 
-G1, G2, G3a, G4 e G5 sobrevivem por construção. O unit não carrega `main.ts`. A integração não dispara eventos de DOM na página: `ToWebview` só leva `state` e `select` (`src/core/protocol.ts:32-34`). Por isso não gastei execução do VS Code com elas. G5 é anterior à feature, mas fica no caminho do gatilho. Pela leitura, com G5 o clique chama `activate(el)` sem `checked` e redesenha a página antes do `change`. O `change` cai num elemento já fora do documento. A opção desmarca, mas nunca volta a marcar.
+G1, G2, G3a, G4 and G5 survive by construction. The unit tests do not load `main.ts`. The integration tests do not fire DOM events on the page: `ToWebview` only carries `state` and `select` (`src/core/protocol.ts:32-34`). So I did not spend VS Code runs on them. G5 predates the feature, but it sits on the trigger path. By reading, with G5 the click calls `activate(el)` without `checked` and redraws the page before the `change`. The `change` lands on an element already out of the document. The option unchecks, but never checks again.
 
-Execuções que abriram o VS Code, das 4 permitidas:
+Runs that opened VS Code, out of the 4 allowed:
 
-| # | Execução | Árvore | Resultado |
+| # | Run | Tree | Result |
 | - | -------- | ------ | --------- |
-| 1 | Gate, sem mutação | scratch (c76e51f) | 53/53 + 1/1 + 2/2 |
-| 2 | I4 | scratch | 52/53 + 1/1 + 2/2. Só o SIDE-09 falha, em `:616` |
-| 3 | I5 | scratch | 51/53 + 1/1 + 2/2. SIDE-09 em `:616` e SIDE-03/04 em `:715` |
+| 1 | Gate, no mutation | scratch (c76e51f) | 53/53 + 1/1 + 2/2 |
+| 2 | I4 | scratch | 52/53 + 1/1 + 2/2. Only SIDE-09 fails, at `:616` |
+| 3 | I5 | scratch | 51/53 + 1/1 + 2/2. SIDE-09 at `:616` and SIDE-03/04 at `:715` |
 
-Foram 3 execuções. Todos os logs mostram a extensão carregada do scratch. O bundle de I5 foi conferido em `dist/webview.js` do scratch. I4 age na folha de estilo, que a webview lê direto de `media/` (`src/ui/dashboard.ts:123`).
+That makes 3 runs. All logs show the extension loaded from the scratch. The I5 bundle was checked in the scratch's `dist/webview.js`. I4 acts on the stylesheet, which the webview reads straight from `media/` (`src/ui/dashboard.ts:123`).
 
-**Limpeza do SIDE-09.** A medida nova muda `workbench.activityBar.location` para `hidden` no escopo Global (`test/integration/suite.cjs:607`). O `finally` restaura o valor com `undefined` e reabre a barra lateral (`:617-620`). É o mesmo estado em que o teste terminava antes: a barra lateral aberta depois de `:593`. Na execução 1 o teste passou, e os 18 casos seguintes do `suite.cjs` também. Na execução 2 o teste falhou dentro do `try`, e os casos seguintes passaram. A limpeza vale nos dois caminhos. `closeSidebar` e o `update` ficam fora do `try` (`:605`, `:607`). Se um deles falhar, nada mudou ainda. O escopo Global não vaza entre execuções: cada suíte usa um `--user-data-dir` temporário, apagado no fim (`test/integration/run.mjs:22`, `:30`, `:36`).
+**SIDE-09 cleanup.** The new measurement sets `workbench.activityBar.location` to `hidden` in the Global scope (`test/integration/suite.cjs:607`). The `finally` restores the value with `undefined` and reopens the side bar (`:617-620`). That is the same state the test ended in before: the side bar open after `:593`. In run 1 the test passed, and so did the 18 following cases in `suite.cjs`. In run 2 the test failed inside the `try`, and the following cases passed. The cleanup holds on both paths. `closeSidebar` and the `update` sit outside the `try` (`:605`, `:607`). If either one fails, nothing has changed yet. The Global scope does not leak between runs: each suite uses a temporary `--user-data-dir`, deleted at the end (`test/integration/run.mjs:22`, `:30`, `:36`).
 
-**Isolamento**: `git status --porcelain` da árvore real vazio antes do sensor e vazio depois. HEAD seguiu em c76e51f, branch `feat/panel-in-progress`, e nada mudou sob a verificação. Junction removida sem recursão (`[System.IO.Directory]::Delete(..., $false)`). `git worktree remove --force` e `git worktree prune`. `git worktree list` mostra só a árvore real. `node_modules` real com 131 entradas antes e depois, `npm ls --depth=0` exit 0.
+**Isolation**: the real tree's `git status --porcelain` empty before the sensor and empty after. HEAD stayed at c76e51f, branch `feat/panel-in-progress`, and nothing changed under the verification. Junction removed without recursion (`[System.IO.Directory]::Delete(..., $false)`). `git worktree remove --force` and `git worktree prune`. `git worktree list` shows only the real tree. Real `node_modules` with 131 entries before and after, `npm ls --depth=0` exit 0.
 
 ---
 
 ## Interactive UAT Results (if performed)
 
-Não executado. O Verifier roda sem usuário. O teste independente da spec (`spec.md:60`) fica para o orquestrador: abrir o painel em aba neste repositório, desmarcar "Ocultar concluídas" e marcar de novo. É a única cobertura da cola de DOM (G1-G5).
+Not performed. The Verifier runs without a user. The spec's independent test (`spec.md:60`) is left for the orchestrator: open the Dashboard in an editor tab in this repository, uncheck "Hide Completed" and check it again. It is the only coverage of the DOM glue (G1-G5).
 
 ---
 
@@ -139,80 +139,80 @@ Não executado. O Verifier roda sem usuário. O teste independente da spec (`spe
 
 | Principle | Status |
 | --------- | ------ |
-| Minimum code | ✅ O Fix 1 soma um caso em `actionFor` (`src/webview/render.ts:598-599`) e troca uma linha do listener. `activate` ganhou um parâmetro com padrão, então os outros chamadores não mudaram |
-| Surgical changes | ✅ 13276d0: `render.ts` +3 -1, `main.ts` +3 -3, um teste. bf1386c: só o SIDE-09, +18. c76e51f: uma linha de spec |
-| No scope creep | ✅ Nada além do Fix 1 e dos dois follow-ups |
-| Matches patterns | ✅ O caso novo segue os outros de `actionFor`, que leem strings de `data-*` (`d.line ? Number(d.line)`, `render.ts:605`). O teste segue o NAV-12/NAV-13 (`test/unit/webview.test.ts:112`, `:138`). A medida nova segue as duas anteriores do SIDE-09, com `waitFor` e `api.refresh()` |
-| Spec-anchored outcome check (asserted values match spec) | ✅ PNL-04 com os dois valores de `hideDone` fixados |
-| Per-layer Coverage Expectation met (domain 1:1 ACs; routes happy+edge+error) | ✅ Render e `actionFor` 1:1 com PNL-01..05. Integração nas duas superfícies e dos dois lados do overflow |
-| Every test maps to a spec requirement - no unclaimed tests | ✅ O teste novo tem PNL-04 no título. A medida nova fica dentro do SIDE-09/PNL-02/PNL-03 |
+| Minimum code | ✅ Fix 1 adds one case to `actionFor` (`src/webview/render.ts:598-599`) and changes one line of the listener. `activate` gained a parameter with a default, so the other callers did not change |
+| Surgical changes | ✅ 13276d0: `render.ts` +3 -1, `main.ts` +3 -3, one test. bf1386c: only SIDE-09, +18. c76e51f: one spec line |
+| No scope creep | ✅ Nothing beyond Fix 1 and the two follow-ups |
+| Matches patterns | ✅ The new case follows the other `actionFor` cases, which read strings from `data-*` (`d.line ? Number(d.line)`, `render.ts:605`). The test follows NAV-12/NAV-13 (`test/unit/webview.test.ts:112`, `:138`). The new measurement follows the two earlier SIDE-09 ones, with `waitFor` and `api.refresh()` |
+| Spec-anchored outcome check (asserted values match spec) | ✅ PNL-04 with both `hideDone` values pinned |
+| Per-layer Coverage Expectation met (domain 1:1 ACs; routes happy+edge+error) | ✅ Render and `actionFor` 1:1 with PNL-01..05. Integration on both surfaces and on both sides of the overflow |
+| Every test maps to a spec requirement - no unclaimed tests | ✅ The new test has PNL-04 in its title. The new measurement sits inside SIDE-09/PNL-02/PNL-03 |
 | Documented guidelines followed: none - strong defaults applied | ✅ |
 
-**Integridade dos testes (67b57da..c76e51f)**: nenhuma linha de teste removida. `test/integration/suite.cjs`: 53 casos, de 173 para 176 asserções. `test/unit/webview.test.ts`: de 13 para 14 testes, de 54 para 56 asserções. Nenhuma asserção antiga mudou. A análise de c7cb8dc..af81a85 da iteração 1 continua valendo: nada ficou mais fraco.
+**Test integrity (67b57da..c76e51f)**: no test line removed. `test/integration/suite.cjs`: 53 cases, from 173 to 176 assertions. `test/unit/webview.test.ts`: from 13 to 14 tests, from 54 to 56 assertions. No old assertion changed. The iteration 1 analysis of c7cb8dc..af81a85 still holds: nothing got weaker.
 
-Observações que não bloqueiam:
+Non-blocking observations:
 
-- A medida nova depende do tamanho da janela de teste. Ela pede uma aba de uns 1103px sem a barra de atividades: 1040px de quadro, mais 48px de padding e 15px de barra de rolagem. Nesta máquina a aba tem 1140px. Numa tela menor, `test/integration/suite.cjs:614` falha com mensagem clara, sem passar em vão.
-- Os valores 1092, 1140, 1029 e 1077 vêm desta máquina. As asserções não os fixam: comparam larguras entre si e com o limite de 1040px.
+- The new measurement depends on the size of the test window. It needs an editor tab of about 1103px without the activity bar: 1040px of board, plus 48px of padding and 15px of scrollbar. On this machine the editor tab is 1140px. On a smaller screen, `test/integration/suite.cjs:614` fails with a clear message, rather than passing vacuously.
+- The values 1092, 1140, 1029 and 1077 come from this machine. The assertions do not pin them: they compare widths with each other and with the 1040px limit.
 
 ---
 
 ## Edge Cases
 
-- [x] PNL-05 Feature concluída aberta pela árvore ou por notificação mostra o detalhe com a opção marcada: `test/unit/webview.test.ts:242-243`, `test/integration/suite.cjs:894-896` (nota 4)
+- [x] PNL-05 A completed feature opened from the tree or from a notification shows its detail with the option checked: `test/unit/webview.test.ts:242-243`, `test/integration/suite.cjs:894-896` (note 4)
 
 ---
 
 ## Gate Check
 
-- **Gate command**: `npm run typecheck && npm test && npm run test:integration` (a integração pelo desktop oculto)
-- **Typecheck**: exit 0 (scratch em c76e51f)
-- **Unit**: 53 aprovados, 0 reprovados, 0 pulados (exit 0)
-- **Integration**: 53/53 em `suite.cjs`, 1/1 em `startup.cjs`, 2/2 em `multiroot.cjs` (exit 0, execução 1)
-- **Test count before feature**: 47 unit + 56 integration (53 + 1 + 2, em c7cb8dc)
+- **Gate command**: `npm run typecheck && npm test && npm run test:integration` (integration on the hidden desktop)
+- **Typecheck**: exit 0 (scratch at c76e51f)
+- **Unit**: 53 passed, 0 failed, 0 skipped (exit 0)
+- **Integration**: 53/53 in `suite.cjs`, 1/1 in `startup.cjs`, 2/2 in `multiroot.cjs` (exit 0, run 1)
+- **Test count before feature**: 47 unit + 56 integration (53 + 1 + 2, at c7cb8dc)
 - **Test count after feature**: 53 unit + 56 integration (53 + 1 + 2)
-- **Delta**: +6 unit. Integração sem caso novo. O SIDE-09 ganhou uma terceira medida
-- **Skipped tests**: nenhum
-- **Failures**: nenhuma
+- **Delta**: +6 unit. No new integration case. SIDE-09 gained a third measurement
+- **Skipped tests**: none
+- **Failures**: none
 
-Os números do orquestrador em bf1386c conferem com a minha execução em c76e51f, que só muda uma spec.
+The orchestrator's numbers at bf1386c match my run at c76e51f, which only changes a spec.
 
 ---
 
 ## Fix Plans (if issues found)
 
-### Fix 1: gatilho do PNL-04 sem teste (U10) - fechado
+### Fix 1: PNL-04 trigger without a test (U10) - closed
 
-- **Resolução**: 13276d0. `actionFor` mapeia `toggle-done` (`src/webview/render.ts:598-599`). `test/unit/webview.test.ts:247-248` afirma os dois sentidos.
-- **Done when conferido**: com o mapeamento invertido em `actionFor` (V1), `npm test` falha em `:247`. Com o certo, passa. O gate segue verde.
+- **Resolution**: 13276d0. `actionFor` maps `toggle-done` (`src/webview/render.ts:598-599`). `test/unit/webview.test.ts:247-248` asserts both directions.
+- **Done when, checked**: with the mapping inverted in `actionFor` (V1), `npm test` fails at `:247`. With the correct one, it passes. The gate stays green.
 
-### Follow-up 1: lado sem rolagem do SIDE-09 - fechado
+### Follow-up 1: SIDE-09 no-scroll side - closed
 
-- **Resolução**: bf1386c. `test/integration/suite.cjs:604-620`. A asserção do overflow roda com `boardWidth` de 1077px e espera false. I4 prova que ela separa um quadro que cabe de um que não cabe.
+- **Resolution**: bf1386c. `test/integration/suite.cjs:604-620`. The overflow assertion runs with a `boardWidth` of 1077px and expects false. I4 proves it separates a board that fits from one that does not.
 
-### Follow-up 2: Independent Test do SIDE-09 - fechado
+### Follow-up 2: SIDE-09 Independent Test - closed
 
-- **Resolução**: c76e51f. `.specs/features/sidebar-dashboard/spec.md:81`.
+- **Resolution**: c76e51f. `.specs/features/sidebar-dashboard/spec.md:81`.
 
-### Follow-up 3 (opcional, não bloqueia): dirigir a caixa dentro da webview
+### Follow-up 3 (optional, non-blocking): drive the checkbox inside the webview
 
-- **Root cause**: nenhum teste dispara eventos de DOM na página. A cola de `src/webview/main.ts:82-86` e `:106-109` fica fora do alcance, e G1, G2, G3a, G4 e G5 vivem ali.
-- **Fix task**: uma mensagem de teste do host para a página que clica num `[data-action]`. Ela pode ir ao lado de `api.dashboardReport()`, pela API de teste (`src/extension.ts:91-93`). O SIDE-09 clicaria em "Ocultar concluídas" e mediria seis colunas com as concluídas, e depois cinco de novo. A mesma mensagem serviria aos cliques do NAV-12. Muda a premissa "Medida em VS Code real" (`spec.md:37`), então pede decisão do usuário.
-- **Done when**: G1, G4 e G5 falham na integração, e o gate segue verde.
+- **Root cause**: no test fires DOM events on the page. The glue at `src/webview/main.ts:82-86` and `:106-109` is out of reach, and G1, G2, G3a, G4 and G5 live there.
+- **Fix task**: a test message from the host to the page that clicks a `[data-action]`. It can sit next to `api.dashboardReport()`, in the test API (`src/extension.ts:91-93`). SIDE-09 would click "Hide Completed" and measure six columns with the completed features, then five again. The same message would serve the NAV-12 clicks. It changes the "Measured in real VS Code" assumption (`spec.md:37`), so it needs a decision from the user.
+- **Done when**: G1, G4 and G5 fail in integration, and the gate stays green.
 - **Priority**: Minor
 
 ---
 
 ## Requirement Traceability Update
 
-O Verifier não altera `spec.md`. Status propostos:
+The Verifier does not edit `spec.md`. Proposed statuses:
 
 | Requirement | Previous Status | New Status |
 | ----------- | --------------- | ---------- |
 | PNL-01 | Implementing | ✅ Verified |
 | PNL-02 | Implementing | ✅ Verified |
 | PNL-03 | Implementing | ✅ Verified |
-| PNL-04 | Implementing (a iteração 1 propôs Needs Fix) | ✅ Verified |
+| PNL-04 | Implementing (iteration 1 proposed Needs Fix) | ✅ Verified |
 | PNL-05 | Implementing | ✅ Verified |
 
 ---
@@ -221,12 +221,12 @@ O Verifier não altera `spec.md`. Status propostos:
 
 **Overall**: ✅ Ready
 
-**Spec-anchored check**: 5/5 requisitos batem com a spec. 0 gaps de precisão
-**Sensor**: 18/24 mortas nesta iteração. Vivas: U7, equivalente, e G1, G2, G3a, G4, G5, na cola de DOM, aceitas. I1-I3 da iteração 1 mantidas
-**Gate**: typecheck ok, 53 unit, 53 + 1 + 2 integration, 0 falhas
+**Spec-anchored check**: 5/5 requirements match the spec. 0 precision gaps
+**Sensor**: 18/24 killed in this iteration. Alive: U7, equivalent, and G1, G2, G3a, G4, G5, in the DOM glue, accepted. I1-I3 from iteration 1 kept
+**Gate**: typecheck ok, 53 unit, 53 + 1 + 2 integration, 0 failures
 
-**What works**: o painel abre com "Ocultar concluídas" marcada, na aba e na barra lateral. As concluídas e a coluna Concluídas ficam fora do quadro. As cinco etapas ficam lado a lado a partir de 700px e cabem sem rolagem quando o quadro tem 1040px ou mais. Abaixo de 700px o quadro continua empilhado. Desmarcar a opção dá `hideDone: false`, e a página desenha as seis colunas com as concluídas. Marcar de novo dá `hideDone: true`. Uma concluída aberta pela árvore ou por notificação mostra o detalhe. Nenhum teste saiu, nenhuma asserção afrouxou.
+**What works**: the Dashboard opens with "Hide Completed" checked, in the editor tab and in the side bar. The completed features and the Completed column stay off the board. The five stages sit side by side from 700px and fit without scrolling when the board is 1040px or wider. Below 700px the board stays stacked. Unchecking the option gives `hideDone: false`, and the page draws the six columns with the completed features. Checking it again gives `hideDone: true`. A completed feature opened from the tree or from a notification shows its detail. No test was removed, no assertion was loosened.
 
-**Issues found**: nenhum que bloqueie. A cola de DOM da caixa segue sem teste automático (Follow-up 3, opcional).
+**Issues found**: none blocking. The checkbox's DOM glue still has no automated test (Follow-up 3, optional).
 
-**Next steps**: atualizar os status do `spec.md` para Verified. Rodar o teste independente da spec com o usuário (UAT), que cobre a cola à mão. Decidir se o Follow-up 3 entra.
+**Next steps**: update the `spec.md` statuses to Verified. Run the spec's independent test with the user (UAT), which covers the glue by hand. Decide whether Follow-up 3 goes in.

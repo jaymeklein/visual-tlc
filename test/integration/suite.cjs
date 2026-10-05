@@ -24,7 +24,7 @@ const projectId = () => api.getProjects()[0].id;
 const feature = (name) => api.getProjects()[0].features.find((f) => f.name === name);
 
 test('activates and discovers the .specs folder', async () => {
-  const ext = vscode.extensions.getExtension('visual-tlc.visual-tlc');
+  const ext = vscode.extensions.getExtension('JaymeKlein.visual-tlc');
   assert.ok(ext, 'extension not found');
   api = await ext.activate();
   const projects = api.getProjects();
@@ -47,11 +47,11 @@ test('publishes spec issues to the Problems panel', async () => {
   });
   const darkMode = diags.find(([uri]) => uri.path.endsWith('/dark-mode/spec.md'));
   assert.ok(darkMode, 'no diagnostics for dark-mode/spec.md');
-  const noShall = darkMode[1].find((d) => d.message.includes('sem SHALL'));
+  const noShall = darkMode[1].find((d) => d.message.includes('without SHALL'));
   assert.ok(noShall, 'AC without SHALL not reported');
   assert.equal(noShall.severity, vscode.DiagnosticSeverity.Error);
   assert.equal(noShall.range.start.line, 26);
-  assert.ok(diags.some(([uri, list]) => uri.path.endsWith('/search-filters/tasks.md') && list.some((d) => d.message.includes('validation.md não existe'))));
+  assert.ok(diags.some(([uri, list]) => uri.path.endsWith('/search-filters/tasks.md') && list.some((d) => d.message.includes('validation.md does not exist'))));
 });
 
 test('openFile jumps to the requested line', async () => {
@@ -98,14 +98,14 @@ test('reflects task progress when tasks.md changes', async () => {
   const text = await readFile(file, 'utf8');
   await writeFile(file, text.replace('- [ ] Reuse revokes the whole family', '- [x] Reuse revokes the whole family').replace('- [ ] Gate check passes: `npm run test:unit`', '- [x] Gate check passes: `npm run test:unit`'));
   const f = await waitFor('T4 done', () => (feature('user-auth').taskStats.done === before + 1 ? feature('user-auth') : undefined));
-  assert.equal(f.phaseLabel, 'Execução 4/7');
+  assert.equal(f.phaseLabel, 'Execution 4/7');
 });
 
 const allTabs = () => vscode.window.tabGroups.all.flatMap((g) => g.tabs);
 const previewTabs = () => allTabs().filter((t) => t.input instanceof vscode.TabInputWebview && t.input.viewType.includes('markdown.preview'));
 
 test('feature rows declare inline preview / folder buttons', () => {
-  const menus = vscode.extensions.getExtension('visual-tlc.visual-tlc').packageJSON.contributes.menus['view/item/context'];
+  const menus = vscode.extensions.getExtension('JaymeKlein.visual-tlc').packageJSON.contributes.menus['view/item/context'];
   for (const command of ['tlcSpecs.previewFeatureMarkdown', 'tlcSpecs.revealFeatureFolder']) {
     const inline = menus.find((m) => m.command === command && m.group.startsWith('inline'));
     assert.ok(inline, `${command} has no inline button`);
@@ -194,7 +194,7 @@ test('NAV-02 file, requirement and phase rows open the preview', async () => {
   await expectPreviewOf('spec.md');
 });
 
-test('NAV-03 Projeto rows open STATE.md / LESSONS.md in the preview', async () => {
+test('NAV-03 Project rows open STATE.md / LESSONS.md in the preview', async () => {
   const project = api.projectTree;
   // Under the folder node of the project (specs-folder-paths, SFP-08).
   const sections = await kids(project, (await kids(project))[0]);
@@ -218,8 +218,8 @@ test('NAV-03 Projeto rows open STATE.md / LESSONS.md in the preview', async () =
   await expectPreviewOf('LESSONS.md');
 });
 
-test('NAV-04 "Abrir no editor" opens the text editor at the row line', async () => {
-  const menus = vscode.extensions.getExtension('visual-tlc.visual-tlc').packageJSON.contributes.menus['view/item/context'];
+test('NAV-04 "Open in Editor" opens the text editor at the row line', async () => {
+  const menus = vscode.extensions.getExtension('JaymeKlein.visual-tlc').packageJSON.contributes.menus['view/item/context'];
   const inline = menus.find((m) => m.command === 'tlcSpecs.openInEditor' && m.group.startsWith('inline'));
   assert.ok(inline, 'openInEditor has no inline button');
   assert.match(inline.when, /viewItem == artifact/);
@@ -248,7 +248,7 @@ test('NAV-04 "Abrir no editor" opens the text editor at the row line', async () 
 
 test('NAV-05 warnings open the text editor at the warning line', async () => {
   const children = await kids(tree(), await featureNode('user-auth'));
-  const warning = (await kids(tree(), children.find((n) => n.kind === 'issues'))).find((n) => n.issue.message.startsWith('Requisito(s) sem task'));
+  const warning = (await kids(tree(), children.find((n) => n.kind === 'issues'))).find((n) => n.issue.message.startsWith('Requirement(s) without a task'));
   const item = await tree().getTreeItem(warning);
   assert.equal(item.command?.command, 'tlcSpecs.openFile');
   assert.deepEqual(item.command.arguments, [projectId(), 'features/user-auth/spec.md', warning.issue.line]);
@@ -283,7 +283,7 @@ async function tasksUnder(stage) {
   return out;
 }
 
-test('NAV-06 Tasks and Execução expand to the tasks grouped by Phase', async () => {
+test('NAV-06 Tasks and Execution expand to the tasks grouped by Phase', async () => {
   for (const stageId of ['tasks', 'execute']) {
     const stage = await stageNode('user-auth', stageId);
     assert.notEqual((await tree().getTreeItem(stage)).collapsibleState, C().None, stageId);
@@ -328,10 +328,10 @@ test('NAV-07 a task expands to read-only detail items', async () => {
   assert.deepEqual(
     t5.map((i) => [i.label, i.description ?? '', i.iconPath.id]).slice(0, 5),
     [
-      ['O quê', 'Lock account for 15 minutes after 5 failures', 'info'],
-      ['Onde', 'src/auth/auth.service.ts (modify)', 'file'],
-      ['Depende de', 'T4', 'arrow-left'],
-      ['Requisitos', 'AUTH-03', 'references'],
+      ['What', 'Lock account for 15 minutes after 5 failures', 'info'],
+      ['Where', 'src/auth/auth.service.ts (modify)', 'file'],
+      ['Depends on', 'T4', 'arrow-left'],
+      ['Requirements', 'AUTH-03', 'references'],
       ['Tests / Gate', 'unit · quick', 'beaker'],
     ],
   );
@@ -373,7 +373,7 @@ test('NAV-09 the Tasks stage is not expandable without tasks', async () => {
   }
 });
 
-test('NAV-16 Tasks and Execução lists coexist without duplicate ids', async () => {
+test('NAV-16 Tasks and Execution lists coexist without duplicate ids', async () => {
   const ids = [];
   const walk = async (node) => {
     ids.push((await tree().getTreeItem(node)).id);
@@ -407,7 +407,7 @@ test('NAV-11/NAV-14 (host) an open message from the dashboard opens the text edi
 
 /** The eye of a card, as the webview sends it. */
 const setHidden = (send, feature, hidden) => send({ type: 'setHidden', target: { projectId: projectId(), feature }, hidden });
-const ocultas = (n) => `${n} ${n === 1 ? 'oculta' : 'ocultas'}`;
+const hiddenLabel = (n) => `${n} hidden`;
 const treeNames = () =>
   api.featuresTree
     .getChildren()
@@ -415,7 +415,7 @@ const treeNames = () =>
     .map((n) => n.feature.name)
     .sort();
 const modelNames = (keep) => api.getProjects()[0].features.filter(keep).map((f) => f.name).sort();
-const contributes = () => vscode.extensions.getExtension('visual-tlc.visual-tlc').packageJSON.contributes;
+const contributes = () => vscode.extensions.getExtension('JaymeKlein.visual-tlc').packageJSON.contributes;
 const declared = (command) => contributes().commands.find((c) => c.command === command);
 const titleMenu = (command) => contributes().menus['view/title'].find((m) => m.command === command);
 
@@ -455,11 +455,11 @@ test('SFP-07/SFP-08 with a single specs folder both trees show its node, named a
   for (const kind of ['handoff', 'decisions', 'lessons']) assert.ok(sections.includes(kind), `no ${kind} under the folder node: ${sections.join(', ')}`);
 });
 
-test('HID-05 Features starts without the hidden specs and with the closed eye "Mostrar specs ocultas" in its title', async () => {
+test('HID-05 Features starts without the hidden specs and with the closed eye "Show Hidden Specs" in its title', async () => {
   assert.equal(api.getProjects().length, 1);
   assert.ok(modelNames((f) => f.health === 'complete').length > 0, 'the fixture has no completed feature');
   assert.deepEqual(treeNames(), modelNames((f) => f.health !== 'complete'));
-  assert.deepEqual(declared('tlcSpecs.showHidden'), { command: 'tlcSpecs.showHidden', title: 'Mostrar specs ocultas', category: 'TLC Specs', icon: '$(eye-closed)' });
+  assert.deepEqual(declared('tlcSpecs.showHidden'), { command: 'tlcSpecs.showHidden', title: 'Show Hidden Specs', category: 'TLC Specs', icon: '$(eye-closed)' });
   // An unset context key is false: the closed eye shows until the extension sets the key.
   assert.equal(titleMenu('tlcSpecs.showHidden').when, 'view == tlcSpecs.features && !tlcSpecs.showHidden');
 });
@@ -472,7 +472,7 @@ test('HID-06/HID-07 the eye of Features lists every spec while open, and only th
     const opening = await showHiddenContext(() => vscode.commands.executeCommand('tlcSpecs.showHidden'));
     assert.deepEqual(opening, [true]);
     assert.deepEqual(treeNames(), all);
-    assert.deepEqual(declared('tlcSpecs.hideHidden'), { command: 'tlcSpecs.hideHidden', title: 'Esconder specs ocultas', category: 'TLC Specs', icon: '$(eye)' });
+    assert.deepEqual(declared('tlcSpecs.hideHidden'), { command: 'tlcSpecs.hideHidden', title: 'Hide Hidden Specs', category: 'TLC Specs', icon: '$(eye)' });
     assert.equal(titleMenu('tlcSpecs.hideHidden').when, 'view == tlcSpecs.features && tlcSpecs.showHidden');
   } finally {
     closing = await showHiddenContext(() => vscode.commands.executeCommand('tlcSpecs.hideHidden'));
@@ -484,28 +484,28 @@ test('HID-06/HID-07 the eye of Features lists every spec while open, and only th
 test('HID-08 the Features message counts the hidden specs while the eye is closed, and not while it is open', async () => {
   const features = api.getProjects()[0].features;
   const done = features.filter((f) => f.health === 'complete').length;
-  const base = `${features.length} feature(s) · ${done} concluída(s)`;
-  assert.equal(api.featuresViewMessage(), `${base} · ${done} oculta(s)`);
+  const base = `${features.length} feature(s) · ${done} completed`;
+  assert.equal(api.featuresViewMessage(), `${base} · ${done} hidden`);
   try {
     await setHidden(api.dashboardMessage, 'csv-export', true);
-    assert.equal(api.featuresViewMessage(), `${base} · ${done + 1} oculta(s)`);
+    assert.equal(api.featuresViewMessage(), `${base} · ${done + 1} hidden`);
     await vscode.commands.executeCommand('tlcSpecs.showHidden');
     assert.equal(api.featuresViewMessage(), base);
   } finally {
     await vscode.commands.executeCommand('tlcSpecs.hideHidden');
     await setHidden(api.dashboardMessage, 'csv-export', false);
   }
-  assert.equal(api.featuresViewMessage(), `${base} · ${done} oculta(s)`);
+  assert.equal(api.featuresViewMessage(), `${base} · ${done} hidden`);
 });
 
 const rowOf = async (name) => api.featuresTree.getTreeItem(await featureNode(name));
 /** The buttons every spec row keeps, whatever its eye. */
 const ANY_ROW = 'view == tlcSpecs.features && (viewItem == feature || viewItem == feature.hidden)';
 
-test('HID-09/HID-10/EYE-01/EYE-02/EYE-03 every spec row has its eye: open "Ocultar spec" in view, closed "Desocultar spec" hidden, completed or not', async () => {
+test('HID-09/HID-10/EYE-01/EYE-02/EYE-03 every spec row has its eye: open "Hide Spec" in view, closed "Unhide Spec" hidden, completed or not', async () => {
   const menus = contributes().menus;
-  assert.deepEqual(declared('tlcSpecs.hideFeature'), { command: 'tlcSpecs.hideFeature', title: 'Ocultar spec', category: 'TLC Specs', icon: '$(eye)' });
-  assert.deepEqual(declared('tlcSpecs.unhideFeature'), { command: 'tlcSpecs.unhideFeature', title: 'Desocultar spec', category: 'TLC Specs', icon: '$(eye-closed)' });
+  assert.deepEqual(declared('tlcSpecs.hideFeature'), { command: 'tlcSpecs.hideFeature', title: 'Hide Spec', category: 'TLC Specs', icon: '$(eye)' });
+  assert.deepEqual(declared('tlcSpecs.unhideFeature'), { command: 'tlcSpecs.unhideFeature', title: 'Unhide Spec', category: 'TLC Specs', icon: '$(eye-closed)' });
   const inline = (command) => menus['view/item/context'].filter((m) => m.command === command && m.group.startsWith('inline')).map((m) => m.when);
   assert.deepEqual(inline('tlcSpecs.hideFeature'), ['view == tlcSpecs.features && viewItem == feature']);
   assert.deepEqual(inline('tlcSpecs.unhideFeature'), ['view == tlcSpecs.features && viewItem == feature.hidden']);
@@ -537,44 +537,44 @@ test('HID-09/HID-10/EYE-01/EYE-02/EYE-03 every spec row has its eye: open "Ocult
 test('HID-11/HID-12 the eye of a spec row takes it off Features and the panel and counts it, then brings it back', async () => {
   const features = api.getProjects()[0].features;
   const done = features.filter((f) => f.health === 'complete').length;
-  const base = `${features.length} feature(s) · ${done} concluída(s)`;
+  const base = `${features.length} feature(s) · ${done} completed`;
   const onBoard = boardNames(api.getProjects());
   await vscode.commands.executeCommand('tlcSpecs.openDashboard');
   await tabReport('the tab on the board', (r) => r.detail === null && same([...r.cards].sort(), onBoard));
   try {
     await vscode.commands.executeCommand('tlcSpecs.hideFeature', await featureNode('csv-export'));
     assert.deepEqual(treeNames(), modelNames((f) => f.health !== 'complete' && f.name !== 'csv-export'));
-    assert.equal(api.featuresViewMessage(), `${base} · ${done + 1} oculta(s)`);
+    assert.equal(api.featuresViewMessage(), `${base} · ${done + 1} hidden`);
     const off = await tabReport('csv-export to leave the tab', (r) => !r.cards.includes('csv-export'));
     assert.deepEqual([...off.cards].sort(), onBoard.filter((n) => n !== 'csv-export'));
-    assert.equal(off.toggle.text, ocultas(done + 1));
+    assert.equal(off.toggle.text, hiddenLabel(done + 1));
 
     // Back through its row, reached with the eye of the title open.
     await vscode.commands.executeCommand('tlcSpecs.showHidden');
     await vscode.commands.executeCommand('tlcSpecs.unhideFeature', await featureNode('csv-export'));
     await vscode.commands.executeCommand('tlcSpecs.hideHidden');
     assert.deepEqual(treeNames(), modelNames((f) => f.health !== 'complete'));
-    assert.equal(api.featuresViewMessage(), `${base} · ${done} oculta(s)`);
+    assert.equal(api.featuresViewMessage(), `${base} · ${done} hidden`);
     const back = await tabReport('csv-export to come back to the tab', (r) => r.cards.includes('csv-export'));
     assert.deepEqual([...back.cards].sort(), onBoard);
-    assert.equal(back.toggle.text, ocultas(done));
+    assert.equal(back.toggle.text, hiddenLabel(done));
   } finally {
     await vscode.commands.executeCommand('tlcSpecs.hideHidden');
     await setHidden(api.dashboardMessage, 'csv-export', false);
   }
 });
 
-test('HID-14/EYE-08 with the eye of Features open every hidden row ends its description with "· oculta", completed or not, and a row in view does not', async () => {
+test('HID-14/EYE-08 with the eye of Features open every hidden row ends its description with "· hidden", completed or not, and a row in view does not', async () => {
   try {
     await vscode.commands.executeCommand('tlcSpecs.showHidden');
-    assert.doesNotMatch((await rowOf('csv-export')).description, /oculta/);
+    assert.doesNotMatch((await rowOf('csv-export')).description, /hidden/);
     await setHidden(api.dashboardMessage, 'csv-export', true);
-    assert.match((await rowOf('csv-export')).description, / · oculta$/);
+    assert.match((await rowOf('csv-export')).description, / · hidden$/);
     // Completed without a choice: hidden, so tagged.
-    assert.match((await rowOf('billing-invoices')).description, / · oculta$/);
+    assert.match((await rowOf('billing-invoices')).description, / · hidden$/);
     // Completed and kept in view: not tagged.
     await setHidden(api.dashboardMessage, 'billing-invoices', false);
-    assert.doesNotMatch((await rowOf('billing-invoices')).description, /oculta/);
+    assert.doesNotMatch((await rowOf('billing-invoices')).description, /hidden/);
   } finally {
     await vscode.commands.executeCommand('tlcSpecs.hideHidden');
     await setHidden(api.dashboardMessage, 'csv-export', false);
@@ -587,8 +587,8 @@ test('HID-14/EYE-08 with the eye of Features open every hidden row ends its desc
 test('EYE-05/EYE-04/EYE-10 the closed eye of a completed row keeps it in Features with the title eye closed, and its open eye hides it again', async () => {
   const features = api.getProjects()[0].features;
   const done = features.filter((f) => f.health === 'complete').length;
-  const base = `${features.length} feature(s) · ${done} concluída(s)`;
-  const message = (out) => (out ? `${base} · ${out} oculta(s)` : base);
+  const base = `${features.length} feature(s) · ${done} completed`;
+  const message = (out) => (out ? `${base} · ${out} hidden` : base);
   assert.ok(!treeNames().includes('billing-invoices'), 'billing-invoices is in view before the test');
   try {
     // The row is reached with the title eye open, as the user reaches it.
@@ -608,25 +608,25 @@ test('EYE-05/EYE-04/EYE-10 the closed eye of a completed row keeps it in Feature
   }
 });
 
-test('EYE-05/EYE-07 the eye of a completed card keeps it in the Concluídas column of the tab, with the board eye closed', async () => {
+test('EYE-05/EYE-07 the eye of a completed card keeps it in the Completed column of the tab, with the board eye closed', async () => {
   const done = api.getProjects()[0].features.filter((f) => f.health === 'complete').length;
   await vscode.commands.executeCommand('tlcSpecs.openDashboard');
   // The count too: the report must come from a render after the tests before this one cleaned up.
-  const before = await tabReport('the tab on the board', (r) => r.detail === null && r.toggle?.text === ocultas(done) && !r.cards.includes('billing-invoices'));
+  const before = await tabReport('the tab on the board', (r) => r.detail === null && r.toggle?.text === hiddenLabel(done) && !r.cards.includes('billing-invoices'));
   assert.equal(before.columns, 5);
-  assert.equal(before.toggle.text, ocultas(done));
+  assert.equal(before.toggle.text, hiddenLabel(done));
   try {
     await setHidden(api.dashboardMessage, 'billing-invoices', false);
     const kept = await tabReport('billing-invoices to show in the tab', (r) => r.cards.includes('billing-invoices'));
     assert.equal(kept.columns, 6);
-    assert.equal(kept.toggle.text, ocultas(done - 1));
-    assert.equal(kept.toggle.title, 'Mostrar as specs ocultas');
+    assert.equal(kept.toggle.text, hiddenLabel(done - 1));
+    assert.equal(kept.toggle.title, 'Show Hidden Specs');
   } finally {
     await setHidden(api.dashboardMessage, 'billing-invoices', true);
   }
   const back = await tabReport('billing-invoices to leave the tab', (r) => !r.cards.includes('billing-invoices'));
   assert.equal(back.columns, 5);
-  assert.equal(back.toggle.text, ocultas(done));
+  assert.equal(back.toggle.text, hiddenLabel(done));
 });
 
 // --- hidden-folder (spec: .specs/features/hidden-folder/spec.md) ---------------------------------------------
@@ -635,14 +635,14 @@ test('EYE-05/EYE-07 the eye of a completed card keeps it in the Concluídas colu
 const openNames = () => modelNames((f) => f.health !== 'complete');
 const folderRow = () => api.featuresTree.getTreeItem(api.featuresTree.getChildren()[0]);
 
-test('HFD-01/HFD-04/HFD-07 with every spec hidden and the eye closed Features leaves the folder node out, counts them all in its message and is not the welcome view, while Projeto keeps the node', async () => {
+test('HFD-01/HFD-04/HFD-07 with every spec hidden and the eye closed Features leaves the folder node out, counts them all in its message and is not the welcome view, while Project keeps the node', async () => {
   const features = api.getProjects()[0].features;
   const open = openNames();
   const done = features.length - open.length;
   try {
     for (const name of open) await setHidden(api.dashboardMessage, name, true);
     assert.deepEqual(api.featuresTree.getChildren(), []);
-    assert.equal(api.featuresViewMessage(), `${features.length} feature(s) · ${done} concluída(s) · ${features.length} oculta(s)`);
+    assert.equal(api.featuresViewMessage(), `${features.length} feature(s) · ${done} completed · ${features.length} hidden`);
     // The welcome view of Features is only for a workspace without specs.
     assert.deepEqual(
       contributes().viewsWelcome.filter((w) => w.view === 'tlcSpecs.features').map((w) => w.when),
@@ -678,7 +678,7 @@ test('HFD-02/HFD-03 hiding the last spec in view from its row takes the folder n
   assert.deepEqual(treeNames(), open);
 });
 
-test('HFD-05/HFD-06 the folder node reads "N feature(s) · oculta" with the eye open and every spec hidden, and "N feature(s)" while a spec is in view', async () => {
+test('HFD-05/HFD-06 the folder node reads "N feature(s) · hidden" with the eye open and every spec hidden, and "N feature(s)" while a spec is in view', async () => {
   const features = api.getProjects()[0].features;
   const open = openNames();
   const base = `${features.length} feature(s)`;
@@ -688,7 +688,7 @@ test('HFD-05/HFD-06 the folder node reads "N feature(s) · oculta" with the eye 
     assert.equal(folderRow().description, base);
     for (const name of open) await setHidden(api.dashboardMessage, name, true);
     assert.deepEqual(api.featuresTree.getChildren().map((n) => n.kind), ['root']);
-    assert.equal(folderRow().description, `${base} · oculta`);
+    assert.equal(folderRow().description, `${base} · hidden`);
   } finally {
     await vscode.commands.executeCommand('tlcSpecs.hideHidden');
     for (const name of open) await setHidden(api.dashboardMessage, name, false);
@@ -696,7 +696,7 @@ test('HFD-05/HFD-06 the folder node reads "N feature(s) · oculta" with the eye 
   assert.equal(folderRow().description, base);
 });
 
-test('HFD-01/HFD-06 a completed spec kept in view by its eye keeps its folder in Features, described without "· oculta", with the eye closed or open', async () => {
+test('HFD-01/HFD-06 a completed spec kept in view by its eye keeps its folder in Features, described without "· hidden", with the eye closed or open', async () => {
   const features = api.getProjects()[0].features;
   const open = openNames();
   const kept = 'billing-invoices';
@@ -770,7 +770,7 @@ test('CHF-01/CHF-02/CHF-03/CHF-05 the eye of Features brings a folder with every
     assert.equal(folderRow().collapsibleState, Collapsed);
     const specs = api.featuresTree.getChildren(api.featuresTree.getChildren()[0]);
     assert.deepEqual(specs.map((n) => n.feature.name).sort(), modelNames(() => true));
-    for (const n of specs) assert.match(api.featuresTree.getTreeItem(n).description, / · oculta$/);
+    for (const n of specs) assert.match(api.featuresTree.getTreeItem(n).description, / · hidden$/);
 
     // The user opens it, then closes and opens the eye: it comes back collapsed again.
     assert.deepEqual(await expandedWhile(expandFirstRow), [id]);
@@ -802,14 +802,14 @@ test('CHF-04 with the eye open, hiding or showing a spec leaves its folder open 
     const last = await featureNode(open[0]);
     await treeSettled();
     assert.deepEqual(await expandedWhile(() => vscode.commands.executeCommand('tlcSpecs.hideFeature', last)), [id]);
-    assert.match(folderRow().description, / · oculta$/);
+    assert.match(folderRow().description, / · hidden$/);
 
     // Brought back collapsed: showing one of its specs from the card leaves it collapsed.
     await closeEye();
     await treeSettled();
     assert.deepEqual(await expandedWhile(openEye), []);
     assert.deepEqual(await expandedWhile(() => setHidden(api.dashboardMessage, open[0], false)), []);
-    assert.doesNotMatch(folderRow().description, /oculta/);
+    assert.doesNotMatch(folderRow().description, /hidden/);
   } finally {
     await restoreFolder(open);
   }
@@ -876,7 +876,7 @@ const featuresOf = (root) => {
 test('SF-01 contributes tlcSpecs.specsFolders with [".specs"] as the default', () => {
   const setting = vscode.workspace.getConfiguration('tlcSpecs', folder()).inspect('specsFolders');
   assert.deepEqual(setting.defaultValue, ['.specs']);
-  const declared = vscode.extensions.getExtension('visual-tlc.visual-tlc').packageJSON.contributes.configuration.properties['tlcSpecs.specsFolders'];
+  const declared = vscode.extensions.getExtension('JaymeKlein.visual-tlc').packageJSON.contributes.configuration.properties['tlcSpecs.specsFolders'];
   assert.equal(declared.scope, 'resource');
   assert.deepEqual(vscode.workspace.getConfiguration('tlcSpecs', folder()).get('specsFolders'), ['.specs']);
 });
@@ -940,7 +940,7 @@ test('SF-03 a configuration change reloads trees, panel, status bar and diagnost
     });
     const custom = diags.find(([uri]) => uri.path.endsWith('/docs/specs/features/custom-one/spec.md'));
     assert.ok(custom, 'no diagnostics for docs/specs/features/custom-one/spec.md');
-    assert.ok(custom[1].some((d) => d.message.includes('sem SHALL')));
+    assert.ok(custom[1].some((d) => d.message.includes('without SHALL')));
 
     await setFolders(['nada/aqui']);
     await waitForRoots([]);
@@ -955,7 +955,7 @@ test('SF-03 a configuration change reloads trees, panel, status bar and diagnost
 
 test('SF-04 a file created, changed or removed inside a configured folder updates its view', async () => {
   const customTwo = () => api.getProjects().flatMap((p) => p.features).find((f) => f.name === 'custom-two');
-  const withoutShall = (f) => f.issues.filter((i) => i.message.includes('sem SHALL')).length;
+  const withoutShall = (f) => f.issues.filter((i) => i.message.includes('without SHALL')).length;
   await setFolders(['docs/specs', 'packages/api/docs/specs']);
   await waitForRoots(['docs/specs', 'packages/api/docs/specs']);
 
@@ -999,10 +999,10 @@ test('SF-09 an invalid entry is ignored with a warning that names it', async () 
     return Promise.resolve(undefined);
   };
   try {
-    await setFolders(['../fora', 'docs/*', 'docs/specs']);
+    await setFolders(['../outside', 'docs/*', 'docs/specs']);
     await waitForRoots(['docs/specs']);
     await waitFor('two warnings', () => shown.length >= 2);
-    assert.equal(shown.filter((m) => m.includes('"../fora"')).length, 1);
+    assert.equal(shown.filter((m) => m.includes('"../outside"')).length, 1);
     assert.equal(shown.filter((m) => m.includes('"docs/*"')).length, 1);
     await api.refresh();
     assert.equal(shown.length, 2, 'the warning was repeated on refresh');
@@ -1041,7 +1041,7 @@ test('specs-folders: restores the default configuration', async () => {
 // --- sidebar-dashboard ---------------------------------------------------------------------------------------
 
 /** Stages of the board without features, counted from the model: a feature sits in "done" when complete, else in its phase. */
-// A panel opens with its eye closed (PNL-01, HID-01): the board holds the open features in five stages, without Concluídas.
+// A panel opens with its eye closed (PNL-01, HID-01): the board holds the open features in five stages, without Completed.
 const emptyStagesOf = (projects) => projects.reduce((n, p) => n + 5 - new Set(p.features.filter((f) => f.health !== 'complete').map((f) => f.phase)).size, 0);
 const boardNames = (projects) => projects.flatMap((p) => p.features.filter((f) => f.health !== 'complete').map((f) => f.name)).sort();
 const hasCompleted = (projects) => projects.some((p) => p.features.some((f) => f.health === 'complete'));
@@ -1109,13 +1109,13 @@ const tabReport = (what, ok) =>
 const projectIds = () => api.getProjects().map((p) => p.id);
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
-test('SIDE-01 the side bar has a Painel view with the projects of the panel in a tab', async () => {
-  const views = vscode.extensions.getExtension('visual-tlc.visual-tlc').packageJSON.contributes.views.tlcSpecs;
+test('SIDE-01 the side bar has a Dashboard view with the projects of the panel in a tab', async () => {
+  const views = vscode.extensions.getExtension('JaymeKlein.visual-tlc').packageJSON.contributes.views.tlcSpecs;
   assert.deepEqual(
     views.map((v) => v.id),
     ['tlcSpecs.features', 'tlcSpecs.project', 'tlcSpecs.panel'],
   );
-  assert.deepEqual(views[2], { type: 'webview', id: 'tlcSpecs.panel', name: 'Painel' });
+  assert.deepEqual(views[2], { type: 'webview', id: 'tlcSpecs.panel', name: 'Dashboard' });
 
   await showSidePanel();
   const side = await sideReport('the side panel to render the projects', (r) => r.projects.length > 0);
@@ -1150,8 +1150,8 @@ test('SIDE-05 an artifact created, changed or removed in a specs folder shows in
 
   // changed
   await write('.specs/features/side-new/tasks.md', tasks);
-  const changed = await sideReport('side-new to finish its tasks', (r) => phaseOnCard(r, 'side-new') === 'Aguardando verificação');
-  assert.equal(feature('side-new').phaseLabel, 'Aguardando verificação');
+  const changed = await sideReport('side-new to finish its tasks', (r) => phaseOnCard(r, 'side-new') === 'Awaiting verification');
+  assert.equal(feature('side-new').phaseLabel, 'Awaiting verification');
   assert.notEqual(phaseOnCard(started, 'side-new'), phaseOnCard(changed, 'side-new'));
   assert.deepEqual(onCards(changed), inModel());
 
@@ -1168,7 +1168,7 @@ test('SIDE-11 without a specs folder the side panel says that no spec was found'
     await setFolders(['nada/aqui']);
     await waitForRoots([]);
     const report = await sideReport('the empty message', (r) => r.emptyMessage !== null);
-    assert.equal(report.emptyMessage, 'Nenhuma spec encontrada');
+    assert.equal(report.emptyMessage, 'No specs found');
     assert.deepEqual(report.projects, []);
     assert.deepEqual(report.cards, []);
     assert.equal(report.columns, 0);
@@ -1187,7 +1187,7 @@ test('SIDE-11 without a specs folder the side panel says that no spec was found'
 const hiddenCountOf = (projects, marked = []) => projects.reduce((n, p) => n + p.features.filter((f) => f.health === 'complete' || marked.includes(f.name)).length, 0);
 
 test('HID-01 the panel opens with the closed eye and the count of hidden specs, in a tab and in the side bar', async () => {
-  const expected = { title: 'Mostrar as specs ocultas', text: ocultas(hiddenCountOf(api.getProjects())) };
+  const expected = { title: 'Show Hidden Specs', text: hiddenLabel(hiddenCountOf(api.getProjects())) };
   assert.ok(hasCompleted(api.getProjects()), 'the fixture has no completed feature to count');
   await showSidePanel();
   const side = await sideReport('the eye of the side panel', (r) => r.detail === null && r.toggle !== null);
@@ -1210,8 +1210,8 @@ test('HID-11/HID-12 the eye of a card takes the spec off the tab and the side pa
     const side = await sideReport('csv-export to leave the side panel', (r) => r.detail === null && !r.cards.includes('csv-export'));
     assert.deepEqual([...tab.cards].sort(), off);
     assert.deepEqual([...side.cards].sort(), off);
-    assert.equal(tab.toggle.text, ocultas(before + 1));
-    assert.equal(side.toggle.text, ocultas(before + 1));
+    assert.equal(tab.toggle.text, hiddenLabel(before + 1));
+    assert.equal(side.toggle.text, hiddenLabel(before + 1));
   } finally {
     await setHidden(api.dashboardMessage, 'csv-export', false);
   }
@@ -1219,8 +1219,8 @@ test('HID-11/HID-12 the eye of a card takes the spec off the tab and the side pa
   const side = await sideReport('csv-export to come back to the side panel', (r) => r.cards.includes('csv-export'));
   assert.deepEqual([...tab.cards].sort(), boardNames(api.getProjects()));
   assert.deepEqual([...side.cards].sort(), boardNames(api.getProjects()));
-  assert.equal(tab.toggle.text, ocultas(before));
-  assert.equal(side.toggle.text, ocultas(before));
+  assert.equal(tab.toggle.text, hiddenLabel(before));
+  assert.equal(side.toggle.text, hiddenLabel(before));
 });
 
 test('SIDE-03/SIDE-04 under 700px the side panel stacks the stages, hides the empty ones and never scrolls sideways', async () => {
@@ -1280,9 +1280,9 @@ test('SIDE-03/SIDE-04 under 700px the side panel stacks the stages, hides the em
 
 const dashboardTab = () => allTabs().find((t) => t.input instanceof vscode.TabInputWebview && t.label === 'TLC Specs');
 
-test('SIDE-02 "Abrir feature no painel" shows the feature in the side panel and leaves the editor tabs alone', async () => {
-  const { commands } = vscode.extensions.getExtension('visual-tlc.visual-tlc').packageJSON.contributes;
-  assert.equal(commands.find((c) => c.command === 'tlcSpecs.showFeature').title, 'Abrir feature no painel');
+test('SIDE-02 "Open Feature in Dashboard" shows the feature in the side panel and leaves the editor tabs alone', async () => {
+  const { commands } = vscode.extensions.getExtension('JaymeKlein.visual-tlc').packageJSON.contributes;
+  assert.equal(commands.find((c) => c.command === 'tlcSpecs.showFeature').title, 'Open Feature in Dashboard');
 
   await closeAll();
   await vscode.commands.executeCommand('tlcSpecs.openFile', projectId(), 'features/user-auth/tasks.md', 1);
@@ -1307,9 +1307,9 @@ test('SIDE-02 "Abrir feature no painel" shows the feature in the side panel and 
   );
 });
 
-test('SIDE-08 "Abrir painel em aba" opens the panel in an editor tab named TLC Specs', async () => {
-  const { commands, menus } = vscode.extensions.getExtension('visual-tlc.visual-tlc').packageJSON.contributes;
-  assert.equal(commands.find((c) => c.command === 'tlcSpecs.openDashboard').title, 'Abrir painel em aba');
+test('SIDE-08 "Open Dashboard in Editor Tab" opens the panel in an editor tab named TLC Specs', async () => {
+  const { commands, menus } = vscode.extensions.getExtension('JaymeKlein.visual-tlc').packageJSON.contributes;
+  assert.equal(commands.find((c) => c.command === 'tlcSpecs.openDashboard').title, 'Open Dashboard in Editor Tab');
   assert.deepEqual(
     menus['view/title'].filter((m) => m.command === 'tlcSpecs.openDashboard').map((m) => m.when),
     ['view == tlcSpecs.features || view == tlcSpecs.panel'],
@@ -1378,7 +1378,7 @@ test('SIDE-07 (host) a click on an artifact in the side panel opens the Markdown
   assert.equal(dashboardTab(), undefined, 'the panel tab was opened');
 });
 
-test('SIDE-02 the "Abrir painel" button of a notification shows the feature in the side panel', async () => {
+test('SIDE-02 the "Open Dashboard" button of a notification shows the feature in the side panel', async () => {
   await closeAll();
   const shown = [];
   const original = vscode.window.showInformationMessage;
@@ -1390,8 +1390,8 @@ test('SIDE-02 the "Abrir painel" button of a notification shows the feature in t
     await write('.specs/features/side-notified/spec.md', SPEC_WITHOUT_SHALL);
     await sideReport('the details of side-notified', (r) => r.detail === 'side-notified');
     const toast = shown.find((t) => t.message.includes('side-notified'));
-    assert.match(toast.message, /Nova spec detectada: side-notified/);
-    assert.deepEqual(toast.items, ['Abrir painel']);
+    assert.match(toast.message, /New spec detected: side-notified/);
+    assert.deepEqual(toast.items, ['Open Dashboard']);
     assert.equal(dashboardTab(), undefined, 'the panel tab was opened');
     assert.deepEqual(
       allTabs().map((t) => t.label),
@@ -1402,7 +1402,7 @@ test('SIDE-02 the "Abrir painel" button of a notification shows the feature in t
   }
 });
 
-test('SIDE-02/PNL-05 with the side bar closed, "Abrir feature no painel" brings the panel back on that feature, completed or not', async () => {
+test('SIDE-02/PNL-05 with the side bar closed, "Open Feature in Dashboard" brings the panel back on that feature, completed or not', async () => {
   await closeAll();
   await vscode.commands.executeCommand('tlcSpecs.openFile', projectId(), 'features/user-auth/tasks.md', 1);
   const editor = (await waitFor('text editor', () => vscode.window.activeTextEditor)).document.uri.toString();
@@ -1448,7 +1448,7 @@ test('SFP-03 a spec outside the configured folders stays out of the trees, the p
   await setFolders(undefined);
   await waitForRoots(['.specs']);
   await write('test/nested/.specs/features/in-test/spec.md', SPEC_WITHOUT_SHALL);
-  // A Handoff gives the folder something to show in the Projeto tree.
+  // A Handoff gives the folder something to show in the Project tree.
   await write('test/nested/.specs/STATE.md', '# STATE\n\n## Decisions\n\n## Handoff\n\n- **Feature**: .specs/features/in-test\n- **Next step**: Write the tasks\n');
   await showSidePanel();
   await vscode.commands.executeCommand('tlcSpecs.openDashboard');
@@ -1476,7 +1476,7 @@ test('SFP-03 a spec outside the configured folders stays out of the trees, the p
 });
 
 test('SFP-04 tlcSpecs.specsFolders is the only folder setting, and a leftover tlcSpecs.exclude changes nothing', async () => {
-  const properties = vscode.extensions.getExtension('visual-tlc.visual-tlc').packageJSON.contributes.configuration.properties;
+  const properties = vscode.extensions.getExtension('JaymeKlein.visual-tlc').packageJSON.contributes.configuration.properties;
   assert.ok(!('tlcSpecs.exclude' in properties), 'tlcSpecs.exclude is still contributed');
   assert.deepEqual(
     Object.keys(properties).filter((key) => /folder|exclude/i.test(key)),
@@ -1556,7 +1556,7 @@ test('HFD-08 a specs folder without any spec keeps its node in Features with "0 
   await waitForRoots(['.specs']);
 });
 
-test('HFD-01/HFD-05/HFD-06 with two folders of specs the one with every spec hidden leaves Features while the one with a spec in view stays, and only the first reads "· oculta" with the eye open', async () => {
+test('HFD-01/HFD-05/HFD-06 with two folders of specs the one with every spec hidden leaves Features while the one with a spec in view stays, and only the first reads "· hidden" with the eye open', async () => {
   await write('side/.specs/features/side-one/spec.md', SPEC_WITHOUT_SHALL);
   let specsId;
   let open = [];
@@ -1579,7 +1579,7 @@ test('HFD-01/HFD-05/HFD-06 with two folders of specs the one with every spec hid
     assert.deepEqual(shown.map((n) => n.loaded.project.id), [specsId, sideId]);
     assert.deepEqual(
       shown.map((n) => api.featuresTree.getTreeItem(n).description),
-      [`${total} feature(s) · oculta`, '1 feature(s)'],
+      [`${total} feature(s) · hidden`, '1 feature(s)'],
     );
   } finally {
     await vscode.commands.executeCommand('tlcSpecs.hideHidden');

@@ -8,26 +8,26 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 ---
 
-**Design**: inline (sem `design.md`)
+**Design**: inline (no `design.md`)
 **Status**: Done
 
-Design inline: `src/core/folders.ts` continua puro. `findSpecsRoots` passa a aceitar só arquivos que começam no caminho da entrada, e `rootLabel` rotula pela pasta do workspace e, quando ela tem mais de uma pasta de specs, pelo caminho da entrada. `parseExclude` sai. `src/ui/store.ts` procura e observa `<entrada>/**` a partir da raiz de cada pasta do workspace, sem exclusão. As árvores Features e Projeto deixam de pular o nó quando há um projeto só.
+Inline design: `src/core/folders.ts` stays pure. `findSpecsRoots` now accepts only files that start at the entry path, and `rootLabel` labels by the workspace folder and, when that folder has more than one specs folder, by the entry path. `parseExclude` is removed. `src/ui/store.ts` searches and watches `<entry>/**` from the root of each workspace folder, with no exclusion. The Features and Project trees no longer skip the node when there is a single project.
 
 ---
 
 ## Test Coverage Matrix
 
-> Generated from codebase, project guidelines, and spec - confirm before Execute. Guidelines found: none - strong defaults applied. Estilo de `test/unit/folders.test.ts` e `test/integration/*.cjs`.
+> Generated from codebase, project guidelines, and spec - confirm before Execute. Guidelines found: none - strong defaults applied. Style of `test/unit/folders.test.ts` and `test/integration/*.cjs`.
 
 | Code Layer | Required Test Type | Coverage Expectation | Location Pattern | Run Command |
 | ---------- | ------------------ | -------------------- | ---------------- | ----------- |
-| Core (`src/core/folders.ts`) | unit | Todos os ramos; 1:1 com os ACs; um teste por edge case listado | `test/unit/folders.test.ts` | `npm test` |
-| Extension host (`src/ui`, `src/extension.ts`, `package.json` contributes) | integration | Cada AC no resultado visível: projetos, filhos das árvores, painel, barra de status, diagnósticos, aviso | `test/integration/*.cjs` | `npm run test:integration` |
+| Core (`src/core/folders.ts`) | unit | All branches; 1:1 with the ACs; one test per listed edge case | `test/unit/folders.test.ts` | `npm test` |
+| Extension host (`src/ui`, `src/extension.ts`, `package.json` contributes) | integration | Each AC on the visible result: projects, tree children, dashboard, status bar, diagnostics, warning | `test/integration/*.cjs` | `npm run test:integration` |
 | Docs (`README.md`, specs) | none | - (build gate only) | - | build gate only |
 
 ## Gate Check Commands
 
-> Generated from codebase - confirm before Execute. A integração roda num desktop oculto do Windows.
+> Generated from codebase - confirm before Execute. Integration runs on a hidden Windows desktop.
 
 | Gate Level | When to Use | Command |
 | ---------- | ----------- | ------- |
@@ -57,7 +57,7 @@ T1 → T2 → T3
 T3 → T4
 ```
 
-### Phase 4: Correções do Verifier (iteração 1)
+### Phase 4: Verifier fixes (iteration 1)
 
 ```
 T4 → T5 → T6
@@ -67,12 +67,12 @@ T4 → T5 → T6
 
 ## Task Breakdown
 
-### T1: Achar as pastas pelo caminho exato
+### T1: Find the folders by exact path
 
-**What**: `findSpecsRoots` aceita só arquivos que começam no caminho da entrada. `rootLabel` usa o nome da pasta do workspace, com " · entrada" quando ela tem mais de uma pasta de specs. `parseExclude` e o tipo `Exclude` saem
+**What**: `findSpecsRoots` accepts only files that start at the entry path. `rootLabel` uses the workspace folder name, with " · entry" when that folder has more than one specs folder. `parseExclude` and the `Exclude` type are removed
 **Where**: `src/core/folders.ts`
 **Depends on**: None
-**Reuses**: `parseSpecsFolders`, `pendingWarnings`, a regra de artefato (SF-05)
+**Reuses**: `parseSpecsFolders`, `pendingWarnings`, the artifact rule (SF-05)
 **Requirement**: SFP-01, SFP-02, SFP-09, SFP-11
 
 **Tools**:
@@ -82,11 +82,11 @@ T4 → T5 → T6
 
 **Done when**:
 
-- [x] `.specs` acha `.specs/...` e não acha `test/fixtures/sample/.specs/...` (SFP-01)
-- [x] `packages/api/.specs` acha a pasta nesse caminho e não acha `x/packages/api/.specs` (SFP-02)
-- [x] Rótulo: nome da pasta do workspace com uma pasta de specs; "nome · entrada" com duas (SFP-09)
-- [x] Entradas inválidas continuam recusadas e citadas (SFP-11)
-- [x] `parseExclude` e os testes dele ficam até a T2, que os tira junto com o store
+- [x] `.specs` finds `.specs/...` and does not find `test/fixtures/sample/.specs/...` (SFP-01)
+- [x] `packages/api/.specs` finds the folder at that path and does not find `x/packages/api/.specs` (SFP-02)
+- [x] Label: workspace folder name with one specs folder; "name · entry" with two (SFP-09)
+- [x] Invalid entries are still rejected and quoted (SFP-11)
+- [x] `parseExclude` and its tests stay until T2, which removes them along with the store changes
 - [x] Gate check passes: `npm run typecheck && npm test`
 
 **Tests**: unit
@@ -96,9 +96,9 @@ T4 → T5 → T6
 
 ---
 
-### T2: Ler só as pastas configuradas e tirar o exclude
+### T2: Read only the configured folders and remove exclude
 
-**What**: A busca e os watchers usam `<entrada>/**` a partir da raiz de cada pasta do workspace, sem exclusão. `tlcSpecs.exclude` sai do `package.json`, do store e dos avisos. A tela de boas-vindas diz que o caminho parte da raiz
+**What**: The search and the watchers use `<entry>/**` from the root of each workspace folder, with no exclusion. `tlcSpecs.exclude` is removed from `package.json`, the store and the warnings. The welcome screen says the path starts at the root
 **Where**: `src/ui/store.ts`, `package.json`
 **Depends on**: T1
 **Reuses**: `discoverSpecsRoots`, `watch`, `warn`
@@ -111,12 +111,12 @@ T4 → T5 → T6
 
 **Done when**:
 
-- [x] Com o padrão, os projetos são só `.specs`, mesmo com `.specs` criadas em subpastas (SFP-01)
-- [x] `packages/api/docs/specs` listada lê só essa pasta (SFP-02)
-- [x] Uma spec numa pasta não configurada fica fora das árvores, do painel na aba e na lateral, da barra de status e do painel Problemas (SFP-03)
-- [x] O `package.json` não declara `tlcSpecs.exclude`, e um valor dele nas configurações não muda a listagem (SFP-04)
-- [x] Entrada que não existe: sem projeto e sem aviso. Ao criar a pasta, ela aparece sem recarregar a janela (SFP-05, SFP-06)
-- [x] `parseExclude` e os testes EXC saem com a configuração. O teste de `pendingWarnings` passa a usar só `tlcSpecs.specsFolders`. Os SF de busca em profundidade são reescritos para o caminho exato. `multiroot.cjs` e o fixture `b` passam a usar só `specsFolders`
+- [x] With the default, the only project is `.specs`, even with `.specs` folders created in subfolders (SFP-01)
+- [x] Listing `packages/api/docs/specs` reads only that folder (SFP-02)
+- [x] A spec in an unconfigured folder stays out of the trees, the dashboard in the editor tab and in the side bar, the status bar and the Problems panel (SFP-03)
+- [x] `package.json` does not declare `tlcSpecs.exclude`, and a value for it in the settings does not change the listing (SFP-04)
+- [x] Entry that does not exist: no project and no warning. When the folder is created, it shows up without reloading the window (SFP-05, SFP-06)
+- [x] `parseExclude` and the EXC tests are removed with the setting. The `pendingWarnings` test now uses only `tlcSpecs.specsFolders`. The depth-search SF tests are rewritten for the exact path. `multiroot.cjs` and fixture `b` now use only `specsFolders`
 - [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
 
 **Tests**: integration
@@ -126,12 +126,12 @@ T4 → T5 → T6
 
 ---
 
-### T3: Nó da pasta com um projeto só
+### T3: Folder node with a single project
 
-**What**: As árvores Features e Projeto mostram o nó da pasta mesmo quando há uma única pasta de specs
+**What**: The Features and Project trees show the folder node even when there is a single specs folder
 **Where**: `src/ui/featuresTree.ts`, `src/ui/projectTree.ts`
 **Depends on**: T2
-**Reuses**: nó `root` das duas árvores
+**Reuses**: the `root` node of both trees
 **Requirement**: SFP-07, SFP-08, SFP-09, SFP-10
 
 **Tools**:
@@ -141,11 +141,11 @@ T4 → T5 → T6
 
 **Done when**:
 
-- [x] Features com uma pasta: um nó `root` com o nome da pasta do workspace e as specs dentro (SFP-07)
-- [x] Projeto com uma pasta: um nó `root` com Handoff, decisões e lições dentro (SFP-08)
-- [x] Duas pastas de specs na mesma pasta do workspace: "nome · entrada" nas duas árvores (SFP-09)
-- [x] Todas as specs ocultas: o nó continua, sem filhos, e a mensagem conta as ocultas (SFP-10)
-- [x] Os testes que liam as specs no topo da árvore passam a ler dentro do nó da pasta
+- [x] Features with one folder: a `root` node with the workspace folder name and the specs inside (SFP-07)
+- [x] Project with one folder: a `root` node with Handoff, decisions and lessons inside (SFP-08)
+- [x] Two specs folders in the same workspace folder: "name · entry" in both trees (SFP-09)
+- [x] All specs hidden: the node stays, with no children, and the message counts the hidden ones (SFP-10)
+- [x] The tests that read the specs at the top of the tree now read them inside the folder node
 - [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
 
 **Tests**: integration
@@ -155,12 +155,12 @@ T4 → T5 → T6
 
 ---
 
-### T4: Documentar o caminho exato
+### T4: Document the exact path
 
-**What**: O README descreve `tlcSpecs.specsFolders` como caminho exato e tira a seção de `tlcSpecs.exclude`. As specs specs-folders, exclude-folders e hidden-specs ganham notas do que mudou
+**What**: The README describes `tlcSpecs.specsFolders` as an exact path and removes the `tlcSpecs.exclude` section. The specs-folders, exclude-folders and hidden-specs specs get notes on what changed
 **Where**: `README.md`
 **Depends on**: T3
-**Reuses**: seção "Pastas de specs" do README
+**Reuses**: the README's "Specs folders" section
 **Requirement**: SFP-01, SFP-04
 
 **Tools**:
@@ -170,8 +170,8 @@ T4 → T5 → T6
 
 **Done when**:
 
-- [x] README sem `tlcSpecs.exclude`, com exemplos de caminho exato
-- [x] Notas no SF-02 e no SF-07 (specs-folders), no topo de exclude-folders e no HID-16 (hidden-specs)
+- [x] README without `tlcSpecs.exclude`, with exact-path examples
+- [x] Notes in SF-02 and SF-07 (specs-folders), at the top of exclude-folders and in HID-16 (hidden-specs)
 - [x] Gate check passes: `npm run typecheck && npm test`
 
 **Tests**: none
@@ -181,9 +181,9 @@ T4 → T5 → T6
 
 ---
 
-### T5: Fix 1 - o SFP-06 prova o watcher
+### T5: Fix 1 - SFP-06 proves the watcher
 
-**What**: O teste do SFP-05/06 espera acabarem os recarregamentos que a troca de configuração agenda antes de criar a pasta, para que só o watcher possa mostrá-la
+**What**: The SFP-05/06 test waits for the reloads scheduled by the setting change to finish before creating the folder, so that only the watcher can show it
 **Where**: `test/integration/suite.cjs`
 **Depends on**: T4
 **Reuses**: `waitFor`, `api.featuresTree.onDidChangeTreeData`
@@ -196,8 +196,8 @@ T4 → T5 → T6
 
 **Done when**:
 
-- [x] Antes de criar `later/.specs`, o teste espera a árvore ficar parada por mais tempo que o debounce de 300 ms (mata HW)
-- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`, num worktree em 1cec99c com só esta mudança. Na árvore real, o HID-11/HID-12 da árvore falha por causa do T1 do eye-on-every-spec (abcd78b), e o T3 dele reescreve esse teste
+- [x] Before creating `later/.specs`, the test waits for the tree to stay idle for longer than the 300 ms debounce (kills HW)
+- [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`, in a worktree at 1cec99c with only this change. In the real tree, the tree's HID-11/HID-12 fails because of eye-on-every-spec's T1 (abcd78b), and that feature's T3 rewrites the test
 - [x] Test count: 62 unit, 61 + 1 + 1 integration tests pass
 
 **Tests**: integration
@@ -207,9 +207,9 @@ T4 → T5 → T6
 
 ---
 
-### T6: Fix 2 - a regra do começo do caminho sozinha
+### T6: Fix 2 - the start-of-path rule on its own
 
-**What**: Os testes do SFP-01 e SFP-02 afirmam, sem nenhum caso positivo ao lado, que `.specs` em subpasta, o caminho numa subpasta e `.specs-old` não são pastas de specs
+**What**: The SFP-01 and SFP-02 tests assert, with no positive case beside them, that `.specs` in a subfolder, the path inside a subfolder and `.specs-old` are not specs folders
 **Where**: `test/unit/folders.test.ts`
 **Depends on**: T5
 **Reuses**: `findSpecsRoots`
@@ -222,10 +222,10 @@ T4 → T5 → T6
 
 **Done when**:
 
-- [x] Só arquivos em subpastas: `findSpecsRoots` devolve `[]` para `.specs` e para `packages/api/.specs` (mata U1)
-- [x] `.specs-old/STATE.md` não conta como `.specs` (mata U2)
+- [x] Only files in subfolders: `findSpecsRoots` returns `[]` for `.specs` and for `packages/api/.specs` (kills U1)
+- [x] `.specs-old/STATE.md` does not count as `.specs` (kills U2)
 - [x] Gate check passes: `npm run typecheck && npm test`
-- [x] Test count: 68 unit tests pass (62 do SFP + 6 do eye-on-every-spec já commitados; asserções novas em testes existentes)
+- [x] Test count: 68 unit tests pass (62 from SFP + 6 from eye-on-every-spec, already committed; new assertions in existing tests)
 
 **Tests**: unit
 **Gate**: quick
@@ -251,16 +251,16 @@ Phase 4:  T5 ------→ T6
 
 | Task | Scope | Status |
 | ---- | ----- | ------ |
-| T1: caminho exato | 1 módulo | ✅ Granular |
-| T2: store e manifesto | store e `package.json` | ⚠️ Coeso: a configuração removida do manifesto e do store se testa junto |
-| T3: nó da pasta | duas árvores, a mesma regra | ⚠️ Coeso: uma regra nas duas árvores |
-| T4: docs | README e notas | ✅ Granular |
+| T1: exact path | 1 module | ✅ Granular |
+| T2: store and manifest | store and `package.json` | ⚠️ Cohesive: the setting removed from the manifest and the store is tested as one |
+| T3: folder node | two trees, the same rule | ⚠️ Cohesive: one rule in both trees |
+| T4: docs | README and notes | ✅ Granular |
 
 ## Diagram-Definition Cross-Check
 
 | Task | Depends On (task body) | Diagram Shows | Status |
 | ---- | ---------------------- | ------------- | ------ |
-| T1 | None | início | ✅ Match |
+| T1 | None | start | ✅ Match |
 | T2 | T1 | T1 → T2 | ✅ Match |
 | T3 | T2 | T2 → T3 | ✅ Match |
 | T4 | T3 | T3 → T4 | ✅ Match |
@@ -275,5 +275,5 @@ Phase 4:  T5 ------→ T6
 | T2 | Extension host | integration | integration | ✅ OK |
 | T3 | Extension host | integration | integration | ✅ OK |
 | T4 | Docs | none | none | ✅ OK |
-| T5 | Extension host (teste) | integration | integration | ✅ OK |
-| T6 | Core (teste) | unit | unit | ✅ OK |
+| T5 | Extension host (test) | integration | integration | ✅ OK |
+| T6 | Core (test) | unit | unit | ✅ OK |

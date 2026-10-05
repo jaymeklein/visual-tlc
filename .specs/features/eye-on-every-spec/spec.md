@@ -2,12 +2,12 @@
 
 ## Problem Statement
 
-O olho de ocultar só existe nas specs que não estão concluídas. As concluídas ficam ocultas sozinhas e não têm olho próprio. Num projeto com todas as specs concluídas, como este, a árvore Features não mostra olho nenhum, e não há como ocultar nem manter à vista uma spec pela linha dela. O usuário pediu três vezes para ocultar uma spec pela árvore Features.
+The hide eye only exists on specs that are not completed. Completed specs are hidden automatically and have no eye of their own. In a project where every spec is completed, like this one, the Features tree shows no eye at all, and there is no way to hide a spec or keep it in view from its row. The user asked three times to hide a spec from the Features tree.
 
 ## Goals
 
-- [x] Toda spec tem um olho na linha da árvore Features e no card do painel, concluída ou não
-- [x] O clique no olho troca a spec entre oculta e à vista, e a escolha vale até o usuário trocar de novo
+- [x] Every spec has an eye on its Features tree row and on its Dashboard card, completed or not
+- [x] Clicking the eye switches the spec between hidden and in view, and the choice holds until the user switches it again
 
 ## Out of Scope
 
@@ -15,9 +15,9 @@ Explicitly excluded. Documented to prevent scope creep.
 
 | Feature     | Reason         |
 | ----------- | -------------- |
-| Olho no detalhe da feature | Continua fora, como no hidden-specs. O card e a linha bastam |
-| Deixar os botões da linha sempre visíveis | O VS Code mostra os botões de uma linha da árvore só com o mouse em cima ou com a linha selecionada. A API não muda isso |
-| Mudar o olho geral do painel e do título de Features | Continua como no hidden-specs: fechado esconde as ocultas, aberto mostra |
+| Eye in the feature detail | Still left out, as in hidden-specs. The card and the row are enough |
+| Keeping the row buttons always visible | VS Code shows a tree row's buttons only on hover or when the row is selected. The API cannot change that |
+| Changing the Dashboard top eye and the Features title eye | Same as in hidden-specs: closed hides the hidden specs, open shows them |
 
 ---
 
@@ -27,17 +27,17 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Assumption / decision | Chosen default  | Rationale | Confirmed? |
 | --------------------- | --------------- | --------- | ---------- |
-| Olho nas concluídas | Toda spec tem olho. As concluídas começam ocultas, e o olho de uma delas pode deixá-la à vista | Resposta do usuário: "Olho em toda spec" | y (2026-09-30) |
-| Estado de uma spec | Oculta quando o usuário a ocultou, ou quando está concluída e o usuário não a deixou à vista. À vista nos outros casos | Junta a regra das concluídas com a escolha do usuário | n |
-| Ícone do olho da spec | Olho aberto, "Ocultar spec", numa spec à vista. Olho fechado, "Desocultar spec", numa spec oculta. Igual ao hidden-specs, agora também nas concluídas | Mesmo sentido do olho geral: o ícone mostra o estado | n |
-| Onde fica a escolha | No estado do workspace no VS Code, como no hidden-specs. As ocultas à mão na lista que já existe, as concluídas à vista numa segunda lista | Mantém as marcas já gravadas | n |
-| Escolha que coincide com o padrão | Não é gravada: ocultar uma concluída à vista apaga a escolha, e ela volta a ser oculta por ser concluída | Evita escolhas que não mudam nada | n |
-| Spec ocultada à mão que depois é concluída | Continua oculta | Oculta pelas duas regras | n |
-| Concluída deixada à vista que depois volta a falhar | Continua à vista | Não concluída fica à vista por padrão | n |
-| Coluna Concluídas com o olho geral fechado | Aparece quando há alguma concluída à vista, com as seis etapas. Sem concluída à vista, as cinco etapas, como no PNL-03 | A concluída à vista precisa de uma coluna | n |
-| Esmaecido e "· oculta" com o olho geral aberto | Toda spec oculta, concluída ou não, fica esmaecida no quadro e com "· oculta" na árvore. Substitui o HID-14, que valia só para as marcadas | Mostra quais specs o olho geral fechado esconde | n |
-| Número de ocultas | Conta as specs ocultas por qualquer regra, uma vez cada | Mantém o HID-01 | n |
-| Dimensões implícitas | Persistência coberta pelo EYE-09. Remaining dimensions N/A for this scope | Estado local ao workspace, sem chamadas externas ou concorrência | n |
+| Eye on completed specs | Every spec has an eye. Completed specs start hidden, and the eye of one can keep it in view | User's answer: "Eye on every spec" | y (2026-09-30) |
+| State of a spec | Hidden when the user hid it, or when it is completed and the user did not keep it in view. In view otherwise | Combines the completed-spec rule with the user's choice | n |
+| Spec eye icon | Open eye, "Hide Spec", on a spec in view. Closed eye, "Unhide Spec", on a hidden spec. Same as hidden-specs, now on completed specs too | Same meaning as the top eye: the icon shows the state | n |
+| Where the choice is stored | In the VS Code workspace state, as in hidden-specs. Manually hidden specs in the existing list, completed specs kept in view in a second list | Keeps the marks already saved | n |
+| Choice that matches the default | Not saved: hiding a completed spec that is in view clears the choice, and the spec is hidden again because it is completed | Avoids choices that change nothing | n |
+| Manually hidden spec that is later completed | Stays hidden | Hidden by both rules | n |
+| Completed spec kept in view that later fails again | Stays in view | A spec that is not completed is in view by default | n |
+| Completed column with the top eye closed | Shown when some completed spec is in view, with all six stages. With no completed spec in view, five stages, as in PNL-03 | A completed spec in view needs a column | n |
+| Dimmed and "· hidden" with the top eye open | Every hidden spec, completed or not, is dimmed on the board and has "· hidden" in the tree. Replaces HID-14, which applied only to marked specs | Shows which specs the closed top eye hides | n |
+| Hidden count | Counts the specs hidden by any rule, once each | Keeps HID-01 | n |
+| Implicit dimensions | Persistence covered by EYE-09. Remaining dimensions N/A for this scope | State local to the workspace, no external calls or concurrency | n |
 
 **Open questions:** none - all resolved or logged above.
 
@@ -45,32 +45,32 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 ## User Stories
 
-### P1: Ocultar ou mostrar qualquer spec pelo olho dela ⭐ MVP
+### P1: Hide or show any spec with its eye ⭐ MVP
 
-**User Story**: Como quem acompanha as specs pela barra lateral, quero um olho em cada spec, concluída ou não, para escolher quais ficam à vista.
+**User Story**: As someone who follows the specs from the side bar, I want an eye on each spec, completed or not, so I can choose which ones stay in view.
 
-**Why P1**: É o pedido repetido do usuário.
+**Why P1**: It is the user's repeated request.
 
 **Acceptance Criteria**:
 
-1. The extensão SHALL mostrar um olho em toda spec, na linha da árvore Features e no card do painel, concluída ou não
-2. WHILE uma spec está à vista the olho dela SHALL ser o olho aberto com o título "Ocultar spec"
-3. WHILE uma spec está oculta the olho dela SHALL ser o olho fechado com o título "Desocultar spec"
-4. WHEN o usuário clica em "Ocultar spec", na árvore ou no card, THEN a extensão SHALL tirar a spec da árvore e do quadro com o olho geral fechado e somá-la ao número de ocultas, concluída ou não
-5. WHEN o usuário clica em "Desocultar spec" numa spec concluída THEN a extensão SHALL mostrá-la na árvore e na coluna Concluídas com o olho geral fechado, e tirá-la do número de ocultas
-6. WHILE uma spec concluída não tem escolha do usuário the extensão SHALL tratá-la como oculta
-7. WHILE o olho geral do painel está fechado e há alguma concluída à vista the quadro SHALL mostrar a coluna Concluídas com ela, nas seis etapas
-8. WHILE o olho geral está aberto the extensão SHALL mostrar toda spec oculta, concluída ou não, com o card esmaecido no painel e com a descrição terminada em "· oculta" na árvore
-9. WHEN o VS Code reabre o mesmo workspace THEN a extensão SHALL manter as escolhas feitas pelo olho de cada spec
+1. The extension SHALL show an eye on every spec, on the Features tree row and on the Dashboard card, completed or not
+2. WHILE a spec is in view the spec's eye SHALL be the open eye with the title "Hide Spec"
+3. WHILE a spec is hidden the spec's eye SHALL be the closed eye with the title "Unhide Spec"
+4. WHEN the user clicks "Hide Spec", in the tree or on the card, THEN the extension SHALL remove the spec from the tree and the board with the top eye closed and add it to the hidden count, completed or not
+5. WHEN the user clicks "Unhide Spec" on a completed spec THEN the extension SHALL show it in the tree and in the Completed column with the top eye closed, and remove it from the hidden count
+6. WHILE a completed spec has no user choice the extension SHALL treat it as hidden
+7. WHILE the Dashboard top eye is closed and some completed spec is in view the board SHALL show the Completed column with that spec, across all six stages
+8. WHILE the top eye is open the extension SHALL show every hidden spec, completed or not, with a dimmed card on the Dashboard and with a description ending in "· hidden" in the tree
+9. WHEN VS Code reopens the same workspace THEN the extension SHALL keep the choices made with each spec's eye
 
-**Independent Test**: Neste repositório, abrir o olho do título de Features, passar o mouse numa spec concluída e clicar no olho fechado dela. Fechar o olho do título: a spec continua na árvore e no painel, e o número de ocultas cai um. Clicar no olho aberto dela: ela some de novo.
+**Independent Test**: In this repository, open the Features title eye, hover over a completed spec, and click its closed eye. Close the title eye: the spec stays in the tree and on the Dashboard, and the hidden count drops by one. Click its open eye: it disappears again.
 
 ---
 
 ## Edge Cases
 
-- WHEN o usuário oculta uma concluída que estava à vista THEN a extensão SHALL apagar a escolha, e a spec volta a ser oculta por ser concluída
-- WHEN uma spec oculta à mão é aberta no painel pela árvore ou por uma notificação THEN a extensão SHALL mostrar o detalhe dela, como no HID-15
+- WHEN the user hides a completed spec that was in view THEN the extension SHALL clear the choice, and the spec is hidden again because it is completed
+- WHEN a manually hidden spec is opened on the Dashboard from the tree or from a notification THEN the extension SHALL show its detail, as in HID-15
 
 ---
 
@@ -78,26 +78,26 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Requirement ID | Story       | Phase  | Status  |
 | -------------- | ----------- | ------ | ------- |
-| EYE-01 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Verified |
-| EYE-02 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Verified |
-| EYE-03 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Verified |
-| EYE-04 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Verified |
-| EYE-05 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Verified |
-| EYE-06 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Verified |
-| EYE-07 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Verified |
-| EYE-08 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Verified |
-| EYE-09 | P1: Ocultar ou mostrar qualquer spec pelo olho dela | Execute | Verified |
-| EYE-10 | Edge case: ocultar uma concluída à vista | Execute | Verified |
-| EYE-11 | Edge case: detalhe de uma oculta | Execute | Verified |
+| EYE-01 | P1: Hide or show any spec with its eye | Execute | Verified |
+| EYE-02 | P1: Hide or show any spec with its eye | Execute | Verified |
+| EYE-03 | P1: Hide or show any spec with its eye | Execute | Verified |
+| EYE-04 | P1: Hide or show any spec with its eye | Execute | Verified |
+| EYE-05 | P1: Hide or show any spec with its eye | Execute | Verified |
+| EYE-06 | P1: Hide or show any spec with its eye | Execute | Verified |
+| EYE-07 | P1: Hide or show any spec with its eye | Execute | Verified |
+| EYE-08 | P1: Hide or show any spec with its eye | Execute | Verified |
+| EYE-09 | P1: Hide or show any spec with its eye | Execute | Verified |
+| EYE-10 | Edge case: hiding a completed spec in view | Execute | Verified |
+| EYE-11 | Edge case: detail of a hidden spec | Execute | Verified |
 
-**ID format:** `EYE-NN`, na ordem dos critérios acima.
+**ID format:** `EYE-NN`, in the order of the criteria above.
 
-**Coverage:** 11 total, 11 verificados.
+**Coverage:** 11 total, 11 verified.
 
 ---
 
 ## Success Criteria
 
-- [x] Neste repositório, onde todas as specs estão concluídas, cada linha da árvore Features tem o olho ao passar o mouse
-- [x] Uma concluída deixada à vista continua à vista depois de recarregar a janela. Provado com um `Memento` falso lido por uma instância nova, como no hidden-specs. Nenhum teste reabre o VS Code
-- [x] Os testes do hidden-specs que diziam "concluída sem olho" e "concluída sem esmaecido" são reescritos para a regra nova, sem perder as outras asserções
+- [x] In this repository, where every spec is completed, every Features tree row shows the eye on hover
+- [x] A completed spec kept in view stays in view after reloading the window. Proven with a fake `Memento` read by a new instance, as in hidden-specs. No test reopens VS Code
+- [x] The hidden-specs tests that said "completed has no eye" and "completed is not dimmed" are rewritten for the new rule, without losing the other assertions

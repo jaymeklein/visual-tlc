@@ -8,31 +8,31 @@
 
 ## Feature Boundary
 
-Todo clique da extensão em artefatos da skill abre modo visualização; tasks aparecem como lista somente leitura na árvore e no painel. Nenhuma capacidade de edição é adicionada.
+Every click on a skill artifact in the extension opens it in preview mode; tasks appear as a read-only list in the tree and in the dashboard. No editing capability is added.
 
 ---
 
 ## Implementation Decisions
 
-### Modo de abrir artefatos
+### How artifacts open
 
-- Clique abre o Markdown preview nativo, na coluna ativa
-- Ícone inline "Abrir no editor" nas linhas de etapa, arquivo, requisito e fase leva o cursor à linha do item
-- Avisos continuam abrindo o editor na linha do problema
+- A click opens the native Markdown preview, in the active column
+- An inline "Open in Editor" icon on stage, file, requirement and phase rows takes the cursor to the item's line
+- Warnings still open the editor at the problem's line
 
-### Lista de tasks
+### Task list
 
-- Etapas Tasks e Execução expandem a mesma lista, agrupada por Phase
-- Task expande detalhes como itens de leitura (O quê, Onde, Depende de, Requisitos, Tests/Gate, Done when)
-- No painel, a linha da task expande e recolhe os detalhes no lugar
+- The Tasks and Execution stages expand the same list, grouped by Phase
+- A task expands into its details as read-only items (What, Where, Depends on, Requirements, Tests/Gate, Done when)
+- In the dashboard, the task row expands and collapses the details in place
 
 ### Agent's Discretion
 
-Ícones e textos dos itens de detalhe; posição do ícone de editor no painel.
+Icons and text of the detail items; position of the editor icon in the dashboard.
 
 ### Declined / Undiscussed Gray Areas → Assumptions
 
-Arquivo da etapa Execução, ausência de ícone de editor nas tasks e ícone de editor do painel restrito à seção Arquivos — registrados como premissas na spec.
+Execution stage file, no editor icon on tasks, and the dashboard editor icon limited to the Files section — recorded as assumptions in the spec.
 
 ---
 
@@ -44,4 +44,4 @@ No specific requirements - open to standard approaches
 
 ## Deferred Ideas
 
-- Preview rolado até a linha do item (depende de suporte do Markdown preview)
+- Preview scrolled to the item's line (depends on Markdown preview support)

@@ -10,7 +10,7 @@ export async function previewFeatureMarkdown(store: SpecsStore, ref: FeatureRef)
   const file = found && featureMarkdown(found.feature);
   const uri = file && store.uriFor(ref.projectId, file.path);
   if (!uri) {
-    void vscode.window.showWarningMessage(`A feature "${ref.feature}" não tem arquivos markdown.`);
+    void vscode.window.showWarningMessage(`Feature "${ref.feature}" has no markdown files.`);
     return;
   }
   await previewUri(uri);
