@@ -2,12 +2,12 @@
 
 ## Problem Statement
 
-Hoje, clicar numa etapa, arquivo, requisito ou task da extensão abre o markdown no editor de texto, onde ele pode ser alterado sem querer — e a extensão existe para acompanhar a skill, não para editar os artefatos dela. As tasks só aparecem dentro da etapa Execução e cada clique leva ao `tasks.md` editável. O acompanhamento precisa ser de leitura: artefatos abrem em modo visualização e as tasks aparecem como lista.
+Today, clicking a stage, file, requirement or task in the extension opens the markdown in the text editor, where it can be changed by accident — and the extension exists to follow the skill, not to edit its artifacts. Tasks only appear inside the Execution stage, and each click leads to the editable `tasks.md`. Following along should be read-only: artifacts open in preview mode and tasks appear as a list.
 
 ## Goals
 
-- [ ] Nenhum clique em artefato abre um editor, exceto pelo ícone explícito "Abrir no editor" e pelos avisos
-- [ ] As tasks de toda feature com `tasks.md` ficam visíveis como lista, com status e detalhes, sem abrir arquivo
+- [ ] No click on an artifact opens an editor, except the explicit "Open in Editor" icon and warnings
+- [ ] The tasks of every feature with a `tasks.md` are visible as a list, with status and details, without opening a file
 
 ## Out of Scope
 
@@ -15,9 +15,9 @@ Explicitly excluded. Documented to prevent scope creep.
 
 | Feature     | Reason         |
 | ----------- | -------------- |
-| Editar tasks ou marcar checkboxes pela extensão | A extensão é somente leitura; o `tasks.md` pertence à skill |
-| Renderizador de markdown próprio | O Markdown preview nativo do VS Code já atende |
-| Abrir o preview rolado até uma linha | O comando de preview não recebe linha; o ícone "Abrir no editor" cobre esse caso |
+| Editing tasks or ticking checkboxes from the extension | The extension is read-only; `tasks.md` belongs to the skill |
+| A custom markdown renderer | VS Code's native Markdown preview is enough |
+| Opening the preview scrolled to a line | The preview command takes no line; the "Open in Editor" icon covers this case |
 
 ---
 
@@ -27,13 +27,13 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Assumption / decision | Chosen default  | Rationale | Confirmed? |
 | --------------------- | --------------- | --------- | ---------- |
-| Clique em artefato | Abre no Markdown preview da coluna ativa; ícone inline "Abrir no editor" abre na linha do item | Decisão do usuário no discuss | y |
-| Lista de tasks | Na árvore (etapas Tasks e Execução) e no painel, com detalhes expandidos no lugar | Decisão do usuário no discuss | y |
-| Avisos | Continuam abrindo o editor na linha do problema | A linha é a informação principal de um aviso | y |
-| Arquivo da etapa Execução | `tasks.md` | A skill não grava artefato próprio de execução; o progresso vive no `tasks.md` | n |
-| Ícone de editor nas linhas de task | Não existe | Tasks são somente leitura; o `tasks.md` segue acessível pelo ícone da etapa Tasks | n |
-| Ícone de editor no painel | Só nas linhas da seção Arquivos | Mantém o painel limpo; a linha exata de cada item fica na árvore | n |
-| Dimensões implícitas | Remaining dimensions N/A for this scope | Navegação de UI somente leitura: sem persistência, chamadas externas, auth, concorrência ou transição de estado | n |
+| Click on an artifact | Opens in the Markdown preview in the active column; inline "Open in Editor" icon opens at the item's line | User's decision in discuss | y |
+| Task list | In the tree (Tasks and Execution stages) and in the dashboard, with details expanded in place | User's decision in discuss | y |
+| Warnings | Still open the editor at the problem's line | The line is the key information in a warning | y |
+| Execution stage file | `tasks.md` | The skill writes no execution artifact of its own; progress lives in `tasks.md` | n |
+| Editor icon on task rows | None | Tasks are read-only; `tasks.md` stays reachable through the Tasks stage icon | n |
+| Editor icon in the dashboard | Only on the Files section rows | Keeps the dashboard clean; the tree has each item's exact line | n |
+| Implicit dimensions | Remaining dimensions N/A for this scope | Read-only UI navigation: no persistence, external calls, auth, concurrency or state transitions | n |
 
 **Open questions:** none - all resolved or logged above.
 
@@ -41,63 +41,63 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 ## User Stories
 
-### P1: Abrir artefatos em modo visualização ⭐ MVP
+### P1: Open artifacts in preview mode ⭐ MVP
 
-**User Story**: Como quem acompanha as specs, quero que clicar numa etapa, arquivo ou requisito abra o markdown em modo visualização para ler sem risco de editar.
+**User Story**: As someone following the specs, I want clicking a stage, file or requirement to open the markdown in preview mode, so that I can read it without risk of editing it.
 
-**Why P1**: É o pedido central — acompanhar a skill sem alterar os artefatos dela.
+**Why P1**: It is the core request — follow the skill without changing its artifacts.
 
 **Acceptance Criteria**:
 
-1. WHEN o usuário clica numa etapa com arquivo na árvore Features THEN a extensão SHALL abrir o markdown da etapa no Markdown preview (Spec → `spec.md`, Design → `design.md`, Tasks → `tasks.md`, Execução → `tasks.md`, Verificação → `validation.md`)
-2. WHEN o usuário clica num arquivo, requisito ou fase na árvore Features THEN a extensão SHALL abrir o markdown correspondente no Markdown preview
-3. WHEN o usuário clica num item da árvore Projeto (Handoff, decisão ou lição) THEN a extensão SHALL abrir `STATE.md` ou `LESSONS.md` no Markdown preview
-4. WHEN o usuário aciona o ícone "Abrir no editor" de uma etapa, arquivo, requisito ou fase THEN a extensão SHALL abrir o arquivo no editor de texto com o cursor na linha do item (linha 1 quando o item não tem linha)
-5. WHEN o usuário clica num aviso THEN a extensão SHALL abrir o arquivo no editor de texto na linha do aviso
+1. WHEN the user clicks a stage that has a file in the Features tree THEN the extension SHALL open the stage's markdown in the Markdown preview (Spec → `spec.md`, Design → `design.md`, Tasks → `tasks.md`, Execution → `tasks.md`, Verification → `validation.md`)
+2. WHEN the user clicks a file, requirement or phase in the Features tree THEN the extension SHALL open the matching markdown in the Markdown preview
+3. WHEN the user clicks an item in the Project tree (Handoff, decision or lesson) THEN the extension SHALL open `STATE.md` or `LESSONS.md` in the Markdown preview
+4. WHEN the user triggers the "Open in Editor" icon of a stage, file, requirement or phase THEN the extension SHALL open the file in the text editor with the cursor on the item's line (line 1 when the item has no line)
+5. WHEN the user clicks a warning THEN the extension SHALL open the file in the text editor at the warning's line
 
-**Independent Test**: Clicar na etapa Spec de `user-auth` abre a aba "Preview spec.md"; o ícone de editor de um requisito abre `spec.md` na linha dele.
+**Independent Test**: Clicking the Spec stage of `user-auth` opens the "Preview spec.md" tab; a requirement's editor icon opens `spec.md` at its line.
 
 ---
 
-### P1: Tasks como lista somente leitura ⭐ MVP
+### P1: Tasks as a read-only list ⭐ MVP
 
-**User Story**: Como quem acompanha a execução, quero ver as tasks como lista com status e detalhes para seguir o progresso sem abrir o `tasks.md` editável.
+**User Story**: As someone following the execution, I want to see the tasks as a list with status and details, so that I can track progress without opening the editable `tasks.md`.
 
-**Why P1**: Pedido explícito; hoje a única forma de ver uma task é abrir o arquivo editável.
+**Why P1**: Explicit request; today the only way to see a task is to open the editable file.
 
 **Acceptance Criteria**:
 
-1. WHEN o usuário expande a etapa Tasks ou a etapa Execução de uma feature com tasks THEN a árvore SHALL listar as tasks agrupadas por Phase, cada uma com ícone de status e o rótulo "Tn: título"
-2. WHEN o usuário expande uma task na árvore THEN a árvore SHALL mostrar como itens de leitura o O quê, o Onde, o Depende de, os Requisitos, Tests/Gate e cada item de Done when com seu estado marcado ou não
-3. The árvore SHALL manter as linhas de task e de detalhe de task sem comando de abrir arquivo, de modo que clicar nelas nunca abre um editor
-4. IF a feature não tem `tasks.md` ou o `tasks.md` não tem tasks THEN a árvore SHALL exibir a etapa Tasks sem opção de expandir
+1. WHEN the user expands the Tasks stage or the Execution stage of a feature with tasks THEN the tree SHALL list the tasks grouped by Phase, each with a status icon and the label "Tn: title"
+2. WHEN the user expands a task in the tree THEN the tree SHALL show as read-only items the What, the target file, the Depends on, the Requirements, Tests/Gate and each Done when item with its checked or unchecked state
+3. The tree SHALL keep task rows and task detail rows without an open-file command, so that clicking them never opens an editor
+4. IF the feature has no `tasks.md` or the `tasks.md` has no tasks THEN the tree SHALL show the Tasks stage with no option to expand it
 
-**Independent Test**: Expandir Tasks de `user-auth` mostra 3 fases e 7 tasks; expandir T4 mostra 3 itens de Done when, 1 marcado; nenhum desses cliques abre editor.
+**Independent Test**: Expanding Tasks of `user-auth` shows 3 phases and 7 tasks; expanding T4 shows 3 Done when items, 1 checked; none of these clicks opens an editor.
 
 ---
 
-### P2: Mesmo comportamento no painel
+### P2: Same behavior in the dashboard
 
-**User Story**: Como quem usa o painel, quero que os cliques no painel sigam as mesmas regras da árvore para não alternar entre modos de abrir.
+**User Story**: As someone using the dashboard, I want clicks in the dashboard to follow the same rules as the tree, so that I do not switch between ways of opening files.
 
-**Why P2**: A árvore cobre o MVP; o painel é a segunda superfície.
+**Why P2**: The tree covers the MVP; the dashboard is the second surface.
 
 **Acceptance Criteria**:
 
-1. WHEN o usuário clica numa etapa do stepper, num link "abrir X.md" ou numa linha de requisito, de história ou de arquivo no painel THEN o painel SHALL abrir o markdown no Markdown preview
-2. WHEN o usuário aciona o ícone "Abrir no editor" de uma linha da seção Arquivos no painel THEN o painel SHALL abrir o arquivo no editor de texto
-3. WHEN o usuário clica numa linha de task recolhida no painel THEN o painel SHALL expandir no lugar os detalhes da task (O quê, Onde, Depende de, Done when) sem abrir arquivo
-4. WHEN o usuário clica numa linha de task expandida no painel THEN o painel SHALL recolher os detalhes da task
-5. WHEN o usuário clica num aviso no painel THEN o painel SHALL abrir o arquivo no editor de texto na linha do aviso
+1. WHEN the user clicks a stepper stage, an "open X.md" link, or a requirement, story or file row in the dashboard THEN the dashboard SHALL open the markdown in the Markdown preview
+2. WHEN the user triggers the "Open in Editor" icon of a Files section row in the dashboard THEN the dashboard SHALL open the file in the text editor
+3. WHEN the user clicks a collapsed task row in the dashboard THEN the dashboard SHALL expand the task details in place (What, target file, Depends on, Done when) without opening a file
+4. WHEN the user clicks an expanded task row in the dashboard THEN the dashboard SHALL collapse the task details
+5. WHEN the user clicks a warning in the dashboard THEN the dashboard SHALL open the file in the text editor at the warning's line
 
-**Independent Test**: No detalhe de `user-auth`, clicar em T4 mostra os 3 itens de Done when no lugar; clicar em "abrir spec.md" abre o preview.
+**Independent Test**: In the `user-auth` detail, clicking T4 shows the 3 Done when items in place; clicking "open spec.md" opens the preview.
 
 ---
 
 ## Edge Cases
 
-- IF uma etapa não tem arquivo (pulada ou pendente) THEN a extensão SHALL exibir a etapa sem ação de clique e sem ícone de editor
-- WHEN as etapas Tasks e Execução estão expandidas ao mesmo tempo THEN a árvore SHALL exibir a lista de tasks nas duas sem erro de identificador duplicado
+- IF a stage has no file (skipped or pending) THEN the extension SHALL show the stage with no click action and no editor icon
+- WHEN the Tasks and Execution stages are expanded at the same time THEN the tree SHALL show the task list in both with no duplicate identifier error
 
 ---
 
@@ -105,30 +105,30 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Requirement ID | Story       | Phase  | Status  |
 | -------------- | ----------- | ------ | ------- |
-| NAV-01 | P1: Abrir artefatos em modo visualização | - | Verified |
-| NAV-02 | P1: Abrir artefatos em modo visualização | - | Verified |
-| NAV-03 | P1: Abrir artefatos em modo visualização | - | Verified |
-| NAV-04 | P1: Abrir artefatos em modo visualização | - | Verified |
-| NAV-05 | P1: Abrir artefatos em modo visualização | - | Verified |
-| NAV-06 | P1: Tasks como lista somente leitura | - | Verified |
-| NAV-07 | P1: Tasks como lista somente leitura | - | Verified |
-| NAV-08 | P1: Tasks como lista somente leitura | - | Verified |
-| NAV-09 | P1: Tasks como lista somente leitura | - | Verified |
-| NAV-10 | P2: Mesmo comportamento no painel | - | Verified |
-| NAV-11 | P2: Mesmo comportamento no painel | - | Verified |
-| NAV-12 | P2: Mesmo comportamento no painel | - | Verified |
-| NAV-13 | P2: Mesmo comportamento no painel | - | Verified |
-| NAV-14 | P2: Mesmo comportamento no painel | - | Verified |
-| NAV-15 | Edge case: etapa sem arquivo | - | Verified |
-| NAV-16 | Edge case: Tasks e Execução expandidas | - | Verified |
+| NAV-01 | P1: Open artifacts in preview mode | - | Verified |
+| NAV-02 | P1: Open artifacts in preview mode | - | Verified |
+| NAV-03 | P1: Open artifacts in preview mode | - | Verified |
+| NAV-04 | P1: Open artifacts in preview mode | - | Verified |
+| NAV-05 | P1: Open artifacts in preview mode | - | Verified |
+| NAV-06 | P1: Tasks as a read-only list | - | Verified |
+| NAV-07 | P1: Tasks as a read-only list | - | Verified |
+| NAV-08 | P1: Tasks as a read-only list | - | Verified |
+| NAV-09 | P1: Tasks as a read-only list | - | Verified |
+| NAV-10 | P2: Same behavior in the dashboard | - | Verified |
+| NAV-11 | P2: Same behavior in the dashboard | - | Verified |
+| NAV-12 | P2: Same behavior in the dashboard | - | Verified |
+| NAV-13 | P2: Same behavior in the dashboard | - | Verified |
+| NAV-14 | P2: Same behavior in the dashboard | - | Verified |
+| NAV-15 | Edge case: stage with no file | - | Verified |
+| NAV-16 | Edge case: Tasks and Execution expanded | - | Verified |
 
-**ID format:** `NAV-NN`, na ordem dos critérios acima (P1 artefatos → NAV-01..05, P1 tasks → NAV-06..09, P2 painel → NAV-10..14, edge cases → NAV-15..16).
+**ID format:** `NAV-NN`, in the order of the criteria above (P1 artifacts → NAV-01..05, P1 tasks → NAV-06..09, P2 dashboard → NAV-10..14, edge cases → NAV-15..16).
 
-**Coverage:** 16 total, escopo Medium (tasks implícitas na execução, sem `tasks.md`).
+**Coverage:** 16 total, Medium scope (tasks implicit in execution, no `tasks.md`).
 
 ---
 
 ## Success Criteria
 
-- [ ] Nenhum clique em etapa, arquivo, requisito, fase ou task abre um editor de texto
-- [ ] As 7 tasks de `user-auth` aparecem como lista na árvore e no painel, com os detalhes legíveis sem abrir arquivo
+- [ ] No click on a stage, file, requirement, phase or task opens a text editor
+- [ ] The 7 tasks of `user-auth` appear as a list in the tree and in the dashboard, with the details readable without opening a file

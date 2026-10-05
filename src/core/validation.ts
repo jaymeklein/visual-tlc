@@ -44,23 +44,23 @@ export function parseValidation(text: string, file: string): ValidationDoc {
 
   const verdict = verdictOf(text);
   const hasEvidence = EVIDENCE_RE.test(text);
-  if (verdict === 'none') issue('error', 'validation.md não tem veredito PASS/FAIL (relatório só em prosa não conta)');
-  else if (verdict === 'unfilled') issue('error', 'Veredito do validation.md ainda é o placeholder "[PASS | FAIL]"');
-  else if (verdict === 'fail') issue('error', 'Verificação FAIL — os gaps devem virar fix tasks e passar por nova verificação');
-  if (verdict === 'pass' && !hasEvidence) issue('error', 'validation.md é PASS mas não cita evidência file:line (evidence-or-zero)');
+  if (verdict === 'none') issue('error', 'validation.md has no PASS/FAIL verdict (a prose-only report does not count)');
+  else if (verdict === 'unfilled') issue('error', 'validation.md verdict is still the "[PASS | FAIL]" placeholder');
+  else if (verdict === 'fail') issue('error', 'Verification FAIL — the gaps must become fix tasks and be verified again');
+  if (verdict === 'pass' && !hasEvidence) issue('error', 'validation.md is PASS but cites no file:line evidence (evidence-or-zero)');
   if (overall === 'not-ready' || overall === 'issues') {
-    issue('warning', overall === 'not-ready' ? 'Resumo do Verifier: Not Ready' : 'Resumo do Verifier: Issues', overallLine);
+    issue('warning', overall === 'not-ready' ? 'Verifier summary: Not Ready' : 'Verifier summary: Issues', overallLine);
   }
 
   const criteria = countCriteria(doc);
-  if (criteria.gap > 0) issue('warning', `${criteria.gap} critério(s) de aceitação sem cobertura (GAP)`);
-  if (criteria.precision > 0) issue('info', `${criteria.precision} spec-precision gap(s) sinalizado(s) pelo Verifier`);
+  if (criteria.gap > 0) issue('warning', `${criteria.gap} acceptance criterion(a) without coverage (GAP)`);
+  if (criteria.precision > 0) issue('info', `${criteria.precision} spec-precision gap(s) flagged by the Verifier`);
 
   const mutations = countMutations(doc);
-  if (mutations.survived > 0) issue('warning', `${mutations.survived} mutante(s) sobreviveu(ram) ao sensor — testes pouco discriminantes`);
+  if (mutations.survived > 0) issue('warning', `${mutations.survived} mutant(s) survived the sensor — tests do not discriminate enough`);
 
   const uat = countUat(doc);
-  if (uat.issue > 0) issue('warning', `${uat.issue} problema(s) reportado(s) no UAT`);
+  if (uat.issue > 0) issue('warning', `${uat.issue} issue(s) reported in UAT`);
 
   const fixPlans = doc.headings.filter((h) => /^Fix\s+\d+/i.test(h.text) && !/\[/.test(h.text)).length;
 

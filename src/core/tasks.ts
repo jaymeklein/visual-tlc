@@ -77,13 +77,13 @@ export function parseTasks(text: string, file: string): TasksDoc {
     issues.push({ severity, message, file, line: index === undefined ? undefined : index + 1 });
 
   for (const name of TASKS_REQUIRED_SECTIONS) {
-    if (!findSection(doc, name, 4)) issue('error', `Seção obrigatória ausente: "## ${name}"`);
+    if (!findSection(doc, name, 4)) issue('error', `Missing required section: "## ${name}"`);
   }
   for (const name of ['Test Coverage Matrix', 'Gate Check Commands']) {
     const r = findSection(doc, name, 4);
     if (!r) continue;
     const hasTableRow = bodyLines(doc, r).some((l) => l.text.trim().startsWith('|') && !/\[[^\]]+\]\s*\|/.test(l.text));
-    if (!hasTableRow) issue('warning', `"${name}" ainda não foi gerada (placeholder do template)`, r.heading.index);
+    if (!hasTableRow) issue('warning', `"${name}" has not been generated yet (template placeholder)`, r.heading.index);
   }
 
   const title = plain(firstH1(doc).replace(/\s+Tasks\s*$/i, ''));
@@ -105,7 +105,7 @@ export function parseTasks(text: string, file: string): TasksDoc {
   const tasks = taskHeadings.map((h) => parseTask(doc, h));
   assignPhases(doc, phases, tasks);
 
-  if (tasks.length === 0) issue('warning', 'Nenhuma task (### T1: …) encontrada — o arquivo foi preenchido?');
+  if (tasks.length === 0) issue('warning', 'No task (### T1: …) found — has the file been filled in?');
   checkTasks(doc, tasks, matrixAllowsNone(doc), issue);
   return { title, status, phases, tasks, issues };
 }
@@ -285,35 +285,35 @@ function checkTasks(doc: MdDoc, tasks: Task[], noneAllowed: boolean, issue: Issu
   const seen = new Set<string>();
   for (const t of tasks) {
     const at = t.line - 1;
-    if (seen.has(t.id)) issue('error', `${t.id} está definida mais de uma vez`, at);
+    if (seen.has(t.id)) issue('error', `${t.id} is defined more than once`, at);
     seen.add(t.id);
-    if (t.tests === null) issue('error', `${t.id}: campo "Tests" ausente`, at);
+    if (t.tests === null) issue('error', `${t.id}: missing "Tests" field`, at);
     else if (/^none/i.test(t.tests)) {
-      if (noneAllowed) issue('info', `${t.id}: Tests: none — confirme que a camada é "none" na Test Coverage Matrix`, at);
-      else issue('warning', `${t.id}: Tests: none, mas nenhuma camada da Test Coverage Matrix é "none"`, at);
+      if (noneAllowed) issue('info', `${t.id}: Tests: none — confirm the layer is "none" in the Test Coverage Matrix`, at);
+      else issue('warning', `${t.id}: Tests: none, but no Test Coverage Matrix layer is "none"`, at);
     }
-    if (t.gate === null) issue('error', `${t.id}: campo "Gate" ausente`, at);
+    if (t.gate === null) issue('error', `${t.id}: missing "Gate" field`, at);
     const files = unique(t.where.match(FILE_HINT_RE) ?? []);
-    if (files.length > 1) issue('warning', `${t.id}: "Where" cita vários arquivos (${files.join(', ')}) — task pouco granular`, at);
+    if (files.length > 1) issue('warning', `${t.id}: "Where" cites several files (${files.join(', ')}) — task is not granular enough`, at);
 
     for (const dep of t.dependsOn) {
       const d = byId.get(dep);
       if (!d) {
-        issue('warning', `${t.id} depende de ${dep}, que não existe no tasks.md`, at);
+        issue('warning', `${t.id} depends on ${dep}, which does not exist in tasks.md`, at);
         continue;
       }
       if (t.phase !== null && d.phase !== null && d.phase > t.phase) {
-        issue('error', `${t.id} (fase ${t.phase}) depende de ${dep} (fase ${d.phase}) — dependências só podem apontar para trás`, at);
+        issue('error', `${t.id} (phase ${t.phase}) depends on ${dep} (phase ${d.phase}) — dependencies can only point backward`, at);
       }
       if (t.status === 'done' && d.status !== 'done') {
-        issue('warning', `${t.id} está concluída, mas a dependência ${dep} não está`, at);
+        issue('warning', `${t.id} is done, but its dependency ${dep} is not`, at);
       }
     }
   }
 
   const { edges, parsed } = diagramEdges(doc);
   if (!parsed) {
-    if (tasks.length > 1) issue('info', 'Diagrama de fases não pôde ser lido — conferência diagrama × "Depends on" pulada');
+    if (tasks.length > 1) issue('info', 'Phase diagram could not be read — diagram × "Depends on" check skipped');
     return;
   }
   const samePhase = (a: string, b: string) => {
@@ -326,13 +326,13 @@ function checkTasks(doc: MdDoc, tasks: Task[], noneAllowed: boolean, issue: Issu
   for (const e of [...edges].sort()) {
     const [a, b] = e.split('>');
     if (!depEdges.has(e) && samePhase(a, b) && byId.has(a) && byId.has(b)) {
-      issue('error', `Diagrama mostra ${a} → ${b}, mas ${b} não declara "Depends on: ${a}"`, byId.get(b)!.line - 1);
+      issue('error', `Diagram shows ${a} → ${b}, but ${b} does not declare "Depends on: ${a}"`, byId.get(b)!.line - 1);
     }
   }
   for (const e of [...depEdges].sort()) {
     const [a, b] = e.split('>');
     if (!edges.has(e) && samePhase(a, b) && byId.has(a)) {
-      issue('error', `${b} declara "Depends on: ${a}", mas o diagrama não tem a seta ${a} → ${b}`, byId.get(b)!.line - 1);
+      issue('error', `${b} declares "Depends on: ${a}", but the diagram has no ${a} → ${b} arrow`, byId.get(b)!.line - 1);
     }
   }
 }

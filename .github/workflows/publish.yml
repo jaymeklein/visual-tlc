@@ -1,4 +1,4 @@
-name: Publicar no Marketplace
+name: Publish to Marketplace
 
 on:
   push:
@@ -16,11 +16,11 @@ jobs:
         with:
           node-version: 26
           cache: npm
-      - name: Conferir a tag com a versão do package.json
+      - name: Check the tag against the package.json version
         run: |
           version="v$(node -p "require('./package.json').version")"
           if [ "$version" != "$GITHUB_REF_NAME" ]; then
-            echo "::error::A tag $GITHUB_REF_NAME não bate com a versão $version do package.json."
+            echo "::error::Tag $GITHUB_REF_NAME does not match package.json version $version."
             exit 1
           fi
       - run: npm ci

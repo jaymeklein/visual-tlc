@@ -8,27 +8,27 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 ---
 
-**Design**: inline (sem `design.md`)
+**Design**: inline (no `design.md`)
 **Status**: Done
 
-Design inline: cada spec tem uma escolha, `'hidden'`, `'shown'` ou nenhuma. `isHidden(f, choice)` vale `choice === 'hidden'`, ou a spec concluída sem `'shown'`. `HiddenSpecs` guarda as ocultas na lista que já existe (`tlcSpecs.hidden`) e as concluídas à vista numa lista nova (`tlcSpecs.shown`). `set(ref, hidden, complete)` grava só a escolha que difere do padrão da spec e apaga a outra. A mensagem `state` leva as duas listas à webview. O host descobre se a spec está concluída pelo store, no `setHidden` do painel e nos comandos da árvore. A linha da árvore fica `feature` ou `feature.hidden`, sem `feature.done`.
+Inline design: each spec has a choice, `'hidden'`, `'shown'`, or none. `isHidden(f, choice)` is true for `choice === 'hidden'`, or for a completed spec without `'shown'`. `HiddenSpecs` keeps the hidden specs in the existing list (`tlcSpecs.hidden`) and the completed specs kept in view in a new list (`tlcSpecs.shown`). `set(ref, hidden, complete)` saves only the choice that differs from the spec's default and clears the other. The `state` message carries both lists to the webview. The host learns from the store whether the spec is completed, in the Dashboard's `setHidden` and in the tree commands. The tree row is `feature` or `feature.hidden`, with no `feature.done`.
 
 ---
 
 ## Test Coverage Matrix
 
-> Generated from codebase, project guidelines, and spec - confirm before Execute. Guidelines found: none - strong defaults applied. Estilo de `test/unit/hidden.test.ts`, `test/unit/webview.test.ts` e `test/integration/suite.cjs`.
+> Generated from codebase, project guidelines, and spec - confirm before Execute. Guidelines found: none - strong defaults applied. Style of `test/unit/hidden.test.ts`, `test/unit/webview.test.ts`, and `test/integration/suite.cjs`.
 
 | Code Layer | Required Test Type | Coverage Expectation | Location Pattern | Run Command |
 | ---------- | ------------------ | -------------------- | ---------------- | ----------- |
-| Core (`src/core/hidden.ts`) | unit | Todos os ramos; 1:1 com os ACs; um teste por edge case listado | `test/unit/hidden.test.ts` | `npm test` |
-| Webview (`src/webview/render.ts`) | unit | Cada AC do painel no HTML e em `actionFor` | `test/unit/webview.test.ts` | `npm test` |
-| Extension host (`src/ui`, `src/extension.ts`, `src/webview/main.ts`, `package.json`) | integration | Cada AC no resultado visível: filhos da árvore, `contextValue`, descrição, mensagem, cards e colunas do painel. Os dois gatilhos: linha da árvore e mensagem da webview | `test/integration/suite.cjs` | `npm run test:integration` |
+| Core (`src/core/hidden.ts`) | unit | All branches; 1:1 with the ACs; one test per listed edge case | `test/unit/hidden.test.ts` | `npm test` |
+| Webview (`src/webview/render.ts`) | unit | Each Dashboard AC in the HTML and in `actionFor` | `test/unit/webview.test.ts` | `npm test` |
+| Extension host (`src/ui`, `src/extension.ts`, `src/webview/main.ts`, `package.json`) | integration | Each AC in the visible result: tree children, `contextValue`, description, message, Dashboard cards and columns. Both triggers: tree row and webview message | `test/integration/suite.cjs` | `npm run test:integration` |
 | Docs (`README.md`, specs) | none | - (build gate only) | - | build gate only |
 
 ## Gate Check Commands
 
-> Generated from codebase - confirm before Execute. A integração roda num desktop oculto do Windows.
+> Generated from codebase - confirm before Execute. Integration runs on a hidden Windows desktop.
 
 | Gate Level | When to Use | Command |
 | ---------- | ----------- | ------- |
@@ -46,13 +46,13 @@ Design inline: cada spec tem uma escolha, `'hidden'`, `'shown'` ou nenhuma. `isH
 T1
 ```
 
-### Phase 2: Painel
+### Phase 2: Dashboard
 
 ```
 T1 → T2
 ```
 
-### Phase 3: Host e árvore
+### Phase 3: Host and tree
 
 ```
 T2 → T3
@@ -68,12 +68,12 @@ T3 → T4
 
 ## Task Breakdown
 
-### T1: Escolha por spec: oculta, à vista ou nenhuma
+### T1: Per-spec choice: hidden, in view, or none
 
-**What**: `HiddenSpecs` guarda também as concluídas à vista, `set` recebe se a spec está concluída e grava só a escolha diferente do padrão, e `isHidden` recebe a escolha
-**Where**: `src/core/hidden.ts` (e as quatro chamadas de `set` e `isHidden`, cada uma na mesma linha, para compilar: `render.ts`, `featuresTree.ts`, `dashboard.ts`, `extension.ts`)
+**What**: `HiddenSpecs` also stores the completed specs kept in view, `set` receives whether the spec is completed and saves only a choice that differs from the default, and `isHidden` receives the choice
+**Where**: `src/core/hidden.ts` (and the four calls to `set` and `isHidden`, each on the same line, so it compiles: `render.ts`, `featuresTree.ts`, `dashboard.ts`, `extension.ts`)
 **Depends on**: None
-**Reuses**: `HiddenSpecs`, `hiddenKey`, a lista `tlcSpecs.hidden` já gravada
+**Reuses**: `HiddenSpecs`, `hiddenKey`, the already saved `tlcSpecs.hidden` list
 **Requirement**: EYE-04, EYE-05, EYE-06, EYE-09, EYE-10
 
 **Tools**:
@@ -83,11 +83,11 @@ T3 → T4
 
 **Done when**:
 
-- [x] Concluída sem escolha é oculta. Concluída com `'shown'` fica à vista. Não concluída com `'hidden'` é oculta (EYE-04, EYE-05, EYE-06)
-- [x] `set(ref, false, true)` grava a concluída em `tlcSpecs.shown`, e uma instância nova a lê (EYE-05, EYE-09)
-- [x] `set(ref, true, true)` numa concluída à vista apaga a escolha das duas listas (EYE-10)
-- [x] As marcas antigas de `tlcSpecs.hidden` continuam valendo
-- [x] Os testes do hidden-specs passam a chamar `set` com o terceiro argumento, sem perder asserção
+- [x] A completed spec with no choice is hidden. A completed spec with `'shown'` is in view. A spec that is not completed with `'hidden'` is hidden (EYE-04, EYE-05, EYE-06)
+- [x] `set(ref, false, true)` saves the completed spec in `tlcSpecs.shown`, and a new instance reads it (EYE-05, EYE-09)
+- [x] `set(ref, true, true)` on a completed spec in view clears the choice from both lists (EYE-10)
+- [x] Old marks in `tlcSpecs.hidden` still apply
+- [x] The hidden-specs tests now call `set` with the third argument, without losing any assertion
 - [x] Gate check passes: `npm run typecheck && npm test`
 
 **Tests**: unit
@@ -97,10 +97,10 @@ T3 → T4
 
 ---
 
-### T2: Olho em todo card
+### T2: Eye on every card
 
-**What**: `renderApp` desenha o olho em todo card, esmaece toda spec oculta com o olho geral aberto e mostra a coluna Concluídas com o olho fechado quando há concluída à vista
-**Where**: `src/webview/render.ts` (e `shown` vazio em `src/webview/main.ts`, para compilar até o T3)
+**What**: `renderApp` draws the eye on every card, dims every hidden spec when the top eye is open, and shows the Completed column when the top eye is closed and some completed spec is in view
+**Where**: `src/webview/render.ts` (and an empty `shown` in `src/webview/main.ts`, so it compiles until T3)
 **Depends on**: T1
 **Reuses**: `eyeButton`, `projectSection`, `cardsOf`, `cardEyes`, `board`
 **Requirement**: EYE-01, EYE-02, EYE-03, EYE-05, EYE-07, EYE-08
@@ -112,11 +112,11 @@ T3 → T4
 
 **Done when**:
 
-- [x] Card concluído oculto: olho fechado "Desocultar spec". Concluído à vista: olho aberto "Ocultar spec" (EYE-01, EYE-02, EYE-03)
-- [x] Olho geral fechado com uma concluída à vista: ela na coluna Concluídas, seis etapas, e o número de ocultas cai um (EYE-05, EYE-07)
-- [x] Olho geral fechado sem concluída à vista: cinco etapas, como no PNL-03
-- [x] Olho geral aberto: toda spec oculta tem `is-hidden`, concluída ou não; a concluída à vista não tem (EYE-08)
-- [x] Os testes do HID-09/10 e do HID-14 que diziam "concluída sem olho" e "concluída sem esmaecido" passam à regra nova
+- [x] Hidden completed card: closed eye "Unhide Spec". Completed card in view: open eye "Hide Spec" (EYE-01, EYE-02, EYE-03)
+- [x] Top eye closed with a completed spec in view: the spec is in the Completed column, six stages, and the hidden count drops by one (EYE-05, EYE-07)
+- [x] Top eye closed with no completed spec in view: five stages, as in PNL-03
+- [x] Top eye open: every hidden spec has `is-hidden`, completed or not; the completed spec in view does not (EYE-08)
+- [x] The HID-09/10 and HID-14 tests that said "completed has no eye" and "completed is not dimmed" move to the new rule
 - [x] Gate check passes: `npm run typecheck && npm test`
 
 **Tests**: unit
@@ -126,9 +126,9 @@ T3 → T4
 
 ---
 
-### T3: Host e árvore com a escolha
+### T3: Host and tree with the choice
 
-**What**: A mensagem `state` leva as concluídas à vista. O `setHidden` do painel e os comandos da linha usam o store para saber se a spec está concluída. A linha da árvore fica `feature` ou `feature.hidden`, com "· oculta" em toda oculta
+**What**: The `state` message carries the completed specs in view. The Dashboard's `setHidden` and the row commands use the store to know whether the spec is completed. The tree row is `feature` or `feature.hidden`, with "· hidden" on every hidden spec
 **Where**: `src/core/protocol.ts`, `src/webview/main.ts`, `src/ui/dashboard.ts`, `src/ui/featuresTree.ts`, `src/extension.ts`, `package.json`
 **Depends on**: T2
 **Reuses**: `Surface.onMessage`, `featureItem`, `toRef`, `store.findFeature`
@@ -141,12 +141,12 @@ T3 → T4
 
 **Done when**:
 
-- [x] Linha concluída: `contextValue` `feature.hidden` e o olho fechado. Pelo `unhideFeature`, ela fica à vista na árvore com o olho do título fechado, com `contextValue` `feature` (EYE-01, EYE-02, EYE-03, EYE-05)
-- [x] O mesmo `setHidden` vindo do painel deixa a concluída à vista na aba: cards e seis colunas com o olho fechado, e o número de ocultas cai um (EYE-05, EYE-07)
-- [x] `hideFeature` numa concluída à vista a esconde de novo, na árvore e no painel (EYE-04, EYE-10)
-- [x] Olho do título aberto: toda linha oculta termina em "· oculta", e a concluída à vista não (EYE-08)
-- [x] Os botões da linha valem para `feature` e `feature.hidden`
-- [x] Os testes de integração do HID-09/10 e do HID-14 passam à regra nova
+- [x] Completed row: `contextValue` `feature.hidden` and the closed eye. Through `unhideFeature`, it stays in view in the tree with the title eye closed, with `contextValue` `feature` (EYE-01, EYE-02, EYE-03, EYE-05)
+- [x] The same `setHidden` coming from the Dashboard keeps the completed spec in view in the editor tab: cards and six columns with the eye closed, and the hidden count drops by one (EYE-05, EYE-07)
+- [x] `hideFeature` on a completed spec in view hides it again, in the tree and on the Dashboard (EYE-04, EYE-10)
+- [x] Title eye open: every hidden row ends in "· hidden", and the completed row in view does not (EYE-08)
+- [x] The row buttons apply to `feature` and `feature.hidden`
+- [x] The HID-09/10 and HID-14 integration tests move to the new rule
 - [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
 
 **Tests**: integration
@@ -156,12 +156,12 @@ T3 → T4
 
 ---
 
-### T4: Documentar o olho em toda spec
+### T4: Document the eye on every spec
 
-**What**: README diz que toda spec tem olho e como a concluída fica à vista. A spec hidden-specs ganha notas no HID-09, HID-10 e HID-14
+**What**: The README says every spec has an eye and how a completed spec stays in view. The hidden-specs spec gets notes on HID-09, HID-10, and HID-14
 **Where**: `README.md`
 **Depends on**: T3
-**Reuses**: seções de Features e do Painel no README
+**Reuses**: the Features and Dashboard sections of the README
 **Requirement**: EYE-01, EYE-05
 
 **Tools**:
@@ -171,8 +171,8 @@ T3 → T4
 
 **Done when**:
 
-- [x] README descreve o olho em toda spec e a concluída à vista
-- [x] Notas no HID-10 (cobre o HID-09 e o HID-10) e no HID-14
+- [x] The README describes the eye on every spec and the completed spec in view
+- [x] Notes on HID-10 (covering HID-09 and HID-10) and on HID-14
 - [x] Gate check passes: `npm run typecheck && npm test`
 
 **Tests**: none
@@ -199,16 +199,16 @@ Phase 4:  T4
 
 | Task | Scope | Status |
 | ---- | ----- | ------ |
-| T1: escolha por spec | 1 módulo | ✅ Granular |
-| T2: olho em todo card | 1 arquivo | ✅ Granular |
-| T3: host e árvore | protocolo, webview, host, árvore, manifesto | ⚠️ Coeso: a escolha atravessa a mensagem e o comando, e só se testa inteira |
-| T4: docs | README e notas | ✅ Granular |
+| T1: per-spec choice | 1 module | ✅ Granular |
+| T2: eye on every card | 1 file | ✅ Granular |
+| T3: host and tree | protocol, webview, host, tree, manifest | ⚠️ Cohesive: the choice crosses the message and the command, and can only be tested as a whole |
+| T4: docs | README and notes | ✅ Granular |
 
 ## Diagram-Definition Cross-Check
 
 | Task | Depends On (task body) | Diagram Shows | Status |
 | ---- | ---------------------- | ------------- | ------ |
-| T1 | None | início | ✅ Match |
+| T1 | None | start | ✅ Match |
 | T2 | T1 | T1 → T2 | ✅ Match |
 | T3 | T2 | T2 → T3 | ✅ Match |
 | T4 | T3 | T3 → T4 | ✅ Match |

@@ -6,7 +6,7 @@ export function parseDesign(text: string, file: string): DesignDoc {
   const doc = parseMd(text);
   const issues: Issue[] = [];
   const title = plain(firstH1(doc).replace(/\s+Design\s*$/i, ''));
-  if (isPlaceholder(title)) issues.push({ severity: 'warning', message: 'design.md ainda contém o título placeholder do template', file, line: 1 });
+  if (isPlaceholder(title)) issues.push({ severity: 'warning', message: 'design.md still has the template placeholder title', file, line: 1 });
 
   let status: DesignDoc['status'] = null;
   doc.lines.some((line, i) => {
@@ -56,7 +56,7 @@ export function parseContext(text: string, file: string): ContextDoc {
         .join(' ')
     : '';
   const hasDeferredIdeas = deferredText !== '' && !/^\[?none\b/i.test(deferredText) && !isPlaceholder(deferredText);
-  if (!decRange) issues.push({ severity: 'warning', message: 'context.md sem seção "Implementation Decisions"', file });
+  if (!decRange) issues.push({ severity: 'warning', message: 'context.md has no "Implementation Decisions" section', file });
   return { gathered, status, decisionAreas, hasDeferredIdeas, issues };
 }
 
@@ -98,13 +98,13 @@ export function parseState(text: string, file: string): StateDoc {
         else if (f.key === 'status') d.status = v;
       }
       d.active = !/superseded|substitu/i.test(d.status);
-      if (!d.decision) issues.push({ severity: 'info', message: `${d.id} sem campo "Decision"`, file, line: d.line });
+      if (!d.decision) issues.push({ severity: 'info', message: `${d.id} has no "Decision" field`, file, line: d.line });
       decisions.push(d);
     }
     const ids = new Set(decisions.map((d) => d.id));
     for (const d of decisions) {
       const ref = /superseded by\s+(AD-\d+)/i.exec(d.status)?.[1]?.toUpperCase();
-      if (ref && !ids.has(ref)) issues.push({ severity: 'warning', message: `${d.id} diz "superseded by ${ref}", mas ${ref} não existe`, file, line: d.line });
+      if (ref && !ids.has(ref)) issues.push({ severity: 'warning', message: `${d.id} says "superseded by ${ref}", but ${ref} does not exist`, file, line: d.line });
     }
   }
 
@@ -124,7 +124,7 @@ export function parseState(text: string, file: string): StateDoc {
     if (any) {
       handoff = h;
       if (h.blockers && !/^(none|nenhum|-|n\/a)\.?$/i.test(h.blockers)) {
-        issues.push({ severity: 'warning', message: `Bloqueio registrado no handoff: ${h.blockers}`, file, line: h.line });
+        issues.push({ severity: 'warning', message: `Blocker recorded in the handoff: ${h.blockers}`, file, line: h.line });
       }
     }
   }

@@ -129,7 +129,7 @@ input[type='search']:focus { outline: 1px solid var(--focus); outline-offset: -1
 
 /* board */
 .board { display: grid; grid-template-columns: repeat(6, minmax(200px, 1fr)); gap: 10px; overflow-x: auto; padding-bottom: 6px; align-items: start; }
-/* Without Concluídas. :where() keeps the specificity of .board, so the narrow rule below still stacks the stages. */
+/* Without Completed. :where() keeps the specificity of .board, so the narrow rule below still stacks the stages. */
 .board:where(.five-stages) { grid-template-columns: repeat(5, minmax(200px, 1fr)); }
 .column { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px; min-height: 120px; display: flex; flex-direction: column; gap: 8px; }
 .column-head { display: flex; align-items: center; justify-content: space-between; padding: 2px 4px 4px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }

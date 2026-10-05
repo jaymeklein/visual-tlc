@@ -2,11 +2,11 @@
 
 ## Validation: hidden-folder - PASS ✅
 
-Aprovada na iteração 3. O Fix 2 fez o que o relatório pediu. O teste novo (`test/integration/suite.cjs:1425-1456`) usa duas pastas com specs: `.specs`, com tudo oculto, e `side/.specs`, com uma spec aberta à vista. Com o olho fechado, a raiz tem só `side/.specs` (`:1440`), com "1 feature(s)" (`:1441`). Com o olho aberto, a raiz tem as duas (`:1445`): `.specs` com "N feature(s) · oculta" e `side/.specs` com "1 feature(s)" (`:1446-1449`). M8 morre em `:1440`. M10, que aplica a mesma regra global ao sufixo e que a iteração 2 não rodou, morre em `:1446`. M6 continua morto em `:708`. O gate em 56d5bab passa: typecheck ok, 68 unit e 68 + 1 + 1 de integração. O código não mudou desde fc47aec.
+Passed in iteration 3. Fix 2 did what the report asked. The new test (`test/integration/suite.cjs:1425-1456`) uses two folders with specs: `.specs`, with everything hidden, and `side/.specs`, with one open spec in view. With the eye closed, the root has only `side/.specs` (`:1440`), with "1 feature(s)" (`:1441`). With the eye open, the root has both (`:1445`): `.specs` with "N feature(s) · hidden" and `side/.specs` with "1 feature(s)" (`:1446-1449`). M8 dies at `:1440`. M10, which applies the same global rule to the suffix and was not run in iteration 2, dies at `:1446`. M6 is still dead at `:708`. The gate at 56d5bab passes: typecheck ok, 68 unit and 68 + 1 + 1 integration. The code has not changed since fc47aec.
 
 **Date**: 2026-09-30
 **Spec**: `.specs/features/hidden-folder/spec.md`
-**Diff range**: `35a9118..56d5bab` (branch `feat/hidden-specs`): spec em c440a87, implementação e testes em fc47aec, README em b50c9d7, validação da iteração 1 em 2c26515, Fix 1 em 21d91d4, validação da iteração 2 em e656890, Fix 2 em 56d5bab. Linhas citadas em 56d5bab, salvo onde diz outro commit
+**Diff range**: `35a9118..56d5bab` (branch `feat/hidden-specs`): spec in c440a87, implementation and tests in fc47aec, README in b50c9d7, iteration 1 validation in 2c26515, Fix 1 in 21d91d4, iteration 2 validation in e656890, Fix 2 in 56d5bab. Lines cited at 56d5bab, unless another commit is named
 **Verifier**: independent sub-agent (author ≠ verifier)
 **Iteration**: 3 of max 3
 
@@ -16,24 +16,24 @@ Aprovada na iteração 3. O Fix 2 fez o que o relatório pediu. O teste novo (`t
 
 | Iteration | HEAD | Outcome | Notes |
 | --------- | ---- | ------- | ----- |
-| 1 | b50c9d7 | Reprovada | 8/8 requisitos com evidência que bate com a spec. 0 gaps de precisão. 6/7 mortas. Viva: M6 (Fix 1). 6 execuções do VS Code |
-| 2 | 21d91d4 | Reprovada | Fix 1 conferido: só teste, como prescrito, e mata M6 em `suite.cjs:708`. 0 gaps de precisão. 2/3 mortas (M6, M9). Viva: M8, a regra global no lugar da regra por pasta (Fix 2). 4 execuções do VS Code |
-| 3 | 56d5bab | Aprovada | Fix 2 conferido: só teste, com uma pasta própria (`side/.specs`), que a prescrição permitia. 0 gaps de precisão. 3/3 mortas: M8 em `suite.cjs:1440`, M10 em `:1446` e M6 em `:708`. 3 execuções do VS Code |
+| 1 | b50c9d7 | Failed | 8/8 requirements with evidence that matches the spec. 0 precision gaps. 6/7 killed. Alive: M6 (Fix 1). 6 VS Code runs |
+| 2 | 21d91d4 | Failed | Fix 1 checked: test only, as prescribed, and it kills M6 at `suite.cjs:708`. 0 precision gaps. 2/3 killed (M6, M9). Alive: M8, the global rule instead of the per-folder rule (Fix 2). 4 VS Code runs |
+| 3 | 56d5bab | Passed | Fix 2 checked: test only, with its own folder (`side/.specs`), which the prescription allowed. 0 precision gaps. 3/3 killed: M8 at `suite.cjs:1440`, M10 at `:1446` and M6 at `:708`. 3 VS Code runs |
 
 ---
 
 ## Task Completion
 
-Escopo Medium, sem `design.md` nem `tasks.md`. As tasks ficam implícitas nos commits.
+Medium scope, without `design.md` or `tasks.md`. The tasks are implicit in the commits.
 
 | Task | Status | Notes |
 | ---- | ------ | ----- |
-| Regra da pasta na árvore Features | ✅ Done | fc47aec. `src/ui/featuresTree.ts:101-104` (`allHidden`), `:110` (filtro da raiz), `:161` (descrição com "· oculta") |
-| Testes | ✅ Done | fc47aec. `test/integration/suite.cjs:638-697` (3 testes) e `:1404-1423` (HFD-08). O teste do SFP-10/HID-16 saiu no mesmo commit |
-| Notas nas specs substituídas | ✅ Done | fc47aec. `.specs/features/specs-folder-paths/spec.md:89`, `.specs/features/hidden-specs/spec.md:105-106` |
+| Folder rule in the Features tree | ✅ Done | fc47aec. `src/ui/featuresTree.ts:101-104` (`allHidden`), `:110` (root filter), `:161` (description with "· hidden") |
+| Tests | ✅ Done | fc47aec. `test/integration/suite.cjs:638-697` (3 tests) and `:1404-1423` (HFD-08). The SFP-10/HID-16 test was removed in the same commit |
+| Notes in the superseded specs | ✅ Done | fc47aec. `.specs/features/specs-folder-paths/spec.md:89`, `.specs/features/hidden-specs/spec.md:105-106` |
 | README | ✅ Done | b50c9d7. `README.md:12`, `:86` |
-| Fix 1: pasta à vista por uma concluída mantida à vista | ✅ Done | 21d91d4. `test/integration/suite.cjs:699-719`. Nenhum código mudou |
-| Fix 2: regra por pasta com duas pastas com specs | ✅ Done | 56d5bab. `test/integration/suite.cjs:1425-1456`. `idOf` e `setHiddenIn` subiram do HFD-08 para o módulo (`:1401-1402`), sem mudança. Nenhum código mudou. O commit também voltou o HFD-01 para Implementing em `spec.md:74` |
+| Fix 1: folder in view through a completed spec kept in view | ✅ Done | 21d91d4. `test/integration/suite.cjs:699-719`. No code changed |
+| Fix 2: per-folder rule with two folders with specs | ✅ Done | 56d5bab. `test/integration/suite.cjs:1425-1456`. `idOf` and `setHiddenIn` moved up from HFD-08 to module level (`:1401-1402`), unchanged. No code changed. The commit also set HFD-01 back to Implementing in `spec.md:74` |
 
 ---
 
@@ -41,92 +41,92 @@ Escopo Medium, sem `design.md` nem `tasks.md`. As tasks ficam implícitas nos co
 
 | Criterion (WHEN X THEN Y) | Spec-defined outcome | `file:line` + assertion | Result |
 | ------------------------- | -------------------- | ----------------------- | ------ |
-| HFD-01 WHILE o olho de Features está fechado, a árvore deixa fora toda pasta com ao menos uma spec e todas ocultas | a raiz não tem o nó da pasta; a pasta com spec à vista fica | `test/integration/suite.cjs:643-644` - oculta as abertas (as concluídas já são ocultas), `deepEqual(api.featuresTree.getChildren(), [])`. `:706-709` - com uma concluída mantida à vista pelo olho, `deepEqual(getChildren().map((n) => n.kind), ['root'])` e `deepEqual(treeNames(), ['billing-invoices'])`. Duas pastas com specs (Fix 2): `:1434` - `deepEqual(featuresOf('side/.specs'), ['side-one'])`. `:1437` oculta as abertas de `.specs`. `:1440` - `deepEqual(closed.map((n) => n.loaded.project.id), [sideId])`. Pasta ao lado sem spec: `:1416` - `[idOf('bare/.specs')]` | ✅ PASS (nota 1) |
-| HFD-02 WHEN o usuário oculta pelo olho da linha a última spec à vista THEN a árvore tira o nó da pasta | raiz vazia depois do olho da linha | `suite.cjs:667` - precondição `treeNames()` = `['csv-export']`. `:668` - `executeCommand('tlcSpecs.hideFeature', await featureNode(last))`, o comando do olho inline com o nó. `:669` - `deepEqual(api.featuresTree.getChildren(), [])` | ✅ PASS |
-| HFD-03 WHEN o usuário desoculta pelo card uma spec de uma pasta fora da árvore THEN o nó volta, com essa spec dentro | raiz `['root']`, filhos só com a spec desocultada | `suite.cjs:671` - `setHidden(api.dashboardMessage, last, false)`, a mensagem do card no host. `:673` - `deepEqual(roots.map((n) => n.kind), ['root'])`. `:674` - filhos `[last]` | ✅ PASS (nota 3) |
-| HFD-04 WHILE olho fechado e nenhuma pasta com spec à vista, lista vazia com "T feature(s) · D concluída(s) · H oculta(s)", sem boas-vindas | `[]`; mensagem com H = T; sem tela de boas-vindas | `suite.cjs:644` - `[]`. `:645` - `` equal(api.featuresViewMessage(), `${features.length} feature(s) · ${done} concluída(s) · ${features.length} oculta(s)`) ``. `:647-650` - `viewsWelcome` de Features só com `!tlcSpecs.hasSpecs` | ✅ PASS (nota 4) |
-| HFD-05 WHILE olho aberto, a pasta com todas as specs ocultas tem "N feature(s) · oculta", N o total | nó presente, descrição exata | `suite.cjs:687` - `showHidden`. `:689` - oculta as abertas. `:690` - `deepEqual(...getChildren().map((n) => n.kind), ['root'])`. `:691` - `` equal(folderRow().description, `${base} · oculta`) ``, com `base` = `` `${features.length} feature(s)` `` (`:684`). Com outra pasta à vista (Fix 2): `:1443` - `showHidden`. `:1445` - `deepEqual(shown.map((n) => n.loaded.project.id), [specsId, sideId])`. `:1446-1449` - `` deepEqual(shown.map((n) => getTreeItem(n).description), [`${total} feature(s) · oculta`, '1 feature(s)']) ``, com `total` o número de specs de `.specs` (`:1435`) | ✅ PASS (nota 1) |
-| HFD-06 WHILE a pasta tem ao menos uma spec à vista, "N feature(s)" sem "· oculta", olho aberto ou fechado | descrição exata, sem o sufixo, nos dois estados do olho | Spec aberta à vista: `suite.cjs:686` (olho fechado), `:688` (aberto), `:696` (fechado de novo), todas `equal(folderRow().description, base)`. Só uma concluída mantida à vista (Fix 1): `:710` - olho fechado, `equal(folderRow().description, base)`. `:711-712` - `showHidden`, depois a mesma descrição. Ao lado de uma pasta toda oculta (Fix 2): `:1441` - olho fechado, `equal(getTreeItem(closed[0]).description, '1 feature(s)')`. `:1446-1449` - olho aberto, o segundo item é `'1 feature(s)'` | ✅ PASS (notas 1 e 2) |
-| HFD-07 WHILE todas as specs de uma pasta estão ocultas, a árvore Projeto mostra o nó, com Handoff, decisões e lições | raiz `['root']` com as três seções | `suite.cjs:651-652` - `deepEqual(project.map((n) => n.kind), ['root'])`. `:653-654` - `ok(sections.includes(kind))` para `handoff`, `decisions`, `lessons`, com tudo oculto | ✅ PASS |
-| HFD-08 IF uma pasta de specs não tem spec THEN Features mostra o nó com "0 feature(s)", com o olho fechado | nó presente, descrição exata | `suite.cjs:1412` - `deepEqual(featuresOf('bare/.specs'), [])`. `:1416` - só `bare/.specs` na raiz. `:1417` - `equal(api.featuresTree.getTreeItem(nodes[0]).description, '0 feature(s)')` | ✅ PASS |
+| HFD-01 WHILE the Features eye is closed, the tree leaves out every folder with at least one spec and all of them hidden | the root lacks the folder's node; the folder with a spec in view stays | `test/integration/suite.cjs:643-644` - hides the open specs (the completed ones are already hidden), `deepEqual(api.featuresTree.getChildren(), [])`. `:706-709` - with a completed spec kept in view by the eye, `deepEqual(getChildren().map((n) => n.kind), ['root'])` and `deepEqual(treeNames(), ['billing-invoices'])`. Two folders with specs (Fix 2): `:1434` - `deepEqual(featuresOf('side/.specs'), ['side-one'])`. `:1437` hides the open specs of `.specs`. `:1440` - `deepEqual(closed.map((n) => n.loaded.project.id), [sideId])`. Neighbor folder with no spec: `:1416` - `[idOf('bare/.specs')]` | ✅ PASS (note 1) |
+| HFD-02 WHEN the user hides the last spec in view through the row's eye THEN the tree removes the folder's node | empty root after the row's eye | `suite.cjs:667` - precondition `treeNames()` = `['csv-export']`. `:668` - `executeCommand('tlcSpecs.hideFeature', await featureNode(last))`, the inline eye command with the node. `:669` - `deepEqual(api.featuresTree.getChildren(), [])` | ✅ PASS |
+| HFD-03 WHEN the user unhides through the card a spec of a folder out of the tree THEN the node comes back, with that spec inside | root `['root']`, children only the unhidden spec | `suite.cjs:671` - `setHidden(api.dashboardMessage, last, false)`, the card's message to the host. `:673` - `deepEqual(roots.map((n) => n.kind), ['root'])`. `:674` - children `[last]` | ✅ PASS (note 3) |
+| HFD-04 WHILE eye closed and no folder with a spec in view, empty list with "T feature(s) · D completed · H hidden", no welcome view | `[]`; message with H = T; no welcome view | `suite.cjs:644` - `[]`. `:645` - `` equal(api.featuresViewMessage(), `${features.length} feature(s) · ${done} completed · ${features.length} hidden`) ``. `:647-650` - Features `viewsWelcome` only with `!tlcSpecs.hasSpecs` | ✅ PASS (note 4) |
+| HFD-05 WHILE eye open, the folder whose specs are all hidden has "N feature(s) · hidden", N the total | node present, exact description | `suite.cjs:687` - `showHidden`. `:689` - hides the open specs. `:690` - `deepEqual(...getChildren().map((n) => n.kind), ['root'])`. `:691` - `` equal(folderRow().description, `${base} · hidden`) ``, with `base` = `` `${features.length} feature(s)` `` (`:684`). With another folder in view (Fix 2): `:1443` - `showHidden`. `:1445` - `deepEqual(shown.map((n) => n.loaded.project.id), [specsId, sideId])`. `:1446-1449` - `` deepEqual(shown.map((n) => getTreeItem(n).description), [`${total} feature(s) · hidden`, '1 feature(s)']) ``, with `total` the number of specs in `.specs` (`:1435`) | ✅ PASS (note 1) |
+| HFD-06 WHILE the folder has at least one spec in view, "N feature(s)" without "· hidden", eye open or closed | exact description, without the suffix, in both eye states | Open spec in view: `suite.cjs:686` (eye closed), `:688` (open), `:696` (closed again), all `equal(folderRow().description, base)`. Only a completed spec kept in view (Fix 1): `:710` - eye closed, `equal(folderRow().description, base)`. `:711-712` - `showHidden`, then the same description. Next to a fully hidden folder (Fix 2): `:1441` - eye closed, `equal(getTreeItem(closed[0]).description, '1 feature(s)')`. `:1446-1449` - eye open, the second item is `'1 feature(s)'` | ✅ PASS (notes 1 and 2) |
+| HFD-07 WHILE all specs of a folder are hidden, the Project tree shows the node, with Handoff, decisions and lessons | root `['root']` with the three sections | `suite.cjs:651-652` - `deepEqual(project.map((n) => n.kind), ['root'])`. `:653-654` - `ok(sections.includes(kind))` for `handoff`, `decisions`, `lessons`, with everything hidden | ✅ PASS |
+| HFD-08 IF a specs folder has no spec THEN Features shows the node with "0 feature(s)", with the eye closed | node present, exact description | `suite.cjs:1412` - `deepEqual(featuresOf('bare/.specs'), [])`. `:1416` - only `bare/.specs` at the root. `:1417` - `equal(api.featuresTree.getTreeItem(nodes[0]).description, '0 feature(s)')` | ✅ PASS |
 
-**Status**: 8/8 com evidência que bate com a spec. 0 gaps de precisão. A regra por pasta agora tem teste com duas pastas com specs, uma com tudo oculto e outra com spec à vista (nota 1).
+**Status**: 8/8 with evidence that matches the spec. 0 precision gaps. The per-folder rule now has a test with two folders with specs, one with everything hidden and the other with a spec in view (note 1).
 
-### Notas
+### Notes
 
-1. **HFD-01 e as várias pastas (Fix 2, fechado).** O teste novo (`suite.cjs:1425-1456`) escreve `side/.specs/features/side-one/spec.md` (`:1426`), uma spec sem SHALL. Depois configura `['.specs', 'side/.specs']` e espera as duas pastas (`:1430-1431`). `:1434` prova que a pasta ao lado tem a spec. `side-one` não é concluída. Se fosse, ficaria oculta por padrão, e `:1440` falharia no gate. O teste oculta as abertas de `.specs` (`:1436-1437`), e as concluídas já são ocultas. Com o olho fechado, `:1440` afirma a raiz só com `side/.specs`, e `:1441` afirma "1 feature(s)". Com o olho aberto (`:1443`), `:1445` afirma as duas pastas. `:1446-1449` afirma "N feature(s) · oculta" em `.specs` e "1 feature(s)" em `side/.specs`, sem o sufixo (L-021). Com M8, a raiz com o olho fechado tem as duas pastas, e o teste falha em `:1440` (execução 2). Com M10, `.specs` perde o "· oculta", e o teste falha em `:1446` (execução 3). A prescrição sugeria `docs/specs/custom-one`, que ficou dos testes anteriores. O autor escreveu a própria pasta, que o Fix 2 também permitia ("o teste escreve a própria spec"). Assim o teste não depende dos anteriores. O "Done when" foi cumprido: M8 morre numa asserção nova, e o gate fica verde.
-2. **HFD-06 e a concluída à vista (Fix 1, fechado).** O teste (`suite.cjs:699-719`) oculta as abertas e deixa `billing-invoices` à vista pelo card (`:707`, EYE-05). `:704` prova que ela é concluída. `:708` e `:709` provam que a pasta fica, só com ela. `:710` e `:712` provam a descrição exata, sem "· oculta", com o olho fechado e aberto. No `finally` (`:713-717`), o teste fecha o olho, oculta `billing-invoices` e desoculta as abertas. Ocultar uma concluída apaga a escolha: `set` grava `undefined` quando `hidden === complete` (`src/core/hidden.ts:61`, EYE-10). `:718` confere a volta. Nas iterações 2 e 3, com M6, o teste falhou em `:708`, e os testes seguintes passaram. Então o `finally` restaura o estado mesmo quando o teste falha.
-3. **HFD-03, o card.** O teste manda ao host a mensagem `setHidden` que o card envia (`api.dashboardMessage`, `src/extension.ts:104`), como no HID-11/12. O card que emite essa mensagem já é provado no unit do hidden-specs. Aceito.
-4. **HFD-04, a tela de boas-vindas.** Agora a árvore fica vazia de fato, então a tela de boas-vindas depende de duas coisas. A primeira é a chave `tlcSpecs.hasSpecs`, que vale `store.projects.length > 0` (`src/extension.ts:86`), não muda com este feature e nenhum teste lê. A segunda é a regra do VS Code. No VS Code instalado, `shouldShowWelcome` da árvore exige `isTreeEmpty` e `message` vazia (`workbench.desktop.main.js`: `(this.treeView.message===void 0||this.treeView.message==="")`). O `:645` afirma a mensagem cheia, então a tela não aparece nesse estado, qualquer que seja a chave. Com o `when` do manifesto (`:647-650`), isso basta. Aceito, como no HID-16 e no SFP-10.
-5. **Gatilhos (L-009).** A spec lista um gatilho para cada ação: o olho da linha para ocultar (HFD-02, `:668`) e o card para desocultar (HFD-03, `:671`). Os dois são exercitados. O Fix 2 usa a mesma mensagem do card (`setHiddenIn`, `:1402`).
-6. **Critérios de sucesso.** O segundo foi cumprido. O teste antigo (`35a9118:test/integration/suite.cjs:501-520`) virou o `:638-659`. A mensagem (`:510` → `:645`), o `viewsWelcome` (`:512-515` → `:647-650`) e a volta ao estado inicial (`:519` → `:658`) seguem iguais. Só o nó sem filhos (`:508-509`) virou a raiz vazia (`:644`), e as asserções da árvore Projeto entraram (`:651-654`). O primeiro critério, e o teste independente neste repositório, ficam para o UAT.
-7. **Premissas da spec.** Pasta oculta por qualquer regra do EYE-06: as três regras têm teste e mutante morto. A aberta marcada está em `:643-644`. A concluída sem escolha morre com M9 em `:644`, `:669`, `:691` e no HFD-08 (iteração 2). A concluída mantida à vista morre com M6 em `:708`. Pasta sem spec continua com "0 feature(s)": `:1417`. Todas as pastas ocultas: lista vazia, mensagem e sem boas-vindas (`:644-650`). "Com um projeto ou com vários" (`spec.md:32`): com um em `:638-719`, com vários em `:1425-1456` (nota 1) e em `:1404-1423`.
-8. **Lições conferidas.** L-002: tudo é afirmado no que o usuário vê, ou seja, nos filhos da raiz, na `description` do `TreeItem` e na mensagem da view. L-009: nota 5. L-014: a flag `allHidden` tem teste esperando verdadeiro (`:644`, `:691`, `:1440`, `:1446`) e falso (`:686`, `:688`, `:708`, `:710`, `:1417`, `:1441`). L-020 é seguida em `:699-719`. L-025 agora é seguida: `:1425-1456` tem dois grupos que pedem resultados opostos ao mesmo tempo, uma pasta que sai e outra que fica. L-021 vale para o "· oculta", ausente na pasta à vista (`:686`, `:688`, `:710`, `:712`, `:1441`, `:1446-1449`). L-006 não se aplica, porque não há watcher. Das candidatas, L-013 vale para a guarda `features.length > 0`, morta por M1 no HFD-08 (iteração 1). L-024 vale para a pasta vazia, a única que fica em `:1416`.
-9. **A ordem da raiz no Fix 2.** `:1445` e `:1446-1449` afirmam `.specs` antes de `side/.specs`. O store não guarda a ordem da configuração. Ele ordena as pastas pelo caminho, com `a.specsUri.path.localeCompare(b.specsUri.path)` (`src/ui/store.ts:156`). O `Promise.all` mantém essa ordem (`src/ui/store.ts:104-109`), e o filtro da raiz também (`src/ui/featuresTree.ts:110`). Os dois caminhos começam com `<ws>/`, e `.specs` vem antes de `side/.specs`, porque o ponto vem antes das letras. No Node, `'/c:/tmp/ws/.specs'.localeCompare('/c:/tmp/ws/side/.specs')` dá `-1`. A ordem configurada (`:1430`) é a mesma, então a asserção vale qualquer que seja a regra. Na execução 2, a mensagem de falha de `:1440` mostra a raiz nessa ordem.
-10. **O `finally` do Fix 2.** `:1450-1454` fecha o olho (`hideHidden`), desoculta as abertas de `.specs` e roda `setFolders(undefined)`. `:1455` espera `waitForRoots(['.specs'])`. Desocultar uma aberta apaga a escolha (`src/core/hidden.ts:61`). Se o teste falha antes de `open` ser preenchido, o laço não faz nada. É o que o Fix 2 pediu. O teste é o último da suíte. `side/.specs` fica no workspace temporário, como `bare/.specs` do HFD-08. Fora da configuração, o store não lê essa pasta, e cada suíte roda numa cópia nova da fixture, com `--user-data-dir` próprio, apagada no fim (`test/integration/run.mjs:22-36`).
+1. **HFD-01 and multiple folders (Fix 2, closed).** The new test (`suite.cjs:1425-1456`) writes `side/.specs/features/side-one/spec.md` (`:1426`), a spec with no SHALL. Then it configures `['.specs', 'side/.specs']` and waits for both folders (`:1430-1431`). `:1434` proves the neighbor folder has the spec. `side-one` is not completed. If it were, it would be hidden by default, and `:1440` would fail at the gate. The test hides the open specs of `.specs` (`:1436-1437`), and the completed ones are already hidden. With the eye closed, `:1440` asserts the root has only `side/.specs`, and `:1441` asserts "1 feature(s)". With the eye open (`:1443`), `:1445` asserts both folders. `:1446-1449` asserts "N feature(s) · hidden" on `.specs` and "1 feature(s)" on `side/.specs`, without the suffix (L-021). With M8, the root with the eye closed has both folders, and the test fails at `:1440` (run 2). With M10, `.specs` loses the "· hidden", and the test fails at `:1446` (run 3). The prescription suggested `docs/specs/custom-one`, left over from earlier tests. The author wrote its own folder, which Fix 2 also allowed ("the test writes its own spec"). That way the test does not depend on the earlier ones. The "Done when" was met: M8 dies on a new assertion, and the gate stays green.
+2. **HFD-06 and the completed spec in view (Fix 1, closed).** The test (`suite.cjs:699-719`) hides the open specs and keeps `billing-invoices` in view through the card (`:707`, EYE-05). `:704` proves it is completed. `:708` and `:709` prove the folder stays, with only that spec. `:710` and `:712` prove the exact description, without "· hidden", with the eye closed and open. In the `finally` (`:713-717`), the test closes the eye, hides `billing-invoices` and unhides the open specs. Hiding a completed spec clears the choice: `set` stores `undefined` when `hidden === complete` (`src/core/hidden.ts:61`, EYE-10). `:718` checks the restore. In iterations 2 and 3, with M6, the test failed at `:708`, and the following tests passed. So the `finally` restores the state even when the test fails.
+3. **HFD-03, the card.** The test sends the host the `setHidden` message that the card sends (`api.dashboardMessage`, `src/extension.ts:104`), as in HID-11/12. The card that emits this message is already proven in the hidden-specs unit tests. Accepted.
+4. **HFD-04, the welcome view.** Now the tree is really empty, so the welcome view depends on two things. The first is the `tlcSpecs.hasSpecs` key, which is `store.projects.length > 0` (`src/extension.ts:86`), does not change with this feature and is read by no test. The second is the VS Code rule. In the installed VS Code, the tree's `shouldShowWelcome` requires `isTreeEmpty` and an empty `message` (`workbench.desktop.main.js`: `(this.treeView.message===void 0||this.treeView.message==="")`). `:645` asserts a non-empty message, so the welcome view does not appear in that state, whatever the key. With the manifest's `when` (`:647-650`), that is enough. Accepted, as in HID-16 and SFP-10.
+5. **Triggers (L-009).** The spec lists one trigger per action: the row's eye to hide (HFD-02, `:668`) and the card to unhide (HFD-03, `:671`). Both are exercised. Fix 2 uses the same card message (`setHiddenIn`, `:1402`).
+6. **Success criteria.** The second one is met. The old test (`35a9118:test/integration/suite.cjs:501-520`) became `:638-659`. The message (`:510` → `:645`), the `viewsWelcome` (`:512-515` → `:647-650`) and the return to the initial state (`:519` → `:658`) stay the same. Only the node with no children (`:508-509`) became the empty root (`:644`), and the Project tree assertions were added (`:651-654`). The first criterion, and the independent test in this repository, are left for UAT.
+7. **Spec assumptions.** Folder hidden by any EYE-06 rule: all three rules have a test and a killed mutant. The marked open spec is at `:643-644`. The completed spec with no choice dies with M9 at `:644`, `:669`, `:691` and in HFD-08 (iteration 2). The completed spec kept in view dies with M6 at `:708`. Folder with no spec stays with "0 feature(s)": `:1417`. All folders hidden: empty list, message and no welcome view (`:644-650`). "With one project or several" (`spec.md:32`): one at `:638-719`, several at `:1425-1456` (note 1) and at `:1404-1423`.
+8. **Lessons checked.** L-002: everything is asserted on what the user sees, that is, the root's children, the `TreeItem` `description` and the view message. L-009: note 5. L-014: the `allHidden` flag has tests expecting true (`:644`, `:691`, `:1440`, `:1446`) and false (`:686`, `:688`, `:708`, `:710`, `:1417`, `:1441`). L-020 is followed at `:699-719`. L-025 is now followed: `:1425-1456` has two groups that require opposite results at the same time, a folder that leaves and one that stays. L-021 holds for the "· hidden", absent on the folder in view (`:686`, `:688`, `:710`, `:712`, `:1441`, `:1446-1449`). L-006 does not apply, because there is no watcher. Among the candidates, L-013 holds for the `features.length > 0` guard, killed by M1 in HFD-08 (iteration 1). L-024 holds for the empty folder, the only one that stays at `:1416`.
+9. **Root order in Fix 2.** `:1445` and `:1446-1449` assert `.specs` before `side/.specs`. The store does not keep the configured order. It sorts folders by path, with `a.specsUri.path.localeCompare(b.specsUri.path)` (`src/ui/store.ts:156`). `Promise.all` keeps that order (`src/ui/store.ts:104-109`), and so does the root filter (`src/ui/featuresTree.ts:110`). Both paths start with `<ws>/`, and `.specs` comes before `side/.specs`, because the dot sorts before letters. In Node, `'/c:/tmp/ws/.specs'.localeCompare('/c:/tmp/ws/side/.specs')` gives `-1`. The configured order (`:1430`) is the same, so the assertion holds whichever rule applies. In run 2, the failure message at `:1440` shows the root in that order.
+10. **The `finally` of Fix 2.** `:1450-1454` closes the eye (`hideHidden`), unhides the open specs of `.specs` and runs `setFolders(undefined)`. `:1455` waits for `waitForRoots(['.specs'])`. Unhiding an open spec clears the choice (`src/core/hidden.ts:61`). If the test fails before `open` is filled, the loop does nothing. This is what Fix 2 asked for. The test is the last in the suite. `side/.specs` stays in the temporary workspace, like `bare/.specs` from HFD-08. Outside the configuration, the store does not read that folder, and each suite runs on a fresh copy of the fixture, with its own `--user-data-dir`, deleted at the end (`test/integration/run.mjs:22-36`).
 
 ---
 
 ## Discrimination Sensor
 
-### Iteração 3 (56d5bab)
+### Iteration 3 (56d5bab)
 
-Scratch: `git worktree add --detach <scratchpad>/wt3 56d5bab`, com junction de `node_modules` para o real. Cada mutante é uma troca de texto que exige uma ocorrência só, aplicada por script em `src/ui/featuresTree.ts` do scratch e desfeita com `git checkout -- .`. Depois da reversão, o `git status --porcelain` do scratch ficou vazio. Não usei `git stash`. Antes de cada execução, rodei `npm run build` no scratch e conferi o mutante no `dist/extension.cjs`. O log mostra a extensão carregada do scratch nas três suítes.
+Scratch: `git worktree add --detach <scratchpad>/wt3 56d5bab`, with a `node_modules` junction to the real one. Each mutant is a text replacement that requires exactly one occurrence, applied by script to the scratch's `src/ui/featuresTree.ts` and undone with `git checkout -- .`. After the revert, the scratch's `git status --porcelain` was empty. I did not use `git stash`. Before each run, I ran `npm run build` in the scratch and checked the mutant in `dist/extension.cjs`. The log shows the extension loaded from the scratch in all three suites.
 
 | Mutation | File:line | Description | Killed? |
 | -------- | --------- | ----------- | ------- |
-| M8 (de novo) | `src/ui/featuresTree.ts:110` | Regra global no lugar da regra por pasta, igual à iteração 2: filtro `this.show \|\| !this.allHidden(loaded) \|\| this.store.projects.some((p) => p.project.features.some((f) => !this.isHidden(p, f)))`. A pasta com tudo oculto só sai quando nenhuma pasta tem spec à vista | ✅ Killed (`test/integration/suite.cjs:1440`, a raiz com `.specs` e `side/.specs` no lugar de só `side/.specs`. Só esse teste falhou, 67/68. Mutante em `dist/extension.cjs:1636`) |
-| M6 (de novo) | `src/ui/featuresTree.ts:103` | Regra da pasta com `f.health === 'complete' \|\| this.isHidden(...)`: toda concluída conta como oculta, mesmo mantida à vista pelo olho | ✅ Killed (`suite.cjs:708`, `[]` no lugar de `['root']`. Mutante em `dist/extension.cjs:1632`) |
-| M10 (novo) | `src/ui/featuresTree.ts:161` | A mesma regra global no sufixo: `this.allHidden(node.loaded) && !this.store.projects.some((q) => q.project.features.some((f) => !this.isHidden(q, f)))`. O "· oculta" só aparece quando nenhuma pasta tem spec à vista | ✅ Killed (`suite.cjs:1446`, `'10 feature(s)'` no lugar de `'10 feature(s) · oculta'`. Mutante em `dist/extension.cjs:1684`) |
+| M8 (again) | `src/ui/featuresTree.ts:110` | Global rule instead of the per-folder rule, same as iteration 2: filter `this.show \|\| !this.allHidden(loaded) \|\| this.store.projects.some((p) => p.project.features.some((f) => !this.isHidden(p, f)))`. The fully hidden folder only leaves when no folder has a spec in view | ✅ Killed (`test/integration/suite.cjs:1440`, the root with `.specs` and `side/.specs` instead of only `side/.specs`. Only this test failed, 67/68. Mutant at `dist/extension.cjs:1636`) |
+| M6 (again) | `src/ui/featuresTree.ts:103` | Folder rule with `f.health === 'complete' \|\| this.isHidden(...)`: every completed spec counts as hidden, even when kept in view by the eye | ✅ Killed (`suite.cjs:708`, `[]` instead of `['root']`. Mutant at `dist/extension.cjs:1632`) |
+| M10 (new) | `src/ui/featuresTree.ts:161` | The same global rule on the suffix: `this.allHidden(node.loaded) && !this.store.projects.some((q) => q.project.features.some((f) => !this.isHidden(q, f)))`. The "· hidden" only appears when no folder has a spec in view | ✅ Killed (`suite.cjs:1446`, `'10 feature(s)'` instead of `'10 feature(s) · hidden'`. Mutant at `dist/extension.cjs:1684`) |
 
-M6 e M10 rodaram juntos na execução 3, porque os pontos de falha não se cruzam. Sozinho, M6 só falha em `:708` (iteração 2). Ele não muda o teste novo: `side-one` não é concluída, e `.specs` já está toda oculta. M10 só muda a descrição de uma pasta toda oculta quando outra pasta tem spec à vista, e isso só acontece em `:1446`. Com uma pasta só (`:691`), a descrição não muda. No HFD-08, `bare/.specs` não tem spec. Na execução 3 falharam só esses dois testes (66/68), cada um com a assinatura do seu mutante. M8 rodou sozinho, porque com M6 ele mascara `:708`: a regra global deixa a pasta na raiz enquanto `billing-invoices` está à vista, e a falha passaria para `:710`.
+M6 and M10 ran together in run 3, because their failure points do not overlap. On its own, M6 only fails at `:708` (iteration 2). It does not change the new test: `side-one` is not completed, and `.specs` is already fully hidden. M10 only changes the description of a fully hidden folder when another folder has a spec in view, and that only happens at `:1446`. With a single folder (`:691`), the description does not change. In HFD-08, `bare/.specs` has no spec. In run 3 only those two tests failed (66/68), each with its mutant's signature. M8 ran alone, because with M6 it masks `:708`: the global rule keeps the folder at the root while `billing-invoices` is in view, and the failure would move to `:710`.
 
-**Sensor depth**: lightweight (padrão, sem caminho P0), com 3 mutações no código novo, além das 7 da iteração 1 e das 3 da iteração 2.
-**Result**: 3/3 mortas. PASS ✅
+**Sensor depth**: lightweight (default, no P0 path), with 3 mutations in the new code, on top of the 7 from iteration 1 and the 3 from iteration 2.
+**Result**: 3/3 killed. PASS ✅
 
-**Execuções que abriram o VS Code**: 3 das 4 permitidas. Todas rodaram no desktop oculto, em primeiro plano e uma por vez, no scratch.
+**Runs that opened VS Code**: 3 of the 4 allowed. All ran on the hidden desktop, in the foreground and one at a time, in the scratch.
 
-| # | Execução | Resultado |
+| # | Run | Result |
 | - | -------- | --------- |
-| 1 | Gate, sem mutação | 68/68 + 1/1 + 1/1, exit 0 |
-| 2 | M8 | 67/68 + 1/1 + 1/1, exit 1. Falha só em `:1440` |
-| 3 | M6 + M10 | 66/68 + 1/1 + 1/1, exit 1. Falhas só em `:708` e `:1446` |
+| 1 | Gate, no mutation | 68/68 + 1/1 + 1/1, exit 0 |
+| 2 | M8 | 67/68 + 1/1 + 1/1, exit 1. Fails only at `:1440` |
+| 3 | M6 + M10 | 66/68 + 1/1 + 1/1, exit 1. Failures only at `:708` and `:1446` |
 
-**Isolamento**: o `git status --porcelain` da árvore real estava vazio antes e depois, e o HEAD seguiu em 56d5bab. Tirei a junction com `cmd /c rmdir`, sem recursão, e depois rodei `git worktree remove --force` e `git worktree prune`. O `git worktree list` mostra só a árvore real. O `node_modules` real tinha 129 entradas visíveis antes e depois, e `npm ls --depth=0` deu exit 0.
+**Isolation**: the real tree's `git status --porcelain` was empty before and after, and HEAD stayed at 56d5bab. I removed the junction with `cmd /c rmdir`, without recursion, then ran `git worktree remove --force` and `git worktree prune`. `git worktree list` shows only the real tree. The real `node_modules` had 129 visible entries before and after, and `npm ls --depth=0` exited 0.
 
-### Iteração 2 (21d91d4, histórico)
+### Iteration 2 (21d91d4, history)
 
-Mesmo método, em `<scratchpad>/wt2` em 21d91d4. Cada mutante rodou sozinho. Linhas desta tabela em 21d91d4. Em 56d5bab, o `:1415` do HFD-08 é o `:1416`.
-
-| Mutation | File:line | Description | Killed? |
-| -------- | --------- | ----------- | ------- |
-| M6 (de novo) | `src/ui/featuresTree.ts:103` | Regra da pasta com `f.health === 'complete' \|\| this.isHidden(...)`: toda concluída conta como oculta, mesmo mantida à vista pelo olho | ✅ Killed (`test/integration/suite.cjs:708`, `[]` no lugar de `['root']`. Só esse teste falhou, 66/67. Mutante em `dist/extension.cjs:1632`) |
-| M8 (novo) | `src/ui/featuresTree.ts:110` | Regra global no lugar da regra por pasta: filtro `this.show \|\| !this.allHidden(loaded) \|\| this.store.projects.some((p) => p.project.features.some((f) => !this.isHidden(p, f)))`. A pasta com tudo oculto só sai quando nenhuma pasta tem spec à vista | ❌ Survived → Fix 2 (67/67 + 1/1 + 1/1, exit 0. Mutante em `dist/extension.cjs:1636`). Morto na iteração 3 |
-| M9 (novo) | `src/ui/featuresTree.ts:103` | Só a escolha explícita conta: `this.hidden.choiceOf(...) === 'hidden'`, e a concluída oculta por padrão não deixa a pasta oculta | ✅ Killed (`suite.cjs:644` HFD-01, `:669` HFD-02, `:691` HFD-05, `:1415` HFD-08. 63/67. Mutante em `dist/extension.cjs:1632`) |
-
-Resultado da iteração 2: 2/3 mortas, M8 viva, reprovada. Execuções: 1 gate (67/67 + 1/1 + 1/1), 2 M6 (66/67, falha só em `:708`), 3 M8 (sobreviveu), 4 M9 (63/67). O sufixo com a mesma regra global ficou sem rodar, por causa do limite de execuções. Na iteração 3 ele é M10.
-
-### Iteração 1 (b50c9d7, histórico)
-
-Mesmo método, em `<scratchpad>/wt` em b50c9d7. Linhas desta tabela em b50c9d7. Em 56d5bab, o `:1393` do HFD-08 é o `:1416`.
+Same method, in `<scratchpad>/wt2` at 21d91d4. Each mutant ran alone. Lines in this table are at 21d91d4. At 56d5bab, HFD-08's `:1415` is `:1416`.
 
 | Mutation | File:line | Description | Killed? |
 | -------- | --------- | ----------- | ------- |
-| M1 | `src/ui/featuresTree.ts:103` | `allHidden` sem a guarda `features.length > 0`: a pasta sem spec conta como oculta | ✅ Killed (`test/integration/suite.cjs:1393`, `[]` no lugar de `bare/.specs`) |
-| M2 | `src/ui/featuresTree.ts:110` | Filtro da raiz sem `this.show \|\|`: a pasta oculta sai também com o olho aberto | ✅ Killed (`suite.cjs:690`, `[]` no lugar de `['root']`) |
-| M3 | `src/ui/featuresTree.ts:103` | `some` no lugar de `every`: basta uma spec oculta para a pasta sair | ✅ Killed (17 testes, 49/66. Entre eles SFP-07/08 em `suite.cjs:442` e HFD-06 em `:686`) |
-| M4 | `src/ui/featuresTree.ts:161` | Descrição da raiz sem o sufixo "· oculta" | ✅ Killed (`suite.cjs:691`, `'9 feature(s)'` no lugar de `'9 feature(s) · oculta'`) |
-| M5 | `src/ui/featuresTree.ts:161` | Sufixo invertido: "· oculta" na pasta à vista | ✅ Killed (`suite.cjs:686`, `'9 feature(s) · oculta'` no lugar de `'9 feature(s)'`) |
-| M6 | `src/ui/featuresTree.ts:103` | Regra da pasta com `f.health === 'complete' \|\| this.isHidden(...)`: toda concluída conta como oculta, mesmo mantida à vista pelo olho | ❌ Survived → Fix 1 (66/66 + 1/1 + 1/1). Morto nas iterações 2 e 3 |
-| M7 | `src/ui/featuresTree.ts:110` | Filtro da raiz tirado (`filter(() => true)`), que é o comportamento antigo do SFP-10 | ✅ Killed (`suite.cjs:644` HFD-01, `:669` HFD-02, `:1393` HFD-08) |
+| M6 (again) | `src/ui/featuresTree.ts:103` | Folder rule with `f.health === 'complete' \|\| this.isHidden(...)`: every completed spec counts as hidden, even when kept in view by the eye | ✅ Killed (`test/integration/suite.cjs:708`, `[]` instead of `['root']`. Only this test failed, 66/67. Mutant at `dist/extension.cjs:1632`) |
+| M8 (new) | `src/ui/featuresTree.ts:110` | Global rule instead of the per-folder rule: filter `this.show \|\| !this.allHidden(loaded) \|\| this.store.projects.some((p) => p.project.features.some((f) => !this.isHidden(p, f)))`. The fully hidden folder only leaves when no folder has a spec in view | ❌ Survived → Fix 2 (67/67 + 1/1 + 1/1, exit 0. Mutant at `dist/extension.cjs:1636`). Killed in iteration 3 |
+| M9 (new) | `src/ui/featuresTree.ts:103` | Only the explicit choice counts: `this.hidden.choiceOf(...) === 'hidden'`, and a completed spec hidden by default does not make the folder hidden | ✅ Killed (`suite.cjs:644` HFD-01, `:669` HFD-02, `:691` HFD-05, `:1415` HFD-08. 63/67. Mutant at `dist/extension.cjs:1632`) |
 
-Resultado da iteração 1: 6/7 mortas, M6 viva. Execuções: 1 gate (66/66), 2 M1 + M4, 3 M7 + M5, 4 M2, 5 M6 (sobreviveu), 6 M3. Não rodei o sufixo condicionado ao olho (`this.show && this.allHidden(...)`), porque é equivalente: com o olho fechado, a pasta oculta não aparece. Também não rodei a chave `tlcSpecs.hasSpecs` (`src/extension.ts:86`), que fica fora do diff e não mostraria a tela de boas-vindas com a mensagem cheia (nota 4).
+Iteration 2 result: 2/3 killed, M8 alive, failed. Runs: 1 gate (67/67 + 1/1 + 1/1), 2 M6 (66/67, fails only at `:708`), 3 M8 (survived), 4 M9 (63/67). The suffix with the same global rule was not run, because of the run limit. In iteration 3 it is M10.
+
+### Iteration 1 (b50c9d7, history)
+
+Same method, in `<scratchpad>/wt` at b50c9d7. Lines in this table are at b50c9d7. At 56d5bab, HFD-08's `:1393` is `:1416`.
+
+| Mutation | File:line | Description | Killed? |
+| -------- | --------- | ----------- | ------- |
+| M1 | `src/ui/featuresTree.ts:103` | `allHidden` without the `features.length > 0` guard: the folder with no spec counts as hidden | ✅ Killed (`test/integration/suite.cjs:1393`, `[]` instead of `bare/.specs`) |
+| M2 | `src/ui/featuresTree.ts:110` | Root filter without `this.show \|\|`: the hidden folder also leaves with the eye open | ✅ Killed (`suite.cjs:690`, `[]` instead of `['root']`) |
+| M3 | `src/ui/featuresTree.ts:103` | `some` instead of `every`: one hidden spec is enough for the folder to leave | ✅ Killed (17 tests, 49/66. Among them SFP-07/08 at `suite.cjs:442` and HFD-06 at `:686`) |
+| M4 | `src/ui/featuresTree.ts:161` | Root description without the "· hidden" suffix | ✅ Killed (`suite.cjs:691`, `'9 feature(s)'` instead of `'9 feature(s) · hidden'`) |
+| M5 | `src/ui/featuresTree.ts:161` | Inverted suffix: "· hidden" on the folder in view | ✅ Killed (`suite.cjs:686`, `'9 feature(s) · hidden'` instead of `'9 feature(s)'`) |
+| M6 | `src/ui/featuresTree.ts:103` | Folder rule with `f.health === 'complete' \|\| this.isHidden(...)`: every completed spec counts as hidden, even when kept in view by the eye | ❌ Survived → Fix 1 (66/66 + 1/1 + 1/1). Killed in iterations 2 and 3 |
+| M7 | `src/ui/featuresTree.ts:110` | Root filter removed (`filter(() => true)`), which is the old SFP-10 behavior | ✅ Killed (`suite.cjs:644` HFD-01, `:669` HFD-02, `:1393` HFD-08) |
+
+Iteration 1 result: 6/7 killed, M6 alive. Runs: 1 gate (66/66), 2 M1 + M4, 3 M7 + M5, 4 M2, 5 M6 (survived), 6 M3. I did not run the eye-conditioned suffix (`this.show && this.allHidden(...)`), because it is equivalent: with the eye closed, the hidden folder does not appear. I also did not run the `tlcSpecs.hasSpecs` key (`src/extension.ts:86`), which is outside the diff and would not show the welcome view with a non-empty message (note 4).
 
 ---
 
 ## Interactive UAT Results (if performed)
 
-Não executado, porque o Verifier roda sem usuário. O teste independente da spec (`spec.md:60`) e o primeiro critério de sucesso (`spec.md:91`) rodam neste repositório e ficam para o orquestrador. Com o olho fechado, a árvore Features fica vazia e mostra só a mensagem. Com o olho aberto, aparece o nó `visual-tlc` com "T feature(s) · oculta". Também convém conferir o caso do Fix 1: desocultar uma spec concluída pelo olho, fechar o olho do título e ver a pasta voltar com ela. O caso do Fix 2 pede duas pastas em `tlcSpecs.specsFolders`, uma com tudo oculto e outra com spec à vista. Com o olho fechado, só a segunda fica. Com o olho aberto, as duas aparecem, e só a primeira diz "· oculta".
+Not performed, because the Verifier runs without a user. The spec's independent test (`spec.md:60`) and the first success criterion (`spec.md:91`) run in this repository and are left for the orchestrator. With the eye closed, the Features tree is empty and shows only the message. With the eye open, the `visual-tlc` node appears with "T feature(s) · hidden". It is also worth checking the Fix 1 case: unhide a completed spec through its eye, close the title eye and see the folder come back with it. The Fix 2 case needs two folders in `tlcSpecs.specsFolders`, one with everything hidden and the other with a spec in view. With the eye closed, only the second stays. With the eye open, both appear, and only the first says "· hidden".
 
 ---
 
@@ -134,73 +134,73 @@ Não executado, porque o Verifier roda sem usuário. O teste independente da spe
 
 | Principle | Status |
 | --------- | ------ |
-| Minimum code | ✅ Um método de duas linhas (`featuresTree.ts:101-104`), um filtro na raiz (`:110`) e o sufixo na descrição (`:161`). A regra reusa `isHidden` das linhas |
-| Surgical changes | ✅ Só `featuresTree.ts`, a suíte, as notas nas specs substituídas e o README. O Fix 1 e o Fix 2 mexem só na suíte, além da linha de status em `spec.md` |
-| No scope creep | ✅ A árvore Projeto e o painel não mudaram, como a spec pede (Out of Scope) |
-| Matches patterns | ✅ Filtro no mesmo formato de `featureNodes` (`:273`). Os testes dos fixes seguem o formato dos outros HFD e do SFP-05/06 (`try`/`finally`, `setFolders`, `waitForRoots`, `featuresOf`) |
-| Spec-anchored outcome check (asserted values match spec) | ✅ Raiz, filhos, descrição e mensagem afirmados com o valor exato |
-| Per-layer Coverage Expectation met (domain 1:1 ACs; routes happy+edge+error) | ✅ Cada AC tem teste no host. A regra por pasta tem uma pasta só, uma ao lado de outra sem spec e duas com specs em estados opostos |
-| Every test in scope maps to a spec requirement - no unclaimed tests | ✅ Todo teste novo tem HFD no título. O do Fix 1 é HFD-01/HFD-06, o do Fix 2 é HFD-01/HFD-05/HFD-06 |
+| Minimum code | ✅ One two-line method (`featuresTree.ts:101-104`), one filter at the root (`:110`) and the suffix in the description (`:161`). The rule reuses the rows' `isHidden` |
+| Surgical changes | ✅ Only `featuresTree.ts`, the suite, the notes in the superseded specs and the README. Fix 1 and Fix 2 touch only the suite, plus the status line in `spec.md` |
+| No scope creep | ✅ The Project tree and the Dashboard did not change, as the spec requires (Out of Scope) |
+| Matches patterns | ✅ Filter in the same shape as `featureNodes` (`:273`). The fix tests follow the shape of the other HFD tests and of SFP-05/06 (`try`/`finally`, `setFolders`, `waitForRoots`, `featuresOf`) |
+| Spec-anchored outcome check (asserted values match spec) | ✅ Root, children, description and message asserted with the exact value |
+| Per-layer Coverage Expectation met (domain 1:1 ACs; routes happy+edge+error) | ✅ Each AC has a test in the host. The per-folder rule is tested with a single folder, with one next to a folder with no spec, and with two folders with specs in opposite states |
+| Every test in scope maps to a spec requirement - no unclaimed tests | ✅ Every new test has an HFD ID in its title. The Fix 1 test is HFD-01/HFD-06, the Fix 2 test is HFD-01/HFD-05/HFD-06 |
 | Documented guidelines followed: none - strong defaults applied | ✅ |
 
-O HFD-08 deixa `bare/.specs/STATE.md` no workspace temporário, e o Fix 2 deixa `side/.specs`, como o SFP-05/06 deixa `later/.specs`. A cópia da fixture é descartada a cada execução (nota 10). As notas nas specs substituídas não mudam o que o parser lê (conferido na iteração 1).
+HFD-08 leaves `bare/.specs/STATE.md` in the temporary workspace, and Fix 2 leaves `side/.specs`, as SFP-05/06 leaves `later/.specs`. The fixture copy is discarded on every run (note 10). The notes in the superseded specs do not change what the parser reads (checked in iteration 1).
 
-**Integridade dos testes**: de `35a9118` a `b50c9d7`, `suite.cjs` foi de 63 para 66 testes e de 256 para 271 chamadas `assert.*`. De `b50c9d7` a `21d91d4`, foi de 66 para 67 testes e de 271 para 277 chamadas. De `21d91d4` a `56d5bab` (`git diff 21d91d4..56d5bab -- test`), só `suite.cjs` mudou: 36 linhas entraram e 2 saíram. As 2 que saíram são `idOf` e `setHiddenIn`, que voltaram iguais no nível do módulo (`:1401-1402`). Foi de 67 para 68 testes e de 277 para 282 chamadas `assert.*` (`:1434`, `:1440`, `:1441`, `:1445`, `:1446`). O HFD-08 segue com as mesmas três asserções (`:1412`, `:1416`, `:1417`), com as mesmas expressões. Nenhum teste saiu e nenhuma asserção ficou mais fraca. O unit não mudou (68). `src` não mudou desde fc47aec (`git diff fc47aec..56d5bab -- src` vazio).
+**Test integrity**: from `35a9118` to `b50c9d7`, `suite.cjs` went from 63 to 66 tests and from 256 to 271 `assert.*` calls. From `b50c9d7` to `21d91d4`, it went from 66 to 67 tests and from 271 to 277 calls. From `21d91d4` to `56d5bab` (`git diff 21d91d4..56d5bab -- test`), only `suite.cjs` changed: 36 lines added and 2 removed. The 2 removed are `idOf` and `setHiddenIn`, which came back unchanged at module level (`:1401-1402`). It went from 67 to 68 tests and from 277 to 282 `assert.*` calls (`:1434`, `:1440`, `:1441`, `:1445`, `:1446`). HFD-08 keeps the same three assertions (`:1412`, `:1416`, `:1417`), with the same expressions. No test was removed and no assertion got weaker. The unit tests did not change (68). `src` has not changed since fc47aec (`git diff fc47aec..56d5bab -- src` is empty).
 
 ---
 
 ## Edge Cases
 
-- [x] HFD-08 Pasta sem spec fica em Features com "0 feature(s)", com o olho fechado: `test/integration/suite.cjs:1412-1417`
+- [x] HFD-08 A folder with no spec stays in Features with "0 feature(s)", with the eye closed: `test/integration/suite.cjs:1412-1417`
 
 ---
 
 ## Gate Check
 
-- **Gate command**: `npm run typecheck && npm test && npm run test:integration` (a integração no desktop oculto)
-- **Typecheck**: exit 0 (scratch em 56d5bab)
-- **Unit**: 68 aprovados, 0 reprovados, 0 pulados
-- **Integration**: 68/68 em `suite.cjs`, 1/1 em `startup.cjs`, 1/1 em `multiroot.cjs` (exit 0, execução 1 da iteração 3)
-- **Test count before feature**: 68 unit e 63 + 1 + 1 integration (35a9118)
-- **Test count after feature**: 68 unit e 68 + 1 + 1 integration (56d5bab)
-- **Delta**: +5 integration (−1 SFP-10/HID-16, +6 HFD em `suite.cjs:638`, `:661`, `:681`, `:699`, `:1404`, `:1425`)
-- **Skipped tests**: nenhum
-- **Failures**: nenhuma
+- **Gate command**: `npm run typecheck && npm test && npm run test:integration` (integration on the hidden desktop)
+- **Typecheck**: exit 0 (scratch at 56d5bab)
+- **Unit**: 68 passed, 0 failed, 0 skipped
+- **Integration**: 68/68 in `suite.cjs`, 1/1 in `startup.cjs`, 1/1 in `multiroot.cjs` (exit 0, run 1 of iteration 3)
+- **Test count before feature**: 68 unit and 63 + 1 + 1 integration (35a9118)
+- **Test count after feature**: 68 unit and 68 + 1 + 1 integration (56d5bab)
+- **Delta**: +5 integration (−1 SFP-10/HID-16, +6 HFD at `suite.cjs:638`, `:661`, `:681`, `:699`, `:1404`, `:1425`)
+- **Skipped tests**: none
+- **Failures**: none
 
 ---
 
 ## Fix Plans (if issues found)
 
-### Fix 1: a regra da pasta com uma concluída mantida à vista (feito em 21d91d4)
+### Fix 1: the folder rule with a completed spec kept in view (done in 21d91d4)
 
-- **Root cause**: nos testes da regra da pasta, a spec que deixava a pasta à vista era sempre uma aberta. Nenhum teste via a diferença entre `isHidden` e "concluída conta como oculta" (M6, `src/ui/featuresTree.ts:103`).
-- **Fix task**: teste que oculta as abertas, deixa `billing-invoices` à vista pelo card e afirma a raiz, os filhos e a descrição com o olho fechado e aberto. No `finally`, oculta `billing-invoices` de novo e desoculta as abertas.
-- **Resultado**: feito em `test/integration/suite.cjs:699-719`, como prescrito. M6 morre em `:708` nas iterações 2 e 3. Gate verde.
+- **Root cause**: in the folder rule tests, the spec that kept the folder in view was always an open one. No test saw the difference between `isHidden` and "completed counts as hidden" (M6, `src/ui/featuresTree.ts:103`).
+- **Fix task**: a test that hides the open specs, keeps `billing-invoices` in view through the card and asserts the root, the children and the description with the eye closed and open. In the `finally`, it hides `billing-invoices` again and unhides the open specs.
+- **Result**: done in `test/integration/suite.cjs:699-719`, as prescribed. M6 dies at `:708` in iterations 2 and 3. Gate green.
 
-### Fix 2: a regra por pasta com duas pastas com specs (feito em 56d5bab)
+### Fix 2: the per-folder rule with two folders with specs (done in 56d5bab)
 
-- **Root cause**: com uma pasta só, "esta pasta está toda oculta" e "nenhuma pasta tem spec à vista" dão o mesmo resultado. O único teste com duas pastas (HFD-08) põe ao lado uma pasta sem spec, e aí também dão o mesmo resultado. Nenhum teste tinha uma pasta com tudo oculto ao lado de outra com spec à vista, então M8 (`src/ui/featuresTree.ts:110`) passava.
-- **Fix task**: teste HFD-01/HFD-05 depois do HFD-08 com duas pastas com specs. Com o olho fechado, a raiz só com a pasta à vista, com "1 feature(s)". Com o olho aberto, as duas, `.specs` com "N feature(s) · oculta" e a outra com "1 feature(s)". No `finally`, fecha o olho, desoculta as abertas, roda `setFolders(undefined)` e espera `waitForRoots(['.specs'])`.
-- **Resultado**: feito em `test/integration/suite.cjs:1425-1456`. No lugar de `docs/specs/custom-one`, o teste escreve `side/.specs/features/side-one/spec.md`, a alternativa que a prescrição permitia (nota 1). M8 morre em `:1440`, e M10 em `:1446`. Gate verde.
+- **Root cause**: with a single folder, "this folder is fully hidden" and "no folder has a spec in view" give the same result. The only test with two folders (HFD-08) puts a folder with no spec next to it, and there they also give the same result. No test had a fully hidden folder next to another with a spec in view, so M8 (`src/ui/featuresTree.ts:110`) passed.
+- **Fix task**: an HFD-01/HFD-05 test after HFD-08 with two folders with specs. With the eye closed, the root has only the folder in view, with "1 feature(s)". With the eye open, both, `.specs` with "N feature(s) · hidden" and the other with "1 feature(s)". In the `finally`, close the eye, unhide the open specs, run `setFolders(undefined)` and wait for `waitForRoots(['.specs'])`.
+- **Result**: done in `test/integration/suite.cjs:1425-1456`. Instead of `docs/specs/custom-one`, the test writes `side/.specs/features/side-one/spec.md`, the alternative the prescription allowed (note 1). M8 dies at `:1440`, and M10 at `:1446`. Gate green.
 
 ---
 
 ## Requirement Traceability Update
 
-O Verifier não altera `spec.md`. Status propostos:
+The Verifier does not edit `spec.md`. Proposed statuses:
 
 | Requirement | Previous Status | New Status |
 | ----------- | --------------- | ---------- |
-| HFD-01 | Implementing | ✅ Verified (Fix 2, nota 1) |
+| HFD-01 | Implementing | ✅ Verified (Fix 2, note 1) |
 | HFD-02 | Verified | ✅ Verified |
-| HFD-03 | Verified | ✅ Verified (nota 3) |
-| HFD-04 | Verified | ✅ Verified (nota 4) |
+| HFD-03 | Verified | ✅ Verified (note 3) |
+| HFD-04 | Verified | ✅ Verified (note 4) |
 | HFD-05 | Verified | ✅ Verified |
-| HFD-06 | Verified | ✅ Verified (Fix 1 e Fix 2, notas 1 e 2) |
+| HFD-06 | Verified | ✅ Verified (Fix 1 and Fix 2, notes 1 and 2) |
 | HFD-07 | Verified | ✅ Verified |
 | HFD-08 | Verified | ✅ Verified |
 
-Linha de cobertura proposta: "8 total, 8 verificados."
+Proposed coverage line: "8 total, 8 verified."
 
 ---
 
@@ -208,12 +208,12 @@ Linha de cobertura proposta: "8 total, 8 verificados."
 
 **Overall**: ✅ Ready
 
-**Spec-anchored check**: 8/8 requisitos com evidência que bate com a spec. 0 gaps de precisão
-**Sensor**: iteração 3 com 3/3 mortas (M8, M6, M10). Nenhum mutante vivo nas três iterações depois dos fixes
-**Gate**: typecheck ok, 68 unit, 68 + 1 + 1 integration, 0 falhas
+**Spec-anchored check**: 8/8 requirements with evidence that matches the spec. 0 precision gaps
+**Sensor**: iteration 3 with 3/3 killed (M8, M6, M10). No mutant alive across the three iterations after the fixes
+**Gate**: typecheck ok, 68 unit, 68 + 1 + 1 integration, 0 failures
 
-**What works**: com o olho fechado, a pasta com tudo oculto sai de Features, seja ela a única, seja ao lado de uma pasta sem spec ou de outra com spec à vista. Com o olho aberto, ela volta com "N feature(s) · oculta", e a pasta à vista segue com "N feature(s)". As três regras do EYE-06 que deixam uma spec oculta ou à vista têm mutante morto. A árvore Projeto, a mensagem da view e a tela de boas-vindas seguem como a spec pede.
+**What works**: with the eye closed, the fully hidden folder leaves Features, whether it is the only folder, next to a folder with no spec, or next to another with a spec in view. With the eye open, it comes back with "N feature(s) · hidden", and the folder in view keeps "N feature(s)". The three EYE-06 rules that make a spec hidden or in view each have a killed mutant. The Project tree, the view message and the welcome view behave as the spec requires.
 
-**Issues found**: nenhum.
+**Issues found**: none.
 
-**Next steps**: aplicar a rastreabilidade proposta em `spec.md` e fazer o UAT neste repositório (teste independente e primeiro critério de sucesso).
+**Next steps**: apply the proposed traceability in `spec.md` and run UAT in this repository (independent test and first success criterion).

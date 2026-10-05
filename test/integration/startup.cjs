@@ -13,7 +13,7 @@ async function waitFor(what, predicate, timeoutMs = 15000) {
 }
 
 exports.run = async function run() {
-  const ext = vscode.extensions.getExtension('visual-tlc.visual-tlc');
+  const ext = vscode.extensions.getExtension('JaymeKlein.visual-tlc');
   assert.ok(ext, 'extension not found');
   // SF-06: nobody calls activate() or opens the side bar.
   await waitFor('the extension to activate on its own', () => ext.isActive);

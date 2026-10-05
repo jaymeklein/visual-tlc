@@ -8,10 +8,10 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 ---
 
-**Design**: inline (escopo Medium, sem `design.md`)
+**Design**: inline (Medium scope, no `design.md`)
 **Status**: Done
 
-Design inline: `src/core/folders.ts` concentra a lógica pura (normalizar entradas, achar raízes, rotular). `src/ui/store.ts` lê a configuração por pasta do workspace, busca arquivos, recria os watchers e mostra os avisos.
+Inline design: `src/core/folders.ts` holds the pure logic (normalize entries, find roots, label). `src/ui/store.ts` reads the setting per workspace folder, searches for files, recreates the watchers, and shows the warnings.
 
 ---
 
@@ -21,8 +21,8 @@ Design inline: `src/core/folders.ts` concentra a lógica pura (normalizar entrad
 
 | Code Layer | Required Test Type | Coverage Expectation | Location Pattern | Run Command |
 | ---------- | ------------------ | -------------------- | ---------------- | ----------- |
-| Core (`src/core`) | unit | Todos os ramos; 1:1 com os ACs; um teste por edge case listado | `test/unit/*.test.ts` | `npm test` |
-| Extension host (`src/ui`, `src/extension.ts`, `package.json` contributes) | integration | Cada AC verificado no resultado visível (projetos, árvore, diagnósticos, aviso) | `test/integration/*.cjs` | `npm run test:integration` |
+| Core (`src/core`) | unit | All branches; 1:1 with the ACs; one test per listed edge case | `test/unit/*.test.ts` | `npm test` |
+| Extension host (`src/ui`, `src/extension.ts`, `package.json` contributes) | integration | Each AC checked against the visible result (projects, tree, diagnostics, warning) | `test/integration/*.cjs` | `npm run test:integration` |
 | Docs (`README.md`) | none | - (build gate only) | - | build gate only |
 
 ## Gate Check Commands
@@ -57,13 +57,13 @@ T3 → T4 → T5 → T6 → T7
 T7 → T8
 ```
 
-### Phase 4: Correções do Verifier (iteração 1)
+### Phase 4: Verifier fixes (iteration 1)
 
 ```
 T8 → T9 → T10 → T11
 ```
 
-### Phase 5: Correções do Verifier (iteração 2)
+### Phase 5: Verifier fixes (iteration 2)
 
 ```
 T11 → T12 → T13
@@ -73,12 +73,12 @@ T11 → T12 → T13
 
 ## Task Breakdown
 
-### T1: Normalizar e validar as entradas
+### T1: Normalize and validate the entries
 
-**What**: `parseSpecsFolders(raw)` devolve as entradas válidas normalizadas e as inválidas
+**What**: `parseSpecsFolders(raw)` returns the valid entries, normalized, and the invalid ones
 **Where**: `src/core/folders.ts`
 **Depends on**: None
-**Reuses**: estilo dos módulos de `src/core`
+**Reuses**: style of the `src/core` modules
 **Requirement**: SF-08, SF-09, SF-10, SF-11
 
 **Tools**:
@@ -88,12 +88,12 @@ T11 → T12 → T13
 
 **Done when**:
 
-- [x] Lista vazia ou ausente devolve `['.specs']`
-- [x] Entrada absoluta, com `..` ou com glob sai em `invalid` e fica fora de `entries`
-- [x] `docs\specs` e `docs/specs/` viram `docs/specs`
-- [x] Entradas repetidas depois de normalizadas aparecem uma vez
+- [x] An empty or missing list returns `['.specs']`
+- [x] An absolute entry, or one with `..` or a glob, goes to `invalid` and stays out of `entries`
+- [x] `docs\specs` and `docs/specs/` become `docs/specs`
+- [x] Entries that repeat after normalization appear once
 - [x] Gate check passes: `npm run typecheck && npm test`
-- [x] Test count: 25 existentes + novos passam
+- [x] Test count: 25 existing + new pass
 
 **Tests**: unit
 **Gate**: quick
@@ -102,12 +102,12 @@ T11 → T12 → T13
 
 ---
 
-### T2: Achar as raízes de specs
+### T2: Find the specs roots
 
-**What**: `findSpecsRoots(files, entries)` devolve as pastas de specs entre os arquivos de uma pasta do workspace
+**What**: `findSpecsRoots(files, entries)` returns the specs folders among the files of a workspace folder
 **Where**: `src/core/folders.ts` (modify)
 **Depends on**: T1
-**Reuses**: regra de descoberta de `src/ui/store.ts`
+**Reuses**: discovery rule from `src/ui/store.ts`
 **Requirement**: SF-02, SF-05, SF-10
 
 **Tools**:
@@ -117,12 +117,12 @@ T11 → T12 → T13
 
 **Done when**:
 
-- [x] Acha a entrada na raiz e em subpastas
-- [x] Pasta de nome diferente de `.specs` sem artefato da skill fica de fora
-- [x] Pasta `.specs` aparece com qualquer arquivo
-- [x] Pasta alcançada por duas entradas aparece uma vez
+- [x] Finds the entry at the root and in subfolders
+- [x] A folder not named `.specs` with no skill artifact is left out
+- [x] A `.specs` folder appears with any file
+- [x] A folder reached by two entries appears once
 - [x] Gate check passes: `npm run typecheck && npm test`
-- [x] Test count: nenhum teste removido
+- [x] Test count: no test removed
 
 **Tests**: unit
 **Gate**: quick
@@ -131,12 +131,12 @@ T11 → T12 → T13
 
 ---
 
-### T3: Rotular as raízes
+### T3: Label the roots
 
-**What**: `rootLabel(root, all, folderName)` devolve o rótulo do grupo, com o caminho da pasta quando o projeto tem mais de uma
+**What**: `rootLabel(root, all, folderName)` returns the group label, with the folder path when the project has more than one
 **Where**: `src/core/folders.ts` (modify)
 **Depends on**: T2
-**Reuses**: formato de `labelFor` em `src/ui/store.ts`
+**Reuses**: `labelFor` format in `src/ui/store.ts`
 **Requirement**: SF-07
 
 **Tools**:
@@ -146,10 +146,10 @@ T11 → T12 → T13
 
 **Done when**:
 
-- [x] Projeto com uma pasta mantém o rótulo atual (`api`, `ws/packages/api`)
-- [x] Projeto com duas pastas rotula `projeto · caminho` em cada grupo
+- [x] A project with one folder keeps the current label (`api`, `ws/packages/api`)
+- [x] A project with two folders labels each group `project · path`
 - [x] Gate check passes: `npm run typecheck && npm test`
-- [x] Test count: nenhum teste removido
+- [x] Test count: no test removed
 
 **Tests**: unit
 **Gate**: quick
@@ -158,9 +158,9 @@ T11 → T12 → T13
 
 ---
 
-### T4: Descobrir e observar as pastas configuradas
+### T4: Discover and watch the configured folders
 
-**What**: o store lê `tlcSpecs.specsFolders` por pasta do workspace, descobre as raízes e recria os watchers quando a configuração muda
+**What**: the store reads `tlcSpecs.specsFolders` per workspace folder, discovers the roots, and recreates the watchers when the setting changes
 **Where**: `src/ui/store.ts` (modify)
 **Depends on**: T3
 **Reuses**: `parseSpecsFolders`, `findSpecsRoots`
@@ -173,13 +173,13 @@ T11 → T12 → T13
 
 **Done when**:
 
-- [x] `package.json` declara `tlcSpecs.specsFolders` com padrão `[".specs"]` e escopo `resource`
-- [x] Com `["docs/specs"]`, as features de `docs/specs` aparecem em projetos, árvore e diagnósticos sem recarregar a janela
-- [x] Arquivo novo dentro de `docs/specs` atualiza a visão
-- [x] Pasta `docs/specs` sem artefato não vira projeto
-- [x] Duas entradas para a mesma pasta geram um projeto
+- [x] `package.json` declares `tlcSpecs.specsFolders` with default `[".specs"]` and `resource` scope
+- [x] With `["docs/specs"]`, the features in `docs/specs` appear in projects, tree, and diagnostics without reloading the window
+- [x] A new file inside `docs/specs` updates the view
+- [x] A `docs/specs` folder with no artifact does not become a project
+- [x] Two entries for the same folder produce one project
 - [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [x] Test count: 24 testes de integração existentes + novos passam
+- [x] Test count: 24 existing integration tests + new pass
 
 **Tests**: integration
 **Gate**: full
@@ -188,9 +188,9 @@ T11 → T12 → T13
 
 ---
 
-### T5: Avisar sobre entrada inválida
+### T5: Warn about invalid entries
 
-**What**: o store mostra um aviso que nomeia cada entrada inválida, uma vez por entrada
+**What**: the store shows a warning that names each invalid entry, once per entry
 **Where**: `src/ui/store.ts` (modify)
 **Depends on**: T4
 **Reuses**: `parseSpecsFolders`
@@ -203,10 +203,10 @@ T11 → T12 → T13
 
 **Done when**:
 
-- [x] Entrada `../fora` gera um aviso com o texto `../fora` e não vira projeto
-- [x] As entradas válidas da mesma lista continuam funcionando
+- [x] Entry `../outside` produces a warning with the text `../outside` and does not become a project
+- [x] The valid entries in the same list keep working
 - [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [x] Test count: nenhum teste removido
+- [x] Test count: no test removed
 
 **Tests**: integration
 **Gate**: full
@@ -215,9 +215,9 @@ T11 → T12 → T13
 
 ---
 
-### T6: Rotular os grupos na árvore
+### T6: Label the groups in the tree
 
-**What**: o store usa `rootLabel` para o rótulo de cada projeto
+**What**: the store uses `rootLabel` for each project's label
 **Where**: `src/ui/store.ts` (modify)
 **Depends on**: T5
 **Reuses**: `rootLabel`
@@ -230,9 +230,9 @@ T11 → T12 → T13
 
 **Done when**:
 
-- [x] Com `[".specs", "docs/specs"]` a árvore Features mostra dois grupos, `ws · .specs` e `ws · docs/specs`
+- [x] With `[".specs", "docs/specs"]` the Features tree shows two groups, `ws · .specs` and `ws · docs/specs`
 - [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [x] Test count: nenhum teste removido
+- [x] Test count: no test removed
 
 **Tests**: integration
 **Gate**: full
@@ -241,9 +241,9 @@ T11 → T12 → T13
 
 ---
 
-### T7: Ativar ao iniciar
+### T7: Activate on startup
 
-**What**: a extensão ativa com `onStartupFinished`, verificado num workspace que só tem `docs/specs`
+**What**: the extension activates with `onStartupFinished`, verified in a workspace that only has `docs/specs`
 **Where**: `package.json` (modify)
 **Depends on**: T6
 **Reuses**: `test/integration/run.mjs`
@@ -256,9 +256,9 @@ T11 → T12 → T13
 
 **Done when**:
 
-- [x] Num workspace sem `.specs` e com `tlcSpecs.specsFolders = ["docs/specs"]`, a extensão fica ativa sem chamada a `activate()` e lista as features
+- [x] In a workspace with no `.specs` and with `tlcSpecs.specsFolders = ["docs/specs"]`, the extension is active without a call to `activate()` and lists the features
 - [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [x] Test count: nenhum teste removido
+- [x] Test count: no test removed
 
 **Tests**: integration
 **Gate**: full
@@ -267,12 +267,12 @@ T11 → T12 → T13
 
 ---
 
-### T8: Documentar a configuração
+### T8: Document the setting
 
-**What**: README e textos de boas-vindas descrevem `tlcSpecs.specsFolders`
+**What**: README and welcome texts describe `tlcSpecs.specsFolders`
 **Where**: `README.md` (modify)
 **Depends on**: T7
-**Reuses**: tabela de configurações existente
+**Reuses**: existing settings table
 **Requirement**: SF-01
 
 **Tools**:
@@ -282,7 +282,7 @@ T11 → T12 → T13
 
 **Done when**:
 
-- [x] Tabela de configurações lista `tlcSpecs.specsFolders` com padrão e regras das entradas
+- [x] The settings table lists `tlcSpecs.specsFolders` with its default and the entry rules
 - [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
 
 **Tests**: none
@@ -292,9 +292,9 @@ T11 → T12 → T13
 
 ---
 
-### T9: Provar a configuração por pasta do workspace
+### T9: Prove the per-workspace-folder setting
 
-**What**: suíte de integração num workspace multi-root em que cada pasta tem a sua lista
+**What**: integration suite in a multi-root workspace where each folder has its own list
 **Where**: `test/integration/multiroot.cjs`
 **Depends on**: T8
 **Reuses**: `test/integration/startup.cjs`, `test/integration/run.mjs`
@@ -307,11 +307,11 @@ T11 → T12 → T13
 
 **Done when**:
 
-- [x] Pasta `a` com `["docs/specs"]` mostra só `a/docs/specs`; pasta `b` sem configuração mostra só `b/.specs`
-- [x] O teste do SF-01 confere o escopo `resource` da configuração
-- [x] Mutantes H7 e H12 do Verifier morrem
+- [x] Folder `a` with `["docs/specs"]` shows only `a/docs/specs`; folder `b` with no setting shows only `b/.specs`
+- [x] The SF-01 test checks the setting's `resource` scope
+- [x] Verifier mutants H7 and H12 die
 - [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [x] Test count: nenhum teste removido
+- [x] Test count: no test removed
 
 **Tests**: integration
 **Gate**: full
@@ -320,12 +320,12 @@ T11 → T12 → T13
 
 ---
 
-### T10: Provar painel e barra de status no SF-03
+### T10: Prove dashboard and status bar in SF-03
 
-**What**: a API de teste expõe o texto da barra de status e os projetos do último estado enviado ao painel
+**What**: the test API exposes the status bar text and the projects of the last state sent to the dashboard
 **Where**: `src/extension.ts` (modify)
 **Depends on**: T9
-**Reuses**: `dashboardHealth` em `src/extension.ts`
+**Reuses**: `dashboardHealth` in `src/extension.ts`
 **Requirement**: SF-03
 
 **Tools**:
@@ -335,10 +335,10 @@ T11 → T12 → T13
 
 **Done when**:
 
-- [x] Depois da troca de configuração, a barra de status nomeia uma feature de `docs/specs`
-- [x] Depois da troca de configuração, o último estado enviado ao painel tem os mesmos projetos de `getProjects()`
+- [x] After the setting change, the status bar names a feature from `docs/specs`
+- [x] After the setting change, the last state sent to the dashboard has the same projects as `getProjects()`
 - [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [x] Test count: nenhum teste removido
+- [x] Test count: no test removed
 
 **Tests**: integration
 **Gate**: full
@@ -347,12 +347,12 @@ T11 → T12 → T13
 
 ---
 
-### T11: Provar alteração e remoção de arquivo no SF-04
+### T11: Prove file change and deletion in SF-04
 
-**What**: o teste do SF-04 cobre arquivo criado, alterado e removido numa pasta configurada
+**What**: the SF-04 test covers a file created, changed, and deleted in a configured folder
 **Where**: `test/integration/suite.cjs` (modify)
 **Depends on**: T10
-**Reuses**: teste `SF-04` existente
+**Reuses**: existing `SF-04` test
 **Requirement**: SF-04
 
 **Tools**:
@@ -362,12 +362,12 @@ T11 → T12 → T13
 
 **Done when**:
 
-- [x] A spec nomeia os três eventos no SF-04
-- [x] Alterar `spec.md` em `docs/specs` muda os avisos da feature
-- [x] Remover a pasta da feature em `docs/specs` tira a feature da visão
-- [x] Mutante H16 do Verifier morre
+- [x] The spec names the three events in SF-04
+- [x] Changing `spec.md` in `docs/specs` changes the feature's warnings
+- [x] Deleting the feature folder in `docs/specs` removes the feature from the view
+- [x] Verifier mutant H16 dies
 - [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [x] Test count: nenhum teste removido
+- [x] Test count: no test removed
 
 **Tests**: integration
 **Gate**: full
@@ -376,12 +376,12 @@ T11 → T12 → T13
 
 ---
 
-### T12: Provar o painel pelo que ele renderizou
+### T12: Prove the dashboard by what it rendered
 
-**What**: a webview confirma os projetos que renderizou e a leitura de teste do painel passa a vir dessa confirmação
+**What**: the webview confirms the projects it rendered, and the dashboard's test read now comes from that confirmation
 **Where**: `src/webview/main.ts` (modify)
 **Depends on**: T11
-**Reuses**: protocolo de mensagens em `src/core/protocol.ts`
+**Reuses**: message protocol in `src/core/protocol.ts`
 **Requirement**: SF-03
 
 **Tools**:
@@ -391,11 +391,11 @@ T11 → T12 → T13
 
 **Done when**:
 
-- [x] Depois da troca de configuração, os projetos confirmados pela webview são os de `getProjects()`
-- [x] Sem painel aberto, a leitura de teste devolve `undefined`
-- [x] Mutantes N2, N6 e N8 do Verifier morrem; P2 e N1 continuam mortos
+- [x] After the setting change, the projects confirmed by the webview are those of `getProjects()`
+- [x] With no dashboard open, the test read returns `undefined`
+- [x] Verifier mutants N2, N6, and N8 die; P2 and N1 stay dead
 - [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [x] Test count: nenhum teste removido
+- [x] Test count: no test removed
 
 **Tests**: integration
 **Gate**: full
@@ -404,12 +404,12 @@ T11 → T12 → T13
 
 ---
 
-### T13: Provar a barra de status sem projetos
+### T13: Prove the status bar with no projects
 
-**What**: o teste do SF-03 cobre a configuração que não acha nenhuma pasta
+**What**: the SF-03 test covers a setting that finds no folder
 **Where**: `test/integration/suite.cjs` (modify)
 **Depends on**: T12
-**Reuses**: teste `SF-03` existente
+**Reuses**: existing `SF-03` test
 **Requirement**: SF-03
 
 **Tools**:
@@ -419,10 +419,10 @@ T11 → T12 → T13
 
 **Done when**:
 
-- [x] Com uma entrada que não acha nada, não há projetos, a barra de status some e o painel renderiza zero projetos
-- [x] Mutante N4 do Verifier morre
+- [x] With an entry that finds nothing, there are no projects, the status bar disappears, and the dashboard renders zero projects
+- [x] Verifier mutant N4 dies
 - [x] Gate check passes: `npm run typecheck && npm test && npm run test:integration`
-- [x] Test count: nenhum teste removido
+- [x] Test count: no test removed
 
 **Tests**: integration
 **Gate**: full
@@ -449,19 +449,19 @@ Phase 5:  T12 ------→ T13
 
 | Task | Scope | Status |
 | ---- | ----- | ------ |
-| T1: Normalizar e validar as entradas | 1 função | ✅ Granular |
-| T2: Achar as raízes de specs | 1 função | ✅ Granular |
-| T3: Rotular as raízes | 1 função | ✅ Granular |
-| T4: Descobrir e observar as pastas configuradas | 1 classe (store) + contribuição de configuração | ✅ Coeso |
-| T5: Avisar sobre entrada inválida | 1 comportamento no store | ✅ Granular |
-| T6: Rotular os grupos na árvore | 1 chamada no store | ✅ Granular |
-| T7: Ativar ao iniciar | 1 evento de ativação | ✅ Granular |
-| T8: Documentar a configuração | 1 arquivo | ✅ Granular |
-| T9: Provar a configuração por pasta do workspace | 1 suíte + fixture | ✅ Granular |
-| T10: Provar painel e barra de status no SF-03 | 2 leituras de teste na API | ✅ Coeso |
-| T11: Provar alteração e remoção de arquivo no SF-04 | 1 teste | ✅ Granular |
-| T12: Provar o painel pelo que ele renderizou | 1 mensagem da webview | ✅ Granular |
-| T13: Provar a barra de status sem projetos | 1 teste | ✅ Granular |
+| T1: Normalize and validate the entries | 1 function | ✅ Granular |
+| T2: Find the specs roots | 1 function | ✅ Granular |
+| T3: Label the roots | 1 function | ✅ Granular |
+| T4: Discover and watch the configured folders | 1 class (store) + settings contribution | ✅ Cohesive |
+| T5: Warn about invalid entries | 1 behavior in the store | ✅ Granular |
+| T6: Label the groups in the tree | 1 call in the store | ✅ Granular |
+| T7: Activate on startup | 1 activation event | ✅ Granular |
+| T8: Document the setting | 1 file | ✅ Granular |
+| T9: Prove the per-workspace-folder setting | 1 suite + fixture | ✅ Granular |
+| T10: Prove dashboard and status bar in SF-03 | 2 test reads in the API | ✅ Cohesive |
+| T11: Prove file change and deletion in SF-04 | 1 test | ✅ Granular |
+| T12: Prove the dashboard by what it rendered | 1 webview message | ✅ Granular |
+| T13: Prove the status bar with no projects | 1 test | ✅ Granular |
 
 ## Diagram-Definition Cross-Check
 

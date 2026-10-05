@@ -40,7 +40,7 @@ const esc = (s: unknown): string =>
 
 const pct = (v: number) => Math.round(v * 100);
 
-const rtf = new Intl.RelativeTimeFormat('pt-BR', { numeric: 'auto' });
+const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
 function ago(ms: number | null): string {
   if (!ms) return '';
   const s = Math.round((ms - ctx.now) / 1000);
@@ -106,14 +106,14 @@ function counts(f: Feature) {
 
 type Column = Feature['phase'] | 'done';
 const columnOf = (f: Feature): Column => (f.health === 'complete' ? 'done' : f.phase);
-const COLUMNS: { id: Column; label: string }[] = [...STAGE_ORDER.map((id) => ({ id: id as Column, label: STAGE_LABEL[id] })), { id: 'done', label: 'Concluídas' }];
+const COLUMNS: { id: Column; label: string }[] = [...STAGE_ORDER.map((id) => ({ id: id as Column, label: STAGE_LABEL[id] })), { id: 'done', label: 'Completed' }];
 
 // ---------- render ----------
 
 /** Whole-page HTML for the given state. */
 export function renderApp(context: RenderCtx): string {
   ctx = context;
-  if (!ctx.loaded) return '<p class="empty">Carregando specs…</p>';
+  if (!ctx.loaded) return '<p class="empty">Loading specs…</p>';
   if (ctx.projects.length === 0) return emptyState();
   const sel = ctx.view.selected && findFeature(ctx.view.selected);
   return sel ? detail(sel.project, sel.feature) : overview();
@@ -127,10 +127,10 @@ function findFeature(ref: FeatureRef): { project: Project; feature: Feature } | 
 
 function emptyState(): string {
   return `<div class="empty-state">
-    <h1>Nenhuma spec encontrada</h1>
-    <p>A extensão procura pastas <code>.specs/</code> no workspace, ou as pastas de <code>tlcSpecs.specsFolders</code>. Elas aparecem assim que a skill
-    <code>/tlc-spec-driven</code> criar <code>.specs/features/&lt;feature&gt;/spec.md</code>.</p>
-    <button class="btn" data-action="refresh">${I.refresh} Procurar de novo</button>
+    <h1>No specs found</h1>
+    <p>The extension looks for <code>.specs/</code> folders in the workspace, or the folders in <code>tlcSpecs.specsFolders</code>. They show up as soon as the
+    <code>/tlc-spec-driven</code> skill creates <code>.specs/features/&lt;feature&gt;/spec.md</code>.</p>
+    <button class="btn" data-action="refresh">${I.refresh} Search again</button>
   </div>`;
 }
 
@@ -147,7 +147,7 @@ function overview(): string {
   const reqT = all.reduce((n, f) => n + f.requirementStats.total, 0);
   const hidden = ctx.projects.reduce((n, p) => n + p.features.filter((f) => hiddenOf(p, f)).length, 0);
   const show = ctx.view.showHidden;
-  const eyeTitle = show ? 'Esconder as specs ocultas' : 'Mostrar as specs ocultas';
+  const eyeTitle = show ? 'Hide Hidden Specs' : 'Show Hidden Specs';
 
   const tile = (label: string, value: string, hint = '', cls = '') =>
     `<div class="tile ${cls}"><div class="tile-value">${value}</div><div class="tile-label">${esc(label)}</div>${hint ? `<div class="tile-hint">${esc(hint)}</div>` : ''}</div>`;
@@ -159,19 +159,19 @@ function overview(): string {
       <span class="muted">${esc(ctx.projects.map((p) => p.label).join(' · '))}</span>
     </div>
     <div class="toolbar">
-      <input id="search" type="search" placeholder="Filtrar features…" value="${esc(ctx.view.query)}" aria-label="Filtrar features">
-      <button class="btn-ghost eye-toggle" data-action="toggle-hidden" data-show="${!show}" aria-pressed="${show}" title="${eyeTitle}">${show ? I.eye : I.eyeClosed}<span>${hidden} ${hidden === 1 ? 'oculta' : 'ocultas'}</span></button>
-      <button class="icon-btn" data-action="refresh" title="Atualizar" aria-label="Atualizar">${I.refresh}</button>
+      <input id="search" type="search" placeholder="Filter features…" value="${esc(ctx.view.query)}" aria-label="Filter features">
+      <button class="btn-ghost eye-toggle" data-action="toggle-hidden" data-show="${!show}" aria-pressed="${show}" title="${eyeTitle}">${show ? I.eye : I.eyeClosed}<span>${hidden} hidden</span></button>
+      <button class="icon-btn" data-action="refresh" title="Refresh" aria-label="Refresh">${I.refresh}</button>
     </div>
   </header>
 
-  <section class="tiles" aria-label="Resumo">
+  <section class="tiles" aria-label="Summary">
     ${tile('Features', String(all.length))}
-    ${tile('Em andamento', String(inProgress))}
-    ${tile('Precisam de atenção', String(attention), 'erros ou verificação falhou', attention ? 'tile-alert' : '')}
-    ${tile('Concluídas', String(done), 'verificadas com PASS', done ? 'tile-ok' : '')}
-    ${tile('Tasks', tasksTotal ? `${tasksDone}<span class="of">/${tasksTotal}</span>` : '—', 'concluídas')}
-    ${tile('Requisitos', reqT ? `${reqV}<span class="of">/${reqT}</span>` : '—', 'verificados')}
+    ${tile('In progress', String(inProgress))}
+    ${tile('Need attention', String(attention), 'errors or failed verification', attention ? 'tile-alert' : '')}
+    ${tile('Completed', String(done), 'verified with PASS', done ? 'tile-ok' : '')}
+    ${tile('Tasks', tasksTotal ? `${tasksDone}<span class="of">/${tasksTotal}</span>` : '—', 'done')}
+    ${tile('Requirements', reqT ? `${reqV}<span class="of">/${reqT}</span>` : '—', 'verified')}
   </section>
 
   ${ctx.projects.map((p) => projectSection(p)).join('')}`;
@@ -183,7 +183,7 @@ function projectSection(p: Project): string {
     (f) => (ctx.view.showHidden || !hiddenOf(p, f)) && (!q || f.name.toLowerCase().includes(q) || (f.spec?.title ?? '').toLowerCase().includes(q)),
   );
   const multi = ctx.projects.length > 1;
-  // With the eye closed, Concluídas shows only when a completed spec was kept in view.
+  // With the eye closed, Completed shows only when a completed spec was kept in view.
   const withDone = ctx.view.showHidden || visible.some((f) => f.health === 'complete');
   return `
   <section class="project">
@@ -210,7 +210,7 @@ function focusCard(p: Project): string {
   const blocked = h.blockers && !/^(none|nenhum|-|n\/a)\.?$/i.test(h.blockers);
   return `
   <div class="focus ${blocked ? 'focus-blocked' : ''}">
-    <div class="focus-label">${I.pause} Em foco (handoff do STATE.md)</div>
+    <div class="focus-label">${I.pause} In focus (STATE.md handoff)</div>
     <div class="focus-body">
       <div class="focus-main">
         ${
@@ -224,7 +224,7 @@ function focusCard(p: Project): string {
       <div class="focus-side">
         ${h.branch ? `<span class="pill">${I.branch} ${esc(h.branch)}</span>` : ''}
         ${blocked ? `<span class="pill pill-warn">${I.warning} ${esc(h.blockers)}</span>` : ''}
-        <button class="link" ${previewAttrs(p.id, 'STATE.md')}>abrir STATE.md</button>
+        <button class="link" ${previewAttrs(p.id, 'STATE.md')}>open STATE.md</button>
       </div>
     </div>
   </div>`;
@@ -245,9 +245,9 @@ function featureActions(p: Project, f: Feature, labels = false, extra = ''): str
   const md = featureMarkdown(f);
   const cls = labels ? 'btn-ghost' : 'icon-btn sm';
   const preview = md
-    ? `<button class="${cls}" data-action="preview" ${ref} title="Visualizar ${esc(md.name)}" aria-label="Visualizar ${esc(md.name)}">${I.preview}${labels ? ` Visualizar ${esc(md.name)}` : ''}</button>`
+    ? `<button class="${cls}" data-action="preview" ${ref} title="Preview ${esc(md.name)}" aria-label="Preview ${esc(md.name)}">${I.preview}${labels ? ` Preview ${esc(md.name)}` : ''}</button>`
     : '';
-  const folder = `<button class="${cls}" data-action="reveal" ${ref} title="Abrir pasta da feature no Explorer" aria-label="Abrir pasta da feature">${I.folder}${labels ? ' Abrir pasta' : ''}</button>`;
+  const folder = `<button class="${cls}" data-action="reveal" ${ref} title="Reveal Feature Folder in Explorer" aria-label="Reveal Feature Folder">${I.folder}${labels ? ' Reveal folder' : ''}</button>`;
   return `<span class="feature-actions">${preview}${folder}${extra}</span>`;
 }
 
@@ -255,20 +255,20 @@ function featureActions(p: Project, f: Feature, labels = false, extra = ''): str
 function eyeButton(p: Project, f: Feature): string {
   const ref = `data-pid="${esc(p.id)}" data-feature="${esc(f.name)}"`;
   return hiddenOf(p, f)
-    ? `<button class="icon-btn sm" data-action="unhide" ${ref} title="Desocultar spec" aria-label="Desocultar spec">${I.eyeClosed}</button>`
-    : `<button class="icon-btn sm" data-action="hide" ${ref} title="Ocultar spec" aria-label="Ocultar spec">${I.eye}</button>`;
+    ? `<button class="icon-btn sm" data-action="unhide" ${ref} title="Unhide Spec" aria-label="Unhide Spec">${I.eyeClosed}</button>`
+    : `<button class="icon-btn sm" data-action="hide" ${ref} title="Hide Spec" aria-label="Hide Spec">${I.eye}</button>`;
 }
 
 function card(p: Project, f: Feature): string {
   const c = counts(f);
   const badges = [
-    f.active ? '<span class="pill pill-focus">em foco</span>' : '',
-    c.errors ? `<span class="pill pill-err" title="erros">${I.error}${c.errors}</span>` : '',
-    c.warnings ? `<span class="pill pill-warn" title="avisos">${I.warning}${c.warnings}</span>` : '',
+    f.active ? '<span class="pill pill-focus">in focus</span>' : '',
+    c.errors ? `<span class="pill pill-err" title="errors">${I.error}${c.errors}</span>` : '',
+    c.warnings ? `<span class="pill pill-warn" title="warnings">${I.warning}${c.warnings}</span>` : '',
   ].join('');
   const tasks = f.taskStats.total ? `${f.taskStats.done}/${f.taskStats.total} tasks` : f.requirementStats.total ? `${f.requirementStats.total} req.` : '';
   return `
-  <div class="card h-${f.health}${hiddenOf(p, f) ? ' is-hidden' : ''}" role="button" tabindex="0" data-action="select" data-pid="${esc(p.id)}" data-feature="${esc(f.name)}" title="${esc(f.nextStep)}" aria-label="Detalhes de ${esc(f.name)}">
+  <div class="card h-${f.health}${hiddenOf(p, f) ? ' is-hidden' : ''}" role="button" tabindex="0" data-action="select" data-pid="${esc(p.id)}" data-feature="${esc(f.name)}" title="${esc(f.nextStep)}" aria-label="Details of ${esc(f.name)}">
     <div class="card-head"><span class="card-name">${esc(f.name)}</span><span class="badges">${badges}</span></div>
     ${f.spec?.title && f.spec.title.toLowerCase() !== f.name.toLowerCase() ? `<div class="card-title">${esc(f.spec.title)}</div>` : ''}
     ${miniPipe(f)}
@@ -287,10 +287,10 @@ function projectMeta(p: Project): string {
   <div class="meta-grid">
     ${
       decisions.length
-        ? `<section class="panel"><h3>Decisões ativas <span class="count">${decisions.length}</span></h3>
+        ? `<section class="panel"><h3>Active decisions <span class="count">${decisions.length}</span></h3>
         <ul class="rows">${decisions
           .map(
-            (d) => `<li ${previewAttrs(p.id, 'STATE.md')} title="${esc([d.reason && `Motivo: ${d.reason}`, d.tradeoff && `Trade-off: ${d.tradeoff}`, d.scope && `Escopo: ${d.scope}`].filter(Boolean).join('\n'))}">
+            (d) => `<li ${previewAttrs(p.id, 'STATE.md')} title="${esc([d.reason && `Reason: ${d.reason}`, d.tradeoff && `Trade-off: ${d.tradeoff}`, d.scope && `Scope: ${d.scope}`].filter(Boolean).join('\n'))}">
               <span class="mono id">${esc(d.id)}</span><span class="grow">${esc(d.decision)}</span><span class="muted small">${esc(d.date)}</span></li>`,
           )
           .join('')}</ul></section>`
@@ -298,20 +298,20 @@ function projectMeta(p: Project): string {
     }
     ${
       p.lessons.length
-        ? `<section class="panel"><h3>Lições confirmadas <span class="count">${lessons.length}</span>${candidates ? `<span class="muted small"> · ${candidates} candidata(s) em observação</span>` : ''}</h3>
+        ? `<section class="panel"><h3>Confirmed lessons <span class="count">${lessons.length}</span>${candidates ? `<span class="muted small"> · ${candidates} candidate(s) under observation</span>` : ''}</h3>
         ${
           lessons.length
             ? `<ul class="rows">${lessons
                 .map(
-                  (l) => `<li ${previewAttrs(p.id, 'LESSONS.md')} title="${esc(`Sinal: ${l.signal}\nFeatures: ${l.features.join(', ')}`)}">
+                  (l) => `<li ${previewAttrs(p.id, 'LESSONS.md')} title="${esc(`Signal: ${l.signal}\nFeatures: ${l.features.join(', ')}`)}">
               <span class="mono id">${esc(l.id)}</span><span class="grow">${esc(l.text)}</span><span class="muted small">×${l.recurrence}</span></li>`,
                 )
                 .join('')}</ul>`
-            : '<p class="muted small">Nenhuma lição confirmada ainda — candidatas são promovidas após aparecerem em 2 features.</p>'
+            : '<p class="muted small">No confirmed lessons yet — candidates are promoted after they appear in 2 features.</p>'
         }</section>`
         : ''
     }
-    ${p.issues.length ? `<section class="panel"><h3>Avisos do projeto</h3>${issueList(p.id, p.issues)}</section>` : ''}
+    ${p.issues.length ? `<section class="panel"><h3>Project issues</h3>${issueList(p.id, p.issues)}</section>` : ''}
   </div>`;
 }
 
@@ -321,10 +321,10 @@ function detail(p: Project, f: Feature): string {
   const c = counts(f);
   return `
   <nav class="crumbs">
-    <button class="link" data-action="back">${I.back} Todas as features</button>
+    <button class="link" data-action="back">${I.back} All features</button>
     <span class="crumb-actions">
       ${featureActions(p, f, true)}
-      <button class="icon-btn" data-action="refresh" title="Atualizar" aria-label="Atualizar">${I.refresh}</button>
+      <button class="icon-btn" data-action="refresh" title="Refresh" aria-label="Refresh">${I.refresh}</button>
     </span>
   </nav>
 
@@ -332,7 +332,7 @@ function detail(p: Project, f: Feature): string {
     <div class="detail-title">
       <h1><span class="mono">${esc(f.name)}</span>
         <span class="chip h-${f.health}">${esc(f.phaseLabel)}</span>
-        ${f.active ? '<span class="chip chip-focus">em foco</span>' : ''}
+        ${f.active ? '<span class="chip chip-focus">in focus</span>' : ''}
       </h1>
       ${f.spec?.title ? `<p class="subtitle">${esc(f.spec.title)}</p>` : ''}
       ${f.spec?.problem ? `<p class="problem">${esc(f.spec.problem)}</p>` : ''}
@@ -340,14 +340,14 @@ function detail(p: Project, f: Feature): string {
     <div class="detail-progress">
       <div class="big-pct">${pct(f.progress)}<span>%</span></div>
       <div class="bar"><span data-pct="${pct(f.progress)}" class="bar-fill h-${f.health}"></span></div>
-      <div class="muted small">${esc(HEALTH_LABEL[f.health])}${f.lastModified ? ` · atualizado ${esc(ago(f.lastModified))}` : ''}</div>
+      <div class="muted small">${esc(HEALTH_LABEL[f.health])}${f.lastModified ? ` · updated ${esc(ago(f.lastModified))}` : ''}</div>
     </div>
   </header>
 
   <ol class="stepper">${f.stages.map((s) => step(p, f, s)).join('')}</ol>
 
   <div class="next ${f.health === 'failed' ? 'next-fail' : f.health === 'complete' ? 'next-ok' : ''}">
-    <span class="next-label">${f.health === 'complete' ? I.check : I.arrow} Próximo passo</span>
+    <span class="next-label">${f.health === 'complete' ? I.check : I.arrow} Next step</span>
     <span>${esc(f.nextStep)}</span>
   </div>
 
@@ -359,8 +359,8 @@ function detail(p: Project, f: Feature): string {
     </div>
     <div class="col">
       <section class="panel">
-        <h3>Avisos ${c.errors + c.warnings ? `<span class="count ${c.errors ? 'count-err' : 'count-warn'}">${c.errors + c.warnings}</span>` : ''}</h3>
-        ${f.issues.length ? issueList(p.id, f.issues) : `<p class="ok-line">${I.check} Nenhum aviso — os artefatos passam nas mesmas checagens dos validadores da skill.</p>`}
+        <h3>Issues ${c.errors + c.warnings ? `<span class="count ${c.errors ? 'count-err' : 'count-warn'}">${c.errors + c.warnings}</span>` : ''}</h3>
+        ${f.issues.length ? issueList(p.id, f.issues) : `<p class="ok-line">${I.check} No issues — the artifacts pass the same checks as the skill's validators.</p>`}
       </section>
       ${verifyPanel(p, f)}
       ${filesPanel(p, f)}
@@ -370,7 +370,7 @@ function detail(p: Project, f: Feature): string {
 
 function step(p: Project, f: Feature, s: Stage): string {
   const attrs = s.file ? previewAttrs(p.id, s.file) : '';
-  return `<li class="step s-${s.state}" ${attrs} title="${esc(s.file ? `Abrir ${s.file}` : '')}">
+  return `<li class="step s-${s.state}" ${attrs} title="${esc(s.file ? `Open ${s.file}` : '')}">
     <span class="step-dot">${STAGE_GLYPH[s.state]}</span>
     <span class="step-label">${esc(STAGE_LABEL[s.id])}</span>
     <span class="step-detail">${esc(s.detail)}</span>
@@ -383,8 +383,8 @@ function tasksPanel(p: Project, f: Feature): string {
   if (!t || t.tasks.length === 0) {
     const why =
       f.stages.find((s) => s.id === 'tasks')?.state === 'skipped'
-        ? 'Fase Tasks pulada — no escopo Medium/Small a execução lista os passos inline, sem tasks.md.'
-        : 'Ainda não há tasks.md para esta feature.';
+        ? 'Tasks phase skipped — in Medium/Small scope, execution lists the steps inline, without tasks.md.'
+        : 'This feature has no tasks.md yet.';
     return `<section class="panel"><h3>Tasks</h3><p class="muted">${esc(why)}</p></section>`;
   }
   const phased = t.phases.filter((ph) => ph.taskIds.length > 0);
@@ -398,20 +398,20 @@ function tasksPanel(p: Project, f: Feature): string {
   <section class="panel">
     <h3>Tasks <span class="count">${s.done}/${s.total}</span>
       ${t.status ? `<span class="muted small"> · tasks.md: ${esc(DOC_STATUS[t.status])}</span>` : ''}
-      <button class="link small push" ${previewAttrs(p.id, tasksFile)}>abrir tasks.md</button>
+      <button class="link small push" ${previewAttrs(p.id, tasksFile)}>open tasks.md</button>
     </h3>
     <div class="legend small muted">
-      <span class="st-done">${I.check} ${s.done} concluída(s)</span>
-      <span class="st-in-progress">${I.half} ${s.inProgress} em andamento</span>
-      ${s.blocked ? `<span class="st-blocked">${I.slash} ${s.blocked} bloqueada(s)</span>` : ''}
-      <span class="st-pending">${I.ring} ${s.pending} pendente(s)</span>
+      <span class="st-done">${I.check} ${s.done} done</span>
+      <span class="st-in-progress">${I.half} ${s.inProgress} in progress</span>
+      ${s.blocked ? `<span class="st-blocked">${I.slash} ${s.blocked} blocked</span>` : ''}
+      <span class="st-pending">${I.ring} ${s.pending} pending</span>
     </div>
     ${groups
       .map(({ phase, tasks }) => {
         const d = tasks.filter((x) => x.status === 'done').length;
         return `<div class="phase">
           <div class="phase-head" ${phase ? previewAttrs(p.id, tasksFile) : ''}>
-            <span>${phase ? `Phase ${phase.number}${phase.name ? ` · ${esc(phase.name)}` : ''}` : 'Sem fase'}</span>
+            <span>${phase ? `Phase ${phase.number}${phase.name ? ` · ${esc(phase.name)}` : ''}` : 'No phase'}</span>
             <span class="phase-bar"><span class="bar-fill h-ok" data-pct="${pct(tasks.length ? d / tasks.length : 0)}"></span></span>
             <span class="muted small">${d}/${tasks.length}</span>
           </div>
@@ -427,7 +427,7 @@ function taskRow(p: Project, f: Feature, t: Task): string {
   const key = taskKey(p.id, f.name, t.id);
   const expanded = ctx.view.expandedTasks.includes(key);
   const checks = t.doneWhen.length ? `${t.doneWhen.filter((c) => c.checked).length}/${t.doneWhen.length}` : '';
-  const title = `${t.id}: ${t.title} — ${TASK_STATUS_LABEL[t.status]} · ${expanded ? 'clique para recolher' : 'clique para ver os detalhes'}`;
+  const title = `${t.id}: ${t.title} — ${TASK_STATUS_LABEL[t.status]} · ${expanded ? 'click to collapse' : 'click to see the details'}`;
   const details = expanded ? `<li class="task-details" data-key="${esc(key)}">${taskDetailsHtml(t)}</li>` : '';
   return `<li class="task st-${t.status}${expanded ? ' expanded' : ''}" data-action="toggle-task" data-key="${esc(key)}" tabindex="0" role="button" aria-expanded="${expanded}" title="${esc(title)}">
     <span class="glyph">${TASK_GLYPH[t.status]}</span>
@@ -441,10 +441,10 @@ function taskRow(p: Project, f: Feature, t: Task): string {
 
 export function taskDetailsHtml(t: Task): string {
   const fields: [string, string][] = [
-    ['O quê', t.what],
-    ['Onde', plain(t.where)],
-    ['Depende de', t.dependsOn.join(', ') || 'nenhuma'],
-    ['Requisitos', t.requirements.join(', ')],
+    ['What', t.what],
+    ['Where', plain(t.where)],
+    ['Depends on', t.dependsOn.join(', ') || 'none'],
+    ['Requirements', t.requirements.join(', ')],
     ['Tests / Gate', [t.tests, t.gate].filter(Boolean).join(' · ')],
   ];
   const kv = fields
@@ -464,31 +464,31 @@ function verifyPanel(p: Project, f: Feature): string {
   const file = `${f.dir}/validation.md`;
   if (!v) {
     const waiting = f.phase === 'verify';
-    return `<section class="panel"><h3>Verificação</h3>
-      <div class="verdict ${waiting ? 'v-wait' : 'v-none'}">${waiting ? I.warning : I.ring}<span>${waiting ? 'Aguardando o Verifier' : 'Ainda não verificada'}</span></div>
+    return `<section class="panel"><h3>Verification</h3>
+      <div class="verdict ${waiting ? 'v-wait' : 'v-none'}">${waiting ? I.warning : I.ring}<span>${waiting ? 'Awaiting the Verifier' : 'Not verified yet'}</span></div>
       <p class="muted small">${
         waiting
-          ? 'A execução terminou, mas o validation.md não existe. Pela skill, a feature só está pronta quando um Verifier independente grava o relatório com veredito PASS e evidência file:line.'
-          : 'O Verifier roda automaticamente após a última task e grava validation.md.'
+          ? 'Execution is done, but validation.md does not exist. Per the skill, a feature is only ready when an independent Verifier writes the report with a PASS verdict and file:line evidence.'
+          : 'The Verifier runs automatically after the last task and writes validation.md.'
       }</p></section>`;
   }
-  const label = v.verdict === 'pass' ? (v.hasEvidence ? 'PASS' : 'PASS sem evidência') : v.verdict === 'fail' ? 'FAIL' : v.verdict === 'unfilled' ? 'Veredito não preenchido' : 'Sem veredito';
+  const label = v.verdict === 'pass' ? (v.hasEvidence ? 'PASS' : 'PASS without evidence') : v.verdict === 'fail' ? 'FAIL' : v.verdict === 'unfilled' ? 'Verdict not filled in' : 'No verdict';
   const cls = v.verdict === 'pass' && v.hasEvidence ? 'v-pass' : v.verdict === 'fail' ? 'v-fail' : 'v-wait';
   const metric = (value: string, name: string, bad = false) => `<div class="metric ${bad ? 'metric-bad' : ''}"><div class="metric-value">${value}</div><div class="metric-name">${esc(name)}</div></div>`;
-  return `<section class="panel"><h3>Verificação <button class="link small push" ${previewAttrs(p.id, file)}>abrir validation.md</button></h3>
+  return `<section class="panel"><h3>Verification <button class="link small push" ${previewAttrs(p.id, file)}>open validation.md</button></h3>
     <div class="verdict ${cls}">${cls === 'v-pass' ? I.check : cls === 'v-fail' ? I.x : I.warning}<span>${esc(label)}</span>
       ${v.overall ? `<span class="muted small">· ${esc({ ready: 'Ready', issues: 'Issues', 'not-ready': 'Not Ready' }[v.overall])}</span>` : ''}</div>
     <div class="metrics">
-      ${v.criteria.total ? metric(`${v.criteria.pass}/${v.criteria.total}`, 'critérios PASS', v.criteria.gap > 0) : ''}
+      ${v.criteria.total ? metric(`${v.criteria.pass}/${v.criteria.total}`, 'criteria PASS', v.criteria.gap > 0) : ''}
       ${v.criteria.precision ? metric(String(v.criteria.precision), 'spec-precision gaps', true) : ''}
-      ${v.mutations.total ? metric(`${v.mutations.killed}/${v.mutations.total}`, 'mutantes mortos', v.mutations.survived > 0) : ''}
+      ${v.mutations.total ? metric(`${v.mutations.killed}/${v.mutations.total}`, 'mutants killed', v.mutations.survived > 0) : ''}
       ${v.uat.pass + v.uat.issue + v.uat.skip ? metric(`${v.uat.pass}/${v.uat.pass + v.uat.issue + v.uat.skip}`, 'UAT ok', v.uat.issue > 0) : ''}
       ${v.fixPlans ? metric(String(v.fixPlans), 'fix plans', true) : ''}
     </div>
     <dl class="kv small">
-      ${v.date ? `<dt>Data</dt><dd>${esc(v.date)}</dd>` : ''}
+      ${v.date ? `<dt>Date</dt><dd>${esc(v.date)}</dd>` : ''}
       ${v.diffRange ? `<dt>Diff</dt><dd class="mono">${esc(v.diffRange)}</dd>` : ''}
-      <dt>Evidência</dt><dd>${v.hasEvidence ? 'cita file:line' : '<span class="err">nenhuma citação file:line</span>'}</dd>
+      <dt>Evidence</dt><dd>${v.hasEvidence ? 'cites file:line' : '<span class="err">no file:line citation</span>'}</dd>
     </dl>
   </section>`;
 }
@@ -498,8 +498,8 @@ function requirementsPanel(p: Project, f: Feature): string {
   if (!reqs.length) return '';
   const s = f.requirementStats;
   const file = `${f.dir}/spec.md`;
-  return `<section class="panel"><h3>Requisitos <span class="count">${s.verified}/${s.total}</span>
-      ${f.tasks ? `<span class="muted small"> · ${s.mapped}/${s.total} com task</span>` : ''}</h3>
+  return `<section class="panel"><h3>Requirements <span class="count">${s.verified}/${s.total}</span>
+      ${f.tasks ? `<span class="muted small"> · ${s.mapped}/${s.total} with a task</span>` : ''}</h3>
     <ul class="rows">${reqs
       .map(
         (r) => `<li ${previewAttrs(p.id, file)}>
@@ -509,7 +509,7 @@ function requirementsPanel(p: Project, f: Feature): string {
       .join('')}</ul></section>`;
 }
 
-const DOC_STATUS: Record<string, string> = { draft: 'rascunho', approved: 'aprovado', 'in-progress': 'em andamento', done: 'concluído' };
+const DOC_STATUS: Record<string, string> = { draft: 'draft', approved: 'approved', 'in-progress': 'in progress', done: 'done' };
 
 const EARS_SHORT: Record<string, string> = {
   'event-driven': 'WHEN',
@@ -519,7 +519,7 @@ const EARS_SHORT: Record<string, string> = {
   ubiquitous: 'THE',
   complex: 'MIX',
   unknown: '?',
-  invalid: 'sem SHALL',
+  invalid: 'no SHALL',
 };
 
 function storiesPanel(p: Project, f: Feature): string {
@@ -527,14 +527,14 @@ function storiesPanel(p: Project, f: Feature): string {
   if (!spec) return '';
   const file = `${f.dir}/spec.md`;
   const facts = [
-    spec.goals.total ? `Metas ${spec.goals.done}/${spec.goals.total}` : '',
-    spec.successCriteria.total ? `Critérios de sucesso ${spec.successCriteria.done}/${spec.successCriteria.total}` : '',
+    spec.goals.total ? `Goals ${spec.goals.done}/${spec.goals.total}` : '',
+    spec.successCriteria.total ? `Success criteria ${spec.successCriteria.done}/${spec.successCriteria.total}` : '',
     spec.edgeCases ? `${spec.edgeCases} edge case(s)` : '',
-    spec.outOfScope ? `${spec.outOfScope} fora do escopo` : '',
-    spec.assumptions.length ? `${spec.assumptions.length} premissa(s)` : '',
-    spec.openQuestionsResolved === true ? 'perguntas resolvidas' : spec.openQuestionsResolved === false ? 'há perguntas em aberto' : '',
+    spec.outOfScope ? `${spec.outOfScope} out of scope` : '',
+    spec.assumptions.length ? `${spec.assumptions.length} assumption(s)` : '',
+    spec.openQuestionsResolved === true ? 'questions resolved' : spec.openQuestionsResolved === false ? 'open questions remain' : '',
   ].filter(Boolean);
-  return `<section class="panel"><h3>Histórias <span class="count">${spec.stories.length}</span><button class="link small push" ${previewAttrs(p.id, file)}>abrir spec.md</button></h3>
+  return `<section class="panel"><h3>Stories <span class="count">${spec.stories.length}</span><button class="link small push" ${previewAttrs(p.id, file)}>open spec.md</button></h3>
     <ul class="rows">${spec.stories
       .map(
         (s) => `<li ${previewAttrs(p.id, file)} title="${esc(s.criteria.map((c, i) => `${i + 1}. ${c.text}`).join('\n'))}">
@@ -551,12 +551,12 @@ function designPanel(p: Project, f: Feature): string {
   const d = f.design;
   const c = f.context;
   if (!d && !c) return '';
-  return `<section class="panel"><h3>Design & contexto</h3>
+  return `<section class="panel"><h3>Design & context</h3>
     ${
       d
         ? `<div class="sub" ${previewAttrs(p.id, `${f.dir}/design.md`)}>
         <div class="sub-head">design.md ${d.status ? `<span class="chip-sm">${d.status === 'approved' ? 'Approved' : 'Draft'}</span>` : ''}</div>
-        <div class="muted small">${d.components.length} componente(s) · ${d.risks} risco(s) · ${d.techDecisions} decisão(ões) técnicas</div>
+        <div class="muted small">${d.components.length} component(s) · ${d.risks} risk(s) · ${d.techDecisions} technical decision(s)</div>
         ${d.components.length ? `<div class="chips wrap">${d.components.map((x) => `<span class="chip-sm">${esc(x)}</span>`).join('')}</div>` : ''}
       </div>`
         : ''
@@ -566,7 +566,7 @@ function designPanel(p: Project, f: Feature): string {
         ? `<div class="sub" ${previewAttrs(p.id, `${f.dir}/context.md`)}>
         <div class="sub-head">context.md <span class="muted small">(discuss${c.gathered ? ` · ${esc(c.gathered)}` : ''})</span></div>
         ${c.decisionAreas.length ? `<div class="chips wrap">${c.decisionAreas.map((x) => `<span class="chip-sm">${esc(x)}</span>`).join('')}</div>` : ''}
-        ${c.hasDeferredIdeas ? '<div class="muted small">Tem ideias adiadas (Deferred Ideas)</div>' : ''}
+        ${c.hasDeferredIdeas ? '<div class="muted small">Has deferred ideas (Deferred Ideas)</div>' : ''}
       </div>`
         : ''
     }
@@ -575,13 +575,13 @@ function designPanel(p: Project, f: Feature): string {
 
 function filesPanel(p: Project, f: Feature): string {
   if (!f.files.length) return '';
-  return `<section class="panel"><h3>Arquivos <span class="count">${f.files.length}</span></h3>
+  return `<section class="panel"><h3>Files <span class="count">${f.files.length}</span></h3>
     <ul class="rows">${f.files
       .map(
         (x) => `<li ${previewAttrs(p.id, x.path)}>${I.file}<span class="grow mono">${esc(x.name)}</span>
-        ${x.empty ? '<span class="req req-needs-fix">vazio</span>' : x.kind === 'other' ? '<span class="muted small">extra</span>' : ''}
+        ${x.empty ? '<span class="req req-needs-fix">empty</span>' : x.kind === 'other' ? '<span class="muted small">extra</span>' : ''}
         <span class="muted small nowrap">${esc(ago(x.mtime))}</span>
-        <button class="icon-btn sm" data-action="open" data-pid="${esc(p.id)}" data-file="${esc(x.path)}" title="Abrir no editor" aria-label="Abrir ${esc(x.name)} no editor">${I.edit}</button></li>`,
+        <button class="icon-btn sm" data-action="open" data-pid="${esc(p.id)}" data-file="${esc(x.path)}" title="Open in Editor" aria-label="Open ${esc(x.name)} in editor">${I.edit}</button></li>`,
       )
       .join('')}</ul></section>`;
 }

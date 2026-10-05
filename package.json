@@ -1,7 +1,7 @@
 {
   "name": "visual-tlc",
   "displayName": "Visual TLC — Spec-Driven Tracker",
-  "description": "Acompanhe visualmente as specs geradas pela skill tlc-spec-driven: fases, tasks, rastreabilidade, verificação e avisos de specs incompletas. Projeto independente, não oficial.",
+  "description": "Track the specs produced by the tlc-spec-driven skill at a glance: phases, tasks, traceability, verification, and incomplete-spec warnings. An independent, unofficial project.",
   "version": "0.1.1",
   "publisher": "JaymeKlein",
   "license": "SEE LICENSE IN LICENSE",
@@ -50,95 +50,95 @@
         },
         {
           "id": "tlcSpecs.project",
-          "name": "Projeto"
+          "name": "Project"
         },
         {
           "type": "webview",
           "id": "tlcSpecs.panel",
-          "name": "Painel"
+          "name": "Dashboard"
         }
       ]
     },
     "viewsWelcome": [
       {
         "view": "tlcSpecs.features",
-        "contents": "Nenhuma pasta de specs encontrada neste workspace.\nA extensão lê as pastas da configuração tlcSpecs.specsFolders, a partir da raiz do workspace (.specs por padrão).\nAs features aparecem aqui assim que a skill /tlc-spec-driven gerar .specs/features/<feature>/spec.md.\n[Atualizar](command:tlcSpecs.refresh)",
+        "contents": "No specs folder found in this workspace.\nThe extension reads the folders in the tlcSpecs.specsFolders setting, relative to the workspace root (.specs by default).\nFeatures show up here as soon as the /tlc-spec-driven skill creates .specs/features/<feature>/spec.md.\n[Refresh](command:tlcSpecs.refresh)",
         "when": "!tlcSpecs.hasSpecs"
       },
       {
         "view": "tlcSpecs.project",
-        "contents": "Sem STATE.md ou lições registradas ainda.",
+        "contents": "No STATE.md or recorded lessons yet.",
         "when": "!tlcSpecs.hasSpecs"
       }
     ],
     "commands": [
       {
         "command": "tlcSpecs.refresh",
-        "title": "Atualizar",
+        "title": "Refresh",
         "category": "TLC Specs",
         "icon": "$(refresh)"
       },
       {
         "command": "tlcSpecs.showHidden",
-        "title": "Mostrar specs ocultas",
+        "title": "Show Hidden Specs",
         "category": "TLC Specs",
         "icon": "$(eye-closed)"
       },
       {
         "command": "tlcSpecs.hideHidden",
-        "title": "Esconder specs ocultas",
+        "title": "Hide Hidden Specs",
         "category": "TLC Specs",
         "icon": "$(eye)"
       },
       {
         "command": "tlcSpecs.hideFeature",
-        "title": "Ocultar spec",
+        "title": "Hide Spec",
         "category": "TLC Specs",
         "icon": "$(eye)"
       },
       {
         "command": "tlcSpecs.unhideFeature",
-        "title": "Desocultar spec",
+        "title": "Unhide Spec",
         "category": "TLC Specs",
         "icon": "$(eye-closed)"
       },
       {
         "command": "tlcSpecs.openDashboard",
-        "title": "Abrir painel em aba",
+        "title": "Open Dashboard in Editor Tab",
         "category": "TLC Specs",
         "icon": "$(link-external)"
       },
       {
         "command": "tlcSpecs.showFeature",
-        "title": "Abrir feature no painel",
+        "title": "Open Feature in Dashboard",
         "category": "TLC Specs",
         "icon": "$(dashboard)"
       },
       {
         "command": "tlcSpecs.previewFeatureMarkdown",
-        "title": "Visualizar markdown da spec",
+        "title": "Preview Spec Markdown",
         "category": "TLC Specs",
         "icon": "$(open-preview)"
       },
       {
         "command": "tlcSpecs.revealFeatureFolder",
-        "title": "Abrir pasta da feature",
+        "title": "Reveal Feature Folder",
         "category": "TLC Specs",
         "icon": "$(folder-opened)"
       },
       {
         "command": "tlcSpecs.openFile",
-        "title": "Abrir arquivo",
+        "title": "Open File",
         "category": "TLC Specs"
       },
       {
         "command": "tlcSpecs.previewFile",
-        "title": "Visualizar markdown",
+        "title": "Preview Markdown",
         "category": "TLC Specs"
       },
       {
         "command": "tlcSpecs.openInEditor",
-        "title": "Abrir no editor",
+        "title": "Open in Editor",
         "category": "TLC Specs",
         "icon": "$(edit)"
       }
@@ -277,18 +277,18 @@
         "tlcSpecs.diagnostics.enabled": {
           "type": "boolean",
           "default": true,
-          "description": "Publica os avisos das specs (spec/tasks/validation incompletos) no painel Problemas."
+          "description": "Publish spec warnings (incomplete spec/tasks/validation) to the Problems panel."
         },
         "tlcSpecs.notifications.enabled": {
           "type": "boolean",
           "default": true,
-          "description": "Notifica quando uma feature muda de fase, é criada ou falha na verificação."
+          "description": "Notify when a feature changes phase, is created, or fails verification."
         },
         "tlcSpecs.staleAfterDays": {
           "type": "number",
           "default": 14,
           "minimum": 0,
-          "description": "Marca como parada uma feature não concluída sem alterações há N dias (0 desativa)."
+          "description": "Mark an unfinished feature as stale after N days without changes (0 disables)."
         },
         "tlcSpecs.specsFolders": {
           "type": "array",
@@ -299,7 +299,7 @@
             ".specs"
           ],
           "scope": "resource",
-          "markdownDescription": "Pastas onde a extensão lê as specs. Cada entrada é o caminho de uma pasta a partir da raiz da pasta do workspace (`.specs`, `docs/specs`, `packages/api/.specs`). Pastas com o mesmo nome em outras subpastas não são lidas. Entradas absolutas, com `..` ou com glob são ignoradas, com um aviso. Uma pasta de nome diferente de `.specs` só aparece quando tem artefatos da skill."
+          "markdownDescription": "Folders the extension reads specs from. Each entry is a folder path relative to the workspace folder root (`.specs`, `docs/specs`, `packages/api/.specs`). Folders with the same name in other subfolders are not read. Absolute entries, entries with `..`, and globs are ignored with a warning. A folder not named `.specs` only shows up when it contains skill artifacts."
         }
       }
     }

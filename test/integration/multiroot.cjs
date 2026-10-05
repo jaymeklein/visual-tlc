@@ -21,7 +21,7 @@ test('SF-01/SFP-01/SFP-02 each workspace folder reads its own list of specs fold
 });
 
 exports.run = async function run() {
-  const ext = vscode.extensions.getExtension('visual-tlc.visual-tlc');
+  const ext = vscode.extensions.getExtension('JaymeKlein.visual-tlc');
   assert.ok(ext, 'extension not found');
   api = await ext.activate();
   const failures = [];

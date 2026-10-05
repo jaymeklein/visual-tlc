@@ -6,30 +6,30 @@ export const STAGE_LABEL: Record<StageId, string> = {
   spec: 'Spec',
   design: 'Design',
   tasks: 'Tasks',
-  execute: 'Execução',
-  verify: 'Verificação',
+  execute: 'Execution',
+  verify: 'Verification',
 };
 
 export const STAGE_STATE_LABEL: Record<StageState, string> = {
-  done: 'concluída',
-  active: 'em andamento',
-  pending: 'pendente',
-  skipped: 'pulada',
-  failed: 'falhou',
+  done: 'done',
+  active: 'in progress',
+  pending: 'pending',
+  skipped: 'skipped',
+  failed: 'failed',
 };
 
 export const TASK_STATUS_LABEL: Record<TaskStatus, string> = {
-  done: 'concluída',
-  'in-progress': 'em andamento',
-  blocked: 'bloqueada',
-  pending: 'pendente',
+  done: 'done',
+  'in-progress': 'in progress',
+  blocked: 'blocked',
+  pending: 'pending',
 };
 
 export const HEALTH_LABEL: Record<Health, string> = {
-  complete: 'Concluída',
-  ok: 'Em dia',
-  attention: 'Requer atenção',
-  failed: 'Com falha',
+  complete: 'Completed',
+  ok: 'On track',
+  attention: 'Needs attention',
+  failed: 'Failing',
 };
 
 export const REQ_STATUS_LABEL: Record<RequirementStatus, string> = {

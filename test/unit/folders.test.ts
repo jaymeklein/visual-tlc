@@ -94,14 +94,14 @@ test('SF-09 a comma is part of an entry, not a separator', () => {
 
 test('SF-09/SFP-11 each invalid entry is warned once, until it leaves the setting', () => {
   const entry = (value: string) => ({ setting: 'tlcSpecs.specsFolders', entry: value });
-  const first = pendingWarnings([entry('../fora'), entry('docs/*'), entry('../fora')], new Set());
-  assert.deepEqual(first.show, [entry('../fora'), entry('docs/*')]);
+  const first = pendingWarnings([entry('../outside'), entry('docs/*'), entry('../outside')], new Set());
+  assert.deepEqual(first.show, [entry('../outside'), entry('docs/*')]);
 
-  const again = pendingWarnings([entry('../fora'), entry('docs/*')], first.warned);
+  const again = pendingWarnings([entry('../outside'), entry('docs/*')], first.warned);
   assert.deepEqual(again.show, []);
 
   const left = pendingWarnings([entry('docs/*')], again.warned);
   assert.deepEqual(left.show, []);
-  const back = pendingWarnings([entry('docs/*'), entry('../fora')], left.warned);
-  assert.deepEqual(back.show, [entry('../fora')]);
+  const back = pendingWarnings([entry('docs/*'), entry('../outside')], left.warned);
+  assert.deepEqual(back.show, [entry('../outside')]);
 });

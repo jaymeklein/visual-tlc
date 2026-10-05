@@ -26,9 +26,9 @@ export class PhaseNotifier {
           const before = this.previous?.get(key);
           if (!this.previous) continue;
           const ref = { projectId: project.id, feature: f.name };
-          if (!before) events.push({ ref, message: `Nova spec detectada: ${f.name} (${f.phaseLabel})`, level: 'info' });
+          if (!before) events.push({ ref, message: `New spec detected: ${f.name} (${f.phaseLabel})`, level: 'info' });
           else if (f.health === 'failed' && before.health !== 'failed') events.push({ ref, message: `${f.name}: ${f.phaseLabel}`, level: 'warning' });
-          else if (f.health === 'complete' && before.health !== 'complete') events.push({ ref, message: `${f.name} foi verificada e concluída ✔`, level: 'info' });
+          else if (f.health === 'complete' && before.health !== 'complete') events.push({ ref, message: `${f.name} was verified and completed ✔`, level: 'info' });
           else if (before.phaseLabel !== f.phaseLabel && phaseOf(before.phaseLabel) !== phaseOf(f.phaseLabel)) {
             events.push({ ref, message: `${f.name}: ${before.phaseLabel} → ${f.phaseLabel}`, level: 'info' });
           }
@@ -38,7 +38,7 @@ export class PhaseNotifier {
       if (!vscode.workspace.getConfiguration('tlcSpecs').get<boolean>('notifications.enabled', true)) return;
       for (const e of events.slice(0, 3)) {
         const text = `TLC · ${e.message}`;
-        const shown = e.level === 'warning' ? vscode.window.showWarningMessage(text, 'Abrir painel') : vscode.window.showInformationMessage(text, 'Abrir painel');
+        const shown = e.level === 'warning' ? vscode.window.showWarningMessage(text, 'Open Dashboard') : vscode.window.showInformationMessage(text, 'Open Dashboard');
         void shown.then((choice) => {
           if (choice) this.show(e.ref);
         });
@@ -47,7 +47,7 @@ export class PhaseNotifier {
   }
 }
 
-/** "Execução 3/7" and "Execução 4/7" are the same phase: only phase changes notify. */
+/** "Execution 3/7" and "Execution 4/7" are the same phase: only phase changes notify. */
 function phaseOf(label: string): string {
   return label.replace(/\s*\d+\/\d+$/, '');
 }

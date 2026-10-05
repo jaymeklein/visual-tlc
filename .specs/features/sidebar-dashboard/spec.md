@@ -2,13 +2,13 @@
 
 ## Problem Statement
 
-O painel abre como uma aba do editor. Para vê-lo, a pessoa troca de aba e perde o código de vista, ou divide a tela. Quem acompanha uma feature enquanto programa precisa do painel fora da área do editor, na barra lateral.
+The dashboard opens as an editor tab. To see it, you switch tabs and lose sight of the code, or split the screen. Someone tracking a feature while coding needs the dashboard outside the editor area, in the side bar.
 
 ## Goals
 
-- [x] O painel aparece na barra lateral TLC Specs sem abrir, fechar ou dividir abas do editor
-- [x] O painel cabe na largura da barra lateral sem rolagem horizontal
-- [x] A visão larga em aba do editor continua disponível por comando
+- [x] The dashboard appears in the TLC Specs side bar without opening, closing, or splitting editor tabs
+- [x] The dashboard fits the side bar width without horizontal scrolling
+- [x] The wide editor-tab view is still available through a command
 
 ## Out of Scope
 
@@ -16,10 +16,10 @@ Explicitly excluded. Documented to prevent scope creep.
 
 | Feature     | Reason         |
 | ----------- | -------------- |
-| Contribuir a view direto na barra lateral direita | A versão mínima declarada (VS Code 1.90) só documenta contêineres na barra de atividades e no painel inferior. O usuário pode arrastar a view para a direita |
-| View no painel inferior | Decisão do usuário: só barra lateral |
-| Configuração para escolher onde os cliques abrem o painel | Decisão do usuário: cliques abrem a lateral, a aba fica num comando |
-| Mudar o conteúdo do painel | O pedido é sobre onde ele abre. O conteúdo é o mesmo nas duas superfícies |
+| Contributing the view directly to the right-hand side bar | The declared minimum version (VS Code 1.90) only documents containers in the activity bar and the bottom panel. The user can drag the view to the right |
+| View in the bottom panel | User decision: side bar only |
+| Setting to choose where clicks open the dashboard | User decision: clicks open the side bar; the editor tab stays behind a command |
+| Changing the dashboard's content | The request is about where it opens. The content is the same on both surfaces |
 
 ---
 
@@ -29,15 +29,15 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Assumption / decision | Chosen default  | Rationale | Confirmed? |
 | --------------------- | --------------- | --------- | ---------- |
-| Local do painel | View na barra lateral TLC Specs, junto de Features e Projeto | Resposta do usuário | y |
-| Painel em aba | Continua disponível por comando próprio. Os cliques passam a abrir a view lateral | Resposta do usuário | y |
-| Posição da view | Última, depois de Projeto, com o nome "Painel" | Não muda a posição das árvores que já existem | n |
-| Comando da aba | `tlcSpecs.openDashboard` mantém o id e passa a se chamar "Abrir painel em aba". O botão no título da view Features continua chamando esse comando | Atalhos e keybindings existentes continuam valendo | n |
-| Quais cliques abrem a lateral | Tudo que chama `tlcSpecs.showFeature`: botão e menu da feature, barra de status e notificações | São os cliques que hoje abrem o painel numa feature | n |
-| Largura que define o layout estreito | Menos de 700px | A barra lateral costuma ter de 250 a 500px; abaixo de 700px não cabem 3 colunas de 200px | n |
-| Etapas vazias no layout estreito | Ocultas | Seis blocos empilhados, a maioria vazia, empurram as features para fora da tela | n |
-| View oculta | O VS Code descarta o conteúdo da view oculta. Ao voltar, ela recarrega o estado atual e mantém a feature selecionada | Evita manter uma webview viva em segundo plano | n |
-| Dimensões implícitas | Remaining dimensions N/A for this scope | Mudança de superfície de exibição: sem persistência nova, chamadas externas, auth ou concorrência | n |
+| Dashboard location | View in the TLC Specs side bar, alongside Features and Project | User's answer | y |
+| Dashboard in an editor tab | Still available through its own command. Clicks now open the side bar view | User's answer | y |
+| View position | Last, after Project, named "Dashboard" | Does not move the existing trees | n |
+| Tab command | `tlcSpecs.openDashboard` keeps its id and is renamed "Open Dashboard in Editor Tab". The button in the Features view title still calls this command | Existing shortcuts and keybindings keep working | n |
+| Which clicks open the side bar | Everything that calls `tlcSpecs.showFeature`: the feature's button and menu, the status bar, and notifications | These are the clicks that currently open the dashboard on a feature | n |
+| Width that triggers the narrow layout | Under 700px | The side bar is usually 250 to 500px wide; below 700px, three 200px columns don't fit | n |
+| Empty stages in the narrow layout | Hidden | Six stacked blocks, most of them empty, push the features off screen | n |
+| Hidden view | VS Code discards a hidden view's content. When it comes back, it reloads the current state and keeps the selected feature | Avoids keeping a webview alive in the background | n |
+| Implicit dimensions | Remaining dimensions N/A for this scope | Change of display surface: no new persistence, external calls, auth, or concurrency | n |
 
 **Open questions:** none - all resolved or logged above.
 
@@ -45,47 +45,47 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 ## User Stories
 
-### P1: Ver o painel na barra lateral ⭐ MVP
+### P1: See the dashboard in the side bar ⭐ MVP
 
-**User Story**: Como quem programa acompanhando uma feature, quero o painel na barra lateral para consultá-lo sem sair do código aberto.
+**User Story**: As someone who codes while tracking a feature, I want the dashboard in the side bar so I can check it without leaving the open code.
 
-**Why P1**: É o pedido.
+**Why P1**: It is the request.
 
 **Acceptance Criteria**:
 
-1. The extensão SHALL oferecer a view "Painel" no contêiner TLC Specs da barra lateral, com os mesmos projetos do painel em aba
-2. WHEN o usuário aciona "Abrir feature no painel" THEN a extensão SHALL mostrar a view Painel nos detalhes dessa feature, sem abrir nem fechar abas do editor
-3. WHILE a view Painel tem menos de 700px de largura a extensão SHALL mostrar as etapas do quadro em uma coluna, sem rolagem horizontal
-4. WHILE a view Painel tem menos de 700px de largura a extensão SHALL ocultar as etapas do quadro que não têm features
-5. WHEN um artefato é criado, alterado ou removido em uma pasta de specs THEN a extensão SHALL mostrar na view Painel as features atuais, cada uma na sua fase atual
-6. WHEN a view Painel volta a ficar visível depois de oculta THEN a extensão SHALL mostrar os projetos atuais e a feature que estava selecionada
-7. WHEN o usuário clica em um artefato na view Painel THEN a extensão SHALL abrir o preview do markdown desse artefato
+1. The extension SHALL offer the "Dashboard" view in the TLC Specs side bar container, with the same projects as the editor-tab dashboard
+2. WHEN the user triggers "Open Feature in Dashboard" THEN the extension SHALL show the Dashboard view on that feature's details, without opening or closing editor tabs
+3. WHILE the Dashboard view is less than 700px wide the extension SHALL show the board stages in a single column, without horizontal scrolling
+4. WHILE the Dashboard view is less than 700px wide the extension SHALL hide the board stages that have no features
+5. WHEN an artifact is created, changed, or removed in a specs folder THEN the extension SHALL show the current features in the Dashboard view, each in its current phase
+6. WHEN the Dashboard view becomes visible again after being hidden THEN the extension SHALL show the current projects and the feature that was selected
+7. WHEN the user clicks an artifact in the Dashboard view THEN the extension SHALL open the markdown preview of that artifact
 
-**Independent Test**: Com um arquivo de código aberto, clicar na feature da barra de status. A barra lateral mostra os detalhes da feature e o arquivo continua aberto na mesma aba, sem divisão.
+**Independent Test**: With a code file open, click the feature in the status bar. The side bar shows the feature's details and the file stays open in the same tab, with no split.
 
 ---
 
-### P2: Abrir a visão larga em aba
+### P2: Open the wide view in an editor tab
 
-**User Story**: Como quem quer ver o quadro inteiro, quero abrir o painel numa aba do editor para ter as seis etapas lado a lado.
+**User Story**: As someone who wants to see the whole board, I want to open the dashboard in an editor tab so I get the six stages side by side.
 
-**Why P2**: A visão larga já existe; a história só garante que ela não se perde.
+**Why P2**: The wide view already exists; this story only makes sure it is not lost.
 
 **Acceptance Criteria**:
 
-1. WHEN o usuário executa "Abrir painel em aba" THEN a extensão SHALL abrir o painel numa aba do editor chamada "TLC Specs"
-2. WHILE o painel em aba tem 700px ou mais de largura a extensão SHALL mostrar as seis etapas do quadro lado a lado
+1. WHEN the user runs "Open Dashboard in Editor Tab" THEN the extension SHALL open the dashboard in an editor tab named "TLC Specs"
+2. WHILE the editor-tab dashboard is 700px wide or more the extension SHALL show the six board stages side by side
 
-> Desde `panel-in-progress` (PNL-03 e PNL-04), as seis etapas aparecem com "Ocultar concluídas" desmarcada. Com a opção marcada, que é o padrão, o quadro mostra cinco. Desde `hidden-specs`, a opção é o olho do topo: fechado, que é o padrão, cinco; aberto, seis.
+> Since `panel-in-progress` (PNL-03 and PNL-04), the six stages appear with "Hide Completed" unchecked. With the option checked, which is the default, the board shows five. Since `hidden-specs`, the option is the top eye: closed, which is the default, shows five; open shows six.
 
-**Independent Test**: Executar "TLC Specs: Abrir painel em aba" na paleta de comandos. Abre a aba com as etapas lado a lado: cinco colunas com "Ocultar concluídas" marcada, seis com ela desmarcada.
+**Independent Test**: Run "TLC Specs: Open Dashboard in Editor Tab" from the command palette. The tab opens with the stages side by side: five columns with "Hide Completed" checked, six with it unchecked.
 
 ---
 
 ## Edge Cases
 
-- WHEN a view Painel e o painel em aba estão abertos ao mesmo tempo THEN a extensão SHALL atualizar os dois
-- IF o workspace não tem pasta de specs THEN a view Painel SHALL mostrar a mensagem "Nenhuma spec encontrada"
+- WHEN the Dashboard view and the editor-tab dashboard are open at the same time THEN the extension SHALL update both
+- IF the workspace has no specs folder THEN the Dashboard view SHALL show the message "No specs found"
 
 ---
 
@@ -93,25 +93,25 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Requirement ID | Story       | Phase  | Status  |
 | -------------- | ----------- | ------ | ------- |
-| SIDE-01 | P1: Ver o painel na barra lateral | Tasks | Verified |
-| SIDE-02 | P1: Ver o painel na barra lateral | Tasks | Verified |
-| SIDE-03 | P1: Ver o painel na barra lateral | Tasks | Verified |
-| SIDE-04 | P1: Ver o painel na barra lateral | Tasks | Verified |
-| SIDE-05 | P1: Ver o painel na barra lateral | Tasks | Verified |
-| SIDE-06 | P1: Ver o painel na barra lateral | Tasks | Verified |
-| SIDE-07 | P1: Ver o painel na barra lateral | Tasks | Verified |
-| SIDE-08 | P2: Abrir a visão larga em aba | Tasks | Verified |
-| SIDE-09 | P2: Abrir a visão larga em aba | Tasks | Verified |
-| SIDE-10 | Edge case: as duas superfícies abertas | Tasks | Verified |
-| SIDE-11 | Edge case: workspace sem specs | Tasks | Verified |
+| SIDE-01 | P1: See the dashboard in the side bar | Tasks | Verified |
+| SIDE-02 | P1: See the dashboard in the side bar | Tasks | Verified |
+| SIDE-03 | P1: See the dashboard in the side bar | Tasks | Verified |
+| SIDE-04 | P1: See the dashboard in the side bar | Tasks | Verified |
+| SIDE-05 | P1: See the dashboard in the side bar | Tasks | Verified |
+| SIDE-06 | P1: See the dashboard in the side bar | Tasks | Verified |
+| SIDE-07 | P1: See the dashboard in the side bar | Tasks | Verified |
+| SIDE-08 | P2: Open the wide view in an editor tab | Tasks | Verified |
+| SIDE-09 | P2: Open the wide view in an editor tab | Tasks | Verified |
+| SIDE-10 | Edge case: both surfaces open | Tasks | Verified |
+| SIDE-11 | Edge case: workspace without specs | Tasks | Verified |
 
-**ID format:** `SIDE-NN`, na ordem dos critérios acima.
+**ID format:** `SIDE-NN`, in the order of the criteria above.
 
-**Coverage:** 11 total, 11 mapeados em `tasks.md`, 0 sem task.
+**Coverage:** 11 total, 11 mapped in `tasks.md`, 0 without a task.
 
 ---
 
 ## Success Criteria
 
-- [x] Clicar numa feature mostra o painel na barra lateral e o código aberto continua na mesma aba
-- [x] Os testes unitários e de integração atuais continuam passando; os que abriam a aba por `tlcSpecs.showFeature` passam a abri-la pelo comando da aba
+- [x] Clicking a feature shows the dashboard in the side bar and the open code stays in the same tab
+- [x] The existing unit and integration tests still pass; the ones that opened the tab through `tlcSpecs.showFeature` now open it through the tab command

@@ -63,15 +63,15 @@ export function parseSpec(text: string, file: string): SpecDoc {
     issues.push({ severity, message, file, line: index === undefined ? undefined : index + 1 });
 
   for (const name of SPEC_REQUIRED_SECTIONS) {
-    if (!findSection(doc, name, 3)) issue('error', `Seção obrigatória ausente: "## ${name}"`);
+    if (!findSection(doc, name, 3)) issue('error', `Missing required section: "## ${name}"`);
   }
 
   const title = plain(firstH1(doc).replace(/\s+Specification\s*$/i, ''));
-  if (title && isPlaceholder(title)) issue('warning', 'Título da spec ainda é o placeholder do template', 0);
+  if (title && isPlaceholder(title)) issue('warning', 'Spec title is still the template placeholder', 0);
 
   const stories = parseStories(doc, issue);
   if (findSection(doc, 'User Stories', 3) && stories.length === 0) {
-    issue('warning', 'Nenhuma user story (### P1: …) encontrada');
+    issue('warning', 'No user story (### P1: …) found');
   }
 
   const requirements = parseTraceability(doc, issue);
@@ -87,7 +87,7 @@ export function parseSpec(text: string, file: string): SpecDoc {
       )
     : '';
   if (problemRange && (problem === '' || isPlaceholder(problem))) {
-    issue('warning', 'Problem Statement vazio ou com placeholder', problemRange.heading.index);
+    issue('warning', 'Problem Statement is empty or a placeholder', problemRange.heading.index);
   }
 
   const goalsRange = findSection(doc, 'Goals', 3);
@@ -125,7 +125,7 @@ function parseStories(doc: MdDoc, issue: IssueFn): Story[] {
       line: h.index + 1,
       criteria: [],
     };
-    if (isPlaceholder(story.title)) issue('warning', `${story.priority}: título da história ainda é placeholder`, h.index);
+    if (isPlaceholder(story.title)) issue('warning', `${story.priority}: story title is still a placeholder`, h.index);
 
     // Story body ends at the next heading of any level (sub-headings are unusual here).
     const next = doc.headings.find((x) => x.index > h.index);
@@ -151,13 +151,13 @@ function parseStories(doc: MdDoc, issue: IssueFn): Story[] {
       const pattern = classifyEars(text.replace(LEADING_ID_RE, ''));
       story.criteria.push({ text: plain(text), pattern, line: i + 1 });
       if (pattern === 'invalid') {
-        issue('error', `Critério de aceitação sem SHALL (não testável): ${short(text)}`, i);
+        issue('error', `Acceptance criterion without SHALL (not testable): ${short(text)}`, i);
       } else if (pattern === 'unknown') {
-        issue('warning', `Critério com SHALL mas sem palavra-chave EARS (WHEN/WHILE/WHERE/IF/"The … SHALL"): ${short(text)}`, i);
+        issue('warning', `Criterion has SHALL but no EARS keyword (WHEN/WHILE/WHERE/IF/"The … SHALL"): ${short(text)}`, i);
       }
     }
     if (story.criteria.length === 0) {
-      issue('warning', `${story.priority}: "${story.title}" não tem critérios de aceitação`, h.index);
+      issue('warning', `${story.priority}: "${story.title}" has no acceptance criteria`, h.index);
     }
     stories.push(story);
   }
@@ -169,7 +169,7 @@ function parseTraceability(doc: MdDoc, issue: IssueFn): Requirement[] {
   if (!range) return [];
   const table = tableIn(doc, range);
   if (!table) {
-    issue('warning', 'Requirement Traceability sem tabela de requisitos', range.heading.index);
+    issue('warning', 'Requirement Traceability has no requirements table', range.heading.index);
     return [];
   }
   const idCol = Math.max(0, column(table, /id|requirement|requisito/i));
@@ -186,7 +186,7 @@ function parseTraceability(doc: MdDoc, issue: IssueFn): Requirement[] {
       continue;
     }
     if (!ID_RE.test(id)) {
-      issue('error', `ID de requisito malformado: "${id}" (esperado algo como AUTH-01)`, row.index);
+      issue('error', `Malformed requirement ID: "${id}" (expected something like AUTH-01)`, row.index);
       continue;
     }
     const status = plain(statusCol >= 0 ? (row.cells[statusCol] ?? '') : '');
@@ -200,7 +200,7 @@ function parseTraceability(doc: MdDoc, issue: IssueFn): Requirement[] {
     });
   }
   if (templateSeen && reqs.length === 0) {
-    issue('warning', 'Requirement Traceability só tem linhas de template (nenhum ID real)', range.heading.index);
+    issue('warning', 'Requirement Traceability only has template rows (no real ID)', range.heading.index);
   }
   return reqs;
 }
@@ -218,16 +218,16 @@ function parseAssumptions(doc: MdDoc, issue: IssueFn): { assumptions: Assumption
       templateSeen = true;
       continue;
     }
-    if (!chosen || isPlaceholder(chosen)) issue('error', `Premissa "${short(text, 40)}" sem "Chosen default"`, row.index);
-    if (!rationale || isPlaceholder(rationale)) issue('error', `Premissa "${short(text, 40)}" sem "Rationale"`, row.index);
+    if (!chosen || isPlaceholder(chosen)) issue('error', `Assumption "${short(text, 40)}" has no "Chosen default"`, row.index);
+    if (!rationale || isPlaceholder(rationale)) issue('error', `Assumption "${short(text, 40)}" has no "Rationale"`, row.index);
     assumptions.push({ text: plain(text), chosen: plain(chosen), rationale: plain(rationale), confirmed: plain(confirmed), line: row.index + 1 });
   }
-  if (templateSeen) issue('warning', 'Tabela de premissas ainda contém linhas do template', range.heading.index);
+  if (templateSeen) issue('warning', 'Assumptions table still contains template rows', range.heading.index);
 
   const oq = bodyLines(doc, range).filter((l) => /open questions/i.test(l.text));
   let openQuestionsResolved: boolean | null = null;
   if (oq.length === 0) {
-    issue('warning', 'Sem linha "Open questions:" na seção de premissas', range.heading.index);
+    issue('warning', 'No "Open questions:" line in the assumptions section', range.heading.index);
   } else {
     const clean = oq
       .map((l) => l.text)
@@ -235,7 +235,7 @@ function parseAssumptions(doc: MdDoc, issue: IssueFn): { assumptions: Assumption
       .replace(/[*_]/g, '')
       .toLowerCase();
     openQuestionsResolved = /open questions.*:\s*none/.test(clean);
-    if (!openQuestionsResolved) issue('warning', 'Há perguntas em aberto (esperado "Open questions: none")', oq[0].index);
+    if (!openQuestionsResolved) issue('warning', 'There are open questions (expected "Open questions: none")', oq[0].index);
   }
   return { assumptions, openQuestionsResolved };
 }

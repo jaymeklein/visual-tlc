@@ -2,11 +2,11 @@
 
 ## Validation: sidebar-dashboard - PASS ✅
 
-Os 11 requisitos batem com a spec e os gates passam no VS Code instalado (1.120.0) e no mínimo que o manifesto aceita (1.90.0). O gap do SIDE-03 fechou: o teste agora estreita a barra lateral até 250px ou menos e mede o quadro e os detalhes. Ficam dois mutantes vivos no diff (M4, M5): duas regras do stylesheet estreito que podem sair sem que nada role nas larguras medidas. Não bloqueiam a entrega e viram follow-up.
+All 11 requirements match the spec and the gates pass on the installed VS Code (1.120.0) and on the minimum the manifest accepts (1.90.0). The SIDE-03 gap is closed: the test now narrows the side bar to 250px or less and measures the board and the details. Two mutants in the diff survive (M4, M5): two rules of the narrow stylesheet that can be removed without anything scrolling at the measured widths. They do not block delivery and become a follow-up.
 
 **Date**: 2026-09-29
 **Spec**: `.specs/features/sidebar-dashboard/spec.md`
-**Diff range**: cadcb11..0ab4657 (iteração 3: 90a54c3..0ab4657, branch `feat/sidebar-dashboard`)
+**Diff range**: cadcb11..0ab4657 (iteration 3: 90a54c3..0ab4657, branch `feat/sidebar-dashboard`)
 **Verifier**: independent sub-agent (author ≠ verifier)
 **Iteration**: 3 of max 3
 
@@ -16,9 +16,9 @@ Os 11 requisitos batem com a spec e os gates passam no VS Code instalado (1.120.
 
 | Iteration | HEAD | Outcome | Notes |
 | --------- | ---- | ------- | ----- |
-| 1 | 65a6be7 | Reprovada | 10 mutantes vivos no diff, 6 de produto (S4, C2, S5, S6, C3, P4). SIDE-02, 03, 04 e 09 com gap. SIDE-05 sem precisão. Lições L-008 a L-014, L-006 promovida |
-| 2 | 90a54c3 | Reprovada | T9 a T15 fecham os gaps da iteração 1. Achado novo: o quadro estreito rola na horizontal a 255px (VS Code 1.90.0). Lição L-015 |
-| 3 | 0ab4657 | Aprovada | T16 corrige o stylesheet e mede a view até 250px ou menos. T17 firma os testes novos. Suíte completa no VS Code 1.90.0. M4 e M5 vivos, sem efeito nas larguras medidas |
+| 1 | 65a6be7 | Failed | 10 surviving mutants in the diff, 6 in product code (S4, C2, S5, S6, C3, P4). SIDE-02, 03, 04, and 09 with gaps. SIDE-05 lacking precision. Lessons L-008 to L-014, L-006 promoted |
+| 2 | 90a54c3 | Failed | T9 to T15 close the iteration 1 gaps. New finding: the narrow board scrolls horizontally at 255px (VS Code 1.90.0). Lesson L-015 |
+| 3 | 0ab4657 | Passed | T16 fixes the stylesheet and measures the view down to 250px or less. T17 hardens the new tests. Full suite on VS Code 1.90.0. M4 and M5 survive, with no effect at the measured widths |
 
 ---
 
@@ -26,23 +26,23 @@ Os 11 requisitos batem com a spec e os gates passam no VS Code instalado (1.120.
 
 | Task | Status | Notes |
 | ---- | ------ | ----- |
-| T1 Marcar as etapas vazias do quadro | ✅ Done | 40fe2d8 |
-| T2 Relatar o que a webview renderizou | ✅ Done | 0349606 |
-| T3 Criar a view Painel na barra lateral | ✅ Done | c4d2041 |
-| T4 Abrir a feature na view lateral | ✅ Done | 8ec2010, completada pela T10 e pela T12 |
-| T5 Layout estreito | ✅ Done | cc85728, completada pela T16 |
-| T6 Voltar da view oculta e atualizar as duas superfícies | ✅ Done | e5f8fad |
-| T7 Cliques dentro da view lateral | ✅ Done | 2e75194 |
-| T8 Documentar o painel lateral | ✅ Done | 65a6be7 |
-| T9 Relatar só os cartões visíveis | ✅ Done | af6665b |
-| T10 Provar o botão da notificação | ✅ Done | ea38828 |
-| T11 Fixar o limite de 700px | ✅ Done | 8994f8b |
-| T12 Provar a feature aberta na aba e a rolagem medida | ✅ Done | 50bcd2f |
-| T13 Provar as entradas do manifesto | ✅ Done | 1ee93b6 |
-| T14 Provar o clique com a barra lateral fechada | ✅ Done | 8fa7057 |
-| T15 Nomear os eventos do SIDE-05 | ✅ Done | 90a54c3 |
-| T16 Caber até 250px | ✅ Done | 32a3d5b. M1, M2, M3, M6 e M7 morrem. M4 e M5 vivem |
-| T17 Firmar os testes novos | ✅ Done | 0ab4657 |
+| T1 Mark the empty board stages | ✅ Done | 40fe2d8 |
+| T2 Report what the webview rendered | ✅ Done | 0349606 |
+| T3 Create the Dashboard view in the side bar | ✅ Done | c4d2041 |
+| T4 Open the feature in the side bar view | ✅ Done | 8ec2010, completed by T10 and T12 |
+| T5 Narrow layout | ✅ Done | cc85728, completed by T16 |
+| T6 Come back from the hidden view and update both surfaces | ✅ Done | e5f8fad |
+| T7 Clicks inside the side bar view | ✅ Done | 2e75194 |
+| T8 Document the side bar dashboard | ✅ Done | 65a6be7 |
+| T9 Report only the visible cards | ✅ Done | af6665b |
+| T10 Prove the notification button | ✅ Done | ea38828 |
+| T11 Pin the 700px threshold | ✅ Done | 8994f8b |
+| T12 Prove the feature opened in the tab and the measured scrolling | ✅ Done | 50bcd2f |
+| T13 Prove the manifest entries | ✅ Done | 1ee93b6 |
+| T14 Prove the click with the side bar closed | ✅ Done | 8fa7057 |
+| T15 Name the SIDE-05 events | ✅ Done | 90a54c3 |
+| T16 Fit down to 250px | ✅ Done | 32a3d5b. M1, M2, M3, M6, and M7 die. M4 and M5 survive |
+| T17 Harden the new tests | ✅ Done | 0ab4657 |
 
 ---
 
@@ -50,165 +50,165 @@ Os 11 requisitos batem com a spec e os gates passam no VS Code instalado (1.120.
 
 | Criterion (WHEN X THEN Y) | Spec-defined outcome | `file:line` + assertion | Result |
 | ------------------------- | -------------------- | ----------------------- | ------ |
-| SIDE-01 A extensão oferece a view "Painel" no contêiner TLC Specs, com os mesmos projetos do painel em aba | view `tlcSpecs.panel`, nome "Painel", última do contêiner `tlcSpecs`; mesmos projetos e cartões da aba | `test/integration/suite.cjs:617-620` - `deepEqual(views.map((v) => v.id), ['tlcSpecs.features', 'tlcSpecs.project', 'tlcSpecs.panel'])`. `:621` - `deepEqual(views[2], { type: 'webview', id: 'tlcSpecs.panel', name: 'Painel' })`. `:625` - `deepEqual(side.projects, projectIds())`. `:626` - cartões iguais às features do modelo. `:628-629` - `deepEqual(side.projects, tab.projects)` e `deepEqual(side.cards, tab.cards)` | ✅ PASS |
-| SIDE-02 WHEN o usuário aciona "Abrir feature no painel" THEN mostra a view Painel nos detalhes da feature, sem abrir nem fechar abas | detalhe da feature na view lateral; abas, editor ativo e grupos iguais aos de antes. Vale para o comando, a barra de status e a notificação | **Título:** `test/integration/suite.cjs:744` - `title === 'Abrir feature no painel'`. **Comando:** `:753` - espera `r.detail === 'notifications'`. `:754-757` - abas iguais. `:758` - editor ativo igual. `:759` - `assert.equal(vscode.window.tabGroups.all.length, 1)`. **Notificação:** `:850` - espera `r.detail === 'side-notified'`. `:852` - `assert.match(toast.message, /Nova spec detectada: side-notified/)`. `:853` - `deepEqual(toast.items, ['Abrir painel'])`. `:854` - `assert.equal(dashboardTab(), undefined)`. **Barra lateral fechada:** `:872` - espera `r.detail === 'billing-invoices'`. `:873` - `deepEqual(report.projects, projectIds())`. `:874-879` - abas, editor e grupos iguais | ✅ PASS |
-| SIDE-03 WHILE a view tem menos de 700px THEN etapas em uma coluna, sem rolagem horizontal | 1 coluna e nenhuma rolagem abaixo de 700px. A spec dá a faixa usual da barra lateral: 250 a 500px | **Largura padrão:** `test/integration/suite.cjs:689` - `assert.ok(board.width < 700)`. `:690` - `assert.equal(board.columns, 1)`. `:692` - `assert.equal(board.overflow, false)`. **Estreitando:** `:715-727` - laço até 250px ou menos; a cada passo `:723` - `assert.equal(narrow.columns, 1)` e `:725` - `assert.equal(narrow.overflow, false)`. `:728` - `assert.ok(narrow.width <= 250)`. **Detalhes:** `:729` e `:737` - três features na menor largura e na largura restaurada, `:700` - `assert.equal(detail.overflow, false)`. **Limite:** `test/unit/webview.test.ts:172-176` - bloco `@media (max-width: 699px)` único, com a regra de uma coluna. `:178` - `h3 { flex-wrap: wrap; }` no bloco | ✅ PASS |
-| SIDE-04 WHILE a view tem menos de 700px THEN oculta as etapas sem features | etapas vazias ocultas; etapas com features visíveis | `test/integration/suite.cjs:691` - `assert.equal(board.emptyStages, 0)`. `:693` - cartões exibidos iguais às features do modelo. `:724` e `:726` - as mesmas duas asserções a cada largura do laço. `test/unit/webview.test.ts:177` - `.column.is-empty { display: none; }` dentro do bloco. `:181` - regra ausente fora dele. `test/unit/webview.test.ts:160-165` - `is-empty` só nas colunas sem cartões | ✅ PASS |
-| SIDE-05 WHEN um artefato é criado, alterado ou removido THEN a view mostra as features atuais, cada uma na sua fase atual | todo cartão com a fase igual à do modelo, depois de cada evento | `test/integration/suite.cjs:635-636` - pares "feature: fase" da tela e do modelo. **Criado:** `:645` - cartões iguais ao modelo. `:647` - `deepEqual(onCards(created), inModel())`. `:651` - o mesmo depois de criar `tasks.md`. **Alterado:** `:655` - espera a fase `'Aguardando verificação'`. `:657` - fase diferente da anterior. `:658` - `deepEqual(onCards(changed), inModel())`. **Removido:** `:662-663` - cartão some. `:664` - `deepEqual(onCards(removed), inModel())` | ✅ PASS |
-| SIDE-06 WHEN a view volta a ficar visível THEN mostra os projetos atuais e a feature selecionada | projetos da configuração atual e a mesma feature em detalhe | `test/integration/suite.cjs:794-796` - seleciona, fecha a barra lateral e espera o relatório sumir. `:800` - nada renderizado com a view oculta. `:804` - `deepEqual(report.projects, projectIds())`. `:805` - `assert.equal(report.detail, 'user-auth')` | ✅ PASS |
-| SIDE-07 WHEN o usuário clica em um artefato na view Painel THEN abre o preview do markdown | aba de preview do arquivo, sem editor de texto e sem aba do painel | `test/integration/suite.cjs:835-836` - `sidePanelMessage({ type: 'previewFile', ... })` + `expectPreviewOf('design.md')` (`:146-150`). `:837` - `assert.equal(dashboardTab(), undefined)`. Renderer: `test/unit/webview.test.ts:44-53`, `:74-76` | ✅ PASS (resíduo: limite da API) |
-| SIDE-08 WHEN o usuário executa "Abrir painel em aba" THEN abre uma aba chamada "TLC Specs" | comando com o título "Abrir painel em aba"; aba `TLC Specs` | `test/integration/suite.cjs:771` - título `'Abrir painel em aba'`. `:772-775` - `view/title` com `when` igual a `'view == tlcSpecs.features || view == tlcSpecs.panel'`. `:780` - espera a aba `TLC Specs`. `:782` - `deepEqual(report.projects, projectIds())`. `:783` - `assert.equal(report.detail, null)`. `:789` - aba nova aberta numa feature mostra `detail === 'billing-invoices'`. Aba já aberta: `:72` e `:74` | ✅ PASS |
-| SIDE-09 WHILE o painel em aba tem 700px ou mais THEN seis etapas lado a lado | 6 colunas a partir de 700px | `test/integration/suite.cjs:580-581` - `width >= 700` e `assert.equal(report.columns, 6)`. `:595-596` - a mesma aba ao lado da barra lateral, `width >= 700` e 6 colunas. `:583` e `:597` - `overflow === (width < 1298)`. `:584` e `:598` - etapas vazias visíveis iguais às do modelo. `test/unit/webview.test.ts:172-175` - o limite é 699 e só existe um bloco estreito. `:180` - regra de 6 colunas fora do bloco | ✅ PASS |
-| SIDE-10 WHEN a view e a aba estão abertas THEN atualiza as duas | as duas superfícies com os projetos novos | `test/integration/suite.cjs:822-823` - espera os ids novos na aba e na view. `:824-825` - `deepEqual` dos cartões das duas com as features do modelo | ✅ PASS |
-| SIDE-11 IF o workspace não tem pasta de specs THEN a view mostra "Nenhuma spec encontrada" | texto exato "Nenhuma spec encontrada" | `test/integration/suite.cjs:673` - `assert.equal(report.emptyMessage, 'Nenhuma spec encontrada')`. `:674-676` - sem projetos, sem cartões, 0 colunas. `:681-682` - projetos voltam e a mensagem some | ✅ PASS |
+| SIDE-01 The extension offers the "Dashboard" view in the TLC Specs container, with the same projects as the editor-tab dashboard | view `tlcSpecs.panel`, named "Dashboard", last in the `tlcSpecs` container; same projects and cards as the tab | `test/integration/suite.cjs:617-620` - `deepEqual(views.map((v) => v.id), ['tlcSpecs.features', 'tlcSpecs.project', 'tlcSpecs.panel'])`. `:621` - `deepEqual(views[2], { type: 'webview', id: 'tlcSpecs.panel', name: 'Dashboard' })`. `:625` - `deepEqual(side.projects, projectIds())`. `:626` - cards equal to the model's features. `:628-629` - `deepEqual(side.projects, tab.projects)` and `deepEqual(side.cards, tab.cards)` | ✅ PASS |
+| SIDE-02 WHEN the user triggers "Open Feature in Dashboard" THEN shows the Dashboard view on the feature's details, without opening or closing tabs | feature detail in the side bar view; tabs, active editor, and groups the same as before. Applies to the command, the status bar, and the notification | **Title:** `test/integration/suite.cjs:744` - `title === 'Open Feature in Dashboard'`. **Command:** `:753` - waits for `r.detail === 'notifications'`. `:754-757` - same tabs. `:758` - same active editor. `:759` - `assert.equal(vscode.window.tabGroups.all.length, 1)`. **Notification:** `:850` - waits for `r.detail === 'side-notified'`. `:852` - `assert.match(toast.message, /New spec detected: side-notified/)`. `:853` - `deepEqual(toast.items, ['Open Dashboard'])`. `:854` - `assert.equal(dashboardTab(), undefined)`. **Side bar closed:** `:872` - waits for `r.detail === 'billing-invoices'`. `:873` - `deepEqual(report.projects, projectIds())`. `:874-879` - same tabs, editor, and groups | ✅ PASS |
+| SIDE-03 WHILE the view is under 700px THEN stages in one column, no horizontal scrolling | 1 column and no scrolling below 700px. The spec gives the usual side bar range: 250 to 500px | **Default width:** `test/integration/suite.cjs:689` - `assert.ok(board.width < 700)`. `:690` - `assert.equal(board.columns, 1)`. `:692` - `assert.equal(board.overflow, false)`. **Narrowing:** `:715-727` - loop down to 250px or less; at each step `:723` - `assert.equal(narrow.columns, 1)` and `:725` - `assert.equal(narrow.overflow, false)`. `:728` - `assert.ok(narrow.width <= 250)`. **Details:** `:729` and `:737` - three features at the smallest width and at the restored width, `:700` - `assert.equal(detail.overflow, false)`. **Threshold:** `test/unit/webview.test.ts:172-176` - single `@media (max-width: 699px)` block, with the one-column rule. `:178` - `h3 { flex-wrap: wrap; }` in the block | ✅ PASS |
+| SIDE-04 WHILE the view is under 700px THEN hides the stages without features | empty stages hidden; stages with features visible | `test/integration/suite.cjs:691` - `assert.equal(board.emptyStages, 0)`. `:693` - displayed cards equal to the model's features. `:724` and `:726` - the same two assertions at each width in the loop. `test/unit/webview.test.ts:177` - `.column.is-empty { display: none; }` inside the block. `:181` - rule absent outside it. `test/unit/webview.test.ts:160-165` - `is-empty` only on columns without cards | ✅ PASS |
+| SIDE-05 WHEN an artifact is created, changed, or removed THEN the view shows the current features, each in its current phase | every card with the same phase as the model, after each event | `test/integration/suite.cjs:635-636` - "feature: phase" pairs from the screen and from the model. **Created:** `:645` - cards equal to the model. `:647` - `deepEqual(onCards(created), inModel())`. `:651` - the same after creating `tasks.md`. **Changed:** `:655` - waits for the phase `'Awaiting verification'`. `:657` - phase different from the previous one. `:658` - `deepEqual(onCards(changed), inModel())`. **Removed:** `:662-663` - card disappears. `:664` - `deepEqual(onCards(removed), inModel())` | ✅ PASS |
+| SIDE-06 WHEN the view becomes visible again THEN shows the current projects and the selected feature | projects from the current configuration and the same feature in detail | `test/integration/suite.cjs:794-796` - selects, closes the side bar, and waits for the report to clear. `:800` - nothing rendered while the view is hidden. `:804` - `deepEqual(report.projects, projectIds())`. `:805` - `assert.equal(report.detail, 'user-auth')` | ✅ PASS |
+| SIDE-07 WHEN the user clicks an artifact in the Dashboard view THEN opens the markdown preview | preview tab for the file, with no text editor and no dashboard tab | `test/integration/suite.cjs:835-836` - `sidePanelMessage({ type: 'previewFile', ... })` + `expectPreviewOf('design.md')` (`:146-150`). `:837` - `assert.equal(dashboardTab(), undefined)`. Renderer: `test/unit/webview.test.ts:44-53`, `:74-76` | ✅ PASS (residual: API limit) |
+| SIDE-08 WHEN the user runs "Open Dashboard in Editor Tab" THEN opens a tab named "TLC Specs" | command titled "Open Dashboard in Editor Tab"; `TLC Specs` tab | `test/integration/suite.cjs:771` - title `'Open Dashboard in Editor Tab'`. `:772-775` - `view/title` with `when` equal to `'view == tlcSpecs.features || view == tlcSpecs.panel'`. `:780` - waits for the `TLC Specs` tab. `:782` - `deepEqual(report.projects, projectIds())`. `:783` - `assert.equal(report.detail, null)`. `:789` - a new tab opened on a feature shows `detail === 'billing-invoices'`. Tab already open: `:72` and `:74` | ✅ PASS |
+| SIDE-09 WHILE the editor-tab dashboard is 700px or wider THEN six stages side by side | 6 columns from 700px up | `test/integration/suite.cjs:580-581` - `width >= 700` and `assert.equal(report.columns, 6)`. `:595-596` - the same tab next to the side bar, `width >= 700` and 6 columns. `:583` and `:597` - `overflow === (width < 1298)`. `:584` and `:598` - visible empty stages equal to the model's. `test/unit/webview.test.ts:172-175` - the threshold is 699 and there is only one narrow block. `:180` - 6-column rule outside the block | ✅ PASS |
+| SIDE-10 WHEN the view and the tab are open THEN updates both | both surfaces with the new projects | `test/integration/suite.cjs:822-823` - waits for the new ids in the tab and in the view. `:824-825` - `deepEqual` of both surfaces' cards against the model's features | ✅ PASS |
+| SIDE-11 IF the workspace has no specs folder THEN the view shows "No specs found" | exact text "No specs found" | `test/integration/suite.cjs:673` - `assert.equal(report.emptyMessage, 'No specs found')`. `:674-676` - no projects, no cards, 0 columns. `:681-682` - projects come back and the message disappears | ✅ PASS |
 
-**Status**: ✅ All ACs covered. 11 de 11 requisitos batem com o resultado da spec. Nenhum gap de precisão.
+**Status**: ✅ All ACs covered. 11 of 11 requirements match the spec outcome. No precision gaps.
 
-### SIDE-03: o que foi medido
+### SIDE-03: what was measured
 
-| Ambiente | Larguras da view | Resultado |
+| Environment | View widths | Result |
 | -------- | ---------------- | --------- |
-| VS Code 1.120.0 (instalado) | 299px e 239px | quadro em 1 coluna, sem rolagem. Detalhes de 3 features sem rolagem nas duas larguras |
-| VS Code 1.90.0 (mínimo do manifesto) | 255px e um passo abaixo | suíte completa: 46/46 + 1 + 1. Na iteração 2 este mesmo teste falhava |
+| VS Code 1.120.0 (installed) | 299px and 239px | board in 1 column, no scrolling. Details of 3 features with no scrolling at both widths |
+| VS Code 1.90.0 (manifest minimum) | 255px and one step below | full suite: 46/46 + 1 + 1. In iteration 2 this same test failed |
 
-- **O achado da iteração 2 está confirmado e fechado.** Tirar `h3 { flex-wrap: wrap; }` faz o teste falhar com "the board scrolls sideways at 239px" no VS Code 1.120 (M1). A causa era a largura, não a versão.
-- **O laço mede de verdade.** Uma falha que cabe a 299px e estoura a 239px morre no quadro (M7) e nos detalhes (M6).
-- **Limite da prova.** O laço para na primeira largura de 250px ou menos. No VS Code 1.120 isso dá duas larguras. O VS Code deixa a barra lateral chegar a uns 170px, e essa faixa não entra na suíte. O autor relata medição manual a 179px; eu não repeti.
-- **No VS Code 1.90.0** a largura do passo estreito não fica no log de uma execução que passa. Registro só que a suíte passou.
+- **The iteration 2 finding is confirmed and closed.** Removing `h3 { flex-wrap: wrap; }` makes the test fail with "the board scrolls sideways at 239px" on VS Code 1.120 (M1). The cause was the width, not the version.
+- **The loop really measures.** A fault that fits at 299px and overflows at 239px dies on the board (M7) and in the details (M6).
+- **Limit of the proof.** The loop stops at the first width of 250px or less. On VS Code 1.120 that gives two widths. VS Code lets the side bar shrink to about 170px, and that range is not in the suite. The author reports a manual measurement at 179px; I did not repeat it.
+- **On VS Code 1.90.0** the width of the narrow step is not in the log of a passing run. I only record that the suite passed.
 
-### O relatório lê a tela ou espelha o estado?
+### Does the report read the screen or mirror the state?
 
-Sem mudança no código desde a iteração 2 (`src/` não mudou em 90a54c3..0ab4657).
+No code change since iteration 2 (`src/` did not change in 90a54c3..0ab4657).
 
-| Campo | Origem (`src/webview/main.ts`) | Julgamento |
+| Field | Source (`src/webview/main.ts`) | Judgment |
 | ----- | ------------------------------ | ---------- |
-| `projects` | `:60` - `projects.map((p) => p.id)` | Espelho do estado, documentado em `src/core/protocol.ts:8-10` |
-| `cards` | `:61` - `shown('.card-name')` | Só elementos exibidos (`offsetParent !== null`, `:57`) |
-| `phases` | `:62` - `shown('.card-phase')` | Só elementos exibidos, na ordem dos cartões |
-| `detail` | `:63` - `.detail-title .mono` | Lido do DOM |
-| `columns` | `:64` - `gridTemplateColumns` calculado | Layout real. Mede só o primeiro quadro |
-| `emptyStages` | `:65` - `shown('.column.is-empty')` | Layout real |
-| `emptyMessage` | `:66` - `.empty-state h1` | Lido do DOM |
-| `width` | `:67` - `window.innerWidth` | Medida real |
-| `overflow` | `:68` - `scrollWidth > clientWidth` | Medida real, conferida nos dois sentidos |
+| `projects` | `:60` - `projects.map((p) => p.id)` | Mirror of the state, documented in `src/core/protocol.ts:8-10` |
+| `cards` | `:61` - `shown('.card-name')` | Only displayed elements (`offsetParent !== null`, `:57`) |
+| `phases` | `:62` - `shown('.card-phase')` | Only displayed elements, in card order |
+| `detail` | `:63` - `.detail-title .mono` | Read from the DOM |
+| `columns` | `:64` - computed `gridTemplateColumns` | Real layout. Measures only the first board |
+| `emptyStages` | `:65` - `shown('.column.is-empty')` | Real layout |
+| `emptyMessage` | `:66` - `.empty-state h1` | Read from the DOM |
+| `width` | `:67` - `window.innerWidth` | Real measurement |
+| `overflow` | `:68` - `scrollWidth > clientWidth` | Real measurement, checked in both directions |
 
-### Julgamento dos mutantes vivos
+### Judgment of the surviving mutants
 
-- **M4 e M5 (novos)**: sem as regras `.sub-head, .phase-head { flex-wrap: wrap; }` e `.crumb-actions { min-width: 0; }` nada rola a 299px nem a 239px nas três features que o teste abre. Não sei se elas importam abaixo de 239px ou nas outras cinco features da fixture. Não classifiquei: isso pede uma varredura de larguras, e o coordenador pediu que eu não iniciasse varreduras por conta própria. Não bloqueiam porque a prova do SIDE-03 não depende delas: com ou sem as duas regras, as larguras medidas não rolam.
-- **H3b e H4 (guarda `live`)**: aceitos desde a iteração 2 como equivalentes no VS Code 1.120. A medição no VS Code 1.90 continua pendente.
-- **H5, N4 e N5**: só instrumentação.
-- **X1**: clique real dentro da webview, limite da API.
+- **M4 and M5 (new)**: without the rules `.sub-head, .phase-head { flex-wrap: wrap; }` and `.crumb-actions { min-width: 0; }` nothing scrolls at 299px or 239px in the three features the test opens. I don't know whether they matter below 239px or in the other five fixture features. I did not classify them: that calls for a width sweep, and the coordinator asked me not to start sweeps on my own. They do not block because the SIDE-03 proof does not depend on them: with or without the two rules, the measured widths do not scroll.
+- **H3b and H4 (`live` guard)**: accepted since iteration 2 as equivalent on VS Code 1.120. The measurement on VS Code 1.90 is still pending.
+- **H5, N4, and N5**: instrumentation only.
+- **X1**: real click inside the webview, API limit.
 
 ---
 
 ## Discrimination Sensor
 
-Scratch: `git worktree add --detach <scratchpad>/wt-side3 HEAD`, com junction para `node_modules`. Uma mutação por vez, revertida antes da seguinte. Sem `git stash`. Toda execução que abre o VS Code passou pelo lançador de desktop oculto, uma por vez, em primeiro plano. Foram 9 execuções, do limite de 10.
+Scratch: `git worktree add --detach <scratchpad>/wt-side3 HEAD`, with a junction for `node_modules`. One mutation at a time, reverted before the next. No `git stash`. Every run that opens VS Code went through the hidden desktop launcher, one at a time, in the foreground. 9 runs, out of a limit of 10.
 
-### Iteração 3 (HEAD 0ab4657)
+### Iteration 3 (HEAD 0ab4657)
 
 | Mutation | File:line | Description | Killed? |
 | -------- | --------- | ----------- | ------- |
-| M1 | `media/dashboard.css:308` | Layout estreito sem `h3 { flex-wrap: wrap; }` | ✅ Killed (unit do stylesheet; SIDE-03/04: "the board scrolls sideways at 239px") |
-| M2 | `media/dashboard.css:326` | Layout estreito sem `.rows li > .grow { ... }` | ✅ Killed (SIDE-03/04: "user-auth scrolls sideways at 239px") |
-| M3 | `media/dashboard.css:318` | Layout estreito sem `.feature-actions { ... }` | ✅ Killed (SIDE-03/04: "user-auth scrolls sideways at 239px") |
-| M4 | `media/dashboard.css:319` | Layout estreito sem `.sub-head, .phase-head { flex-wrap: wrap; }` | ❌ Survived. Sem efeito nas larguras medidas, ver Follow-up 1 |
-| M5 | `media/dashboard.css:317` | Layout estreito sem `.crumb-actions { min-width: 0; }` | ❌ Survived. Sem efeito nas larguras medidas, ver Follow-up 1 |
-| M6 | `media/dashboard.css:323` | Título do detalhe com `min-width` de 250px (cabe a 299px, não a 239px) | ✅ Killed (SIDE-03/04: "user-auth scrolls sideways at 239px") |
-| M7 | `media/dashboard.css:311` | Blocos do resumo com `min-width` de 120px (cabem a 299px, não a 239px) | ✅ Killed (SIDE-03/04: "the board scrolls sideways at 239px") |
+| M1 | `media/dashboard.css:308` | Narrow layout without `h3 { flex-wrap: wrap; }` | ✅ Killed (stylesheet unit test; SIDE-03/04: "the board scrolls sideways at 239px") |
+| M2 | `media/dashboard.css:326` | Narrow layout without `.rows li > .grow { ... }` | ✅ Killed (SIDE-03/04: "user-auth scrolls sideways at 239px") |
+| M3 | `media/dashboard.css:318` | Narrow layout without `.feature-actions { ... }` | ✅ Killed (SIDE-03/04: "user-auth scrolls sideways at 239px") |
+| M4 | `media/dashboard.css:319` | Narrow layout without `.sub-head, .phase-head { flex-wrap: wrap; }` | ❌ Survived. No effect at the measured widths, see Follow-up 1 |
+| M5 | `media/dashboard.css:317` | Narrow layout without `.crumb-actions { min-width: 0; }` | ❌ Survived. No effect at the measured widths, see Follow-up 1 |
+| M6 | `media/dashboard.css:323` | Detail title with a 250px `min-width` (fits at 299px, not at 239px) | ✅ Killed (SIDE-03/04: "user-auth scrolls sideways at 239px") |
+| M7 | `media/dashboard.css:311` | Summary tiles with a 120px `min-width` (fit at 299px, not at 239px) | ✅ Killed (SIDE-03/04: "the board scrolls sideways at 239px") |
 
-Pelos testes unitários, só M1 morre. M2 a M7 dependem da medição na suíte de integração.
+With the unit tests alone, only M1 dies. M2 to M7 depend on the measurement in the integration suite.
 
-Execuções que abriram o VS Code:
+Runs that opened VS Code:
 
-| # | Execução | Árvore | Resultado |
+| # | Run | Tree | Result |
 | - | -------- | ------ | --------- |
-| 1 | Gate, sem mutação | real | 46/46 + 1 + 1 |
-| 2 | M1 | scratch | 45/46, SIDE-03/04 falha |
-| 3 | M6 | scratch | 45/46, SIDE-03/04 falha |
-| 4 | M7 | scratch | 45/46, SIDE-03/04 falha |
-| 5 | M2 | scratch | 45/46, SIDE-03/04 falha |
-| 6 | M3 | scratch | 45/46, SIDE-03/04 falha |
-| 7 | Sem mutação, VS Code 1.90.0 | scratch | 46/46 + 1 + 1 |
+| 1 | Gate, no mutation | real | 46/46 + 1 + 1 |
+| 2 | M1 | scratch | 45/46, SIDE-03/04 fails |
+| 3 | M6 | scratch | 45/46, SIDE-03/04 fails |
+| 4 | M7 | scratch | 45/46, SIDE-03/04 fails |
+| 5 | M2 | scratch | 45/46, SIDE-03/04 fails |
+| 6 | M3 | scratch | 45/46, SIDE-03/04 fails |
+| 7 | No mutation, VS Code 1.90.0 | scratch | 46/46 + 1 + 1 |
 | 8 | M4 | scratch | 46/46 + 1 + 1 |
 | 9 | M5 | scratch | 46/46 + 1 + 1 |
 
-Os resultados das iterações 1 e 2 valem para o que não mudou. `src/`, `package.json` e o resto do stylesheet são os mesmos de 90a54c3. Os testes que a T17 mexeu ficaram iguais ou mais fortes, então as mortes anteriores continuam valendo. Não reexecutei mutações antigas.
+The results from iterations 1 and 2 still hold for what did not change. `src/`, `package.json`, and the rest of the stylesheet are the same as in 90a54c3. The tests T17 touched stayed the same or got stronger, so the earlier kills still hold. I did not rerun old mutations.
 
-**Sensor depth**: direcionado ao código da iteração 3 (7 mutações no diff), com o histórico das iterações 1 e 2
-**Result**: 5/7 killed - PASS ✅. Os 2 vivos (M4, M5) não têm efeito nas larguras medidas e viram follow-up
+**Sensor depth**: targeted at the iteration 3 code (7 mutations in the diff), with the history of iterations 1 and 2
+**Result**: 5/7 killed - PASS ✅. The 2 survivors (M4, M5) have no effect at the measured widths and become a follow-up
 
-### Iteração 2 (HEAD 90a54c3), histórico
-
-| Mutation | File:line | Description | Killed? |
-| -------- | --------- | ----------- | ------- |
-| S4 | `media/dashboard.css:313` | Layout estreito oculta todas as etapas | ✅ Killed |
-| S5 | `media/dashboard.css:305` | Layout estreito começa abaixo de 500px | ✅ Killed (unit do stylesheet) |
-| S6 | `media/dashboard.css:305` | Layout estreito começa abaixo de 900px | ✅ Killed |
-| S7 | `media/dashboard.css:305` | Limite em 700px (erro de um) | ✅ Killed (unit do stylesheet) |
-| C2 | `src/extension.ts:47` | Botão da notificação abre a aba | ✅ Killed |
-| C3 | `src/extension.ts:57` | `openDashboard` ignora a feature recebida | ✅ Killed |
-| P4 | `package.json:120` | Botão de abrir em aba some do título da view | ✅ Killed |
-| W2 | `src/webview/main.ts:68` | Relatório fixa `overflow: false` | ✅ Killed |
-| W2b | `src/webview/main.ts:68` | Relatório fixa `overflow: true` | ✅ Killed |
-| N1 | `src/webview/main.ts:57` | `shown()` não filtra | ✅ Killed |
-| N2 | `src/webview/main.ts:57` | `shown()` com o filtro invertido | ✅ Killed |
-| N3 | `src/webview/main.ts:62` | `phases` com valor fixo | ✅ Killed |
-| N6 | `src/webview/main.ts:62` | `phases` na ordem inversa dos cartões | ✅ Killed |
-| N7 | `src/webview/main.ts:62` | `phases` congelado no primeiro relatório | ✅ Killed |
-| N5+S4 | `src/webview/main.ts:61` + `media/dashboard.css:313` | T9 desfeita junto com todas as etapas ocultas | ✅ Killed |
-| N4 | `src/webview/main.ts:62` | `phases` lê também os cartões ocultos | ❌ Survived (só instrumentação) |
-| N5 | `src/webview/main.ts:61` | `cards` lê também os cartões ocultos | ❌ Survived (só instrumentação) |
-| H3b | `src/ui/dashboard.ts:58` | Superfície oculta continua `live` | ❌ Survived (equivalente no VS Code 1.120) |
-| H4 | `src/ui/dashboard.ts:115` | `select` enviado antes de a webview ficar pronta | ❌ Survived (equivalente no VS Code 1.120) |
-| H5 | `src/ui/dashboard.ts:81` | Relatório gravado com a superfície fora do ar | ❌ Survived (só instrumentação) |
-| H1, H2, H3, C1, S1, S2, S3, W1, W3 | regressão | As mesmas da iteração 1 | ✅ Killed (9/9) |
-| P3 (sonda) | `package.json:83` | `showFeature` perde o título | ✅ Killed |
-| X1 (sonda) | `src/webview/main.ts:84` | Webview ignora cliques | ❌ Survived (limite da API) |
-
-Placar da iteração 2: 24 de 29 mortas no diff, 5 vivas aceitas.
-
-### Iteração 1 (HEAD 65a6be7), histórico
+### Iteration 2 (HEAD 90a54c3), history
 
 | Mutation | File:line | Description | Killed? |
 | -------- | --------- | ----------- | ------- |
-| H1 | `src/ui/dashboard.ts:189` | `showSide` abre a aba do editor | ✅ Killed |
-| H2 | `src/ui/dashboard.ts:159` | View lateral não recebe o estado | ✅ Killed |
-| H3 | `src/ui/dashboard.ts:196` | Mudança de visibilidade não é tratada | ✅ Killed |
-| H3b | `src/ui/dashboard.ts:54` | Superfície oculta continua `live` | ❌ Survived (aceito na iteração 2) |
-| H4 | `src/ui/dashboard.ts:111` | `select` enviado antes de a webview ficar pronta | ❌ Survived (aceito na iteração 2) |
-| H5 | `src/ui/dashboard.ts:77` | Relatório gravado com a superfície fora do ar | ❌ Survived (só instrumentação) |
-| C1 | `src/extension.ts:58` | `showFeature` abre a aba | ✅ Killed |
-| C2 | `src/extension.ts:47` | Botão da notificação abre a aba | ❌ Survived (fechado na iteração 2) |
-| C3 | `src/extension.ts:57` | `openDashboard` ignora a feature recebida | ❌ Survived (fechado na iteração 2) |
-| P1 | `package.json:50` | View sem `type: webview` | ✅ Killed |
-| P2 | `package.json:77` | Título antigo "Abrir painel" | ✅ Killed |
-| P4 | `package.json:120` | Botão some do título da view Painel | ❌ Survived (fechado na iteração 2) |
-| W1 | `src/webview/main.ts:49` | Webview nunca manda o relatório | ✅ Killed |
-| W2 | `src/webview/main.ts:65` | Relatório fixa `overflow: false` | ❌ Survived (fechado na iteração 2) |
-| W3 | `src/webview/main.ts:62` | Relatório fixa `emptyStages: 0` | ✅ Killed |
-| R1 | `src/webview/render.ts:174` | `is-empty` nunca é marcado | ✅ Killed |
-| R2 | `src/webview/render.ts:174` | `is-empty` sempre é marcado | ✅ Killed |
-| S1 | `media/dashboard.css:311` | Layout estreito sem a regra de uma coluna | ✅ Killed |
-| S2 | `media/dashboard.css:313` | Etapas vazias deixam de ser ocultas | ✅ Killed |
-| S3 | `media/dashboard.css:319` | Título do detalhe com `min-width` de 280px | ✅ Killed |
-| S3b | `media/dashboard.css:311` | Coluna do quadro com `min-width` de 720px | ✅ Killed |
-| S4 | `media/dashboard.css:313` | Layout estreito oculta todas as etapas | ❌ Survived (fechado na iteração 2) |
-| S5 | `media/dashboard.css:305` | Layout estreito começa abaixo de 500px | ❌ Survived (fechado na iteração 2) |
-| S6 | `media/dashboard.css:305` | Layout estreito começa abaixo de 900px | ❌ Survived (fechado na iteração 2) |
-| P3 (sonda) | `package.json:83` | `showFeature` perde o título | ❌ Survived (fechado na iteração 2) |
-| X1 (sonda) | `src/webview/main.ts:81` | Webview ignora cliques | ❌ Survived (limite da API) |
-| X2 (sonda) | `src/ui/dashboard.ts:91` | `previewFile` abre o editor de texto | ✅ Killed |
+| S4 | `media/dashboard.css:313` | Narrow layout hides every stage | ✅ Killed |
+| S5 | `media/dashboard.css:305` | Narrow layout starts below 500px | ✅ Killed (stylesheet unit test) |
+| S6 | `media/dashboard.css:305` | Narrow layout starts below 900px | ✅ Killed |
+| S7 | `media/dashboard.css:305` | Threshold at 700px (off by one) | ✅ Killed (stylesheet unit test) |
+| C2 | `src/extension.ts:47` | Notification button opens the tab | ✅ Killed |
+| C3 | `src/extension.ts:57` | `openDashboard` ignores the feature it receives | ✅ Killed |
+| P4 | `package.json:120` | Open-in-tab button disappears from the view title | ✅ Killed |
+| W2 | `src/webview/main.ts:68` | Report hardcodes `overflow: false` | ✅ Killed |
+| W2b | `src/webview/main.ts:68` | Report hardcodes `overflow: true` | ✅ Killed |
+| N1 | `src/webview/main.ts:57` | `shown()` does not filter | ✅ Killed |
+| N2 | `src/webview/main.ts:57` | `shown()` with the filter inverted | ✅ Killed |
+| N3 | `src/webview/main.ts:62` | `phases` with a fixed value | ✅ Killed |
+| N6 | `src/webview/main.ts:62` | `phases` in reverse card order | ✅ Killed |
+| N7 | `src/webview/main.ts:62` | `phases` frozen at the first report | ✅ Killed |
+| N5+S4 | `src/webview/main.ts:61` + `media/dashboard.css:313` | T9 undone together with every stage hidden | ✅ Killed |
+| N4 | `src/webview/main.ts:62` | `phases` also reads hidden cards | ❌ Survived (instrumentation only) |
+| N5 | `src/webview/main.ts:61` | `cards` also reads hidden cards | ❌ Survived (instrumentation only) |
+| H3b | `src/ui/dashboard.ts:58` | Hidden surface stays `live` | ❌ Survived (equivalent on VS Code 1.120) |
+| H4 | `src/ui/dashboard.ts:115` | `select` sent before the webview is ready | ❌ Survived (equivalent on VS Code 1.120) |
+| H5 | `src/ui/dashboard.ts:81` | Report stored while the surface is down | ❌ Survived (instrumentation only) |
+| H1, H2, H3, C1, S1, S2, S3, W1, W3 | regression | Same as in iteration 1 | ✅ Killed (9/9) |
+| P3 (probe) | `package.json:83` | `showFeature` loses its title | ✅ Killed |
+| X1 (probe) | `src/webview/main.ts:84` | Webview ignores clicks | ❌ Survived (API limit) |
 
-Placar da iteração 1: 14 de 24 mortas no diff.
+Iteration 2 score: 24 of 29 killed in the diff, 5 accepted survivors.
 
-**Isolamento (iteração 3)**: `git status --porcelain` da árvore real vazio antes e vazio depois do sensor. Junction removida com `rmdir` sem recursão. `node_modules` real com 129 entradas antes e depois. `git worktree remove --force` + `git worktree prune`. `git worktree list` mostra só a árvore real em 0ab4657. O VS Code 1.90.0 foi baixado dentro do scratch e saiu junto com ele. Nenhum processo do scratch ficou rodando.
+### Iteration 1 (HEAD 65a6be7), history
+
+| Mutation | File:line | Description | Killed? |
+| -------- | --------- | ----------- | ------- |
+| H1 | `src/ui/dashboard.ts:189` | `showSide` opens the editor tab | ✅ Killed |
+| H2 | `src/ui/dashboard.ts:159` | Side bar view does not receive the state | ✅ Killed |
+| H3 | `src/ui/dashboard.ts:196` | Visibility change is not handled | ✅ Killed |
+| H3b | `src/ui/dashboard.ts:54` | Hidden surface stays `live` | ❌ Survived (accepted in iteration 2) |
+| H4 | `src/ui/dashboard.ts:111` | `select` sent before the webview is ready | ❌ Survived (accepted in iteration 2) |
+| H5 | `src/ui/dashboard.ts:77` | Report stored while the surface is down | ❌ Survived (instrumentation only) |
+| C1 | `src/extension.ts:58` | `showFeature` opens the tab | ✅ Killed |
+| C2 | `src/extension.ts:47` | Notification button opens the tab | ❌ Survived (closed in iteration 2) |
+| C3 | `src/extension.ts:57` | `openDashboard` ignores the feature it receives | ❌ Survived (closed in iteration 2) |
+| P1 | `package.json:50` | View without `type: webview` | ✅ Killed |
+| P2 | `package.json:77` | Old title "Open Dashboard" | ✅ Killed |
+| P4 | `package.json:120` | Button disappears from the Dashboard view title | ❌ Survived (closed in iteration 2) |
+| W1 | `src/webview/main.ts:49` | Webview never sends the report | ✅ Killed |
+| W2 | `src/webview/main.ts:65` | Report hardcodes `overflow: false` | ❌ Survived (closed in iteration 2) |
+| W3 | `src/webview/main.ts:62` | Report hardcodes `emptyStages: 0` | ✅ Killed |
+| R1 | `src/webview/render.ts:174` | `is-empty` is never set | ✅ Killed |
+| R2 | `src/webview/render.ts:174` | `is-empty` is always set | ✅ Killed |
+| S1 | `media/dashboard.css:311` | Narrow layout without the one-column rule | ✅ Killed |
+| S2 | `media/dashboard.css:313` | Empty stages are no longer hidden | ✅ Killed |
+| S3 | `media/dashboard.css:319` | Detail title with a 280px `min-width` | ✅ Killed |
+| S3b | `media/dashboard.css:311` | Board column with a 720px `min-width` | ✅ Killed |
+| S4 | `media/dashboard.css:313` | Narrow layout hides every stage | ❌ Survived (closed in iteration 2) |
+| S5 | `media/dashboard.css:305` | Narrow layout starts below 500px | ❌ Survived (closed in iteration 2) |
+| S6 | `media/dashboard.css:305` | Narrow layout starts below 900px | ❌ Survived (closed in iteration 2) |
+| P3 (probe) | `package.json:83` | `showFeature` loses its title | ❌ Survived (closed in iteration 2) |
+| X1 (probe) | `src/webview/main.ts:81` | Webview ignores clicks | ❌ Survived (API limit) |
+| X2 (probe) | `src/ui/dashboard.ts:91` | `previewFile` opens the text editor | ✅ Killed |
+
+Iteration 1 score: 14 of 24 killed in the diff.
+
+**Isolation (iteration 3)**: `git status --porcelain` of the real tree empty before and after the sensor. Junction removed with non-recursive `rmdir`. Real `node_modules` with 129 entries before and after. `git worktree remove --force` + `git worktree prune`. `git worktree list` shows only the real tree at 0ab4657. VS Code 1.90.0 was downloaded inside the scratch and was removed with it. No scratch process was left running.
 
 ---
 
 ## Interactive UAT Results (if performed)
 
-Não executado. O Verifier roda sem usuário. A feature tem interface, então o UAT fica para o orquestrador.
+Not run. The Verifier runs without a user. The feature has a UI, so UAT is left to the orchestrator.
 
 ---
 
@@ -216,29 +216,29 @@ Não executado. O Verifier roda sem usuário. A feature tem interface, então o 
 
 | Principle | Status |
 | --------- | ------ |
-| Minimum code | ⚠️ Duas das cinco regras novas do stylesheet não têm teste que falhe sem elas (M4, M5) |
-| Surgical changes | ✅ A iteração 3 soma 5 linhas no bloco estreito e não toca em `src/` |
+| Minimum code | ⚠️ Two of the five new stylesheet rules have no test that fails without them (M4, M5) |
+| Surgical changes | ✅ Iteration 3 adds 5 lines to the narrow block and does not touch `src/` |
 | No scope creep | ✅ |
-| Matches patterns | ✅ O laço de estreitamento usa o mesmo relatório e a mesma espera dos outros testes |
+| Matches patterns | ✅ The narrowing loop uses the same report and the same wait as the other tests |
 | Spec-anchored outcome check (asserted values match spec) | ✅ |
-| Per-layer Coverage Expectation met (domain 1:1 ACs; routes happy+edge+error) | ✅ Renderer 1:1 com os critérios. Host com caminho feliz, borda (barra lateral fechada, view oculta, duas superfícies, largura estreita) e vazio (sem specs) |
+| Per-layer Coverage Expectation met (domain 1:1 ACs; routes happy+edge+error) | ✅ Renderer 1:1 with the criteria. Host with happy path, edge (side bar closed, hidden view, both surfaces, narrow width), and empty (no specs) |
 | Every test maps to a spec requirement - no unclaimed tests | ✅ |
 | Documented guidelines followed: none - strong defaults applied | ✅ |
 
-**Integridade dos testes (90a54c3..0ab4657)**: `test/integration/suite.cjs` tem 54 inserções e 10 remoções. `test/unit/webview.test.ts` tem 1 inserção. As 10 linhas removidas:
+**Test integrity (90a54c3..0ab4657)**: `test/integration/suite.cjs` has 54 insertions and 10 deletions. `test/unit/webview.test.ts` has 1 insertion. The 10 removed lines:
 
-- SIDE-09 (3 linhas): o comentário e as duas asserções de rolagem. O valor esperado passou de `width < 1250` para `width < 1298` (`:583`, `:597`). É correção, não afrouxamento: seis colunas de 200px, cinco espaços de 10px e 48px de margem da página somam 1298px.
-- SIDE-03/SIDE-04 (5 linhas): o laço dos detalhes virou a função `details()` (`:695-702`), com as mesmas asserções, chamada duas vezes.
-- Barra lateral fechada (2 linhas): o detalhe pedido passou da asserção para a condição da espera (`:872`), e o teste ganhou a asserção dos projetos (`:873`). A espera falha por tempo se o detalhe não aparecer.
+- SIDE-09 (3 lines): the comment and the two scrolling assertions. The expected value went from `width < 1250` to `width < 1298` (`:583`, `:597`). It is a correction, not a loosening: six 200px columns, five 10px gaps, and 48px of page margin add up to 1298px.
+- SIDE-03/SIDE-04 (5 lines): the details loop became the `details()` function (`:695-702`), with the same assertions, called twice.
+- Side bar closed (2 lines): the requested detail moved from the assertion into the wait condition (`:872`), and the test gained the projects assertion (`:873`). The wait times out if the detail does not appear.
 
-Nenhuma asserção saiu ou ficou mais fraca. A contagem de testes não mudou: 39 unit, 46 + 1 + 1 integration.
+No assertion was removed or weakened. The test count did not change: 39 unit, 46 + 1 + 1 integration.
 
 ---
 
 ## Edge Cases
 
-- [x] SIDE-10 As duas superfícies abertas atualizam juntas: `test/integration/suite.cjs:822-825`
-- [x] SIDE-11 Sem pasta de specs a view mostra "Nenhuma spec encontrada": `test/integration/suite.cjs:673-676`
+- [x] SIDE-10 Both open surfaces update together: `test/integration/suite.cjs:822-825`
+- [x] SIDE-11 Without a specs folder the view shows "No specs found": `test/integration/suite.cjs:673-676`
 
 ---
 
@@ -246,49 +246,49 @@ Nenhuma asserção saiu ou ficou mais fraca. A contagem de testes não mudou: 39
 
 - **Gate command**: `npm run typecheck && npm test && npm run test:integration`
 - **Typecheck**: exit 0
-- **Unit**: 39 aprovados, 0 reprovados, 0 pulados (exit 0)
-- **Integration**: 46/46 em `suite.cjs`, 1/1 em `startup.cjs`, 1/1 em `multiroot.cjs` (exit 0), no VS Code 1.120.0, pelo desktop oculto
-- **Integration no VS Code 1.90.0**: 46/46 + 1/1 + 1/1 (exit 0), no scratch
-- **Test count before feature**: 37 unit + 36 integration (contados em cadcb11)
+- **Unit**: 39 passed, 0 failed, 0 skipped (exit 0)
+- **Integration**: 46/46 in `suite.cjs`, 1/1 in `startup.cjs`, 1/1 in `multiroot.cjs` (exit 0), on VS Code 1.120.0, via the hidden desktop
+- **Integration on VS Code 1.90.0**: 46/46 + 1/1 + 1/1 (exit 0), in the scratch
+- **Test count before feature**: 37 unit + 36 integration (counted at cadcb11)
 - **Test count after feature**: 39 unit + 48 integration
-- **Delta**: +2 unit, +12 integration. Na iteração 3: nenhum teste novo, só asserções
-- **Skipped tests**: nenhum
-- **Failures**: nenhuma
+- **Delta**: +2 unit, +12 integration. In iteration 3: no new tests, only assertions
+- **Skipped tests**: none
+- **Failures**: none
 
-Os números do autor conferem.
+The author's numbers check out.
 
 ---
 
 ## Fix Plans (if issues found)
 
-Nenhum gap bloqueia a entrega. Ficam dois follow-ups e dois limites aceitos.
+No gap blocks delivery. Two follow-ups and two accepted limits remain.
 
-### Follow-up 1 (não bloqueia): duas regras do stylesheet sem prova (M4, M5)
+### Follow-up 1 (non-blocking): two stylesheet rules without proof (M4, M5)
 
-- **Root cause**: `media/dashboard.css:317` e `:319` podem sair sem que nenhum teste falhe. O teste mede 299px e 239px e abre três das oito features da fixture.
-- **Fix task**: levar o laço de `test/integration/suite.cjs:715` até a menor largura que a barra lateral aceita e abrir todas as features da fixture em `details()` (`:696`). Se M4 e M5 continuarem vivos, tirar as duas regras.
-- **Done when**: M4 e M5 morrem, ou as regras saem.
+- **Root cause**: `media/dashboard.css:317` and `:319` can be removed without any test failing. The test measures 299px and 239px and opens three of the eight fixture features.
+- **Fix task**: extend the loop at `test/integration/suite.cjs:715` down to the smallest width the side bar allows and open every fixture feature in `details()` (`:696`). If M4 and M5 still survive, remove both rules.
+- **Done when**: M4 and M5 die, or the rules are removed.
 - **Priority**: Minor
 
-### Follow-up 2 (não bloqueia): medir a guarda `live` no VS Code 1.90
+### Follow-up 2 (non-blocking): measure the `live` guard on VS Code 1.90
 
-- **Root cause**: H3b e H4 são equivalentes no VS Code 1.120. Nas versões de 1.90 a 1.119 ninguém mediu.
-- **Fix task**: rodar a suíte no VS Code 1.90.0 com a guarda removida de `src/ui/dashboard.ts:115`. Se o teste da barra lateral fechada falhar, a guarda tem prova. Se passar, a guarda pode sair.
+- **Root cause**: H3b and H4 are equivalent on VS Code 1.120. Nobody measured versions 1.90 to 1.119.
+- **Fix task**: run the suite on VS Code 1.90.0 with the guard removed from `src/ui/dashboard.ts:115`. If the closed-side-bar test fails, the guard is proven. If it passes, the guard can go.
 - **Priority**: Minor
 
-### Limite aceito: clique real dentro da webview (X1)
+### Accepted limit: real click inside the webview (X1)
 
-O extension host não clica dentro de uma webview. O listener em `src/webview/main.ts:81-85` é anterior à feature. Sem fix task.
+The extension host cannot click inside a webview. The listener at `src/webview/main.ts:81-85` predates the feature. No fix task.
 
-### Limite aceito: limite de 700px provado pelo stylesheet (S5, S7)
+### Accepted limit: 700px threshold proven by the stylesheet (S5, S7)
 
-Nenhuma superfície é medida entre 500 e 700px. O extension host não põe uma webview numa largura exata. O teste que lê o stylesheet fixa o valor 699.
+No surface is measured between 500 and 700px. The extension host cannot put a webview at an exact width. The test that reads the stylesheet pins the value 699.
 
 ---
 
 ## Requirement Traceability Update
 
-O Verifier não altera `spec.md`. Status propostos:
+The Verifier does not change `spec.md`. Proposed statuses:
 
 | Requirement | Previous Status | New Status |
 | ----------- | --------------- | ---------- |
@@ -310,12 +310,12 @@ O Verifier não altera `spec.md`. Status propostos:
 
 **Overall**: ✅ Ready
 
-**Spec-anchored check**: 11/11 requisitos batem com a spec. 0 gaps de precisão
-**Sensor**: iteração 3 com 5/7 mortas. 2 vivas sem efeito nas larguras medidas (M4, M5). Das iterações anteriores ficam 5 vivas aceitas: 2 equivalentes no VS Code 1.120 (H3b, H4) e 3 só de instrumentação (H5, N4, N5). Sonda X1 viva, limite da API
-**Gate**: typecheck ok, 39 unit, 46 + 1 + 1 integration, 0 falhas, no VS Code 1.120.0 e no 1.90.0
+**Spec-anchored check**: 11/11 requirements match the spec. 0 precision gaps
+**Sensor**: iteration 3 with 5/7 killed. 2 survivors with no effect at the measured widths (M4, M5). From the earlier iterations, 5 accepted survivors remain: 2 equivalent on VS Code 1.120 (H3b, H4) and 3 instrumentation-only (H5, N4, N5). Probe X1 survives, API limit
+**Gate**: typecheck ok, 39 unit, 46 + 1 + 1 integration, 0 failures, on VS Code 1.120.0 and on 1.90.0
 
-**What works**: view Painel no contêiner TLC Specs. `showFeature`, barra de status e notificação abrem o detalhe na lateral sem mexer nas abas, também com a barra lateral fechada. Quadro em uma coluna e sem rolagem a 299px e a 239px, com as etapas vazias ocultas. Detalhes de feature sem rolagem nas duas larguras. Limite de 700px fixado. Criar, alterar e remover artefato atualizam todos os cartões e fases. Volta da view oculta. Preview a partir da view. Comando "Abrir painel em aba", também numa feature. Atualização das duas superfícies. Mensagem "Nenhuma spec encontrada".
+**What works**: Dashboard view in the TLC Specs container. `showFeature`, the status bar, and the notification open the detail in the side bar without touching the tabs, also with the side bar closed. Board in one column with no scrolling at 299px and at 239px, with empty stages hidden. Feature details with no scrolling at both widths. 700px threshold pinned. Creating, changing, and removing an artifact update every card and phase. Return from the hidden view. Preview from the view. "Open Dashboard in Editor Tab" command, also on a feature. Both surfaces update. "No specs found" message.
 
-**Issues found**: nenhum gap bloqueante. M4 e M5 ficam como follow-up. A guarda `live` continua sem medição no VS Code 1.90.
+**Issues found**: no blocking gaps. M4 and M5 remain as a follow-up. The `live` guard is still unmeasured on VS Code 1.90.
 
-**Next steps**: UAT interativo com o usuário e atualização dos status em `spec.md`. Os dois follow-ups podem entrar como tasks depois da entrega.
+**Next steps**: interactive UAT with the user and status updates in `spec.md`. The two follow-ups can become tasks after delivery.

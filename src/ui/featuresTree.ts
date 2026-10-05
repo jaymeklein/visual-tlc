@@ -22,7 +22,7 @@ type Node =
 
 export type FeatureNode = Extract<Node, { kind: 'feature' }>;
 
-/** File (and line) behind an artifact row: what "Abrir no editor" opens. */
+/** File (and line) behind an artifact row: what "Open in Editor" opens. */
 export function artifactTarget(node: Node): { projectId: string; file: string; line?: number } | undefined {
   const projectId = node.loaded.project.id;
   switch (node.kind) {
@@ -162,7 +162,7 @@ export class FeaturesTree implements vscode.TreeDataProvider<Node> {
         // state the user gave it, so hiding or showing a spec with the eye open does not open or close its folder.
         const item = new vscode.TreeItem(p.label, hidden ? C.Collapsed : C.Expanded);
         item.iconPath = icon('folder-library');
-        item.description = `${p.features.length} feature(s)${hidden ? ' · oculta' : ''}`;
+        item.description = `${p.features.length} feature(s)${hidden ? ' · hidden' : ''}`;
         item.id = `root:${pid}`;
         return item;
       }
@@ -214,10 +214,10 @@ export class FeaturesTree implements vscode.TreeDataProvider<Node> {
       }
       case 'reqs': {
         const s = node.feature.requirementStats;
-        const item = new vscode.TreeItem('Requisitos', C.Collapsed);
+        const item = new vscode.TreeItem('Requirements', C.Collapsed);
         item.id = `reqs:${pid}:${node.feature.name}`;
         item.iconPath = icon('references');
-        item.description = `${s.verified}/${s.total} verificados`;
+        item.description = `${s.verified}/${s.total} verified`;
         return item;
       }
       case 'req': {
@@ -225,7 +225,7 @@ export class FeaturesTree implements vscode.TreeDataProvider<Node> {
         const item = new vscode.TreeItem(r.id, C.None);
         item.id = `req:${pid}:${node.feature.name}:${r.id}:${r.line}`;
         item.description = `${r.story} · ${r.status}`;
-        item.tooltip = `${r.id} — ${r.story}\nFase: ${r.phase || '-'}\nStatus: ${r.status} (${REQ_STATUS_LABEL[r.statusKind]})`;
+        item.tooltip = `${r.id} — ${r.story}\nPhase: ${r.phase || '-'}\nStatus: ${r.status} (${REQ_STATUS_LABEL[r.statusKind]})`;
         item.iconPath =
           r.statusKind === 'verified'
             ? icon('verified-filled', 'testing.iconPassed')
@@ -239,7 +239,7 @@ export class FeaturesTree implements vscode.TreeDataProvider<Node> {
         return item;
       }
       case 'files': {
-        const item = new vscode.TreeItem('Arquivos', C.Collapsed);
+        const item = new vscode.TreeItem('Files', C.Collapsed);
         item.id = `files:${pid}:${node.feature.name}`;
         item.iconPath = icon('files');
         item.description = `${node.feature.files.length}`;
@@ -249,7 +249,7 @@ export class FeaturesTree implements vscode.TreeDataProvider<Node> {
         const uri = this.store.uriFor(pid, node.file.path);
         const item = uri ? new vscode.TreeItem(uri, C.None) : new vscode.TreeItem(node.file.name, C.None);
         item.id = `file:${pid}:${node.file.path}`;
-        item.description = node.file.empty ? 'vazio' : node.file.kind === 'other' ? 'extra' : undefined;
+        item.description = node.file.empty ? 'empty' : node.file.kind === 'other' ? 'extra' : undefined;
         item.command = previewFileCommand(pid, node.file.path);
         item.contextValue = 'artifact';
         return item;
@@ -257,10 +257,10 @@ export class FeaturesTree implements vscode.TreeDataProvider<Node> {
       case 'issues': {
         const errors = node.feature.issues.filter((i) => i.severity === 'error').length;
         const warnings = node.feature.issues.filter((i) => i.severity === 'warning').length;
-        const item = new vscode.TreeItem('Avisos', errors ? C.Expanded : C.Collapsed);
+        const item = new vscode.TreeItem('Issues', errors ? C.Expanded : C.Collapsed);
         item.id = `issues:${pid}:${node.feature.name}`;
         item.iconPath = errors ? icon('error', 'list.errorForeground') : warnings ? icon('warning', 'list.warningForeground') : icon('info');
-        item.description = [errors && `${errors} erro(s)`, warnings && `${warnings} aviso(s)`].filter(Boolean).join(' · ') || `${node.feature.issues.length} nota(s)`;
+        item.description = [errors && `${errors} error(s)`, warnings && `${warnings} warning(s)`].filter(Boolean).join(' · ') || `${node.feature.issues.length} note(s)`;
         return item;
       }
       case 'issue': {
@@ -285,7 +285,7 @@ export class FeaturesTree implements vscode.TreeDataProvider<Node> {
     // Picks the eye of the row, closed on a hidden spec (package.json, view/item/context).
     item.contextValue = hidden ? 'feature.hidden' : 'feature';
     const errors = f.issues.filter((i) => i.severity === 'error').length;
-    item.description = `${f.active ? '● ' : ''}${f.phaseLabel} · ${Math.round(f.progress * 100)}%${errors ? ` · ${errors} erro(s)` : ''}${hidden ? ' · oculta' : ''}`;
+    item.description = `${f.active ? '● ' : ''}${f.phaseLabel} · ${Math.round(f.progress * 100)}%${errors ? ` · ${errors} error(s)` : ''}${hidden ? ' · hidden' : ''}`;
     item.iconPath =
       f.health === 'complete'
         ? icon('pass-filled', 'testing.iconPassed')
@@ -307,10 +307,10 @@ function listsTasks(stage: StageId): boolean {
 function taskDetails(node: Extract<Node, { kind: 'task' }>): Node[] {
   const t = node.task;
   const rows: [string, string, vscode.ThemeIcon][] = [
-    ['O quê', t.what, icon('info')],
-    ['Onde', plain(t.where), icon('file')],
-    ['Depende de', t.dependsOn.join(', ') || 'nenhuma', icon('arrow-left')],
-    ['Requisitos', t.requirements.join(', '), icon('references')],
+    ['What', t.what, icon('info')],
+    ['Where', plain(t.where), icon('file')],
+    ['Depends on', t.dependsOn.join(', ') || 'none', icon('arrow-left')],
+    ['Requirements', t.requirements.join(', '), icon('references')],
     ['Tests / Gate', [t.tests, t.gate].filter(Boolean).join(' · '), icon('beaker')],
   ];
   const base = { kind: 'detail' as const, loaded: node.loaded, feature: node.feature, task: t, via: node.via };
@@ -329,9 +329,9 @@ function taskTooltip(t: Task): vscode.MarkdownString {
   md.appendMarkdown(`**${t.id}: ${escapeMd(t.title)}** — ${TASK_STATUS_LABEL[t.status]}\n\n`);
   if (t.what) md.appendMarkdown(`${escapeMd(t.what)}\n\n`);
   const rows: [string, string][] = [
-    ['Onde', t.where],
-    ['Depende de', t.dependsOn.join(', ') || 'nenhuma'],
-    ['Requisitos', t.requirements.join(', ')],
+    ['Where', t.where],
+    ['Depends on', t.dependsOn.join(', ') || 'none'],
+    ['Requirements', t.requirements.join(', ')],
     ['Tests / Gate', [t.tests, t.gate].filter(Boolean).join(' / ')],
   ];
   for (const [k, v] of rows) if (v) md.appendMarkdown(`- ${k}: ${escapeMd(v)}\n`);
@@ -345,15 +345,15 @@ function taskTooltip(t: Task): vscode.MarkdownString {
 export function featureTooltip(f: Feature): vscode.MarkdownString {
   const md = new vscode.MarkdownString();
   md.appendMarkdown(`**${escapeMd(f.name)}**${f.spec?.title ? ` — ${escapeMd(f.spec.title)}` : ''}\n\n`);
-  md.appendMarkdown(`${f.phaseLabel} · ${HEALTH_LABEL[f.health]}${f.active ? ' · em foco no handoff' : ''}\n\n`);
+  md.appendMarkdown(`${f.phaseLabel} · ${HEALTH_LABEL[f.health]}${f.active ? ' · in focus in the handoff' : ''}\n\n`);
   md.appendMarkdown(`\`${progressBar(f.progress)}\` ${Math.round(f.progress * 100)}%\n\n`);
   md.appendMarkdown(f.stages.map((s) => `${s.state === 'done' ? '✔' : s.state === 'active' ? '◉' : s.state === 'failed' ? '✖' : s.state === 'skipped' ? '⊘' : '○'} ${STAGE_LABEL[s.id]}`).join(' → ') + '\n\n');
-  if (f.taskStats.total) md.appendMarkdown(`Tasks: ${f.taskStats.done}/${f.taskStats.total} concluídas\n\n`);
-  if (f.requirementStats.total) md.appendMarkdown(`Requisitos: ${f.requirementStats.verified}/${f.requirementStats.total} verificados\n\n`);
-  md.appendMarkdown(`**Próximo passo:** ${escapeMd(f.nextStep)}`);
+  if (f.taskStats.total) md.appendMarkdown(`Tasks: ${f.taskStats.done}/${f.taskStats.total} done\n\n`);
+  if (f.requirementStats.total) md.appendMarkdown(`Requirements: ${f.requirementStats.verified}/${f.requirementStats.total} verified\n\n`);
+  md.appendMarkdown(`**Next step:** ${escapeMd(f.nextStep)}`);
   const errors = f.issues.filter((i) => i.severity === 'error').length;
   const warnings = f.issues.filter((i) => i.severity === 'warning').length;
-  if (errors || warnings) md.appendMarkdown(`\n\n$(warning) ${errors} erro(s), ${warnings} aviso(s)`);
+  if (errors || warnings) md.appendMarkdown(`\n\n$(warning) ${errors} error(s), ${warnings} warning(s)`);
   md.supportThemeIcons = true;
   return md;
 }

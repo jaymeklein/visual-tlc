@@ -128,7 +128,7 @@ class Surface implements vscode.Disposable {
     const script = webview.asWebviewUri(vscode.Uri.joinPath(this.extensionUri, 'dist', 'webview.js'));
     const style = webview.asWebviewUri(vscode.Uri.joinPath(this.extensionUri, 'media', 'dashboard.css'));
     return `<!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; img-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
@@ -137,7 +137,7 @@ class Surface implements vscode.Disposable {
   <title>TLC Specs</title>
 </head>
 <body class="${this.bodyClass}">
-  <main id="app" aria-live="polite"><p class="empty">Carregando specs…</p></main>
+  <main id="app" aria-live="polite"><p class="empty">Loading specs…</p></main>
   <script nonce="${nonce}" src="${script}"></script>
 </body>
 </html>`;

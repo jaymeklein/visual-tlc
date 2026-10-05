@@ -48,7 +48,7 @@ test('spec: acceptance criteria are collected across the blank line after the he
     spec.stories[0].criteria.map((c) => c.pattern),
     ['event-driven', 'invalid'],
   );
-  const noShall = spec.issues.find((i) => i.message.includes('sem SHALL'));
+  const noShall = spec.issues.find((i) => i.message.includes('without SHALL'));
   assert.equal(noShall?.severity, 'error');
   assert.equal(noShall?.line, 7);
 });
@@ -133,9 +133,9 @@ test('tasks: phase membership from nested layout and forward dependency error', 
     ],
   );
   const msgs = doc.issues.map((i) => `${i.severity}:${i.message}`);
-  assert.ok(msgs.some((m) => m.startsWith('error:T1 (fase 1) depende de T2 (fase 2)')), msgs.join('\n'));
-  assert.ok(msgs.some((m) => m === 'error:T2: campo "Gate" ausente'), msgs.join('\n'));
-  assert.ok(msgs.some((m) => m.startsWith('warning:T1: Tests: none, mas nenhuma camada')), msgs.join('\n'));
+  assert.ok(msgs.some((m) => m.startsWith('error:T1 (phase 1) depends on T2 (phase 2)')), msgs.join('\n'));
+  assert.ok(msgs.some((m) => m === 'error:T2: missing "Gate" field'), msgs.join('\n'));
+  assert.ok(msgs.some((m) => m.startsWith('warning:T1: Tests: none, but no Test Coverage Matrix layer')), msgs.join('\n'));
 });
 
 test('validation verdict mirrors validate_state.py', () => {
@@ -147,7 +147,7 @@ test('validation verdict mirrors validate_state.py', () => {
   const v = parseValidation('# X Validation\n**Result**: 3/3 killed - PASS ✅\n', 'f/validation.md');
   assert.equal(v.verdict, 'pass');
   assert.equal(v.hasEvidence, false);
-  assert.ok(v.issues.some((i) => i.severity === 'error' && i.message.includes('evidência file:line')));
+  assert.ok(v.issues.some((i) => i.severity === 'error' && i.message.includes('file:line evidence')));
 });
 
 test('STATE.md: decisions, supersession and handoff', () => {
@@ -166,7 +166,7 @@ test('STATE.md: decisions, supersession and handoff', () => {
     'STATE.md',
   );
   assert.equal(s.decisions[0].active, false);
-  assert.ok(s.issues.some((i) => i.message.includes('AD-009 não existe')));
+  assert.ok(s.issues.some((i) => i.message.includes('AD-009 does not exist')));
   assert.equal(s.handoff?.inProgress, 'src/a.ts:3 - mid-write');
   assert.ok(s.issues.some((i) => i.severity === 'warning' && i.message.includes('waiting for API keys')));
 });
