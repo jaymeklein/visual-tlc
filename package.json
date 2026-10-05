@@ -2,7 +2,7 @@
   "name": "visual-tlc",
   "displayName": "Visual TLC — Spec-Driven Tracker",
   "description": "Track the specs produced by the tlc-spec-driven skill at a glance: phases, tasks, traceability, verification, and incomplete-spec warnings. An independent, unofficial project.",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "publisher": "JaymeKlein",
   "license": "SEE LICENSE IN LICENSE",
   "private": true,
