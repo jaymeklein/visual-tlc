@@ -1,4 +1,4 @@
-name: Publish to Marketplace
+name: Publish to Marketplaces
 
 on:
   push:
@@ -26,4 +26,10 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm test
-      - run: npx vsce publish --oidc --no-dependencies --allow-missing-repository
+      - run: npx vsce package --no-dependencies --allow-missing-repository --out extension.vsix
+      - run: npx vsce publish --oidc --packagePath extension.vsix
+      - name: Publish to Open VSX
+        if: env.OVSX_PAT != ''
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
+        run: npx ovsx@1.2.0 publish extension.vsix
