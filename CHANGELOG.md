@@ -2,6 +2,10 @@
 
 Changes in each published version of Visual TLC. The newest version is at the top.
 
+## Unreleased
+
+- **Open VSX.** The publish workflow also publishes to Open VSX, so Windsurf, Cursor, VSCodium and Devin IDE can install the extension.
+
 ## 0.2.0
 
 - **English throughout.** Every label, command, tooltip, notification, warning message and setting description is now in English, as are the Marketplace description, the README and the project docs.

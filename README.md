@@ -11,6 +11,8 @@ Visual TLC is an independent, **unofficial** project with no affiliation with Te
 
 Search for **Visual TLC** in the VS Code Extensions view and click **Install**. Updates arrive automatically, like any other extension.
 
+The extension is also published to [Open VSX](https://open-vsx.org), the registry used by VS Code forks such as Windsurf, Cursor, VSCodium and Devin IDE. Search for **Visual TLC** in their Extensions view.
+
 ## What you get
 
 **Side bar › TLC Specs**
@@ -108,7 +110,14 @@ Install the package: `code --install-extension visual-tlc-<version>.vsix`.
 
 ### Publishing
 
-The `.github/workflows/publish.yml` workflow publishes the extension to the Visual Studio Marketplace when a `v*` tag reaches GitHub. It checks that the tag matches the `package.json` version, runs the typecheck and the unit tests, and publishes with `vsce publish --oidc`, with no token stored in the repository.
+The `.github/workflows/publish.yml` workflow publishes the extension to the Visual Studio Marketplace and to Open VSX when a `v*` tag reaches GitHub. It checks that the tag matches the `package.json` version, runs the typecheck and the unit tests, packages a single `.vsix`, and publishes that file to both. The Marketplace publish uses `vsce publish --oidc`, with no token stored in the repository.
+
+The Open VSX publish needs a one-time setup, and is skipped while the `OVSX_PAT` secret is not set:
+
+1. Sign in at [open-vsx.org](https://open-vsx.org) with GitHub, link an Eclipse account and sign the Publisher Agreement.
+2. Create an access token at `open-vsx.org/user-settings/tokens`.
+3. Create the namespace once: `npx ovsx create-namespace JaymeKlein -p <token>`.
+4. Add the token as the `OVSX_PAT` secret in the repository settings.
 
 To release a version:
 
@@ -116,7 +125,7 @@ To release a version:
 2. `npm version patch` (or `minor`, `major`). It updates `package.json` and creates the commit and the `vX.Y.Z` tag.
 3. `git push --follow-tags`.
 
-The Marketplace does not accept a version that has already been published. To roll back a version, publish a newer one with the previous code.
+Neither registry accepts a version that has already been published. To roll back a version, publish a newer one with the previous code.
 
 ### Structure
 
